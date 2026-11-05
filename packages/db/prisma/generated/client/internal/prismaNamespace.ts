@@ -414,7 +414,8 @@ export const ModelName = {
   Member: 'Member',
   Invitation: 'Invitation',
   ApiKey: 'ApiKey',
-  TwoFactor: 'TwoFactor'
+  TwoFactor: 'TwoFactor',
+  Waitlist: 'Waitlist'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -430,7 +431,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "role" | "permission" | "user" | "session" | "account" | "verification" | "bankAccount" | "category" | "payee" | "envelope" | "record" | "debt" | "label" | "organization" | "member" | "invitation" | "apiKey" | "twoFactor"
+    modelProps: "role" | "permission" | "user" | "session" | "account" | "verification" | "bankAccount" | "category" | "payee" | "envelope" | "record" | "debt" | "label" | "organization" | "member" | "invitation" | "apiKey" | "twoFactor" | "waitlist"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1766,6 +1767,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Waitlist: {
+      payload: Prisma.$WaitlistPayload<ExtArgs>
+      fields: Prisma.WaitlistFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WaitlistFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WaitlistFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistPayload>
+        }
+        findFirst: {
+          args: Prisma.WaitlistFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WaitlistFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistPayload>
+        }
+        findMany: {
+          args: Prisma.WaitlistFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistPayload>[]
+        }
+        create: {
+          args: Prisma.WaitlistCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistPayload>
+        }
+        createMany: {
+          args: Prisma.WaitlistCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WaitlistCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistPayload>[]
+        }
+        delete: {
+          args: Prisma.WaitlistDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistPayload>
+        }
+        update: {
+          args: Prisma.WaitlistUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistPayload>
+        }
+        deleteMany: {
+          args: Prisma.WaitlistDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WaitlistUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WaitlistUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistPayload>[]
+        }
+        upsert: {
+          args: Prisma.WaitlistUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WaitlistPayload>
+        }
+        aggregate: {
+          args: Prisma.WaitlistAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWaitlist>
+        }
+        groupBy: {
+          args: Prisma.WaitlistGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WaitlistGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WaitlistCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WaitlistCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2129,6 +2204,18 @@ export const TwoFactorScalarFieldEnum = {
 } as const
 
 export type TwoFactorScalarFieldEnum = (typeof TwoFactorScalarFieldEnum)[keyof typeof TwoFactorScalarFieldEnum]
+
+
+export const WaitlistScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  createdBy: 'createdBy',
+  deletedBy: 'deletedBy',
+  createdAt: 'createdAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type WaitlistScalarFieldEnum = (typeof WaitlistScalarFieldEnum)[keyof typeof WaitlistScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2504,6 +2591,7 @@ export type GlobalOmitConfig = {
   invitation?: Prisma.InvitationOmit
   apiKey?: Prisma.ApiKeyOmit
   twoFactor?: Prisma.TwoFactorOmit
+  waitlist?: Prisma.WaitlistOmit
 }
 
 /* Types for Logging */

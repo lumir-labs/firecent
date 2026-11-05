@@ -176,6 +176,176 @@
   @media (prefers-reduced-motion: reduce) {
     .play * { animation-duration: .01s !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; }
   }
+
+  /* ---------- Waitlist (tokens = shadcn dark de la app) ---------- */
+  :root {
+    --wl-bg: #0b1220;
+    --wl-card: #11192a;
+    --wl-fg: #f4f6fa;
+    --wl-muted: #94a3b8;
+    --wl-border: #1e293b;
+    --wl-primary: #7c5cff;
+    --wl-primary-hover: #6e4ef5;
+    --wl-ring: #a78bfa;
+    --wl-destructive: #ef4444;
+    --wl-radius: 8px;
+    --wl-font: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .wl-cta, .wl-card { font-family: var(--wl-font); -webkit-font-smoothing: antialiased; }
+
+  .wl-cta {
+    position: fixed; left: 50%; z-index: 10;
+    top: calc(50% + clamp(84px, 13vh, 150px));
+    transform: translate(-50%, 8px);
+    opacity: 0; pointer-events: none;
+    height: 48px; padding: 0 22px 0 24px; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 15px; font-weight: 500; letter-spacing: .01em; color: #f4f2ff;
+    border: 1px solid transparent; border-radius: 999px;
+    background:
+      linear-gradient(rgba(14, 20, 38, .8), rgba(14, 20, 38, .8)) padding-box,
+      linear-gradient(120deg, #ffa64f, #ff3f3a 40%, #7c5cff 80%, #e9e3ff) border-box;
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    box-shadow: 0 10px 32px -12px rgba(255, 122, 61, .55);
+    cursor: pointer;
+    transition: opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1), box-shadow .25s;
+  }
+  .wl-cta:hover { box-shadow: 0 12px 40px -10px rgba(255, 122, 61, .75), 0 0 24px -8px rgba(124, 92, 255, .5); }
+  .wl-cta:focus-visible { outline: 2px solid #ffa64f; outline-offset: 4px; }
+  .wl-cta svg { opacity: .85; transition: transform .2s; }
+  .wl-cta:hover svg { transform: translateX(3px); }
+  .wl-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex: none;
+    background: linear-gradient(135deg, #ffa64f, #ff3f3a);
+    animation: wlPulse 2s ease-out infinite;
+  }
+  @keyframes wlPulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 122, 61, .7); }
+    70%, 100% { box-shadow: 0 0 0 9px rgba(255, 122, 61, 0); }
+  }
+  .wl-cta.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+  /* Alineado al inicio del wordmark (posición calculada en JS) */
+  .wl-cta.aligned { transform: translate(0, 8px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1), box-shadow .25s; }
+  .wl-cta.aligned.show { transform: translate(0, 0); }
+
+  .wl-overlay {
+    position: fixed; inset: 0; z-index: 20;
+    display: grid; place-items: center; padding: 16px;
+    background: rgba(5, 8, 16, .6);
+    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+    opacity: 0; pointer-events: none;
+    transition: opacity .15s ease;
+  }
+  .wl-overlay.open { opacity: 1; pointer-events: auto; }
+  .wl-card {
+    position: relative; box-sizing: border-box;
+    width: min(420px, 100%);
+    padding: 28px;
+    overflow: hidden;
+    color: var(--wl-fg);
+    background:
+      radial-gradient(90% 60% at 0% 0%, rgba(255,122,61,.07), transparent 70%),
+      radial-gradient(80% 60% at 100% 100%, rgba(124,92,255,.08), transparent 70%),
+      var(--wl-card);
+    border: 1px solid var(--wl-border);
+    border-radius: 12px;
+    box-shadow: 0 16px 48px -12px rgba(0,0,0,.6);
+    transform: scale(.96); opacity: 0;
+    transition: transform .2s cubic-bezier(.2,.8,.2,1), opacity .15s ease;
+    user-select: text;
+  }
+  .wl-overlay.open .wl-card { transform: none; opacity: 1; }
+  .wl-card::before {
+    content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, #ff7a3d 25%, #7c5cff 75%, transparent);
+    opacity: .8;
+  }
+
+  .wl-close {
+    position: absolute; top: 14px; right: 14px;
+    width: 28px; height: 28px; border-radius: 6px;
+    display: grid; place-items: center;
+    background: transparent; border: 0; color: var(--wl-muted);
+    cursor: pointer; transition: color .15s, background-color .15s;
+  }
+  .wl-close:hover { color: var(--wl-fg); background: #182236; }
+  .wl-close:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--wl-ring); }
+
+  .wl-head { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+  .wl-mark {
+    width: 36px; height: 36px; border-radius: 10px; flex: none;
+    display: grid; place-items: center;
+    background: #0b1220; border: 1px solid var(--wl-border);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+  }
+  .wl-mark img { width: 20px; height: 20px; display: block; }
+  .wl-eyebrow { font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: #ffa064; }
+  .wl-title { margin: 0 0 6px; font-size: 21px; line-height: 1.3; font-weight: 600; letter-spacing: -.01em; }
+  .wl-sub { margin: 0; font-size: 14px; line-height: 1.5; color: var(--wl-muted); }
+
+  .wl-form { display: grid; gap: 0; }
+  .wl-label { display: block; margin: 20px 0 8px; font-size: 14px; font-weight: 500; }
+  .wl-field { position: relative; }
+  .wl-field svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #64748b; pointer-events: none; transition: color .15s; }
+  .wl-field:focus-within svg { color: var(--wl-ring); }
+  .wl-input {
+    width: 100%; box-sizing: border-box;
+    height: 42px; padding: 0 12px 0 38px;
+    font: 400 14px var(--wl-font); color: var(--wl-fg);
+    background: rgba(30, 41, 59, .3);
+    border: 1px solid var(--wl-border);
+    border-radius: var(--wl-radius);
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .wl-input::placeholder { color: #64748b; }
+  .wl-input:focus { border-color: var(--wl-ring); box-shadow: 0 0 0 3px rgba(167,139,250,.25); }
+  .wl-input[aria-invalid="true"] { border-color: var(--wl-destructive); box-shadow: 0 0 0 3px rgba(239,68,68,.2); }
+  .wl-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .wl-error { margin: 8px 0 0; font-size: 13px; color: #f87171; }
+  .wl-error:empty { display: none; }
+
+  .wl-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+  .wl-btn {
+    height: 38px; padding: 0 16px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    font: 500 14px var(--wl-font);
+    border-radius: var(--wl-radius);
+    cursor: pointer;
+    transition: background-color .15s, color .15s, opacity .15s;
+  }
+  .wl-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(167,139,250,.5); }
+  .wl-btn-primary { color: #fff; background: linear-gradient(180deg, #8a6dff, var(--wl-primary)); border: 0; box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 0 0 1px rgba(124,92,255,.5), 0 6px 16px -6px rgba(124,92,255,.6); }
+  .wl-btn-primary:hover { background: linear-gradient(180deg, #7d5ffb, var(--wl-primary-hover)); }
+  .wl-btn-primary[disabled] { opacity: .7; cursor: progress; }
+  .wl-btn-outline { color: var(--wl-fg); background: transparent; border: 1px solid var(--wl-border); }
+  .wl-btn-outline:hover { background: #182236; }
+  .wl-spin { width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; animation: wlSpin .6s linear infinite; display: none; }
+  .wl-btn[disabled] .wl-spin { display: block; }
+  @keyframes wlSpin { to { transform: rotate(360deg); } }
+
+  .wl-done { display: none; }
+  .wl-card.success .wl-form { display: none; }
+  .wl-card.success .wl-done { display: block; }
+  .wl-check {
+    width: 40px; height: 40px; margin: 4px 0 18px; border-radius: 50%;
+    display: grid; place-items: center;
+    color: #fff; background: linear-gradient(135deg, #ff7a3d, #7c5cff);
+    box-shadow: 0 0 0 6px rgba(124,92,255,.12);
+  }
+  .wl-card.success .wl-check { animation: wlPop .4s cubic-bezier(.2,1.4,.4,1); }
+  @keyframes wlPop { from { transform: scale(.6); opacity: 0; } }
+  .wl-done strong { color: var(--wl-fg); font-weight: 500; }
+
+  @media (max-width: 480px) {
+    .wl-cta { top: auto; bottom: calc(env(safe-area-inset-bottom, 0px) + 12vh); }
+    .wl-actions { flex-direction: column-reverse; }
+    .wl-btn { width: 100%; height: 40px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wl-cta, .wl-card, .wl-overlay { transition-duration: .01s; }
+    .wl-dot { animation: none; }
+  }
 </style>
 </head>
 <body>
@@ -304,6 +474,56 @@
 
 <canvas id="fx"></canvas>
 <div class="vignette"></div>
+
+<!-- ---------- Waitlist ---------- -->
+<button type="button" class="wl-cta" id="wlCta" aria-haspopup="dialog" aria-controls="wlOverlay">
+  <span data-i18n="cta">Unirme a la lista de espera</span>
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+</button>
+
+<div class="wl-overlay" id="wlOverlay" aria-hidden="true">
+  <div class="wl-card" id="wlCard" role="dialog" aria-modal="true" aria-labelledby="wlTitle" aria-describedby="wlDesc">
+    <button type="button" class="wl-close" id="wlClose" data-i18n-aria="close" aria-label="Cerrar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+
+    <form class="wl-form" id="wlForm" novalidate>
+      <div class="wl-head">
+        <span class="wl-mark"><img src="/splash/app-icons/favicon.svg" alt="" width="20" height="20"></span>
+        <span class="wl-eyebrow" data-i18n="eyebrow">Acceso anticipado</span>
+      </div>
+      <h2 class="wl-title" id="wlTitle" data-i18n="title">Únete a la lista de espera</h2>
+      <p class="wl-sub" id="wlDesc" data-i18n="sub">Estamos abriendo firecent por etapas. Déjanos tu correo y te avisamos cuando sea tu turno.</p>
+
+      <label class="wl-label" for="wlEmail" data-i18n="email">Correo electrónico</label>
+      <div class="wl-field">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg>
+        <input class="wl-input" id="wlEmail" name="email" type="email" inputmode="email" autocomplete="email" required maxlength="254" data-i18n-ph="ph" placeholder="nombre@ejemplo.com" aria-describedby="wlError">
+      </div>
+      <input class="wl-hp" type="text" name="website" id="wlWebsite" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <p class="wl-error" id="wlError" role="alert"></p>
+
+      <div class="wl-actions">
+        <button type="button" class="wl-btn wl-btn-outline" id="wlCancel" data-i18n="cancel">Cancelar</button>
+        <button type="submit" class="wl-btn wl-btn-primary" id="wlSubmit">
+          <span class="wl-spin" aria-hidden="true"></span>
+          <span id="wlSubmitLabel" data-i18n="submit">Enviar</span>
+        </button>
+      </div>
+    </form>
+
+    <div class="wl-done" aria-live="polite">
+      <div class="wl-check" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+      </div>
+      <h2 class="wl-title" id="wlDoneTitle">Ya estás en la lista</h2>
+      <p class="wl-sub" id="wlDoneSub"></p>
+      <div class="wl-actions">
+        <button type="button" class="wl-btn wl-btn-outline" id="wlDoneClose" data-i18n="doneBtn">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 (() => {
@@ -450,6 +670,8 @@
     introStart = performance.now();
   }
   addEventListener('keydown', e => {
+    // No atajos mientras se escribe o con el modal abierto
+    if (e.target.closest?.('input, textarea, button') || document.getElementById('wlOverlay')?.classList.contains('open')) return;
     if (e.key === 'r' || e.key === 'R') replay();
     if (e.key === 'f' || e.key === 'F') {
       document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.();
@@ -531,8 +753,148 @@
     }
     ctx.globalAlpha = 1;
 
+    window.__alignCta?.();
     requestAnimationFrame(frame);
   }
+
+
+  /* ---------- Waitlist ---------- */
+  const WL_DELAY = reduced ? 600 : 3400; // aparece cuando termina la intro
+  const T = {
+    es: {
+      cta: 'Unirme a la lista de espera', close: 'Cerrar', eyebrow: 'Acceso anticipado', title: 'Únete a la lista de espera',
+      sub: 'Estamos abriendo firecent por etapas. Déjanos tu correo y te avisamos cuando sea tu turno.',
+      email: 'Correo electrónico', ph: 'nombre@ejemplo.com', cancel: 'Cancelar', submit: 'Enviar', sending: 'Enviando',
+      doneTitle: 'Ya estás en la lista', doneSub: e => `Te escribiremos a <strong>${e}</strong> cuando tu acceso esté listo.`,
+      alreadyTitle: 'Este correo ya estaba registrado', alreadySub: e => `<strong>${e}</strong> sigue en la lista. Te avisaremos cuando sea tu turno.`,
+      ctaDone: 'Estás en la lista', doneBtn: 'Cerrar',
+      errEmpty: 'Ingresa tu correo electrónico.', errInvalid: 'Ingresa un correo válido.',
+      errRate: 'Demasiados intentos. Espera unos minutos.', errServer: 'No pudimos guardar tu correo. Inténtalo de nuevo.'
+    },
+    en: {
+      cta: 'Join the waitlist', close: 'Close', eyebrow: 'Early access', title: 'Join the waitlist',
+      sub: "We're opening firecent in stages. Leave your email and we'll let you know when it's your turn.",
+      email: 'Email', ph: 'name@example.com', cancel: 'Cancel', submit: 'Submit', sending: 'Sending',
+      doneTitle: "You're on the list", doneSub: e => `We'll email <strong>${e}</strong> when your access is ready.`,
+      alreadyTitle: 'This email was already registered', alreadySub: e => `<strong>${e}</strong> is still on the list. We'll let you know when it's your turn.`,
+      ctaDone: "You're on the list", doneBtn: 'Close',
+      errEmpty: 'Enter your email.', errInvalid: 'Enter a valid email.',
+      errRate: 'Too many attempts. Please wait a few minutes.', errServer: "We couldn't save your email. Please try again."
+    }
+  };
+  const lang = /^es\b/i.test(navigator.language || 'es') ? 'es' : 'en';
+  const L = T[lang];
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = L[el.dataset.i18n]; });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = L[el.dataset.i18nPh]; });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', L[el.dataset.i18nAria]); });
+
+  const wl = {
+    cta: $('wlCta'), overlay: $('wlOverlay'), card: $('wlCard'), form: $('wlForm'),
+    email: $('wlEmail'), hp: $('wlWebsite'), error: $('wlError'),
+    submit: $('wlSubmit'), label: $('wlSubmitLabel'),
+    doneTitle: $('wlDoneTitle'), doneSub: $('wlDoneSub')
+  };
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const esc = s => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  let lastFocus = null;
+
+  setTimeout(() => wl.cta.classList.add('show'), WL_DELAY);
+
+  // Borde izquierdo = inicio de la "f"; debajo del wordmark. En móvil queda centrado abajo.
+  const wmPath = $('wmPath');
+  function alignCta() {
+    if (innerWidth <= 480) {
+      if (wl.cta.classList.contains('aligned')) { wl.cta.classList.remove('aligned'); wl.cta.style.left = wl.cta.style.top = ''; }
+      return;
+    }
+    const r = wmPath.getBoundingClientRect();
+    if (!r.width) return;
+    wl.cta.classList.add('aligned');
+    wl.cta.style.left = `${Math.round(r.left)}px`;
+    wl.cta.style.top = `${Math.round(r.bottom + Math.max(24, r.height * 0.5))}px`;
+  }
+  window.__alignCta = alignCta;
+
+  // Los clics dentro de la UI no disparan las brasas del fondo
+  [wl.cta, wl.overlay].forEach(el => el.addEventListener('pointerdown', e => e.stopPropagation()));
+
+  function openWl() {
+    lastFocus = document.activeElement;
+    wl.overlay.classList.add('open');
+    wl.overlay.setAttribute('aria-hidden', 'false');
+    setTimeout(() => (wl.card.classList.contains('success') ? $('wlDoneClose') : wl.email).focus(), 50);
+  }
+  function closeWl() {
+    wl.overlay.classList.remove('open');
+    wl.overlay.setAttribute('aria-hidden', 'true');
+    (lastFocus || wl.cta).focus?.();
+  }
+  function setError(msg) {
+    wl.error.textContent = msg || '';
+    wl.email.setAttribute('aria-invalid', msg ? 'true' : 'false');
+  }
+  function setLoading(on) {
+    wl.submit.disabled = on;
+    wl.email.readOnly = on;
+    wl.label.textContent = on ? L.sending : L.submit;
+  }
+
+  wl.cta.addEventListener('click', openWl);
+  $('wlClose').addEventListener('click', closeWl);
+  $('wlCancel').addEventListener('click', closeWl);
+  $('wlDoneClose').addEventListener('click', closeWl);
+  wl.overlay.addEventListener('click', e => { if (e.target === wl.overlay) closeWl(); });
+  wl.email.addEventListener('input', () => wl.error.textContent && setError(''));
+
+  document.addEventListener('keydown', e => {
+    if (!wl.overlay.classList.contains('open')) return;
+    if (e.key === 'Escape') { e.preventDefault(); closeWl(); return; }
+    if (e.key === 'Tab') { // focus trap
+      const f = [...wl.card.querySelectorAll('button, input:not([tabindex="-1"])')].filter(el => el.offsetParent);
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+
+  wl.form.addEventListener('submit', async e => {
+    e.preventDefault();
+    if (wl.submit.disabled) return;
+    const email = wl.email.value.trim().toLowerCase();
+    if (!email) { setError(L.errEmpty); wl.email.focus(); return; }
+    if (!EMAIL_RE.test(email) || email.length > 254) { setError(L.errInvalid); wl.email.focus(); return; }
+    setError('');
+    setLoading(true);
+    try {
+      const res = await fetch('/api/v1/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, website: wl.hp.value })
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const code = json?.error?.code;
+        setError(res.status === 429 ? L.errRate : code === 'INVALID_EMAIL' ? L.errInvalid : L.errServer);
+        return;
+      }
+      const already = !!json?.data?.already;
+      wl.doneTitle.textContent = already ? L.alreadyTitle : L.doneTitle;
+      wl.doneSub.innerHTML = (already ? L.alreadySub : L.doneSub)(esc(email));
+      wl.card.classList.add('success');
+      wl.cta.querySelector('[data-i18n="cta"]').textContent = L.ctaDone;
+      wl.card.setAttribute('aria-labelledby', 'wlDoneTitle');
+      setTimeout(() => $('wlDoneClose').focus(), 50);
+      if (!reduced) {
+        const r = wl.card.querySelector('.wl-check').getBoundingClientRect();
+        burst(r.left + r.width / 2, r.top + r.height / 2, 36, 4);
+      }
+    } catch {
+      setError(L.errServer);
+    } finally {
+      setLoading(false);
+    }
+  });
 
   document.body.classList.add('play');
   requestAnimationFrame(frame);

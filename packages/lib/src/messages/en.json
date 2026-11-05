@@ -118,7 +118,8 @@
       "accounts": "Accounts",
       "budget": "Budget",
       "goals": "Goals",
-      "analytics": "Analytics"
+      "analytics": "Analytics",
+      "waitlist": "Waitlist"
     },
     "userMenu": {
       "viewProfile": "View profile",
@@ -360,6 +361,29 @@
       "loadErrorTitle": "Error loading data",
       "permissionsLoadError": "Could not load permissions information",
       "rolesLoadError": "Could not load roles information"
+    },
+    "waitlist": {
+      "layoutTitle": "Waitlist",
+      "layoutDescription": "Emails of people who asked for access to the app.",
+      "columns": {
+        "id": "ID",
+        "email": "Email",
+        "createdAt": "Signed up",
+        "actions": "Actions"
+      },
+      "create": {
+        "title": "Add to the waitlist",
+        "description": "Add an email manually.",
+        "emailLabel": "Email",
+        "emailPlaceholder": "name@email.com",
+        "success": "Email added to the waitlist"
+      },
+      "delete": {
+        "title": "Remove from the waitlist",
+        "confirm": "Do you want to remove {email} from the waitlist?",
+        "success": "Email removed from the waitlist",
+        "error": "Error removing the email"
+      }
     }
   },
   "Home": {
@@ -382,7 +406,80 @@
     "quickActions": "Quick actions",
     "thisWeek": "This week",
     "weekInitials": "M T W T F S S",
-    "activeDays": "{count}/7 active days"
+    "activeDays": "{count}/7 active days",
+    "netWorth": {
+      "title": "Balance",
+      "show": "Show balances",
+      "hide": "Hide balances",
+      "scopeLabel": "Show data for",
+      "scopeMe": "Me",
+      "scopeHousehold": "Household",
+      "monthLabel": "Month",
+      "vsMonth": "{amount} vs. {month}",
+      "empty": "You don't have any accounts with a balance yet, so there's no net worth to show.",
+      "error": "We couldn't load your net worth.",
+      "retry": "Try again",
+      "otherCurrencies": "You also have accounts in other currencies ({currencies}); they aren't added up here."
+    }
+  },
+  "Transactions": {
+    "title": "Transactions",
+    "description": "Everything that comes in, goes out and moves between your accounts.",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "noDate": "No date",
+    "uncategorized": "Uncategorized",
+    "transfer": "Transfer",
+    "count": "{count, plural, one {# transaction} other {# transactions}}",
+    "loadingMore": "Loading more transactions…",
+    "emptyTitle": "No transactions yet",
+    "emptyDescription": "Once you add or import transactions, they'll show up here.",
+    "error": "We couldn't load your transactions.",
+    "retry": "Try again",
+    "add": {
+      "open": "New transaction",
+      "title": "New transaction",
+      "description": "Record an expense, income or a transfer between your accounts.",
+      "type": "Type",
+      "types": {
+        "EXPENSE": "Expense",
+        "INCOME": "Income",
+        "TRANSFER": "Transfer"
+      },
+      "amount": "Amount",
+      "account": "Account",
+      "from": "From",
+      "to": "To",
+      "pickAccount": "Choose an account",
+      "category": "Category",
+      "payee": "Merchant",
+      "optional": "Optional",
+      "date": "Date",
+      "time": "Time",
+      "paymentType": "Payment method",
+      "payment": {
+        "CASH": "Cash",
+        "CREDIT_CARD": "Card",
+        "WEB_PAYMENT": "Web payment"
+      },
+      "note": "Note",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving…",
+      "created": "Transaction saved",
+      "error": "We couldn't save the transaction."
+    },
+    "balanceAfter": "Account balance after this transaction",
+    "filters": {
+      "account": "Account",
+      "category": "Category",
+      "allAccounts": "All accounts",
+      "allCategories": "All categories",
+      "wholeCategory": "All of {name}",
+      "clear": "Clear filters",
+      "emptyTitle": "No results",
+      "emptyDescription": "No transactions match these filters."
+    }
   },
   "Portal": {
     "overviewTitle": "My space",

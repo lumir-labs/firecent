@@ -2,6 +2,7 @@ import {
   Building05Icon,
   DashboardBrowsingIcon,
   Home,
+  Mail01Icon,
   PencilRulerIcon,
   ShieldKeyIcon,
   Users,
@@ -23,7 +24,8 @@ export type MenuTitleKey =
   | "menu.manage"
   | "menu.roles"
   | "menu.permissions"
-  | "menu.users";
+  | "menu.users"
+  | "menu.waitlist";
 
 export type Menu = {
   title: MenuTitleKey;
@@ -88,6 +90,12 @@ export const getFullMenu = (notifications?: {
           isLoading: notifications?.audit.isLoading || false,
           error: notifications?.audit.error || null,
         },
+      },
+      {
+        title: "menu.waitlist",
+        path: "/admin/waitlist",
+        icon: <HugeiconsIcon icon={Mail01Icon} size={18} />,
+        requiredPermission: p.waitlist.menu,
       },
     ],
   },

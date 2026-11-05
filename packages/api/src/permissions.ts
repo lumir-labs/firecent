@@ -129,6 +129,23 @@ export const p = {
       "Allows deleting organization members",
     ),
   },
+  waitlist: {
+    menu: def(
+      "waitlist:menu",
+      "Waitlist menu",
+      "Allows accessing the waitlist menu and reading its emails",
+    ),
+    create: def(
+      "waitlist:create",
+      "Add to waitlist",
+      "Allows adding emails to the waitlist manually",
+    ),
+    delete: def(
+      "waitlist:delete",
+      "Remove from waitlist",
+      "Allows removing emails from the waitlist (soft delete)",
+    ),
+  },
   apikeys: {
     menu: def(
       "apikeys:menu",

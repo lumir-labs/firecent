@@ -47,10 +47,13 @@ export default async function Layout({
     <TRPCProvider>
       <SidebarProvider className="max-h-dvh w-dvw overflow-hidden">
         <UserSidebar permissions={sessionPermissions} />
-        <SidebarInset className="min-w-0 mb-0 sm:mb-0 bg-sidebar">
+        <SidebarInset className="min-w-0 mb-0 sm:mb-0 bg-background">
           <Header user={session.user} />
-          <ScrollArea className="bg-background flex-1 overflow-hidden p-4 pb-24 sm:px-6 sm:pb-4">
-            {children}
+          {/* Padding goes INSIDE the viewport: on the root it shrinks the
+              viewport, which then clips the cards' outer ring/shadow and
+              leaves dead, non-scrolling space under the content. */}
+          <ScrollArea className="min-h-0 flex-1">
+            <div className="p-4 pb-28 sm:px-6 sm:pb-6">{children}</div>
           </ScrollArea>
         </SidebarInset>
         <NavlinksResponsive session={session} />

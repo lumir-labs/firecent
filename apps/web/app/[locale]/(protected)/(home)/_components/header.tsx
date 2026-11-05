@@ -29,7 +29,7 @@ export default async function Header({ user }: { user: User | null }) {
       {/* Single desktop + mobile bar: NO logo (it lives only in the sidebar
           with its name), breadcrumb truncated with ellipsis (min-w-0) and a
           fixed right cluster so nothing stacks on anything at 360px. */}
-      <div className="flex h-14 items-center justify-between gap-2 bg-card px-3">
+      <div className="flex h-14 items-center justify-between gap-2 px-3">
         <div className="flex min-w-0 flex-1 items-center gap-2">
           <SidebarTrigger className="hidden shrink-0 sm:flex" />
           <Link

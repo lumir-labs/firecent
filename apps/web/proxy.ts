@@ -29,7 +29,7 @@ export async function proxy(request: NextRequest) {
   // Production root: serve the static brand page (public/splash/index.html).
   // The rewrite keeps the browser at "/". Only the exact root is affected:
   // locale paths (/es, /en) and the rest of the app behave as before.
-  if (process.env.NODE_ENV === "production" && nextUrl.pathname === "/") {
+  if (process.env.NODE_ENV === "production") {
     return NextResponse.rewrite(new URL("/splash/index.html", request.url));
   }
 
@@ -43,6 +43,8 @@ export async function proxy(request: NextRequest) {
   const isTrpcRoute = nextUrl.pathname.startsWith("/api/trpc");
   const isInfoRoute = nextUrl.pathname.startsWith("/api/v1/info");
   const isMcpRoute = nextUrl.pathname.startsWith("/api/mcp");
+  // Public waitlist signup used by the static splash (public/splash).
+  const isWaitlistRoute = nextUrl.pathname === "/api/v1/waitlist";
   const isOpenApiSpec =
     nextUrl.pathname === "/openapi.json" ||
     stripLocalePrefix(nextUrl.pathname) === "/openapi.json";
@@ -53,7 +55,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (isApiAuthRoute || isInfoRoute || isMcpRoute) {
+  if (isApiAuthRoute || isInfoRoute || isMcpRoute || isWaitlistRoute) {
     // `/api/mcp*` is let through: authentication is done by the MCP server
     // per org API key on each request (§5.3), not by the session cookie.
     return NextResponse.next();

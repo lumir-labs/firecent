@@ -68,7 +68,8 @@ export const ModelName = {
   Member: 'Member',
   Invitation: 'Invitation',
   ApiKey: 'ApiKey',
-  TwoFactor: 'TwoFactor'
+  TwoFactor: 'TwoFactor',
+  Waitlist: 'Waitlist'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -411,6 +412,18 @@ export const TwoFactorScalarFieldEnum = {
 } as const
 
 export type TwoFactorScalarFieldEnum = (typeof TwoFactorScalarFieldEnum)[keyof typeof TwoFactorScalarFieldEnum]
+
+
+export const WaitlistScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  createdBy: 'createdBy',
+  deletedBy: 'deletedBy',
+  createdAt: 'createdAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type WaitlistScalarFieldEnum = (typeof WaitlistScalarFieldEnum)[keyof typeof WaitlistScalarFieldEnum]
 
 
 export const SortOrder = {

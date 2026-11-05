@@ -107,3 +107,9 @@ export type ApiKey = Prisma.ApiKeyModel
  * 
  */
 export type TwoFactor = Prisma.TwoFactorModel
+/**
+ * Model Waitlist
+ * Emails waiting for access. Added from the landing or manually in the admin.
+ * Soft delete: `deletedAt`; re-adding a deleted email restores the row.
+ */
+export type Waitlist = Prisma.WaitlistModel

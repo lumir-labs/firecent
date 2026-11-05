@@ -118,7 +118,8 @@
       "accounts": "Cuentas",
       "budget": "Presupuesto",
       "goals": "Metas",
-      "analytics": "Analytics"
+      "analytics": "Analytics",
+      "waitlist": "Lista de espera"
     },
     "userMenu": {
       "viewProfile": "Ver perfil",
@@ -360,6 +361,29 @@
       "loadErrorTitle": "Error al cargar datos",
       "permissionsLoadError": "No se pudo cargar la información de permisos",
       "rolesLoadError": "No se pudo cargar la información de roles"
+    },
+    "waitlist": {
+      "layoutTitle": "Lista de espera",
+      "layoutDescription": "Correos de personas que pidieron acceso a la app.",
+      "columns": {
+        "id": "ID",
+        "email": "Correo",
+        "createdAt": "Fecha de registro",
+        "actions": "Acciones"
+      },
+      "create": {
+        "title": "Agregar a la lista de espera",
+        "description": "Agrega un correo manualmente.",
+        "emailLabel": "Correo",
+        "emailPlaceholder": "nombre@correo.com",
+        "success": "Correo agregado a la lista de espera"
+      },
+      "delete": {
+        "title": "Quitar de la lista de espera",
+        "confirm": "¿Quieres quitar {email} de la lista de espera?",
+        "success": "Correo quitado de la lista de espera",
+        "error": "Error al quitar el correo"
+      }
     }
   },
   "Home": {
@@ -382,7 +406,80 @@
     "quickActions": "Acciones rápidas",
     "thisWeek": "Esta semana",
     "weekInitials": "L M M J V S D",
-    "activeDays": "{count}/7 días activos"
+    "activeDays": "{count}/7 días activos",
+    "netWorth": {
+      "title": "Balance",
+      "show": "Mostrar saldos",
+      "hide": "Ocultar saldos",
+      "scopeLabel": "Ver datos de",
+      "scopeMe": "Yo",
+      "scopeHousehold": "Hogar",
+      "monthLabel": "Mes",
+      "vsMonth": "{amount} vs. {month}",
+      "empty": "Aún no tienes cuentas con saldo para calcular tu patrimonio.",
+      "error": "No pudimos cargar tu patrimonio.",
+      "retry": "Reintentar",
+      "otherCurrencies": "También tienes cuentas en otras monedas ({currencies}); no se suman aquí."
+    }
+  },
+  "Transactions": {
+    "title": "Movimientos",
+    "description": "Todo lo que entra, sale y se mueve entre tus cuentas.",
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "noDate": "Sin fecha",
+    "uncategorized": "Sin categoría",
+    "transfer": "Transferencia",
+    "count": "{count, plural, one {# movimiento} other {# movimientos}}",
+    "loadingMore": "Cargando más movimientos…",
+    "emptyTitle": "Aún no hay movimientos",
+    "emptyDescription": "Cuando registres o importes movimientos, aparecerán aquí.",
+    "error": "No pudimos cargar tus movimientos.",
+    "retry": "Reintentar",
+    "add": {
+      "open": "Nuevo movimiento",
+      "title": "Nuevo movimiento",
+      "description": "Registra un gasto, un ingreso o una transferencia entre tus cuentas.",
+      "type": "Tipo",
+      "types": {
+        "EXPENSE": "Gasto",
+        "INCOME": "Ingreso",
+        "TRANSFER": "Transferencia"
+      },
+      "amount": "Monto",
+      "account": "Cuenta",
+      "from": "Desde",
+      "to": "Hacia",
+      "pickAccount": "Elige una cuenta",
+      "category": "Categoría",
+      "payee": "Comercio",
+      "optional": "Opcional",
+      "date": "Fecha",
+      "time": "Hora",
+      "paymentType": "Método de pago",
+      "payment": {
+        "CASH": "Efectivo",
+        "CREDIT_CARD": "Tarjeta",
+        "WEB_PAYMENT": "Pago web"
+      },
+      "note": "Nota",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "saving": "Guardando…",
+      "created": "Movimiento guardado",
+      "error": "No pudimos guardar el movimiento."
+    },
+    "balanceAfter": "Saldo de la cuenta después de este movimiento",
+    "filters": {
+      "account": "Cuenta",
+      "category": "Categoría",
+      "allAccounts": "Todas las cuentas",
+      "allCategories": "Todas las categorías",
+      "wholeCategory": "Todo {name}",
+      "clear": "Limpiar filtros",
+      "emptyTitle": "Sin resultados",
+      "emptyDescription": "No hay movimientos con estos filtros."
+    }
   },
   "Portal": {
     "overviewTitle": "Mi espacio",
