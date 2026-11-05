@@ -30,6 +30,11 @@ export async function proxy(request: NextRequest) {
   // The rewrite keeps the browser at "/". Only the exact root is affected:
   // locale paths (/es, /en) and the rest of the app behave as before.
   if (process.env.NODE_ENV === "production") {
+    // The splash form POSTs here: rewriting it to the static HTML would
+    // answer 500 (static files only allow GET/HEAD).
+    if (nextUrl.pathname === "/api/v1/waitlist") {
+      return NextResponse.next();
+    }
     return NextResponse.rewrite(new URL("/splash/index.html", request.url));
   }
 
