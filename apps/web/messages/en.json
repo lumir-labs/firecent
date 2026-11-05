@@ -590,13 +590,13 @@
     },
     "goals": {
       "title": "What do you want to achieve?",
-      "subtitle": "Choose one or more. You can change them later.",
+      "subtitle": "Choose one or more goals\n(you can change this later).",
       "saveTitle": "Save money",
       "saveDesc": "Reach my targets",
       "controlTitle": "Control spending",
-      "controlDesc": "Know where my money goes",
+      "controlDesc": "Spend smarter",
       "splitTitle": "Split expenses",
-      "splitDesc": "Divide bills with others",
+      "splitDesc": "with groups",
       "travelTitle": "Travel",
       "travelDesc": "Plan my next trip",
       "houseTitle": "Buy a house",
@@ -607,36 +607,36 @@
     "space": {
       "title": "Create your Space",
       "subtitle": "Give your space a name to get started.",
-      "inputLabel": "Your Space name",
       "inputPlaceholder": "e.g. Family, Friends, Trip...",
       "hint": "You can change the name at any time.",
       "submit": "Create my Space",
       "submitting": "Creating your Space...",
-      "suggestionsLabel": "Suggested names",
-      "suggestions": {
-        "group": [
-          "Family",
-          "Home",
-          "Friends",
-          "Trip"
-        ],
-        "personal": [
-          "My finances",
-          "Personal",
-          "Savings"
-        ],
-        "business": [
-          "My business",
-          "Team",
-          "Office"
-        ]
-      }
+        "inputLabel": "Your Space name",
+        "suggestionsLabel": "Suggested names",
+        "suggestions": {
+          "group": [
+            "Family",
+            "Home",
+            "Friends",
+            "Trip"
+          ],
+          "personal": [
+            "My finances",
+            "Personal",
+            "Savings"
+          ],
+          "business": [
+            "My business",
+            "Team",
+            "Office"
+          ]
+        }
     },
     "success": {
       "title": "All set!",
       "subtitle": "Your Space is ready",
       "description": "Now you can start organizing your finances and reaching your goals.",
-      "cta": "Go to Space"
+      "cta": "Go to dashboard"
     }
   },
   "Landing": {

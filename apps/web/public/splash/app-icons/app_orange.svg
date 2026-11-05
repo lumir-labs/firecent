@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024.00" height="1024.00" viewBox="0 0 1024.00 1024.00"><defs>
+    <linearGradient id="fcO" gradientUnits="userSpaceOnUse" x1="480" y1="50" x2="100" y2="430">
+      <stop offset="0" stop-color="#FFA64F"/><stop offset="0.5" stop-color="#FF7A3D"/><stop offset="1" stop-color="#FF3F3A"/>
+    </linearGradient>
+    <linearGradient id="fcB" gradientUnits="userSpaceOnUse" x1="450" y1="320" x2="120" y2="620">
+      <stop offset="0" stop-color="#9A88FB"/><stop offset="0.5" stop-color="#5E54F0"/><stop offset="1" stop-color="#3A2EDB"/>
+    </linearGradient>
+    <linearGradient id="fcS" gradientUnits="userSpaceOnUse" x1="240" y1="545" x2="130" y2="640">
+      <stop offset="0" stop-color="#2A1FB8" stop-opacity="0"/><stop offset="1" stop-color="#2A1FB8" stop-opacity="0.55"/>
+    </linearGradient>
+    <linearGradient id="gOrange" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFA64F"/><stop offset="1" stop-color="#FF4F3A"/></linearGradient>
+    <linearGradient id="gViolet" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#A78BFA"/><stop offset="1" stop-color="#5B45F0"/></linearGradient>
+    <linearGradient id="gBarO" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF4F3A"/><stop offset="1" stop-color="#FFA64F"/></linearGradient>
+    <linearGradient id="gBarV" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5B45F0"/><stop offset="1" stop-color="#A78BFA"/></linearGradient>
+    <linearGradient id="gCTA" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8B5CF6"/><stop offset="1" stop-color="#FF7A3D"/></linearGradient></defs><rect x="0" y="0" width="1024" height="1024" rx="230.4" fill="url(#gOrange)"/><g transform="translate(210.652 141.245) scale(1.02560)"><path d="M478 42 C492 42 505 110 497 170 C488 250 400 300 300 330 C230 350 170 360 130 400 C115 415 100 430 94 440 C86 440 88 420 90 400 C95 320 130 250 220 205 C310 165 400 140 450 80 C465 62 470 42 478 42 Z" fill="#FFFFFF"/><path d="M453 310 C462 312 460 360 440 410 C415 470 330 510 243 540 C215 555 205 585 190 625 C178 655 165 680 150 681 C120 675 90 610 91 550 C92 480 130 430 200 400 C270 375 370 355 440 312 C445 309 450 309 453 310 Z" fill="#FFFFFF"/></g></svg>

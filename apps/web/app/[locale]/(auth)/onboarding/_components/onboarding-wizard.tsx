@@ -180,7 +180,10 @@ export function OnboardingWizard({ userName }: OnboardingWizardProps) {
             <StepProgress
               current={stepIndex}
               total={TOTAL_STEPS}
-              label={t("progress", { step: stepIndex + 1, total: TOTAL_STEPS })}
+              label={t("progress", {
+                step: String(stepIndex + 1),
+                total: String(TOTAL_STEPS),
+              })}
             />
           )}
         </header>

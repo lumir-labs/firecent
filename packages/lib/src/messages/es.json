@@ -610,7 +610,27 @@
       "inputPlaceholder": "Ej. Familia, Amigos, Viaje...",
       "hint": "Puedes cambiar el nombre en cualquier momento.",
       "submit": "Crear mi Space",
-      "submitting": "Creando tu Space..."
+      "submitting": "Creando tu Space...",
+        "inputLabel": "Nombre de tu Space",
+        "suggestionsLabel": "Nombres sugeridos",
+        "suggestions": {
+          "group": [
+            "Familia",
+            "Casa",
+            "Amigos",
+            "Viaje"
+          ],
+          "personal": [
+            "Mis finanzas",
+            "Personal",
+            "Ahorros"
+          ],
+          "business": [
+            "Mi negocio",
+            "Equipo",
+            "Oficina"
+          ]
+        }
     },
     "success": {
       "title": "¡Listo!",

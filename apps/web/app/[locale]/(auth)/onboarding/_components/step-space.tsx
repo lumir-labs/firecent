@@ -32,7 +32,11 @@ export function StepSpace({
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   // Name ideas that match how the person said they'll use Firecent
-  const allSuggestions = t.raw("suggestions") as Record<string, string[]>;
+  // `suggestions` is an object of arrays; next-intl's typed `t.raw` only accepts
+  // leaf message keys, so read it untyped and narrow it here.
+  const allSuggestions = (
+    t as unknown as { raw: (key: string) => unknown }
+  ).raw("suggestions") as Record<string, string[]>;
   const suggestions =
     allSuggestions[usage === "team" ? "business" : usage] ?? allSuggestions.group ?? [];
 

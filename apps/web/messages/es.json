@@ -590,13 +590,13 @@
     },
     "goals": {
       "title": "¿Qué quieres lograr?",
-      "subtitle": "Elige uno o más. Puedes cambiarlos después.",
+      "subtitle": "Elige uno o más objetivos\n(puedes cambiarlo después).",
       "saveTitle": "Ahorrar",
       "saveDesc": "Cumplir mis metas",
       "controlTitle": "Controlar gastos",
-      "controlDesc": "Saber en qué se va mi dinero",
+      "controlDesc": "Gastar mejor",
       "splitTitle": "Compartir gastos",
-      "splitDesc": "Dividir cuentas con otros",
+      "splitDesc": "en grupo",
       "travelTitle": "Viajar",
       "travelDesc": "Planear mi próximo viaje",
       "houseTitle": "Comprar una casa",
@@ -607,30 +607,30 @@
     "space": {
       "title": "Crea tu Space",
       "subtitle": "Dale un nombre a tu espacio para empezar.",
-      "inputLabel": "Nombre de tu Space",
       "inputPlaceholder": "Ej. Familia, Amigos, Viaje...",
       "hint": "Puedes cambiar el nombre en cualquier momento.",
       "submit": "Crear mi Space",
       "submitting": "Creando tu Space...",
-      "suggestionsLabel": "Nombres sugeridos",
-      "suggestions": {
-        "group": [
-          "Familia",
-          "Casa",
-          "Amigos",
-          "Viaje"
-        ],
-        "personal": [
-          "Mis finanzas",
-          "Personal",
-          "Ahorros"
-        ],
-        "business": [
-          "Mi negocio",
-          "Equipo",
-          "Oficina"
-        ]
-      }
+        "inputLabel": "Nombre de tu Space",
+        "suggestionsLabel": "Nombres sugeridos",
+        "suggestions": {
+          "group": [
+            "Familia",
+            "Casa",
+            "Amigos",
+            "Viaje"
+          ],
+          "personal": [
+            "Mis finanzas",
+            "Personal",
+            "Ahorros"
+          ],
+          "business": [
+            "Mi negocio",
+            "Equipo",
+            "Oficina"
+          ]
+        }
     },
     "success": {
       "title": "¡Listo!",

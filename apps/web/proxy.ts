@@ -26,6 +26,13 @@ function getLocaleFromPathname(pathname: string): string {
 export async function proxy(request: NextRequest) {
   const nextUrl = request.nextUrl;
 
+  // Production root: serve the static brand page (public/splash/index.html).
+  // The rewrite keeps the browser at "/". Only the exact root is affected:
+  // locale paths (/es, /en) and the rest of the app behave as before.
+  if (process.env.NODE_ENV === "production" && nextUrl.pathname === "/") {
+    return NextResponse.rewrite(new URL("/splash/index.html", request.url));
+  }
+
   // 1. API routes and OpenAPI spec: outside the locale, no i18n.
   // `/openapi.json` is a static file in `public/` that the `/api-docs` viewer
   // fetches directly: if it goes through i18n it gets rewritten to
