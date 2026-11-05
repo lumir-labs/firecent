@@ -1,0 +1,25 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@app/api": ["../../packages/api/src/index.ts"],
+      "@app/api/*": ["../../packages/api/src/*"],
+      "@app/lib": ["../../packages/lib/src/index.ts"],
+      "@app/lib/*": ["../../packages/lib/src/*"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts",
+    "uniwind-env.d.ts",
+    "uniwind-types.d.ts"
+  ],
+  // Tests run via `bun test`, not `tsc` (same as web: `wiring.test.mjs`
+  // is not in the web `include`). Without this, every `from "bun:test"`
+  // import fails typecheck on a stock Expo base config.
+  "exclude": ["**/*.test.ts", "**/*.test.mjs", "node_modules"]
+}

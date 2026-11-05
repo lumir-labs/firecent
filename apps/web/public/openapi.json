@@ -1,0 +1,46 @@
+{
+  "info": {
+    "title": "app API",
+    "version": "1.0.0",
+    "description": "API auto-generated from route handlers"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api",
+      "description": "API Server"
+    }
+  ],
+  "includePatterns": [
+    "**/route.ts",
+    "**/route.tsx"
+  ],
+  "excludePatterns": [
+    "**/node_modules/**",
+    "**/.next/**"
+  ],
+  "openApiVersion": "3.1.0",
+  "paths": {
+    "/v1/info": {
+      "get": {
+        "operationId": "get-v1-info",
+        "summary": "Get API Info",
+        "description": "Returns the API info (boilerplate health)",
+        "tags": [
+          "Info"
+        ],
+        "parameters": [],
+        "responses": {}
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Info"
+    }
+  ],
+  "components": {
+    "schemas": {},
+    "responses": {}
+  },
+  "openapi": "3.0.0"
+}

@@ -1,0 +1,32 @@
+name: ci
+
+# Gap G3 (§4.1): token parity lives in `bun run tokens:sync --check`
+# (also inside the apps/mobile `typecheck`). This job guarantees the CI runs
+# it on every push/PR instead of trusting each dev to run it locally.
+on:
+  push:
+  pull_request:
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - name: tokens parity (web ↔ mobile single source)
+        run: bun run tokens:sync -- --check
+      - name: i18n parity (packages/lib single source)
+        run: bun run --cwd apps/web check:i18n
+      - name: typecheck (includes tokens --check on @app/mobile)
+        run: bun run typecheck
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - name: regenerate ARCHITECTURE.md (§6.3)
+        run: bun run docs:gen
+      - name: fail on drift (routes/schema/API not regenerated)
+        run: git diff --exit-code docs/ARCHITECTURE.md

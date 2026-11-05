@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>firecent · Propuesta A · Claridad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ───────── Tokens (mismos valores que packages/lib/src/tokens/shadcn.light.css) ───────── */
+:root{
+  --background:#f8fafc; --foreground:#0b1220;
+  --card:#ffffff; --muted:#f4f6fa; --muted-foreground:#64748b;
+  --secondary:#f1f4f9; --border:#e2e8f0;
+  --primary:#5e54f0; --primary-soft:#efedff; --ring:#7c5cff;
+  --orange:#ff6b3d; --orange-soft:#fff1ea;
+  --success:#16a34a; --success-soft:#e9f8ef;
+  --warning:#d97706; --warning-soft:#fff6e5;
+  --destructive:#ef4444;
+  --chart-1:#5e54f0; --chart-2:#ff6b3d; --chart-3:#a78bfa; --chart-4:#ffa64f; --chart-5:#3a2edb; --chart-6:#94a3b8;
+  --grad-fire:linear-gradient(90deg,#ff3f3a,#ffa64f);
+  --grad-group:linear-gradient(90deg,#3a2edb,#a78bfa);
+  --radius:.5rem; --radius-lg:.875rem;
+  --shadow-sm:0 1px 2px rgb(15 23 42 / .04),0 4px 12px -4px rgb(15 23 42 / .06);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--background);color:var(--foreground);font:400 14px/1.45 Inter,ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.num{font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+.ic{width:18px;height:18px;flex:none}
+.ic.sm{width:14px;height:14px}
+.ic.lg{width:20px;height:20px}
+
+/* ───────── Layout ───────── */
+.app{display:grid;grid-template-columns:248px 1fr;min-height:100vh;background:linear-gradient(90deg,var(--card) 248px,transparent 248px)}
+.sidebar{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:4px;padding:20px 14px;border-right:1px solid var(--border);background:var(--card)}
+.brand{display:flex;align-items:center;padding:4px 10px 18px;color:var(--foreground)}
+.brand svg{height:30px;width:auto}
+.nav-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted-foreground);padding:14px 10px 6px}
+.nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--radius);color:#334155;font-weight:500}
+.nav a:hover{background:var(--secondary)}
+.nav a.active{background:var(--primary-soft);color:var(--primary)}
+.nav a .count{margin-left:auto;font-size:11px;font-weight:600;background:var(--orange);color:#fff;border-radius:999px;padding:1px 7px}
+.sidebar .spacer{flex:1}
+.invite{border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;background:linear-gradient(160deg,#f6f4ff,#fff 70%)}
+.invite b{display:block;font-size:13px}
+.invite p{margin:4px 0 10px;color:var(--muted-foreground);font-size:12px}
+.user{display:flex;align-items:center;gap:10px;padding:12px 6px 0;margin-top:12px;border-top:1px solid var(--border)}
+.user small{display:block;color:var(--muted-foreground);font-size:12px}
+.user .ic{margin-left:auto;color:var(--muted-foreground)}
+
+.main{padding:24px 32px 48px;min-width:0}
+.topbar{display:flex;align-items:center;gap:16px;margin-bottom:24px}
+.topbar .hello small{color:var(--muted-foreground);font-size:13px}
+.topbar h1{margin:2px 0 0;font-size:24px;line-height:32px;font-weight:700;letter-spacing:-.02em}
+.topbar .actions{margin-left:auto;display:flex;align-items:center;gap:10px}
+.search{display:flex;align-items:center;gap:8px;height:38px;width:280px;padding:0 10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--card);color:var(--muted-foreground)}
+.search span{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+kbd{font:500 11px Inter,sans-serif;border:1px solid var(--border);border-radius:4px;padding:1px 5px;background:var(--muted)}
+.mobile-only{display:none}
+
+/* ───────── shadcn-like primitives ───────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:38px;padding:0 14px;border-radius:var(--radius);border:1px solid transparent;font-weight:600;font-size:14px;white-space:nowrap}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 1px 2px rgb(58 46 219 / .3)}
+.btn-primary:hover{background:#4f45e0}
+.btn-outline{background:var(--card);border-color:var(--border)}
+.btn-outline:hover{background:var(--secondary)}
+.btn-ghost{background:transparent}
+.btn-ghost:hover{background:var(--secondary)}
+.btn-icon{width:38px;padding:0;position:relative}
+.btn-sm{height:30px;padding:0 10px;font-size:13px}
+.btn-block{width:100%}
+.dot-badge{position:absolute;top:8px;right:9px;width:8px;height:8px;border-radius:50%;background:var(--orange);border:2px solid var(--card)}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);min-width:0}
+.card-h{display:flex;align-items:center;gap:8px;padding:16px 18px 0}
+.card-h h2{white-space:nowrap;margin:0;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.card-h .sub{color:var(--muted-foreground);font-size:13px}
+.card-h .right{margin-left:auto;display:flex;align-items:center;gap:6px}
+.card-b{padding:14px 18px 18px}
+.link{white-space:nowrap;display:inline-flex;align-items:center;gap:4px;color:var(--primary);font-weight:600;font-size:13px}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.badge-success{background:var(--success-soft);color:var(--success)}
+.badge-warning{background:var(--warning-soft);color:var(--warning)}
+.badge-muted{background:var(--secondary);color:#475569;font-weight:500}
+.badge-primary{background:var(--primary-soft);color:var(--primary)}
+.select{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;font-weight:500;background:var(--card)}
+.tile{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;flex:none}
+.t-primary{background:var(--primary-soft);color:var(--primary)}
+.t-orange{background:var(--orange-soft);color:var(--orange)}
+.t-green{background:var(--success-soft);color:var(--success)}
+.t-gray{background:var(--secondary);color:#475569}
+.avatar{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;font-size:11px;font-weight:600;color:#fff;border:2px solid var(--card);flex:none}
+.stack{display:flex}.stack .avatar+.avatar{margin-left:-8px}
+.progress{height:6px;border-radius:999px;background:var(--secondary);overflow:hidden}
+.progress>i{display:block;height:100%;border-radius:inherit;background:var(--primary)}
+.muted{color:var(--muted-foreground)}
+.pos{color:var(--success)}
+.sep{height:1px;background:var(--border);margin:0}
+
+/* ───────── Grid ───────── */
+.grid{display:grid;gap:20px;grid-template-columns:repeat(12,minmax(0,1fr))}
+.c-8{grid-column:span 8}.c-4{grid-column:span 4}.c-7{grid-column:span 7}.c-5{grid-column:span 5}.c-12{grid-column:span 12}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;background:#0b1220;color:#fff;border:0;padding:22px 24px;display:grid;grid-template-columns:1fr auto;gap:8px 24px}
+.hero::before{content:"";position:absolute;inset:auto -10% -40% 35%;height:240px;background:radial-gradient(60% 70% at 70% 60%,rgb(94 84 240 / .55),transparent 70%);pointer-events:none}
+.hero .wave{position:absolute;right:0;bottom:0;width:62%;height:100%;pointer-events:none}
+.hero .lbl{display:flex;align-items:center;gap:8px;color:#cbd5e1;font-size:13px;font-weight:500;position:relative}
+.hero .big{position:relative;font-size:40px;line-height:48px;font-weight:700;letter-spacing:-.03em;margin:6px 0 4px}
+.hero .big small{font-size:24px;color:#cbd5e1;font-weight:600}
+.hero .delta{position:relative;display:flex;align-items:center;gap:8px;font-size:13px;color:#cbd5e1}
+.hero .delta .badge{background:rgb(22 163 74 / .18);color:#4ade80}
+.hero .period{background:rgb(255 255 255 / .08);border-color:rgb(255 255 255 / .12);color:#e2e8f0}
+.hero .stats{position:relative;grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}
+.hero .stat{background:rgb(255 255 255 / .06);border:1px solid rgb(255 255 255 / .08);border-radius:12px;padding:12px 14px;backdrop-filter:blur(6px)}
+.hero .stat span{display:flex;align-items:center;gap:6px;color:#94a3b8;font-size:12px;font-weight:500}
+.hero .stat b{display:block;font-size:18px;margin-top:4px;font-weight:600}
+.hero .stat .hint{display:block;font-size:12px;color:#94a3b8;margin-top:2px}
+
+/* Saldo de grupos */
+.settle .row{display:flex;align-items:center;gap:12px;padding:12px 0}
+.settle .row+.row{border-top:1px dashed var(--border)}
+.settle .amt{margin-left:auto;text-align:right}
+.settle .amt b{display:block;font-size:16px}
+.settle .amt small{font-size:12px}
+.settle .split{display:flex;height:8px;border-radius:999px;overflow:hidden;margin:4px 0 6px;gap:3px}
+.settle .split i:first-child{background:var(--success)}
+.settle .split i:last-child{background:var(--orange)}
+
+/* Cuentas */
+
+/* Cuentas: responsive por contenedor (4 → 2 → 1 columnas) */
+.acc-card{container-type:inline-size}
+.acc-sum{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 28px;margin-bottom:10px}
+.acc-sum div span{display:block;font-size:12px;color:var(--muted-foreground)}
+.acc-sum div b{font-size:16px;font-weight:600}
+.acc-bar{display:flex;height:6px;border-radius:999px;overflow:hidden;gap:2px;margin-bottom:10px}
+.acc-list{display:grid;grid-template-columns:1fr;margin:0 -8px}
+.acc{display:grid;grid-template-columns:36px minmax(0,1fr) auto;align-items:center;gap:0 12px;padding:12px 8px;border-radius:10px;position:relative}
+.acc:hover{background:var(--muted)}
+.acc+.acc::before{content:"";position:absolute;left:56px;right:8px;top:0;height:1px;background:var(--border)}
+.acc .name{min-width:0}
+.acc .name b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acc .name small{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted-foreground);white-space:nowrap;overflow:hidden}
+.acc .bal{text-align:right;font-weight:600;font-size:15px}
+.acc .bal small{display:block;font-size:12px;font-weight:500;color:var(--muted-foreground)}
+.acc .bal small.pos{color:var(--success)}
+.acc .limit{display:block;width:72px;height:4px;border-radius:999px;background:var(--secondary);margin:5px 0 0 auto;overflow:hidden}
+.acc .limit i{display:block;height:100%;width:21%;background:var(--orange)}
+@container (min-width:560px){
+  .acc-list{grid-template-columns:1fr 1fr;column-gap:16px}
+  .acc+.acc::before{display:none}
+  .acc:nth-child(n+3)::after{content:"";position:absolute;left:8px;right:8px;top:0;height:1px;background:var(--border)}
+}
+@container (min-width:900px){
+  .acc-list{grid-template-columns:repeat(4,minmax(0,1fr));column-gap:0;margin:8px 0 0}
+  .acc{grid-template-columns:36px minmax(0,1fr);grid-template-rows:auto auto;row-gap:12px;padding:6px 20px;border-radius:0}
+  .acc:first-child{padding-left:0}
+  .acc:hover{background:none}
+  .acc:hover .name b{color:var(--primary)}
+  .acc:nth-child(n+3)::after{display:none}
+  .acc+.acc::before{display:block;left:0;right:auto;top:6px;bottom:6px;width:1px;height:auto}
+  .acc .bal{grid-column:1/-1;text-align:left;font-size:22px;font-weight:700}
+  .acc .bal small{margin-top:2px}
+  .acc .limit{margin:6px 0 0;width:100%}
+}
+
+/* Gastos por categoría */
+.cats{display:flex;flex-direction:column;gap:14px}
+.cat{display:grid;grid-template-columns:32px 1fr auto;gap:4px 12px;align-items:center}
+.cat .tile{width:32px;height:32px;border-radius:8px;grid-row:span 2}
+.cat .name{font-weight:500}
+.cat .val{text-align:right;font-weight:600}
+.cat .val small{font-weight:400;color:var(--muted-foreground)}
+.cat .progress{grid-column:2/4}
+.stackbar{display:flex;height:10px;border-radius:999px;overflow:hidden;gap:2px;margin:4px 0 18px}
+.summary{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+.summary b{font-size:24px;font-weight:700;letter-spacing:-.02em}
+
+/* Grupos */
+.group{display:flex;align-items:center;gap:12px;padding:12px 0}
+.group+.group{border-top:1px solid var(--border)}
+.group .gi{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:#fff;flex:none}
+.group .info{min-width:0;flex:1}
+.group .info b{display:block;font-weight:600}
+.group .info small{color:var(--muted-foreground);font-size:12px}
+.group .end{text-align:right}
+.group .end b{display:block}
+
+/* Transacciones */
+.tx{width:100%;border-collapse:collapse}
+.tx th{font-size:12px;font-weight:500;color:var(--muted-foreground);text-align:left;padding:0 0 8px;border-bottom:1px solid var(--border)}
+.tx td{padding:11px 0;border-bottom:1px solid var(--border);vertical-align:middle}
+.tx tr:last-child td{border-bottom:0}
+.tx .who{display:flex;align-items:center;gap:12px}
+.tx .who b{display:block;font-weight:500}
+.tx .who small{color:var(--muted-foreground);font-size:12px}
+.tx .r{text-align:right}
+.tx .amount{font-weight:600}
+.day-row td{padding:14px 0 6px!important;font-size:12px;font-weight:600;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:.05em;border-bottom:0!important}
+
+/* Meta + próximos */
+.goal-art{position:relative;height:120px;border-radius:12px;overflow:hidden;background:linear-gradient(180deg,#1b1650,#3a2edb 60%,#a78bfa)}
+.goal-art>svg{position:absolute;inset:0;width:100%;height:100%}
+.goal-art .chip{position:absolute;left:12px;bottom:12px;display:inline-flex;align-items:center;gap:6px;background:rgb(255 255 255 / .92);color:var(--foreground);font-weight:600;font-size:12px;border-radius:999px;padding:4px 10px}
+.goal-nums{display:flex;align-items:baseline;justify-content:space-between;margin:14px 0 8px}
+.goal-nums b{font-size:20px}
+.goal-foot{display:flex;align-items:center;justify-content:space-between;margin:10px 0 14px;font-size:12px;color:var(--muted-foreground)}
+.bills{display:flex;flex-direction:column}
+.bill{display:flex;align-items:center;gap:12px;padding:10px 0}
+.bill+.bill{border-top:1px solid var(--border)}
+.date{width:40px;text-align:center;border:1px solid var(--border);border-radius:8px;overflow:hidden;flex:none}
+.date small{display:block;font-size:10px;font-weight:600;text-transform:uppercase;background:var(--secondary);color:var(--muted-foreground);padding:1px 0}
+.date b{display:block;font-size:15px;padding:2px 0}
+.bill .info{flex:1;min-width:0}
+.bill .info b{display:block;font-weight:500}
+.bill .info small{font-size:12px;color:var(--muted-foreground)}
+
+/* Hogar */
+.hh-head{display:flex;align-items:center;gap:10px}
+.hh-head .stack .avatar{width:32px;height:32px}
+.hh-head b{display:block}
+.hh-head small{color:var(--muted-foreground);font-size:12px}
+.owed{margin:14px 0 4px;padding:14px;border-radius:12px;background:var(--success-soft);display:flex;align-items:center;gap:12px}
+.owed b{font-size:20px;color:var(--success)}
+.owed small{display:block;font-size:12px;color:#166534}
+.owed .btn{margin-left:auto}
+.contrib{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.contrib .row{display:grid;grid-template-columns:24px 1fr auto;gap:4px 10px;align-items:center}
+.contrib .row .avatar{width:24px;height:24px;font-size:9px;border:0;grid-row:span 2}
+.contrib .row .progress{grid-column:2/4}
+.contrib .row span{font-size:13px;font-weight:500}
+.contrib .row b{font-size:13px}
+.scope{display:inline-flex;background:rgb(255 255 255 / .08);border:1px solid rgb(255 255 255 / .12);border-radius:8px;padding:3px;position:relative}
+.scope button{border:0;background:none;color:#cbd5e1;font-size:12px;font-weight:500;padding:4px 10px;border-radius:6px}
+.scope button.on{background:#fff;color:var(--foreground)}
+.hero-ctrl{position:relative;display:flex;gap:8px;align-self:start}
+.shared{display:flex;flex-direction:column}
+.sh{display:flex;align-items:center;gap:12px;padding:11px 0}
+.sh+.sh{border-top:1px solid var(--border)}
+.sh .info{flex:1;min-width:0}
+.sh .info b{display:block;font-weight:500}
+.sh .info small{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted-foreground)}
+.sh .info small .avatar{width:16px;height:16px;font-size:7px;border:0}
+.sh .end{text-align:right}
+.sh .end b{display:block;margin-bottom:2px}
+.split-bar{display:flex;height:10px;border-radius:999px;overflow:hidden;gap:2px;margin:6px 0 8px}
+.split-legend{display:flex;gap:16px;font-size:12px;color:var(--muted-foreground);margin-bottom:6px}
+.split-legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px}
+.hh-side{border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px;display:flex;align-items:center;gap:10px}
+.hh-side b{display:block;font-size:13px}
+.hh-side small{font-size:12px;color:var(--muted-foreground)}
+.hh-side .btn{margin-left:auto}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;border-radius:6px;padding:1px 6px;background:var(--primary-soft);color:var(--primary)}
+
+/* Modo: una persona / hogar */
+body[data-mode="solo"] .only-hogar{display:none!important}
+body[data-mode="hogar"] .only-solo{display:none!important}
+.preview{position:fixed;right:20px;bottom:20px;z-index:40;display:flex;align-items:center;gap:10px;padding:6px 6px 6px 14px;background:#0b1220;color:#cbd5e1;border-radius:999px;box-shadow:0 12px 30px -10px rgb(11 18 32 / .5);font-size:12px;font-weight:500}
+.preview .seg{display:flex;background:rgb(255 255 255 / .08);border-radius:999px;padding:3px}
+.preview button{border:0;background:none;color:#cbd5e1;font-size:12px;font-weight:600;padding:5px 12px;border-radius:999px}
+.preview button.on{background:#fff;color:#0b1220}
+.owner{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted-foreground)}
+.owner .stack .avatar{width:18px;height:18px;font-size:7px;border-width:1.5px}
+.mini-av{width:18px!important;height:18px!important;font-size:7px!important;border:0!important;display:inline-grid!important}
+/* Metas */
+.goals{display:flex;flex-direction:column}
+.goal{display:grid;grid-template-columns:40px 1fr auto;gap:2px 12px;align-items:center;padding:12px 0}
+.goal+.goal{border-top:1px solid var(--border)}
+.goal .tile{width:40px;height:40px;grid-row:span 3}
+.goal .t b{font-weight:600}
+.goal .t small{display:block;font-size:12px;color:var(--muted-foreground)}
+.goal .pct{font-weight:600;font-size:13px;text-align:right}
+.goal .progress{grid-column:2/4;margin-top:6px}
+.goal .foot{grid-column:2/4;display:flex;justify-content:space-between;font-size:12px;color:var(--muted-foreground);margin-top:2px}
+.goal.featured .progress{height:8px}
+/* Hogar feed */
+.feed-item{display:flex;gap:10px;padding:10px 0;font-size:13px}
+.feed-item+.feed-item{border-top:1px solid var(--border)}
+.feed-item .avatar{width:28px;height:28px}
+.feed-item p{margin:0}
+.feed-item small{display:block;font-size:12px;color:var(--muted-foreground)}
+.hh-total{display:flex;gap:12px;margin:12px 0 6px}
+.hh-total>div{flex:1;background:var(--muted);border-radius:10px;padding:10px 12px}
+.hh-total span{display:block;font-size:12px;color:var(--muted-foreground)}
+.hh-total b{font-size:16px}
+.create-hh{position:relative;overflow:hidden;background:linear-gradient(160deg,#f3f1ff,#fff 65%)}
+.create-hh .art{position:absolute;right:-18px;bottom:-30px;width:110px;opacity:.14}
+.create-hh h3{margin:0 0 6px;font-size:15px}
+.create-hh p{margin:0 0 14px;color:var(--muted-foreground);font-size:13px;max-width:90%}
+.create-hh ul{margin:0 0 16px;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:13px}
+.create-hh li{display:flex;gap:8px;align-items:center}
+.create-hh li .ic{color:var(--primary)}
+.subs{display:flex;align-items:center;gap:12px}
+.subs .stack .tile{width:30px;height:30px;border-radius:8px;border:2px solid var(--card);margin-left:-8px}
+.subs .stack .tile:first-child{margin-left:0}
+
+/* Bottom nav (mobile) */
+.bottom-nav{display:none}
+
+/* ───────── Responsive ───────── */
+@media (max-width:1280px){
+}
+@media (max-width:1100px){
+  .c-8,.c-4,.c-7,.c-5{grid-column:span 12}
+  .search{width:200px}
+}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .main{padding:16px 16px 96px}
+  .mobile-only{display:flex}
+  .search,.desktop-only{display:none}
+  .topbar{margin-bottom:16px}
+  .topbar h1{font-size:20px;line-height:28px}
+  .m-brand svg{height:26px;width:auto}
+  .grid{gap:14px}
+  .app{background:none}
+  .hero{padding:18px;grid-template-columns:minmax(0,1fr)}
+  .hero-ctrl{order:-1;justify-content:space-between;margin-bottom:6px}
+  .hero .lbl{white-space:nowrap}
+  .hero .big{font-size:32px;line-height:40px}
+  .hero .stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .hero .stat{padding:10px}
+  .hero .stat b{font-size:15px}
+  .hero .stat .hint{display:none}
+  .tx .hide-m,.hide-sm{display:none}
+  .card-h{padding:14px 16px 0}.card-b{padding:12px 16px 16px}
+  .preview{left:50%;right:auto;transform:translateX(-50%);bottom:84px;white-space:nowrap}
+  .bottom-nav{display:grid;grid-template-columns:repeat(5,1fr);align-items:end;position:fixed;left:0;right:0;bottom:0;background:rgb(255 255 255 / .94);backdrop-filter:blur(12px);border-top:1px solid var(--border);padding:8px 8px calc(8px + env(safe-area-inset-bottom));z-index:10}
+  .bottom-nav a{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:500;color:var(--muted-foreground)}
+  .bottom-nav a.active{color:var(--primary)}
+  .bottom-nav .fab{width:52px;height:52px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;margin:-26px auto 0;box-shadow:0 8px 20px -6px rgb(94 84 240 / .6);border:4px solid var(--background)}
+}
+@media (max-width:420px){
+  .hero .stats{grid-template-columns:1fr 1fr}
+  .hero .stats .stat:last-child{grid-column:1/-1}
+}
+</style>
+</head>
+<body data-mode="hogar">
+<svg aria-hidden="true" width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden">
+<defs>
+    <linearGradient id="fcO" gradientUnits="userSpaceOnUse" x1="480" y1="50" x2="100" y2="430">
+      <stop offset="0" stop-color="#FFA64F"/><stop offset="0.5" stop-color="#FF7A3D"/><stop offset="1" stop-color="#FF3F3A"/>
+    </linearGradient>
+    <linearGradient id="fcB" gradientUnits="userSpaceOnUse" x1="450" y1="320" x2="120" y2="620">
+      <stop offset="0" stop-color="#9A88FB"/><stop offset="0.5" stop-color="#5E54F0"/><stop offset="1" stop-color="#3A2EDB"/>
+    </linearGradient>
+    <linearGradient id="fcS" gradientUnits="userSpaceOnUse" x1="240" y1="545" x2="130" y2="640">
+      <stop offset="0" stop-color="#2A1FB8" stop-opacity="0"/><stop offset="1" stop-color="#2A1FB8" stop-opacity="0.55"/>
+    </linearGradient></defs>
+<symbol id="fc-mark" viewBox="0 0 123.56 192"><g transform="translate(-26.505 -12.620) scale(0.30047)"><path d="M478 42 C492 42 505 110 497 170 C488 250 400 300 300 330 C230 350 170 360 130 400 C115 415 100 430 94 440 C86 440 88 420 90 400 C95 320 130 250 220 205 C310 165 400 140 450 80 C465 62 470 42 478 42 Z" fill="url(#fcO)"/><path d="M453 310 C462 312 460 360 440 410 C415 470 330 510 243 540 C215 555 205 585 190 625 C178 655 165 680 150 681 C120 675 90 610 91 550 C92 480 130 430 200 400 C270 375 370 355 440 312 C445 309 450 309 453 310 Z" fill="url(#fcB)"/><path d="M118 600 C135 565 185 548 243 540 C215 555 205 585 190 625 C178 655 165 680 150 681 C130 676 112 640 118 600 Z" fill="url(#fcS)"/></g></symbol>
+<symbol id="fc-logo" viewBox="0 0 550.93 192"><g transform="translate(-26.505 -12.620) scale(0.30047)"><path d="M478 42 C492 42 505 110 497 170 C488 250 400 300 300 330 C230 350 170 360 130 400 C115 415 100 430 94 440 C86 440 88 420 90 400 C95 320 130 250 220 205 C310 165 400 140 450 80 C465 62 470 42 478 42 Z" fill="url(#fcO)"/><path d="M453 310 C462 312 460 360 440 410 C415 470 330 510 243 540 C215 555 205 585 190 625 C178 655 165 680 150 681 C120 675 90 610 91 550 C92 480 130 430 200 400 C270 375 370 355 440 312 C445 309 450 309 453 310 Z" fill="url(#fcB)"/><path d="M118 600 C135 565 185 548 243 540 C215 555 205 585 190 625 C178 655 165 680 150 681 C130 676 112 640 118 600 Z" fill="url(#fcS)"/></g><path d="M196.88 70.25V82.88H185.07V128H168.99V82.88H158.55V70.25H168.99V62.76Q168.99 46.52 187.75 46.52H196.88V59.15H191.41Q187.91 59.15 186.49 60.6Q185.07 62.05 185.07 65.49V70.25Z M203.08 128V70.25H219.21V128ZM211.12 62.98Q207.12 62.98 204.5 60.54Q201.87 58.11 201.87 54.39Q201.87 50.67 204.5 48.24Q207.12 45.8 211.12 45.8Q215.05 45.8 217.68 48.24Q220.3 50.67 220.3 54.39Q220.3 58.11 217.68 60.54Q215.05 62.98 211.12 62.98Z M228.9 128V70.25H244.44V80.09H244.6Q246.19 74.9 249.58 72.38Q252.97 69.87 258.71 69.87Q260.13 69.87 261.31 69.92Q262.48 69.98 263.47 69.98V83.7Q262.59 83.65 260.57 83.54Q258.55 83.43 256.52 83.43Q251.55 83.43 248.29 86.82Q245.04 90.21 245.04 96.72V128Z M294.87 129.31Q286.12 129.31 279.64 125.43Q273.16 121.55 269.58 114.74Q266 107.93 266 99.18Q266 90.38 269.63 83.54Q273.27 76.7 279.67 72.82Q286.07 68.94 294.33 68.94Q302.86 68.94 309.23 72.74Q315.6 76.54 319.18 83.29Q322.76 90.05 322.76 98.85V103.17H281.69Q281.91 109.57 285.47 113.4Q289.02 117.23 295.37 117.23Q300.07 117.23 303.21 115.2Q306.36 113.18 307.45 109.84H322.16Q321.12 115.59 317.3 119.96Q313.47 124.34 307.67 126.82Q301.87 129.31 294.87 129.31ZM281.8 92.89H307.56Q306.96 87.48 303.54 84.33Q300.12 81.19 294.65 81.19Q289.24 81.19 285.85 84.33Q282.46 87.48 281.8 92.89Z M356.19 129.31Q347.5 129.31 340.99 125.51Q334.48 121.71 330.85 114.9Q327.21 108.09 327.21 99.18Q327.21 90.21 330.85 83.4Q334.48 76.59 340.99 72.77Q347.5 68.94 356.19 68.94Q363.79 68.94 369.73 71.86Q375.66 74.79 379.24 79.96Q382.83 85.12 383.32 91.85H367.73Q367.08 87.42 364.15 84.69Q361.22 81.95 356.41 81.95Q350.34 81.95 346.9 86.6Q343.45 91.25 343.45 99.18Q343.45 107.05 346.9 111.68Q350.34 116.3 356.41 116.3Q361.28 116.3 364.07 113.56Q366.86 110.83 367.62 106.29H383.32Q382.99 112.96 379.44 118.16Q375.88 123.35 369.89 126.33Q363.9 129.31 356.19 129.31Z M416.58 129.31Q407.83 129.31 401.35 125.43Q394.87 121.55 391.29 114.74Q387.71 107.93 387.71 99.18Q387.71 90.38 391.35 83.54Q394.98 76.7 401.38 72.82Q407.78 68.94 416.04 68.94Q424.57 68.94 430.94 72.74Q437.31 76.54 440.89 83.29Q444.47 90.05 444.47 98.85V103.17H403.4Q403.62 109.57 407.18 113.4Q410.73 117.23 417.08 117.23Q421.78 117.23 424.92 115.2Q428.07 113.18 429.16 109.84H443.87Q442.83 115.59 439.01 119.96Q435.18 124.34 429.38 126.82Q423.58 129.31 416.58 129.31ZM403.51 92.89H429.27Q428.67 87.48 425.25 84.33Q421.83 81.19 416.36 81.19Q410.95 81.19 407.56 84.33Q404.17 87.48 403.51 92.89Z M467.57 95.9V128H451.43V70.25H467.29V79.33Q470.25 74.41 474.68 71.73Q479.11 69.05 485.34 69.05Q494.53 69.05 500.05 74.98Q505.58 80.91 505.58 91.85V128H489.5V94.8Q489.5 89.01 486.71 85.97Q483.92 82.94 478.89 82.94Q473.91 82.94 470.74 86.05Q467.57 89.17 467.57 95.9Z M548.52 70.25V82.88H536.71V110.17Q536.71 113.12 537.88 114.25Q539.06 115.37 542.34 115.37H548.52V128H539.11Q529.6 128 525.09 124.28Q520.58 120.56 520.58 112.69V82.88H510.62V70.25H520.58V54.5H536.71V70.25Z" fill="currentColor"/></symbol>
+</svg>
+<div class="app">
+  <!-- ───────── Sidebar ───────── -->
+  <aside class="sidebar">
+    <a class="brand" href="#" aria-label="firecent"><svg viewBox="0 0 550.93 192"><use href="#fc-logo"/></svg></a>
+    <nav class="nav">
+      <a class="active" href="#"><svg class="ic " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" /> <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /> </svg>Inicio</a>
+      <a href="#"><svg class="ic " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M8 3 4 7l4 4" /> <path d="M4 7h16" /> <path d="m16 21 4-4-4-4" /> <path d="M20 17H4" /> </svg>Movimientos</a>
+      <a href="#"><svg class="ic " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1" /> <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4" /> </svg>Cuentas</a>
+      <a href="#"><svg class="ic " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z" /> <path d="M21.21 15.89A10 10 0 1 1 8 2.83" /> </svg>Presupuesto</a>
+      <a href="#"><svg class="ic " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <circle cx="12" cy="12" r="10" /> <circle cx="12" cy="12" r="6" /> <circle cx="12" cy="12" r="2" /> </svg>Metas</a>
+      <a href="#"><svg class="ic " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <line x1="12" x2="12" y1="20" y2="10" /> <line x1="18" x2="18" y1="20" y2="4" /> <line x1="6" x2="6" y1="20" y2="16" /> </svg>Analytics</a>
+    </nav>
+    <div class="spacer"></div>
+    <a class="hh-side only-solo" href="#" style="border-style:dashed;color:var(--muted-foreground)"><span class="tile t-primary" style="width:28px;height:28px;border-radius:50%"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M2 21a8 8 0 0 1 13.292-6" /> <circle cx="10" cy="8" r="5" /> <path d="M19 16v6" /> <path d="M22 19h-6" /> </svg></span><div><b style="color:var(--foreground)">Crear un hogar</b><small>Comparte con tu pareja o roomies</small></div></a>
+    <div class="hh-side only-hogar">
+      <div class="stack"><span class="avatar" style="width:28px;height:28px;background:#5e54f0">LM</span><span class="avatar" style="width:28px;height:28px;background:#ff6b3d">AG</span></div>
+      <div><b>Hogar Maltez</b><small>2 miembros</small></div>
+      <button class="btn btn-ghost btn-icon btn-sm" style="width:30px" aria-label="Configurar hogar"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /> <circle cx="12" cy="12" r="3" /> </svg></button>
+    </div>
+    <div class="user">
+      <span class="avatar" style="width:34px;height:34px;background:linear-gradient(135deg,#5e54f0,#a78bfa)">LM</span>
+      <div><b>Luis Maltez</b><small>luis@firecent.app</small></div>
+      <svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="m7 15 5 5 5-5" /> <path d="m7 9 5-5 5 5" /> </svg>
+    </div>
+  </aside>
+
+  <!-- ───────── Main ───────── -->
+  <main class="main">
+    <header class="topbar">
+      <a class="m-brand mobile-only" href="#" aria-label="firecent"><svg viewBox="0 0 123.56 192" style="height:30px"><use href="#fc-mark"/></svg></a>
+      <div class="hello">
+        <small>Jueves, 5 de noviembre</small>
+        <h1>Hola, Luis</h1>
+      </div>
+      <div class="actions">
+        <div class="search"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <circle cx="11" cy="11" r="8" /> <path d="m21 21-4.3-4.3" /> </svg><span>Buscar movimientos, cuentas…</span><kbd>Ctrl K</kbd></div>
+        <button class="btn btn-outline btn-icon" aria-label="Notificaciones"><svg class="ic " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M10.268 21a2 2 0 0 0 3.464 0" /> <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" /> </svg><span class="dot-badge"></span></button>
+        <button class="btn btn-primary desktop-only"><svg class="ic " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M5 12h14" /> <path d="M12 5v14" /> </svg>Nuevo movimiento</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- Hero balance -->
+      <section class="card hero c-8">
+        <svg class="wave" viewBox="0 0 400 200" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="hw1" x1="0" x2="1"><stop offset="0" stop-color="#3a2edb" stop-opacity="0"/><stop offset="1" stop-color="#5e54f0" stop-opacity=".55"/></linearGradient>
+            <linearGradient id="hw2" x1="0" x2="1"><stop offset="0" stop-color="#ff3f3a" stop-opacity="0"/><stop offset="1" stop-color="#ffa64f" stop-opacity=".45"/></linearGradient>
+          </defs>
+          <path d="M0 200 C120 190 210 150 290 110 C340 85 375 70 400 40 L400 200Z" fill="url(#hw1)"/>
+          <path d="M120 200 C220 190 300 170 400 120 L400 200Z" fill="url(#hw2)"/>
+        </svg>
+        <div>
+          <div class="lbl"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1" /> <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4" /> </svg><span data-v="lbl">Patrimonio neto</span><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /> <circle cx="12" cy="12" r="3" /> </svg></div>
+          <div class="big num" data-v="pat">$1,401<small>.90</small></div>
+          <div class="delta"><span class="badge"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" /> <polyline points="16 7 22 7 22 13" /> </svg>8.2%</span><span data-v="delta">+$106.40 vs. octubre</span></div>
+        </div>
+        <div class="hero-ctrl"><div class="scope only-hogar" role="tablist" aria-label="Vista"><button class="on" data-scope="yo">Yo</button><button data-scope="hogar">Hogar</button></div><span class="only-solo"></span><button class="select period">Noviembre<svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="m6 9 6 6 6-6" /> </svg></button></div>
+        <div class="stats">
+          <div class="stat"><span><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M17 7 7 17" /> <path d="M17 17H7V7" /> </svg>Ingresos</span><b class="num" data-v="inc">$1,250.00</b><small class="hint" data-v="inch">2 depósitos</small></div>
+          <div class="stat"><span><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M7 7h10v10" /> <path d="M7 17 17 7" /> </svg>Gastos</span><b class="num" data-v="exp">$428.50</b><small class="hint" data-v="exph">41% del presupuesto</small></div>
+          <div class="stat"><span><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /> <path d="m9 12 2 2 4-4" /> </svg>Libre para gastar</span><b class="num" data-v="free">$611.50</b><small class="hint" data-v="freeh">≈ $24.50 por día</small></div>
+        </div>
+      </section>
+
+      <!-- Próximos pagos -->
+      <section class="card c-4">
+        <div class="card-h"><h2>Próximos pagos</h2><span class="sub">· 10 días</span><div class="right"><a class="link" href="#">Calendario<svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /> </svg></a></div></div>
+        <div class="card-b bills" style="padding-top:6px">
+          <div class="bill"><div class="date"><small>Nov</small><b>07</b></div><div class="info"><b>Spotify Familiar</b><small>Tarjeta · automático</small></div><b class="num">$16.99</b></div>
+          <div class="bill"><div class="date"><small>Nov</small><b>10</b></div><div class="info"><b>Alquiler <span class="tag only-hogar"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" /> <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /> </svg>Hogar</span></b><small>Transferencia · Banco General</small></div><b class="num">$450.00</b></div>
+          <div class="bill"><div class="date"><small>Nov</small><b>12</b></div><div class="info"><b>Internet <span class="tag only-hogar"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" /> <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /> </svg>Hogar</span></b><small>Tigo · automático</small></div><b class="num">$33.60</b></div>
+          <div class="bill"><div class="date" style="border-color:#fed7aa"><small style="background:var(--orange-soft);color:var(--orange)">Nov</small><b>15</b></div><div class="info"><b>Corte tarjeta Visa</b><small>Pago mínimo $25.00</small></div><b class="num">$320.50</b></div>
+        </div>
+      </section>
+
+      <!-- Cuentas -->
+      <section class="card c-12 acc-card">
+        <div class="card-h"><h2>Cuentas</h2><div class="right"><button class="btn btn-ghost btn-sm"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M5 12h14" /> <path d="M12 5v14" /> </svg>Agregar</button><a class="link" href="#">Ver todas<svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /> </svg></a></div></div>
+        <div class="card-b">
+          <div class="acc-sum">
+            <div><span>Disponible</span><b class="num">$1,072.40</b></div>
+            <div><span>Ahorrado</span><b class="num">$650.00</b></div>
+            <div><span>Deuda</span><b class="num" style="color:var(--orange)">$320.50</b></div>
+          </div>
+          <div class="acc-bar" aria-hidden="true"><i style="flex:1072.4;background:var(--primary)"></i><i style="flex:650;background:var(--chart-3)"></i><i style="flex:320.5;background:var(--orange)"></i></div>
+          <div class="acc-list">
+            <a class="acc" href="#">
+              <span class="tile t-primary"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <line x1="3" x2="21" y1="22" y2="22" /> <line x1="6" x2="6" y1="18" y2="11" /> <line x1="10" x2="10" y1="18" y2="11" /> <line x1="14" x2="14" y1="18" y2="11" /> <line x1="18" x2="18" y1="18" y2="11" /> <polygon points="12 2 20 7 4 7" /> </svg></span>
+              <div class="name"><b>Banco General</b><small><span class="stack only-hogar"><span class="avatar mini-av" style="background:#5e54f0">LM</span><span class="avatar mini-av" style="background:#ff6b3d;margin-left:-6px">AG</span></span><span>Débito · •••• 4582</span></small></div>
+              <div class="bal num">$892.40<small class="pos">+$75.00 hoy</small></div>
+            </a>
+            <a class="acc" href="#">
+              <span class="tile t-green"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <rect width="20" height="12" x="2" y="6" rx="2" /> <circle cx="12" cy="12" r="2" /> <path d="M6 12h.01M18 12h.01" /> </svg></span>
+              <div class="name"><b>Efectivo</b><small><span class="avatar mini-av only-hogar" style="background:#5e54f0">LM</span><span>Billetera</span></small></div>
+              <div class="bal num">$180.00<small>Actualizado ayer</small></div>
+            </a>
+            <a class="acc" href="#">
+              <span class="tile" style="background:#f3efff;color:#7c5cff"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z" /> <path d="M2 9v1c0 1.1.9 2 2 2h1" /> <path d="M16 11h.01" /> </svg></span>
+              <div class="name"><b>Ahorros</b><small><span class="stack only-hogar"><span class="avatar mini-av" style="background:#5e54f0">LM</span><span class="avatar mini-av" style="background:#ff6b3d;margin-left:-6px">AG</span></span><span>Para 3 metas</span></small></div>
+              <div class="bal num">$650.00<small>+$50.00 este mes</small></div>
+            </a>
+            <a class="acc" href="#">
+              <span class="tile t-orange"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <rect width="20" height="14" x="2" y="5" rx="2" /> <line x1="2" x2="22" y1="10" y2="10" /> </svg></span>
+              <div class="name"><b>Visa Citi</b><small><span class="avatar mini-av only-hogar" style="background:#5e54f0">LM</span><span>Crédito · corte 15 nov</span></small></div>
+              <div class="bal num">−$320.50<small>21% de $1,500</small><span class="limit"><i></i></span></div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Gastos por categoría -->
+      <section class="card c-7">
+        <div class="card-h"><h2>Presupuesto</h2><span class="sub">· noviembre</span><div class="right"><button class="select hide-sm">Por categoría<svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="m6 9 6 6 6-6" /> </svg></button></div></div>
+        <div class="card-b">
+          <div class="summary"><b class="num">$428.50</b><span class="muted">de $1,040.00 · quedan 25 días</span></div>
+          <div class="stackbar" aria-hidden="true">
+            <i style="flex:145.7;background:var(--chart-1)"></i><i style="flex:102.8;background:var(--chart-2)"></i><i style="flex:68.6;background:var(--chart-3)"></i><i style="flex:51.4;background:var(--chart-4)"></i><i style="flex:34.3;background:var(--chart-5)"></i><i style="flex:25.7;background:var(--chart-6)"></i><i style="flex:611.5;background:var(--secondary)"></i>
+          </div>
+          <div class="cats">
+            <div class="cat"><span class="tile t-primary"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" /> <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /> </svg></span><span class="name">Vivienda</span><span class="val num">$145.70 <small>/ $300</small></span><div class="progress"><i style="width:49%;background:var(--chart-1)"></i></div></div>
+            <div class="cat"><span class="tile t-orange"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <circle cx="8" cy="21" r="1" /> <circle cx="19" cy="21" r="1" /> <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" /> </svg></span><span class="name">Alimentación</span><span class="val num">$102.80 <small>/ $250</small></span><div class="progress"><i style="width:41%;background:var(--chart-2)"></i></div></div>
+            <div class="cat"><span class="tile" style="background:#f3efff;color:#8b5cf6"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" /> <circle cx="7" cy="17" r="2" /> <path d="M9 17h6" /> <circle cx="17" cy="17" r="2" /> </svg></span><span class="name">Transporte</span><span class="val num">$68.60 <small>/ $120</small></span><div class="progress"><i style="width:57%;background:var(--chart-3)"></i></div></div>
+            <div class="cat"><span class="tile" style="background:#fff4e6;color:#f59e0b"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z" /> <path d="m6.2 5.3 3.1 3.9" /> <path d="m12.4 3.4 3.1 4" /> <path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z" /> </svg></span><span class="name">Entretenimiento <span class="badge badge-warning" style="margin-left:6px"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /> <path d="M12 9v4" /> <path d="M12 17h.01" /> </svg>86%</span></span><span class="val num">$51.40 <small>/ $60</small></span><div class="progress"><i style="width:86%;background:var(--chart-4)"></i></div></div>
+            <div class="cat"><span class="tile t-primary" style="background:#ecebfd;color:#3a2edb"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" /> <path d="M3 6h18" /> <path d="M16 10a4 4 0 0 1-8 0" /> </svg></span><span class="name">Compras</span><span class="val num">$34.30 <small>/ $100</small></span><div class="progress"><i style="width:34%;background:var(--chart-5)"></i></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Metas -->
+      <section class="card c-5">
+        <div class="card-h"><h2>Metas</h2><span class="sub">· $2,270 ahorrado</span><div class="right"><button class="btn btn-ghost btn-sm"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M5 12h14" /> <path d="M12 5v14" /> </svg>Nueva</button></div></div>
+        <div class="card-b goals" style="padding-top:4px">
+          <div class="goal featured">
+            <span class="tile" style="background:var(--grad-fire);color:#fff"><svg class="ic " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z" /> </svg></span>
+            <div class="t"><b>Viaje Europa</b> <span class="tag only-hogar"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" /> <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /> </svg>Hogar</span><small>$650 de $2,000 · jul 2027</small></div>
+            <span class="pct num">32%</span>
+            <div class="progress"><i style="width:32%;background:var(--grad-fire)"></i></div>
+            <div class="foot"><span>Sugerido: $170/mes para llegar a tiempo</span><a class="link" href="#">Aportar</a></div>
+          </div>
+          <div class="goal">
+            <span class="tile t-green"><svg class="ic " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /> <path d="m9 12 2 2 4-4" /> </svg></span>
+            <div class="t"><b>Fondo de emergencia</b><small>$1,440 de $2,000 · 3 meses de gastos</small></div>
+            <span class="pct num">72%</span>
+            <div class="progress"><i style="width:72%;background:var(--success)"></i></div>
+          </div>
+          <div class="goal">
+            <span class="tile t-primary"><svg class="ic " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16" /> </svg></span>
+            <div class="t"><b>Laptop nueva</b><small>$180 de $1,200 · mar 2027</small></div>
+            <span class="pct num">15%</span>
+            <div class="progress"><i style="width:15%"></i></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Transacciones -->
+      <section class="card c-8">
+        <div class="card-h"><h2>Movimientos recientes</h2><div class="right"><button class="btn btn-ghost btn-sm hide-sm"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M3 6h18" /> <path d="M7 12h10" /> <path d="M10 18h4" /> </svg>Filtrar</button><a class="link" href="#">Ver todos<svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /> </svg></a></div></div>
+        <div class="card-b">
+          <table class="tx">
+            <thead><tr><th>Descripción</th><th class="hide-m">Cuenta</th><th class="hide-m">Categoría</th><th class="r">Monto</th></tr></thead>
+            <tbody>
+              <tr class="day-row"><td colspan="4">Hoy</td></tr>
+              <tr><td><div class="who"><span class="tile t-orange"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <circle cx="8" cy="21" r="1" /> <circle cx="19" cy="21" r="1" /> <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" /> </svg></span><div><b>Supermercado La Despensa</b><small>10:24 a. m.</small></div></div></td><td class="hide-m"><span class="badge badge-muted"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <line x1="3" x2="21" y1="22" y2="22" /> <line x1="6" x2="6" y1="18" y2="11" /> <line x1="10" x2="10" y1="18" y2="11" /> <line x1="14" x2="14" y1="18" y2="11" /> <line x1="18" x2="18" y1="18" y2="11" /> <polygon points="12 2 20 7 4 7" /> </svg>Banco General</span></td><td class="hide-m muted">Alimentación</td><td class="r amount num">−$48.20</td></tr>
+              <tr><td><div class="who"><span class="tile t-green"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M17 7 7 17" /> <path d="M17 17H7V7" /> </svg></span><div><b>Transferencia de Juan</b><small>8:02 a. m.</small></div></div></td><td class="hide-m"><span class="badge badge-muted"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <line x1="3" x2="21" y1="22" y2="22" /> <line x1="6" x2="6" y1="18" y2="11" /> <line x1="10" x2="10" y1="18" y2="11" /> <line x1="14" x2="14" y1="18" y2="11" /> <line x1="18" x2="18" y1="18" y2="11" /> <polygon points="12 2 20 7 4 7" /> </svg>Banco General</span></td><td class="hide-m muted">Ingreso</td><td class="r amount num pos">+$75.00</td></tr>
+              <tr class="day-row"><td colspan="4">Ayer</td></tr>
+              <tr><td><div class="who"><span class="tile t-primary"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" /> <path d="M7 2v20" /> <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" /> </svg></span><div><b>Pizzería Napoli</b><small><span class="avatar mini-av only-hogar" style="background:#ff6b3d;vertical-align:-4px">AG</span> <span class="only-hogar">Ana ·</span> Cena viernes</small></div></div></td><td class="hide-m"><span class="badge badge-muted"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <rect width="20" height="14" x="2" y="5" rx="2" /> <line x1="2" x2="22" y1="10" y2="10" /> </svg>Tarjeta</span></td><td class="hide-m muted">Restaurantes</td><td class="r amount num">−$36.80</td></tr>
+              <tr><td><div class="who"><span class="tile t-gray"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <rect width="20" height="15" x="2" y="7" rx="2" ry="2" /> <polyline points="17 2 12 7 7 2" /> </svg></span><div><b>Netflix</b><small>Suscripción mensual</small></div></div></td><td class="hide-m"><span class="badge badge-muted"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <rect width="20" height="14" x="2" y="5" rx="2" /> <line x1="2" x2="22" y1="10" y2="10" /> </svg>Tarjeta</span></td><td class="hide-m muted">Entretenimiento</td><td class="r amount num">−$15.00</td></tr>
+              <tr><td><div class="who"><span class="tile t-primary"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /> </svg></span><div><b>Energía eléctrica</b><small><span class="tag only-hogar"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" /> <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /> </svg>Hogar</span> CAESS · recibo octubre</small></div></div></td><td class="hide-m"><span class="badge badge-muted"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <line x1="3" x2="21" y1="22" y2="22" /> <line x1="6" x2="6" y1="18" y2="11" /> <line x1="10" x2="10" y1="18" y2="11" /> <line x1="14" x2="14" y1="18" y2="11" /> <line x1="18" x2="18" y1="18" y2="11" /> <polygon points="12 2 20 7 4 7" /> </svg>Banco General</span></td><td class="hide-m muted">Servicios</td><td class="r amount num">−$48.50</td></tr>
+              <tr><td><div class="who"><span class="tile" style="background:#f3efff;color:#8b5cf6"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" /> <circle cx="7" cy="17" r="2" /> <path d="M9 17h6" /> <circle cx="17" cy="17" r="2" /> </svg></span><div><b>Uber</b><small>Oficina → Casa</small></div></div></td><td class="hide-m"><span class="badge badge-muted"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <rect width="20" height="14" x="2" y="5" rx="2" /> <line x1="2" x2="22" y1="10" y2="10" /> </svg>Tarjeta</span></td><td class="hide-m muted">Transporte</td><td class="r amount num">−$22.50</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Hogar / Una persona -->
+      <section class="c-4" style="display:flex;flex-direction:column;gap:20px;min-width:0">
+        <div class="card only-hogar">
+          <div class="card-h"><h2>Hogar Maltez</h2><div class="right"><div class="stack"><span class="avatar" style="background:#5e54f0">LM</span><span class="avatar" style="background:#ff6b3d">AG</span></div></div></div>
+          <div class="card-b">
+            <div class="hh-total" style="margin-top:0">
+              <div><span>Gastos del hogar</span><b class="num">$612.40</b></div>
+              <div><span>Presupuesto usado</span><b class="num">58%</b></div>
+            </div>
+            <div class="muted" style="font-size:12px;margin:14px 0 2px;font-weight:600;text-transform:uppercase;letter-spacing:.05em">Actividad</div>
+            <div class="feed-item"><span class="avatar" style="background:#ff6b3d">AG</span><div><p><b>Ana</b> registró Supermercado <b class="num">$96.40</b></p><small>Alimentación · hace 2 días</small></div></div>
+            <div class="feed-item"><span class="avatar" style="background:#ff6b3d">AG</span><div><p><b>Ana</b> aportó <b class="num">$50.00</b> a Viaje Europa 🎉</p><small>Metas · hace 3 días</small></div></div>
+            <div class="feed-item"><span class="avatar" style="background:#5e54f0">LM</span><div><p><b>Tú</b> pagaste Energía eléctrica <b class="num">$48.50</b></p><small>Servicios · ayer</small></div></div>
+            <button class="btn btn-outline btn-sm btn-block" style="margin-top:8px"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /> <circle cx="12" cy="12" r="3" /> </svg>Configurar hogar</button>
+          </div>
+        </div>
+
+        <div class="card create-hh only-solo">
+          <svg class="art" viewBox="0 0 123.56 192" aria-hidden="true"><use href="#fc-mark"/></svg>
+          <div class="card-b" style="padding-top:20px;position:relative">
+            <h3>¿Compartes gastos en casa?</h3>
+            <p>Crea un hogar e invita a tu pareja o roomies.</p>
+            <ul>
+              <li><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z" /> <path d="M21.21 15.89A10 10 0 1 1 8 2.83" /> </svg>Presupuesto y metas en conjunto</li>
+              <li><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <rect width="18" height="11" x="3" y="11" rx="2" ry="2" /> <path d="M7 11V7a5 5 0 0 1 10 0v4" /> </svg>Tú decides qué cuentas compartir</li>
+              <li><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M10.268 21a2 2 0 0 0 3.464 0" /> <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" /> </svg>Ven lo que registra cada quien</li>
+            </ul>
+            <button class="btn btn-primary btn-sm btn-block"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M2 21a8 8 0 0 1 13.292-6" /> <circle cx="10" cy="8" r="5" /> <path d="M19 16v6" /> <path d="M22 19h-6" /> </svg>Crear hogar</button>
+          </div>
+        </div>
+        <div class="card only-solo">
+          <div class="card-h"><h2>Suscripciones</h2><div class="right"><a class="link" href="#">Revisar<svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M5 12h14" /> <path d="m12 5 7 7-7 7" /> </svg></a></div></div>
+          <div class="card-b subs">
+            <div class="stack"><span class="tile t-gray"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <rect width="20" height="15" x="2" y="7" rx="2" ry="2" /> <polyline points="17 2 12 7 7 2" /> </svg></span><span class="tile t-green"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M9 18V5l12-2v13" /> <circle cx="6" cy="18" r="3" /> <circle cx="18" cy="16" r="3" /> </svg></span><span class="tile t-primary"><svg class="ic sm" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" /> </svg></span></div>
+            <div><b class="num">$34.98/mes</b><div class="muted" style="font-size:12px">3 activas · $419.76 al año</div></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<nav class="bottom-nav" aria-label="Navegación principal">
+  <a class="active" href="#"><svg class="ic lg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" /> <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /> </svg>Inicio</a>
+  <a href="#"><svg class="ic lg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M8 3 4 7l4 4" /> <path d="M4 7h16" /> <path d="m16 21 4-4-4-4" /> <path d="M20 17H4" /> </svg>Movimientos</a>
+  <a href="#" aria-label="Nuevo movimiento"><span class="fab"><svg class="ic lg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <path d="M5 12h14" /> <path d="M12 5v14" /> </svg></span></a>
+  <a href="#"><svg class="ic lg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <circle cx="12" cy="12" r="10" /> <circle cx="12" cy="12" r="6" /> <circle cx="12" cy="12" r="2" /> </svg>Metas</a>
+  <a href="#"><svg class="ic lg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" > <line x1="12" x2="12" y1="20" y2="10" /> <line x1="18" x2="18" y1="20" y2="4" /> <line x1="6" x2="6" y1="20" y2="16" /> </svg>Analytics</a>
+</nav>
+<div class="preview" role="group" aria-label="Vista previa del prototipo">
+  <span>Vista previa</span>
+  <div class="seg"><button data-mode="solo">Una persona</button><button data-mode="hogar" class="on">Hogar</button></div>
+</div>
+<script>
+(function(){
+  const V={
+    yo:{lbl:'Patrimonio neto',pat:'$1,401<small>.90</small>',delta:'+$106.40 vs. octubre',inc:'$1,250.00',inch:'2 depósitos',exp:'$428.50',exph:'41% del presupuesto',free:'$611.50',freeh:'≈ $24.50 por día'},
+    hogar:{lbl:'Patrimonio del hogar',pat:'$3,284<small>.60</small>',delta:'+$212.80 vs. octubre',inc:'$2,650.00',inch:'4 depósitos',exp:'$918.30',exph:'45% del presupuesto',free:'$1,121.70',freeh:'≈ $44.90 por día'}
+  };
+  const setScope=k=>{document.querySelectorAll('[data-v]').forEach(e=>{const v=V[k][e.dataset.v];if(v!=null)e.innerHTML=v});
+    document.querySelectorAll('[data-scope]').forEach(b=>b.classList.toggle('on',b.dataset.scope===k));};
+  document.querySelectorAll('[data-scope]').forEach(b=>b.addEventListener('click',()=>setScope(b.dataset.scope)));
+  document.querySelectorAll('.preview [data-mode]').forEach(b=>b.addEventListener('click',()=>{
+    document.body.dataset.mode=b.dataset.mode;
+    document.querySelectorAll('.preview [data-mode]').forEach(x=>x.classList.toggle('on',x===b));
+    if(b.dataset.mode==='solo')setScope('yo');
+  }));
+})();
+</script>
+</body>
+</html>

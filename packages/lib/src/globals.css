@@ -1,0 +1,54 @@
+/* Single source of truth for web design: the CLASS-based dark-mode (`.dark`,
+ * @custom-variant) and the HTML rules (@layer base, DnD) live here. Tokens
+ * are kept separate so they can be reused in the mobile app:
+ *   ./tokens/theme.css            → --color-brand-* palettes
+ *   ./tokens/light.css            → --brand-* aliases (light)
+ *   ./tokens/dark.web.css         → --brand-* aliases (dark, .dark)
+ *   ./tokens/shadcn.theme.css     → semantic utilities (@theme inline)
+ *   ./tokens/shadcn.light.css     → semantic values (light)
+ *   ./tokens/shadcn.dark.web.css  → semantic values (dark, .dark)
+ * Mobile imports theme + light + the *.native.css variants. */
+/* Tailwind and its plugin CSS are imported by the consuming app entry
+ * (apps/web/app/globals.css) so package resolution is anchored there under
+ * both hoisted and isolated installs. */
+@import "./tokens/theme.css";
+@import "./tokens/light.css";
+@import "./tokens/dark.web.css";
+@import "./tokens/shadcn.theme.css";
+@import "./tokens/shadcn.light.css";
+@import "./tokens/shadcn.dark.web.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans antialiased;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* ── DnD drop indicators ─────────────────────────────────────────────────────
+   box-shadow on <tr> is ignored by browsers. We target <td> children via
+   the data-drop attribute set on the <tr> during drag-over.                  */
+tr[data-drop="before"] > td {
+  box-shadow: inset 0 2.5px 0 0 var(--primary);
+}
+
+tr[data-drop="after"] > td {
+  box-shadow: inset 0 -2.5px 0 0 var(--primary);
+}
+
+tr[data-drop="inside"] {
+  background-color: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+tr[data-drop="inside"] > td:first-child {
+  box-shadow: inset 3px 0 0 0 var(--primary);
+}

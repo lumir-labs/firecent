@@ -1,0 +1,26 @@
+import { View, Text } from "react-native";
+import { SafeAreaView } from "@/components/ui/safe-area-view";
+import { Search as SearchIcon } from "lucide-react-native";
+import { useThemePreference } from "@/lib/theme-provider";
+import { useI18n } from "@/lib/i18n-provider";
+import { semanticTokens } from "@app/lib/tokens/semantic";
+
+export default function SearchScreen() {
+  const { resolved } = useThemePreference();
+  const { t } = useI18n();
+  const palette = semanticTokens[resolved];
+
+  return (
+    <SafeAreaView className="flex-1 bg-background">
+      <View className="flex-1 items-center justify-center p-6 gap-3">
+        <View className="h-16 w-16 rounded-full items-center justify-center bg-muted">
+          <SearchIcon size={32} color={palette.foreground} />
+        </View>
+        <Text className="text-xl font-inter-bold text-foreground">{t("Search.title")}</Text>
+        <Text className="text-sm text-center text-muted-foreground">
+          {t("Search.description")}
+        </Text>
+      </View>
+    </SafeAreaView>
+  );
+}

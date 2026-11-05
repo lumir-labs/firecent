@@ -1,0 +1,33 @@
+{
+  "apiDir": "./app/api/",
+  "schemaDir": [
+    "./schemas",
+    "./types"
+  ],
+  "schemaType": [
+    "zod",
+    "typescript"
+  ],
+  "outputDir": "./public",
+  "outputFile": "openapi.json",
+  "info": {
+    "title": "app API",
+    "version": "1.0.0",
+    "description": "API auto-generated from route handlers"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api",
+      "description": "API Server"
+    }
+  ],
+  "includePatterns": [
+    "**/route.ts",
+    "**/route.tsx"
+  ],
+  "excludePatterns": [
+    "**/node_modules/**",
+    "**/.next/**"
+  ],
+  "openApiVersion": "3.1.0"
+}

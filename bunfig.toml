@@ -1,0 +1,7 @@
+[install]
+linker = "hoisted"
+# Hoisted shortens paths for Expo/Gradle on Windows (avoids \.bun\ store of 180+ chars)
+# Alternative: linker = "isolated" is the default but breaks reanimated on Windows
+
+[install.cache]
+disableManifestCaching = false

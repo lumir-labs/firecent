@@ -1,0 +1,66 @@
+/* shadcn semantic tokens that generate the Tailwind v4 utilities:
+ * bg-background, text-foreground, bg-card, text-muted-foreground,
+ * border-border, bg-primary, text-primary-foreground, text-destructive...
+ *
+ * `inline` = the variable's value is injected into the utility, so that
+ * `var(--background)` is resolved at RUNTIME (web: `.dark` class; native:
+ * `@media (prefers-color-scheme: dark)`). The light/dark values live in
+ * shadcn.light.css / shadcn.dark.web.css / shadcn.dark.native.css so that
+ * theme + light can be shared with the mobile app. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* NOTE: do NOT re-map --font-* here (e.g. --font-sans: var(--font-sans)
+   * would be a circular self-reference that Tailwind resolves to `unset`
+   * and breaks font-sans/font-inter-* in native). Font families are defined
+   * ONLY in the @theme of apps/mobile/src/global.css. */
+
+  /* STATIC rem-based radii (no `calc(var(--radius) ± Npx)`): the native
+   * compiler silently discards calc with mixed units and the
+   * rounded-sm/md/xl classes ended up square. Identical values with a
+   * 16px root: sm 4px, md 6px, lg 8px (= --radius), xl 12px. */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: var(--radius);
+  --radius-xl: 0.75rem;
+
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
+}

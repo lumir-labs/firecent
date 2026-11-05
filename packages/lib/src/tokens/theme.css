@@ -1,0 +1,168 @@
+@layer theme, base, components, utilities;
+
+@layer theme {
+  @theme inline {
+    /* ─────────────────────────────────────────
+       DEFAULT  (warm slate, neutral anchor)
+    ───────────────────────────────────────── */
+    --color-brand-default-50: #f9f9fb;
+    --color-brand-default-100: #f0f0f4; /* BG-LIGHT */
+    --color-brand-default-200: #dcdce4;
+    --color-brand-default-300: #c8c8d4;
+    --color-brand-default-400: #b4b4c4;
+    --color-brand-default-500: #9f9fb3;
+    --color-brand-default-600: #808096;
+    --color-brand-default-700: #606079;
+    --color-brand-default-800: #2e2e3a; /* BG-DARK */
+    --color-brand-default-900: #1a1a26; /* TEXT-LIGHT */
+
+    /* ─────────────────────────────────────────
+       GRAY  (cool blue-gray, not warm taupe)
+    ───────────────────────────────────────── */
+    --color-brand-gray-50: #f4f5f7;
+    --color-brand-gray-100: #e4e6ec; /* BG-LIGHT */
+    --color-brand-gray-200: #d1d4de;
+    --color-brand-gray-300: #bec2cf;
+    --color-brand-gray-400: #abafc1;
+    --color-brand-gray-500: #989db2;
+    --color-brand-gray-600: #7c8199;
+    --color-brand-gray-700: #60657e;
+    --color-brand-gray-800: #363847; /* BG-DARK */
+    --color-brand-gray-900: #24263a; /* TEXT-LIGHT */
+
+    /* ─────────────────────────────────────────
+       BROWN  (desaturated mauve-brown, cooler)
+    ───────────────────────────────────────── */
+    --color-brand-brown-50: #fafaf9;
+    --color-brand-brown-100: #f5f5f4;
+    --color-brand-brown-200: #e7e5e4;
+    --color-brand-brown-300: #d6d3d1;
+    --color-brand-brown-400: #a8a29e;
+    --color-brand-brown-500: #78716c;
+    --color-brand-brown-600: #57534e;
+    --color-brand-brown-700: #44403c;
+    --color-brand-brown-800: #292524;
+    --color-brand-brown-900: #1c1917;
+
+    /* ─────────────────────────────────────────
+       ORANGE  (amber-orange, slightly cooled)
+    ───────────────────────────────────────── */
+    --color-brand-orange-50: #fff7ed;
+    --color-brand-orange-100: #ffedd5;
+    --color-brand-orange-200: #fed7aa;
+    --color-brand-orange-300: #fdba74;
+    --color-brand-orange-400: #fb923c;
+    --color-brand-orange-500: #f97316;
+    --color-brand-orange-600: #ea580c;
+    --color-brand-orange-700: #c2410c;
+    --color-brand-orange-800: #9a3412;
+    --color-brand-orange-900: #7c2d12;
+
+    /* ─────────────────────────────────────────
+       YELLOW  (golden-yellow, muted warmth)
+    ───────────────────────────────────────── */
+    --color-brand-yellow-50: #fffceb;
+    --color-brand-yellow-100: #fef5d2;
+    --color-brand-yellow-200: #fde9a0;
+    --color-brand-yellow-300: #fbd96d;
+    --color-brand-yellow-400: #f9c73d;
+    --color-brand-yellow-500: #eeb015; /* More balanced base color */
+    --color-brand-yellow-600: #ca920e;
+    --color-brand-yellow-700: #a2740c;
+    --color-brand-yellow-800: #86600d;
+    --color-brand-yellow-900: #6d4e0b;
+
+    /* ─────────────────────────────────────────
+       GREEN  (sage-teal green, cooler hue)
+    ───────────────────────────────────────── */
+    --color-brand-green-50: #ecfdf5; /* almost white, green tint */
+    --color-brand-green-100: #d1fae5; /* BG-LIGHT */
+    --color-brand-green-200: #a7f3d0;
+    --color-brand-green-300: #6ee7b7;
+    --color-brand-green-400: #34d399;
+    --color-brand-green-500: #10b981; /* base color */
+    --color-brand-green-600: #059669;
+    --color-brand-green-700: #047857;
+    --color-brand-green-800: #065f46; /* BG-DARK */
+    --color-brand-green-900: #064e3b; /* TEXT-LIGHT */
+
+    /* ─────────────────────────────────────────
+       BLUE  (slate-blue, cool & brand-aligned)
+    ───────────────────────────────────────── */
+    --color-brand-blue-50: #eff6ff;
+    --color-brand-blue-100: #dbeafe; /* BG-LIGHT */
+    --color-brand-blue-200: #bfdbfe;
+    --color-brand-blue-300: #93c5fd;
+    --color-brand-blue-400: #60a5fa;
+    --color-brand-blue-500: #3b82f6; /* BASE */
+    --color-brand-blue-600: #2563eb;
+    --color-brand-blue-700: #1d4ed8;
+    --color-brand-blue-800: #1e40af; /* BG-DARK */
+    --color-brand-blue-900: #1e3a8a; /* TEXT-LIGHT */
+
+    /* ─────────────────────────────────────────
+       PURPLE  (closest to primary — violet-purple)
+    ───────────────────────────────────────── */
+    --color-brand-purple-50: #f5f3ff;
+    --color-brand-purple-100: #ede9fe; /* BG-LIGHT */
+    --color-brand-purple-200: #ddd6fe;
+    --color-brand-purple-300: #c4b5fd;
+    --color-brand-purple-400: #a78bfa;
+    --color-brand-purple-500: #8b5cf6;
+    --color-brand-purple-600: #7c3aed; /* BASE */
+    --color-brand-purple-700: #6d28d9;
+    --color-brand-purple-800: #5b21b6; /* BG-DARK */
+    --color-brand-purple-900: #4c1d95; /* TEXT-LIGHT */
+
+    /* ─────────────────────────────────────────
+       PINK  (cool rose-pink, desaturated)
+    ───────────────────────────────────────── */
+    --color-brand-pink-50: #fdf2f8;
+    --color-brand-pink-100: #fce7f3; /* BG-LIGHT */
+    --color-brand-pink-200: #fbcfe8;
+    --color-brand-pink-300: #f9a8d4;
+    --color-brand-pink-400: #f472b6;
+    --color-brand-pink-500: #ec4899; /* BASE */
+    --color-brand-pink-600: #db2777;
+    --color-brand-pink-700: #be185d;
+    --color-brand-pink-800: #9d174d; /* BG-DARK */
+    --color-brand-pink-900: #831843; /* TEXT-LIGHT */
+
+    /* ─────────────────────────────────────────
+       RED  (cool crimson-red, less orange)
+    ───────────────────────────────────────── */
+    --color-brand-red-50: #fef2f2;
+    --color-brand-red-100: #fee2e2;
+    --color-brand-red-200: #fecaca;
+    --color-brand-red-300: #fca5a5;
+    --color-brand-red-400: #f87171;
+    --color-brand-red-500: #ef4444;
+    --color-brand-red-600: #dc2626;
+    --color-brand-red-700: #b91c1c;
+    --color-brand-red-800: #991b1b;
+    --color-brand-red-900: #7f1d1d;
+
+    /* ── Semantic aliases (resolved via CSS vars below) ── */
+    --color-brand-default: var(--brand-default);
+    --color-brand-gray: var(--brand-gray);
+    --color-brand-brown: var(--brand-brown);
+    --color-brand-orange: var(--brand-orange);
+    --color-brand-yellow: var(--brand-yellow);
+    --color-brand-green: var(--brand-green);
+    --color-brand-blue: var(--brand-blue);
+    --color-brand-purple: var(--brand-purple);
+    --color-brand-pink: var(--brand-pink);
+    --color-brand-red: var(--brand-red);
+
+    --color-brand-default-foreground: var(--brand-default-foreground);
+    --color-brand-gray-foreground: var(--brand-gray-foreground);
+    --color-brand-brown-foreground: var(--brand-brown-foreground);
+    --color-brand-orange-foreground: var(--brand-orange-foreground);
+    --color-brand-yellow-foreground: var(--brand-yellow-foreground);
+    --color-brand-green-foreground: var(--brand-green-foreground);
+    --color-brand-blue-foreground: var(--brand-blue-foreground);
+    --color-brand-purple-foreground: var(--brand-purple-foreground);
+    --color-brand-pink-foreground: var(--brand-pink-foreground);
+    --color-brand-red-foreground: var(--brand-red-foreground);
+  }
+}
