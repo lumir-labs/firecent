@@ -32,7 +32,7 @@ export async function proxy(request: NextRequest) {
   if (process.env.NODE_ENV === "production") {
     // The splash form POSTs here: rewriting it to the static HTML would
     // answer 500 (static files only allow GET/HEAD).
-    if (nextUrl.pathname === "/api/v1/waitlist") {
+    if (nextUrl.pathname === "/") {
       return NextResponse.next();
     }
     return NextResponse.rewrite(new URL("/splash/index.html", request.url));
