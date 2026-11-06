@@ -37,7 +37,26 @@ export const metadata: Metadata = {
     default: "App | Boilerplate",
   },
   description: "App boilerplate",
+  icons: {
+    icon: [
+      { url: "/splash/app-icons/favicon.svg", type: "image/svg+xml" },
+      { url: "/splash/app-icons/favicon.ico", sizes: "any" },
+      { url: "/splash/app-icons/favicon_32.png", sizes: "32x32", type: "image/png" },
+      { url: "/splash/app-icons/favicon_64.png", sizes: "64x64", type: "image/png" },
+      { url: "/splash/app-icons/favicon_256.png", sizes: "256x256", type: "image/png" },
+    ],
+    shortcut: "/splash/app-icons/favicon.ico",
+    apple: [
+      { url: "/splash/app-icons/app_dark_180.png", sizes: "180x180", type: "image/png" },
+    ],
+    other: [{ rel: "mask-icon", url: "/splash/icon.svg", color: "#ff7a3d" }],
+  },
+  manifest: "/site.webmanifest",
 };
+
+// `og:logo` uses `property=` (OpenGraph), which `metadata.other` can't emit
+// (it renders `name=`). React 19 hoists this <meta> into <head>.
+const OG_LOGO_URL = "https://firecent.app/splash/logo.png";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -63,9 +82,8 @@ export default async function LocaleLayout({ children }: Props) {
       className={cn(inter.variable, merriweather.variable, firaCode.variable)}
       suppressHydrationWarning
     >
-      <link rel="icon" href="/icon.png" type="image/png" sizes="any" />
-      <link rel="apple-touch-icon" href="/icon.png" />
       <body className="font-geist-sans antialiased">
+        <meta property="og:logo" content={OG_LOGO_URL} />
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider
             attribute="class"
