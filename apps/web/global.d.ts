@@ -1,5 +1,5 @@
 import type { Locale } from "./i18n/routing";
-import messages from "./messages/es.json";
+import messages from "@app/lib/messages/es.json";
 
 declare module "next-intl" {
   interface AppConfig {

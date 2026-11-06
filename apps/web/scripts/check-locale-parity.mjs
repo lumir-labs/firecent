@@ -2,10 +2,9 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
-// Shared single source: packages/lib/src/messages is the source of truth;
-// apps/web/messages is its synced copy (verified by the single-source check below).
+// Single source shared by web and mobile: packages/lib/src/messages.
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const MESSAGES_DIR = join(__dirname, "..", "messages");
+const MESSAGES_DIR = join(__dirname, "..", "..", "..", "packages", "lib", "src", "messages");
 const REFERENCE = "es.json";
 
 function flatten(obj, prefix = "") {
@@ -45,28 +44,4 @@ if (failed) {
   process.exit(1);
 }
 
-// ── Message single source ────────────────────────────────────────────────
-// `packages/lib/src/messages/*.json` is the source of truth (used by mobile and
-// web via `bun run i18n:sync`). If they diverge, run that command from the root.
-const SOURCE_DIR = join(__dirname, "..", "..", "..", "packages", "lib", "src", "messages");
-
-for (const file of files) {
-  let source;
-  try {
-    source = readFileSync(join(SOURCE_DIR, file), "utf8");
-  } catch {
-    continue; // locale without a packages equivalent
-  }
-
-  if (source !== readFileSync(join(MESSAGES_DIR, file), "utf8")) {
-    failed = true;
-    console.error(`\n✗ ${file} out of sync with packages/lib/src/messages/${file}`);
-    console.error("  Run `bun run i18n:sync` from the monorepo root.");
-  }
-}
-
-if (failed) {
-  console.error("\nLocale check failed. Fix the issues above.\n");
-  process.exit(1);
-}
-console.log("✓ Locale parity + single source OK");
+console.log("✓ Locale parity OK");

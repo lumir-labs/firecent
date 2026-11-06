@@ -5,7 +5,7 @@
 ## i18n: namespaces and the parity rule
 
 Single source: `packages/lib/src/messages/{es,en}.json` (web and mobile consume the
-same files; sync via `scripts/sync-i18n.mjs`, `bun run i18n:sync`).
+same files directly; there is no copy to sync).
 
 Actual namespaces (14): `Common, Nav, Profile, Auth, Admin, Home, Portal, Onboarding,
 Landing, Dashboard, LanguageSwitcher, Search, Favorites, Legal`.
@@ -31,7 +31,7 @@ Rules:
   (`scripts/check-locale-parity.mjs`; it also runs in the web `build`).
 - Server: `getTranslations("Portal")`; client: `useTranslations()`.
 - After adding keys, boot `bun run dev:web` (or `build`) once: the next-intl
-  plugin regenerates `apps/web/messages/es.d.json.ts` (generated, git-ignored);
+  plugin regenerates `packages/lib/src/messages/es.d.json.ts` (generated, git-ignored);
   without that, `tsc` sees stale types even though the JSON is right.
   Note: types resolve against `es.json` by design (parity with `en.json` is
   enforced by `check:i18n`, so both files always carry the same key set).

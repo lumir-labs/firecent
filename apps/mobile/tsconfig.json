@@ -2,6 +2,8 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    // next-intl generates packages/lib/src/messages/es.d.json.ts (strict types).
+    "allowArbitraryExtensions": true,
     "paths": {
       "@/*": ["./src/*"],
       "@app/api": ["../../packages/api/src/index.ts"],

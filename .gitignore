@@ -55,3 +55,6 @@ Thumbs.db
 
 # Local development Postgres cluster (see plan teams-dsr-2fa Task 0)
 /.pgdata/
+
+# next-intl generated message declarations
+packages/lib/src/messages/*.d.json.ts

@@ -117,7 +117,7 @@ const models = [];
 // --- 6. i18n ---------------------------------------------------------------------
 let namespaces = [];
 {
-  const es = readJson("packages/lib/src/messages/es.json") ?? readJson("apps/web/messages/es.json") ?? {};
+  const es = readJson("packages/lib/src/messages/es.json") ?? {};
   namespaces = Object.keys(es).sort();
 }
 

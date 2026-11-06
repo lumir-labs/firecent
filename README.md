@@ -18,7 +18,7 @@ bun run dev:web
 # → http://localhost:3000/en/landing
 ```
 
-Commands: `bun run dev | dev:web | dev:mobile | build | typecheck | i18n:sync | tokens:sync | docs:gen | env:check | db:purge`.
+Commands: `bun run dev | dev:web | dev:mobile | build | typecheck | tokens:sync | docs:gen | env:check | db:purge`.
 
 ## License & changelog
 

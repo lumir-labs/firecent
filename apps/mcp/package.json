@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "bun --watch src/index.ts",
+    "dev": "cd ../.. && bun --watch apps/mcp/src/index.ts",
     "start": "bun src/index.ts",
     "build": "tsc --noEmit",
     "typecheck": "tsc --noEmit",

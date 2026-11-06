@@ -90,8 +90,9 @@ CI job) talk to your org's data through the MCP server.
 - Keys are born with the two standard MCP scopes (read org, read members).
   A key with no scopes authorizes nothing (deny-by-default).
 
-Connecting an AI client: point it at `http(s)://<host>:3001/mcp` with the
-header `Authorization: Bearer sk_…`. The step-by-step (including curl) is in
+Connecting an AI client: point it at `http://localhost:3001/mcp` in dev, or at
+`https://mcp.firecent.app/mcp` in production (the container serves the MCP on
+port 3001, see the `Dockerfile` header), with the header `Authorization: Bearer sk_…`. The step-by-step (including curl) is in
 `docs/MCP.md`.
 
 ## 6. Your profile

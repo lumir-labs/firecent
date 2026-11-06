@@ -10,6 +10,9 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
+    // Lets TS pick next-intl's generated `es.d.json.ts` (strict ICU argument types)
+    // next to packages/lib/src/messages/es.json.
+    "allowArbitraryExtensions": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,

@@ -11,8 +11,8 @@ export type Locale = (typeof routing.locales)[number];
 
 /**
  * Single source of truth for ES/EN messages for web and mobile.
- * - Web: copied to apps/web/messages/*.json via `bun run i18n:sync` (TypeScript
- *   cannot resolve next-intl's `.d.json.ts` outside the workspace).
+ * - Web: loaded in apps/web/i18n/request.ts; next-intl generates
+ *   `messages/es.d.json.ts` here (git-ignored) for strict argument types.
  * - Mobile: imported directly with `import { esMessages } from "@app/lib/messages"`.
  */
 export const messages = { es: esMessages, en: enMessages } as const;

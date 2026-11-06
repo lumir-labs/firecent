@@ -18,6 +18,8 @@ export default getRequestConfig(async ({ locale }) => {
 
   return {
     locale: resolvedLocale,
-    messages: (await import(`../messages/${resolvedLocale}.json`)).default,
+    // Single source shared with mobile: packages/lib/src/messages/*.json
+    messages: (await import(`../../../packages/lib/src/messages/${resolvedLocale}.json`))
+      .default,
   };
 });

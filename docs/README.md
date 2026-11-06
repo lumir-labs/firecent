@@ -41,7 +41,7 @@ apps/mcp        # HTTP MCP server (port 3001): org API key auth, 3 tools
 packages/api    # tRPC (routers, permissions, api-keys service), single source of permissions
 packages/db     # Prisma schema + client
 packages/lib    # i18n single source (messages/) + theme tokens (tokens/semantic.ts)
-scripts/        # sync-tokens.ts, sync-i18n.mjs, check-env.mjs, gen-architecture.mjs
+scripts/        # sync-tokens.ts, check-env.mjs, gen-architecture.mjs
 docs/           # THIS documentation (single source of truth)
 ```
 

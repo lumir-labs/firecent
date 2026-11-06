@@ -18,7 +18,9 @@ try {
 const withNextIntl = createNextIntlPlugin({
   requestConfig: "./i18n/request.ts",
   experimental: {
-    createMessagesDeclaration: "./messages/es.json",
+    // Single source shared with mobile (packages/lib). The generated
+    // `es.d.json.ts` lands next to it and is git-ignored.
+    createMessagesDeclaration: "../../packages/lib/src/messages/es.json",
   },
 });
 

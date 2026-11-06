@@ -42,8 +42,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# next-intl (auto-generated strict message declarations)
-messages/*.d.json.ts
-
 # openapi generator cache
 .openapi-gen/
