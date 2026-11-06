@@ -3,7 +3,7 @@
 # En Dokploy: Build Type = Dockerfile, Dockerfile Path = ./Dockerfile, puerto 3000.
 
 ARG NODE_VERSION=22
-ARG BUN_VERSION=1.3.13
+ARG BUN_VERSION=1.4.4
 
 FROM oven/bun:${BUN_VERSION} AS bun
 
