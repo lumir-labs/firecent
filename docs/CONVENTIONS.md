@@ -74,6 +74,8 @@ app/[locale]/                 # everything under locale (routing.ts: localePrefi
   WebSite) lives in `generateMetadata` of `apps/web/app/[locale]/layout.tsx`,
   localized from the `Seo` namespace. `og:locale` follows the route locale
   (`es_ES` / `en_US`), with the other one as `og:locale:alternate`.
+- OG images: `public/splash/og-image.png` is English (default, also used by the
+  splash at `/`); `og-image-es.png` is used for `/es`.
 - The root layout sets `og:url` to the locale home (`/es`, `/en`); every page inherits
   it unless it overrides `openGraph`. It has **no** `canonical` or `hreflang` on
   purpose: they would be inherited by every page. Set them per page with `alternates`.

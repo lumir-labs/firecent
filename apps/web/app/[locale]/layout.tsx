@@ -35,8 +35,13 @@ const firaCode = Fira_Code({
 // so this stays on the public domain even in local dev.
 const SITE_URL = "https://firecent.app";
 const SITE_NAME = "firecent";
+// English is the default image (also used by the static splash at `/`);
+// Spanish routes get their own copy.
+const OG_IMAGE_PATHS: Record<Locale, string> = {
+  en: "/splash/og-image.png",
+  es: "/splash/og-image-es.png",
+};
 const OG_IMAGE = {
-  url: "/splash/og-image.png",
   width: 1200,
   height: 630,
   type: "image/png",
@@ -107,7 +112,11 @@ export async function generateMetadata(): Promise<Metadata> {
   if (!isLocale(localeValue)) return STATIC_METADATA;
 
   const t = await getTranslations({ locale: localeValue, namespace: "Seo" });
-  const ogImage = { ...OG_IMAGE, alt: t("ogImageAlt") };
+  const ogImage = {
+    ...OG_IMAGE,
+    url: OG_IMAGE_PATHS[localeValue],
+    alt: t("ogImageAlt"),
+  };
 
   return {
     ...STATIC_METADATA,
@@ -156,7 +165,7 @@ function siteJsonLd(description: string, slogan: string, inLanguage: Locale) {
           height: 384,
           caption: SITE_NAME,
         },
-        image: `${SITE_URL}${OG_IMAGE.url}`,
+        image: `${SITE_URL}${OG_IMAGE_PATHS[inLanguage]}`,
         slogan,
       },
       {
