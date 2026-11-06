@@ -16,7 +16,6 @@
     "jsx": "preserve",
     "incremental": true,
     "plugins": [{ "name": "next" }],
-    "baseUrl": ".",
     "paths": {
       "@app/api": ["./packages/api/src/index.ts"],
       "@app/api/*": ["./packages/api/src/*"],
