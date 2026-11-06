@@ -42,6 +42,7 @@ export async function proxy(request: NextRequest) {
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isTrpcRoute = nextUrl.pathname.startsWith("/api/trpc");
   const isInfoRoute = nextUrl.pathname.startsWith("/api/v1/info");
+  const isWaitlistRoute = nextUrl.pathname.startsWith("/api/v1/waitlist");
   const isMcpRoute = nextUrl.pathname.startsWith("/api/mcp");
   const isOpenApiSpec =
     nextUrl.pathname === "/openapi.json" ||
@@ -53,7 +54,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (isApiAuthRoute || isInfoRoute || isMcpRoute) {
+  if (isApiAuthRoute || isInfoRoute || isWaitlistRoute || isMcpRoute) {
     // `/api/mcp*` is let through: authentication is done by the MCP server
     // per org API key on each request (§5.3), not by the session cookie.
     return NextResponse.next();
