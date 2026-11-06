@@ -3,24 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>firecent</title>
+<title>firecent | Finanzas personales y compartidas, con metas claras</title>
 
-<!-- Metadatos Esenciales & SEO -->
-<meta name="description" content="firecent">
+<!-- SEO base -->
+<meta name="description" content="firecent te ayuda a ver tu dinero con claridad, compartir gastos con amigos y alcanzar tus metas de ahorro. Únete a la lista de espera y obtén acceso anticipado.">
+<link rel="canonical" href="https://firecent.app/">
+<link rel="alternate" hreflang="es" href="https://firecent.app/">
+<link rel="alternate" hreflang="en" href="https://firecent.app/">
+<link rel="alternate" hreflang="x-default" href="https://firecent.app/">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="sitemap" type="application/xml" href="/sitemap.xml">
 <meta name="application-name" content="firecent">
 <meta name="apple-mobile-web-app-title" content="firecent">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="bingbot" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="author" content="firecent">
 <meta name="publisher" content="firecent">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="keywords" content="firecent, finanzas personales, gastos compartidos, dividir gastos, metas de ahorro, app de finanzas, lista de espera, personal finance, shared expenses, savings goals">
 <meta name="format-detection" content="telephone=no">
 
 <!-- Tema & Colores de Marca -->
 <meta name="theme-color" content="#0b1220">
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1220">
-<meta name="theme-color" media="(prefers-color-scheme: light)" content="#0b1220">
 <meta name="msapplication-TileColor" content="#0b1220">
 <meta name="msapplication-navbutton-color" content="#0b1220">
 <meta name="color-scheme" content="dark">
@@ -34,69 +42,158 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/splash/app-icons/app_dark_180.png">
 <link rel="mask-icon" href="/splash/icon.svg" color="#ff7a3d">
 
-<!-- Open Graph / Facebook / LinkedIn / WhatsApp -->
+<!-- Open Graph / Facebook / LinkedIn / WhatsApp / Telegram / Slack -->
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://firecent.app/">
 <meta property="og:site_name" content="firecent">
-<meta property="og:title" content="firecent">
-<meta property="og:description" content="firecent">
-<meta property="og:image" content="/splash/firecent-BG.png">
-<meta property="og:image:secure_url" content="/splash/firecent-BG.png">
+<meta property="og:title" content="firecent | Tu dinero, claro. Tus metas, en llamas.">
+<meta property="og:description" content="firecent te ayuda a ver tu dinero con claridad, compartir gastos con amigos y alcanzar tus metas de ahorro. Únete a la lista de espera y obtén acceso anticipado.">
+<meta property="og:image" content="https://firecent.app/splash/og-image.png">
+<meta property="og:image:secure_url" content="https://firecent.app/splash/og-image.png">
 <meta property="og:image:type" content="image/png">
-<meta property="og:image:width" content="1920">
-<meta property="og:image:height" content="1080">
-<meta property="og:image:alt" content="firecent">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="firecent: logo con llama naranja y violeta sobre fondo oscuro, con el lema «Tu dinero, claro. Tus metas, en llamas.»">
 <meta property="og:locale" content="es_ES">
+<meta property="og:locale:alternate" content="en_US">
 
-<!-- Twitter Card -->
+<!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="firecent">
-<meta name="twitter:description" content="firecent">
-<meta name="twitter:image" content="/splash/firecent-BG.png">
-<meta name="twitter:image:alt" content="firecent">
+<meta name="twitter:url" content="https://firecent.app/">
+<meta name="twitter:title" content="firecent | Tu dinero, claro. Tus metas, en llamas.">
+<meta name="twitter:description" content="firecent te ayuda a ver tu dinero con claridad, compartir gastos con amigos y alcanzar tus metas de ahorro. Únete a la lista de espera y obtén acceso anticipado.">
+<meta name="twitter:image" content="https://firecent.app/splash/og-image.png">
+<meta name="twitter:image:alt" content="firecent: logo con llama naranja y violeta sobre fondo oscuro, con el lema «Tu dinero, claro. Tus metas, en llamas.»">
 
-<!-- AEO (Answer Engine Optimization) & SEO Estructurado (JSON-LD) -->
+<!-- SEO / AEO / GEO: datos estructurados (JSON-LD) -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "WebSite",
-      "@id": "#website",
+      "@type": "Organization",
+      "@id": "https://firecent.app/#organization",
       "name": "firecent",
-      "alternateName": "firecent",
-      "description": "firecent",
-      "inLanguage": "es"
+      "url": "https://firecent.app/",
+      "logo": {
+        "@type": "ImageObject",
+        "@id": "https://firecent.app/#logo",
+        "url": "https://firecent.app/splash/logo.png",
+        "width": 1102,
+        "height": 384,
+        "caption": "firecent"
+      },
+      "image": "https://firecent.app/splash/og-image.png",
+      "slogan": "Tu dinero, claro. Tus metas, en llamas."
     },
     {
-      "@type": "SoftwareApplication",
-      "@id": "#app",
+      "@type": "WebSite",
+      "@id": "https://firecent.app/#website",
+      "url": "https://firecent.app/",
       "name": "firecent",
-      "applicationCategory": "Application",
-      "operatingSystem": "All",
-      "image": "/splash/firecent-BG.png",
-      "screenshot": "/splash/firecent-BG.png",
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "5",
-        "ratingCount": "1"
+      "alternateName": [
+        "firecent app",
+        "Firecent"
+      ],
+      "description": "firecent te ayuda a ver tu dinero con claridad, compartir gastos con amigos y alcanzar tus metas de ahorro. Únete a la lista de espera y obtén acceso anticipado.",
+      "inLanguage": [
+        "es",
+        "en"
+      ],
+      "publisher": {
+        "@id": "https://firecent.app/#organization"
       }
     },
     {
-      "@type": "Organization",
-      "@id": "#organization",
-      "name": "firecent",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "/splash/logo.png",
-        "width": 1920,
-        "height": 1080
+      "@type": "WebPage",
+      "@id": "https://firecent.app/#webpage",
+      "url": "https://firecent.app/",
+      "name": "firecent | Finanzas personales y compartidas, con metas claras",
+      "description": "firecent te ayuda a ver tu dinero con claridad, compartir gastos con amigos y alcanzar tus metas de ahorro. Únete a la lista de espera y obtén acceso anticipado.",
+      "inLanguage": "es",
+      "isPartOf": {
+        "@id": "https://firecent.app/#website"
       },
-      "image": "/splash/firecent-BG.png"
+      "about": {
+        "@id": "https://firecent.app/#app"
+      },
+      "publisher": {
+        "@id": "https://firecent.app/#organization"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://firecent.app/splash/og-image.png",
+        "width": 1200,
+        "height": 630
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://firecent.app/#app",
+      "name": "firecent",
+      "url": "https://firecent.app/",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web, iOS, Android",
+      "description": "firecent te ayuda a ver tu dinero con claridad, compartir gastos con amigos y alcanzar tus metas de ahorro. Únete a la lista de espera y obtén acceso anticipado.",
+      "image": "https://firecent.app/splash/og-image.png",
+      "inLanguage": [
+        "es",
+        "en"
+      ],
+      "publisher": {
+        "@id": "https://firecent.app/#organization"
+      },
+      "featureList": [
+        "Control claro del dinero personal",
+        "Gastos compartidos con amigos",
+        "Metas de ahorro con seguimiento"
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://firecent.app/#faq",
+      "inLanguage": "es",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Qué es firecent?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "firecent es una app de finanzas personales y compartidas que te permite ver tu dinero con claridad, dividir gastos con amigos y trabajar hacia metas de ahorro."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Cómo accedo a firecent?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Estamos abriendo firecent por etapas. Déjanos tu correo en la lista de espera de firecent.app y te avisamos cuando sea tu turno."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Qué puedo hacer con firecent?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Puedes registrar y organizar tu dinero, compartir gastos con amigos y definir metas de ahorro para seguir tu progreso."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Cuándo se lanza firecent?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "firecent está en acceso anticipado por invitación. Las personas en la lista de espera reciben acceso por orden de registro."
+          }
+        }
+      ]
     }
   ]
 }
 </script>
 <style>
+  /* Contenido semántico para buscadores, lectores de pantalla y motores de IA */
+  .seo { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
   html, body {
     margin: 0;
     height: 100%;
@@ -350,7 +447,44 @@
 </head>
 <body>
 
-<svg id="stage" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet" aria-label="firecent">
+<!-- Contenido semántico: misma información que ve el usuario, accesible para crawlers y motores de respuesta -->
+<main class="seo" id="main">
+  <article lang="es">
+    <h1>firecent: finanzas personales y compartidas, con metas claras</h1>
+    <p><strong>firecent</strong> es una app que te ayuda a ver tu dinero con claridad, compartir gastos con amigos y alcanzar tus metas de ahorro. Estamos abriendo firecent por etapas: únete a la lista de espera en firecent.app para obtener acceso anticipado.</p>
+    <h2>Qué puedes hacer con firecent</h2>
+    <ul>
+      <li>Ver y organizar tu dinero en un solo lugar.</li>
+      <li>Compartir y dividir gastos con amigos.</li>
+      <li>Definir metas de ahorro y seguir tu progreso.</li>
+    </ul>
+    <h2>Preguntas frecuentes</h2>
+    <h3>¿Qué es firecent?</h3>
+    <p>firecent es una app de finanzas personales y compartidas que te permite ver tu dinero con claridad, dividir gastos con amigos y trabajar hacia metas de ahorro.</p>
+    <h3>¿Cómo accedo a firecent?</h3>
+    <p>Estamos abriendo firecent por etapas. Déjanos tu correo en la lista de espera de firecent.app y te avisamos cuando sea tu turno.</p>
+    <h3>¿Qué puedo hacer con firecent?</h3>
+    <p>Puedes registrar y organizar tu dinero, compartir gastos con amigos y definir metas de ahorro para seguir tu progreso.</p>
+    <h3>¿Cuándo se lanza firecent?</h3>
+    <p>firecent está en acceso anticipado por invitación. Las personas en la lista de espera reciben acceso por orden de registro.</p>
+    <p><a href="/privacy">Privacidad</a> · <a href="/terms">Términos</a></p>
+  </article>
+  <article lang="en">
+    <h2>firecent: personal and shared finance with clear goals</h2>
+    <p><strong>firecent</strong> helps you see your money clearly, share expenses with friends and reach your savings goals. We are opening in stages: join the waitlist at firecent.app for early access.</p>
+    <h2>Frequently asked questions</h2>
+    <h3>What is firecent?</h3>
+    <p>firecent is a personal and shared finance app that helps you see your money clearly, split expenses with friends and work towards savings goals.</p>
+    <h3>How do I get access to firecent?</h3>
+    <p>We are opening firecent in stages. Leave your email on the waitlist at firecent.app and we will let you know when it is your turn.</p>
+    <h3>What can I do with firecent?</h3>
+    <p>You can track and organize your money, share expenses with friends and set savings goals to follow your progress.</p>
+    <h3>When does firecent launch?</h3>
+    <p>firecent is in invite-only early access. People on the waitlist get access in order of sign-up.</p>
+  </article>
+</main>
+
+<svg id="stage" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet" role="img" aria-label="firecent: Tu dinero, claro. Tus metas, en llamas." focusable="false">
   <defs>
     <radialGradient id="radial-gradient-1" cx="0" cy="0" r="641.587" gradientTransform="matrix(1 0 0 0.931 1766.967 1053.75)" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#7c5cff" stop-opacity="0.19"/>

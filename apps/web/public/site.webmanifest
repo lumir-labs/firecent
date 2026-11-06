@@ -1,0 +1,17 @@
+{
+  "name": "firecent",
+  "short_name": "firecent",
+  "description": "Finanzas personales y compartidas, con metas claras.",
+  "lang": "es",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
+  "categories": ["finance", "productivity"],
+  "icons": [
+    { "src": "/splash/app-icons/app_dark_180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/splash/app-icons/app_dark_512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/splash/app-icons/app_dark_1024.png", "sizes": "1024x1024", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -1,0 +1,17 @@
+# firecent
+
+> firecent es una app de finanzas personales y compartidas: ver tu dinero con claridad, dividir gastos con amigos y alcanzar metas de ahorro. Actualmente en acceso anticipado con lista de espera. / firecent is a personal and shared finance app: see your money clearly, split expenses with friends and reach savings goals. Currently in early access with a waitlist.
+
+## Páginas / Pages
+
+- [Inicio y lista de espera / Home and waitlist](https://firecent.app/): únete a la lista de espera para acceso anticipado.
+- [Privacidad / Privacy](https://firecent.app/privacy)
+- [Términos / Terms](https://firecent.app/terms)
+
+## Datos clave / Key facts
+
+- Nombre / Name: firecent
+- Sitio / Website: https://firecent.app
+- Idiomas / Languages: español, English
+- Estado / Status: acceso anticipado por invitación / invite-only early access
+- Lema / Tagline: Tu dinero, claro. Tus metas, en llamas.
