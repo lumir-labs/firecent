@@ -99,9 +99,9 @@ const STATIC_METADATA = {
   manifest: "/site.webmanifest",
 } satisfies Metadata;
 
-// Site-wide SEO, localized per route locale. No `canonical`, `og:url` or
-// `hreflang` here on purpose: root-layout metadata is inherited by every page,
-// so those would point all routes at the same URL. Set them per page instead.
+// Site-wide SEO, localized per route locale. No `canonical` or `hreflang` here
+// on purpose: root-layout metadata is inherited by every page, so those would
+// point all routes at the same URL. Set them per page instead.
 export async function generateMetadata(): Promise<Metadata> {
   const localeValue = await locale();
   if (!isLocale(localeValue)) return STATIC_METADATA;
@@ -118,6 +118,9 @@ export async function generateMetadata(): Promise<Metadata> {
     description: t("description"),
     openGraph: {
       type: "website",
+      // Locale home. Inherited by every page: override `openGraph` per page
+      // when a page needs its own share URL.
+      url: `/${localeValue}`,
       siteName: SITE_NAME,
       title: t("ogTitle"),
       description: t("description"),
