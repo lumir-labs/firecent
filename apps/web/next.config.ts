@@ -23,6 +23,11 @@ const withNextIntl = createNextIntlPlugin({
 });
 
 const nextConfig: NextConfig = {
+  // Docker/Dokploy: genera un servidor autocontenido en .next/standalone
+  // (solo los archivos que realmente usa la app, no todo node_modules).
+  output: "standalone",
+  // Monorepo: rastrear dependencias desde la raíz (node_modules hoisted de bun).
+  outputFileTracingRoot: path.resolve(import.meta.dirname ?? ".", "..", ".."),
   serverExternalPackages: ["pg", "@prisma/adapter-pg", "@prisma/client"],
   /* config options here */
   allowedDevOrigins: ["192.168.1.46"],

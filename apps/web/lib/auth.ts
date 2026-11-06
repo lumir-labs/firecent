@@ -4,6 +4,7 @@ import { db } from "@app/db";
 import { nextCookies } from "better-auth/next-js";
 import { customSession } from "better-auth/plugins/custom-session";
 import { cookies, headers } from "next/headers";
+import { unstable_rethrow } from "next/navigation";
 import { organization, magicLink, twoFactor } from "better-auth/plugins";
 import { expo } from "@better-auth/expo";
 import { createAuthMiddleware } from "better-auth/api";
@@ -442,6 +443,9 @@ export async function getServerSession() {
     }
     return session;
   } catch (error) {
+    // Deja pasar las señales internas de Next (rutas dinámicas, redirect,
+    // notFound): si se atrapan aquí, Next no puede marcar la ruta como dinámica.
+    unstable_rethrow(error);
     console.error(error);
     const cookieStore = await cookies();
     cookieStore.delete("better-auth-session_token");
