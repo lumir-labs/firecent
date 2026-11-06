@@ -48,7 +48,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // `Appearance.setColorScheme` (so native components —Alert, Modal,
   // dialogs— and `useColorScheme()` stay aligned), and `system` follows the
   // phone again. The `dark:` variant and the `@variant light` / `@variant
-  // dark` variables in tokens/*.uniwind.native.css stem from this.
+  // dark` variables in tokens/tokens.css stem from this.
   useEffect(() => {
     Uniwind.setTheme(theme);
   }, [theme]);

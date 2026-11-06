@@ -6,7 +6,6 @@ import {
   Pressable,
   StyleSheet,
   View,
-  type ColorValue,
   type View as RNView,
 } from "react-native";
 import { router, usePathname } from "expo-router";
@@ -22,7 +21,8 @@ import {
 
 import { authClient } from "@/lib/auth-client";
 import { useThemePreference } from "@/lib/theme-provider";
-import { semanticTokens } from "@app/lib/tokens/semantic";
+import { useThemeColors } from "@/lib/theme-colors";
+import { withAlpha } from "@/lib/utils";
 
 /**
  * Real blur on Android?
@@ -36,11 +36,6 @@ type FloatingTabBarProps = {
 
 const BAR_RADIUS = 36;
 const BAR_HEIGHT = 55;
-
-function withAlpha(hex: ColorValue, alphaHex: string): string {
-  const s = String(hex);
-  return /^#[0-9a-fA-F]{6}$/.test(s) ? `${s}${alphaHex}` : s;
-}
 
 export function FloatingTabBar({
   blurTarget,
@@ -67,9 +62,9 @@ export function FloatingTabBar({
   }, [wantsAndroidBlur, targetReady, blurTarget]);
 
   const isDark = resolved === "dark";
-  const palette = semanticTokens[resolved];
+  const palette = useThemeColors();
   const tint = isDark ? "dark" : "light";
-  const fallbackBg = withAlpha(palette.card, isDark ? "D9" : "B3");
+  const fallbackBg = withAlpha(palette.card, isDark ? 0xd9 / 255 : 0xb3 / 255);
 
   const user = session?.user;
 

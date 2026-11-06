@@ -6,11 +6,11 @@
   "scripts": {
     "dev": "expo start",
     "start": "expo start",
-    "android": "expo run:android",
+    "android": "expo prebuild --clean && expo run:android --no-build-cache",
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint",
-    "typecheck": "bun ../../scripts/sync-tokens.ts --check && bun run artifacts && tsc --noEmit",
+    "typecheck": "node ../../scripts/check-tokens.mjs && bun run artifacts && tsc --noEmit",
     "test": "bun test src/lib/",
     "artifacts": "uniwind generate-artifacts --css ./src/global.css --dts ./uniwind-types.d.ts"
   },

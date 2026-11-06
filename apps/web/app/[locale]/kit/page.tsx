@@ -154,7 +154,7 @@ export default function UiKitPage() {
               Colores del Tema
             </h2>
             <p className="text-xs text-muted-foreground">
-              Tokens configurados en <code className="font-mono text-[11px]">packages/lib/src/tokens/semantic.ts</code>.
+              Tokens configurados en <code className="font-mono text-[11px]">packages/lib/src/tokens/tokens.css</code>.
             </p>
           </div>
 

@@ -1,0 +1,166 @@
+/* SINGLE SOURCE OF TRUTH for theme tokens (web + mobile). Edit values HERE.
+ *
+ * The same file is consumed as-is by both platforms — no generator:
+ *   - Web (Tailwind v4): `light` / `dark` are custom variants declared in
+ *     packages/lib/src/globals.css (`.dark` class set by next-themes).
+ *   - Mobile (Uniwind): `light` / `dark` are Uniwind's built-in themes. It
+ *     ONLY registers theme vars declared as `@variant <theme>` under
+ *     `@layer theme`, and it validates that every theme defines the SAME set
+ *     of vars (a missing one fails `uniwind generate-artifacts`).
+ *
+ * Rule: any var added to `@variant light` must also exist in `@variant dark`.
+ *
+ * Reading values in JS (icons, charts, React Navigation): mobile uses
+ * `useThemeColors()` / `useCSSVariable` (apps/mobile/src/lib/theme-colors.ts),
+ * which read the RESOLVED value from Uniwind's store and re-render on theme
+ * change.
+ *
+ * The utility→variable mapping (bg-background → var(--background)) lives in
+ * shadcn.theme.css; the static `--color-brand-*-50…900` palettes in theme.css. */
+
+/* Non-color values: identical in both themes, so a flat `:root` (outside
+ * `@layer theme`). `shadcn.theme.css` maps `--radius-lg: var(--radius)`. */
+:root {
+  --radius: 0.5rem;
+  --shadow-x: 0px;
+  --shadow-y: 4px;
+  --shadow-blur: 8px;
+  --shadow-spread: -1px;
+  --shadow-opacity: 0.1;
+  --shadow-color: hsl(0 0% 0%);
+  --shadow-2xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
+  --shadow-xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
+  --shadow-sm:
+    0px 4px 8px -1px hsl(0 0% 0% / 0.1), 0px 1px 2px -2px hsl(0 0% 0% / 0.1);
+  --shadow:
+    0px 4px 8px -1px hsl(0 0% 0% / 0.1), 0px 1px 2px -2px hsl(0 0% 0% / 0.1);
+  --shadow-md:
+    0px 4px 8px -1px hsl(0 0% 0% / 0.1), 0px 2px 4px -2px hsl(0 0% 0% / 0.1);
+  --shadow-lg:
+    0px 4px 8px -1px hsl(0 0% 0% / 0.1), 0px 4px 6px -2px hsl(0 0% 0% / 0.1);
+  --shadow-xl:
+    0px 4px 8px -1px hsl(0 0% 0% / 0.1), 0px 8px 10px -2px hsl(0 0% 0% / 0.1);
+  --shadow-2xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.25);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+}
+
+@layer theme {
+  :root {
+    @variant light {
+      /* shadcn semantic colors */
+      --background: #f8fafc;
+      --foreground: #0b1220;
+      --card: #ffffff;
+      --card-foreground: #0b1220;
+      --popover: #ffffff;
+      --popover-foreground: #0b1220;
+      --primary: #5e54f0;
+      --primary-foreground: #ffffff;
+      --secondary: #f1f4f9;
+      --secondary-foreground: #1f2937;
+      --muted: #f4f6fa;
+      --muted-foreground: #64748b;
+      --accent: #f1f4f9;
+      --accent-foreground: #0b1220;
+      --destructive: #ef4444;
+      --destructive-foreground: #ffffff;
+      --border: #e2e8f0;
+      --input: #e2e8f0;
+      --ring: #7c5cff;
+      --chart-1: #5e54f0;
+      --chart-2: #ff6b3d;
+      --chart-3: #a78bfa;
+      --chart-4: #ffa64f;
+      --chart-5: #3a2edb;
+      --sidebar: #ffffff;
+      --sidebar-foreground: #0b1220;
+      --sidebar-primary: #5e54f0;
+      --sidebar-primary-foreground: #ffffff;
+      --sidebar-accent: #ffffff;
+      --sidebar-accent-foreground: #0b1220;
+      --sidebar-border: #e2e8f0;
+      --sidebar-ring: #7c5cff;
+
+      /* brand aliases (semantic layer over the --color-brand-* palettes) */
+      --brand-default: var(--color-brand-default-100);
+      --brand-default-foreground: var(--color-brand-default-700);
+      --brand-gray: var(--color-brand-gray-100);
+      --brand-gray-foreground: var(--color-brand-gray-700);
+      --brand-brown: var(--color-brand-brown-100);
+      --brand-brown-foreground: var(--color-brand-brown-700);
+      --brand-orange: var(--color-brand-orange-100);
+      --brand-orange-foreground: var(--color-brand-orange-700);
+      --brand-yellow: var(--color-brand-yellow-100);
+      --brand-yellow-foreground: var(--color-brand-yellow-600);
+      --brand-green: var(--color-brand-green-100);
+      --brand-green-foreground: var(--color-brand-green-700);
+      --brand-blue: var(--color-brand-blue-100);
+      --brand-blue-foreground: var(--color-brand-blue-800);
+      --brand-purple: var(--color-brand-purple-100);
+      --brand-purple-foreground: var(--color-brand-purple-700);
+      --brand-pink: var(--color-brand-pink-100);
+      --brand-pink-foreground: var(--color-brand-pink-700);
+      --brand-red: var(--color-brand-red-100);
+      --brand-red-foreground: var(--color-brand-red-700);
+    }
+
+    @variant dark {
+      /* shadcn semantic colors */
+      --background: #0b1220;
+      --foreground: #f4f6fa;
+      --card: #11192a;
+      --card-foreground: #f4f6fa;
+      --popover: #11192a;
+      --popover-foreground: #f4f6fa;
+      --primary: #7c5cff;
+      --primary-foreground: #ffffff;
+      --secondary: #182236;
+      --secondary-foreground: #e2e8f0;
+      --muted: #131b2e;
+      --muted-foreground: #94a3b8;
+      --accent: #182236;
+      --accent-foreground: #f4f6fa;
+      --destructive: #ef4444;
+      --destructive-foreground: #ffffff;
+      --border: #1e293b;
+      --input: #1e293b;
+      --ring: #a78bfa;
+      --chart-1: #9a88fb;
+      --chart-2: #ff7a3d;
+      --chart-3: #ffa64f;
+      --chart-4: #a78bfa;
+      --chart-5: #5e54f0;
+      --sidebar: #080e1a;
+      --sidebar-foreground: #e2e8f0;
+      --sidebar-primary: #7c5cff;
+      --sidebar-primary-foreground: #ffffff;
+      --sidebar-accent: #141c2e;
+      --sidebar-accent-foreground: #e2e8f0;
+      --sidebar-border: #1e293b;
+      --sidebar-ring: #a78bfa;
+
+      /* brand aliases */
+      --brand-default: var(--color-brand-default-800);
+      --brand-default-foreground: #d4d4e0; /* cool white */
+      --brand-gray: var(--color-brand-gray-800);
+      --brand-gray-foreground: rgba(255, 255, 255, 0.82);
+      --brand-brown: var(--color-brand-brown-800);
+      --brand-brown-foreground: rgba(255, 255, 255, 0.87);
+      --brand-orange: var(--color-brand-orange-800);
+      --brand-orange-foreground: rgba(255, 255, 255, 0.87);
+      --brand-yellow: var(--color-brand-yellow-700);
+      --brand-yellow-foreground: rgba(255, 255, 255, 0.87);
+      --brand-green: var(--color-brand-green-800);
+      --brand-green-foreground: rgba(255, 255, 255, 0.87);
+      --brand-blue: var(--color-brand-blue-800);
+      --brand-blue-foreground: rgba(255, 255, 255, 0.87);
+      --brand-purple: var(--color-brand-purple-800);
+      --brand-purple-foreground: rgba(255, 255, 255, 0.87);
+      --brand-pink: var(--color-brand-pink-800);
+      --brand-pink-foreground: rgba(255, 255, 255, 0.87);
+      --brand-red: var(--color-brand-red-800);
+      --brand-red-foreground: rgba(255, 255, 255, 0.87);
+    }
+  }
+}

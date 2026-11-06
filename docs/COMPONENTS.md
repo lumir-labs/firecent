@@ -78,19 +78,26 @@ theme-aware expo-router bar (icons + labels, no CTA). Charts: victory-native
 
 ## Theming (both platforms)
 
-Single source: `packages/lib/src/tokens/semantic.ts` (`semanticTokens` light/dark).
-Generator: `bun run tokens:sync` (`scripts/sync-tokens.ts`) → emits the `*.css`.
+Single source: `packages/lib/src/tokens/tokens.css` — every light/dark value
+(shadcn semantic colors + `--brand-*` aliases) in `@layer theme` +
+`@variant light` / `@variant dark` form. **No generator**: both apps import
+the same file.
 
-- Web: imports the `shadcn.*.web.css` / `light.css` files (see the global CSS in `apps/web`).
-- Mobile (`apps/mobile/src/global.css`): import **only**
-  `theme.css` + `light.css` + `shadcn.theme.css` + `*.uniwind.native.css`.
-  **Never** `dark.web.css` (the `.dark` class does not exist in native) nor
-  `dark.native.css` (a media query Uniwind does not route — it overrides the global store).
-- Changing a color = edit `semantic.ts` + `tokens:sync` + keep
-  `bun run tokens:sync -- --check` green (it also runs in CI and in mobile `typecheck`).
-  Note: the `--brand-*` aliases are hand-edited in `light.css` + `dark.native.css`
-  (same set in both; `brandDrift` fails if they diverge) and `theme.css` is the
-  third manual palette source.
+- Web (`packages/lib/src/globals.css`): `theme.css` + `shadcn.theme.css` +
+  `tokens.css`, and defines what the variants mean on the DOM:
+  `@custom-variant dark (&:is(.dark, .dark *))` / `light (&:not(.dark, .dark *))`
+  (`.dark` set on `<html>` by next-themes).
+- Mobile (`apps/mobile/src/global.css`): same three files; `light` / `dark` are
+  Uniwind's built-in themes (do NOT declare `@custom-variant` there).
+- Changing a color = edit `tokens.css`. Any var in `@variant light` must also
+  exist in `@variant dark` (Uniwind requires it). `scripts/check-tokens.mjs`
+  enforces it — a check, not a generator — and runs in mobile `typecheck`, so
+  CI catches drift (`uniwind generate-artifacts` only logs it and exits 0).
+- Colors in JS (icon `color`, charts, React Navigation, alpha tints): mobile reads
+  the resolved values with `useThemeColors()` / `useThemeColor()`
+  (`apps/mobile/src/lib/theme-colors.ts`, on top of Uniwind's `useCSSVariable`);
+  they re-render on theme change. Add a name to `THEME_COLOR_NAMES` to expose a new one.
+- `theme.css` holds the static `--color-brand-*-50…900` palettes.
 
 ## Brand assets (logos)
 

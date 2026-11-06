@@ -1,14 +1,14 @@
+import { useMemo } from "react";
 import { DarkTheme, DefaultTheme, type Theme } from "expo-router";
-import { semanticTokens } from "@app/lib/tokens/semantic";
+import { useThemeColors } from "@/lib/theme-colors";
 
 /**
  * React Navigation theme (tab bar, screen backgrounds, headers).
  *
- * The values come DIRECTLY from the single source of tokens
- * (packages/lib/src/tokens/semantic.ts) — they cannot drift from the CSS
- * because both consume the same module. React Navigation does not read CSS
- * variables, which is why only the 6 colors the navigation uses are copied
- * here: tab bar background = `card`, screen background = `background`.
+ * React Navigation does not read CSS variables, so the 6 colors it uses are
+ * read from the RESOLVED tokens (packages/lib/src/tokens/tokens.css, via
+ * Uniwind) — they cannot drift from the CSS and follow manual theme changes.
+ * Tab bar background = `card`, screen background = `background`.
  */
 const fonts: Theme["fonts"] = {
   regular: { fontFamily: "Inter_400Regular", fontWeight: "400" },
@@ -17,30 +17,23 @@ const fonts: Theme["fonts"] = {
   heavy: { fontFamily: "Inter_700Bold", fontWeight: "900" },
 };
 
-export const lightNavigationTheme: Theme = {
-  ...DefaultTheme,
-  fonts,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: semanticTokens.light.primary,
-    background: semanticTokens.light.background,
-    card: semanticTokens.light.card,
-    text: semanticTokens.light.foreground,
-    border: semanticTokens.light.border,
-    notification: semanticTokens.light.destructive,
-  },
-};
-
-export const darkNavigationTheme: Theme = {
-  ...DarkTheme,
-  fonts,
-  colors: {
-    ...DarkTheme.colors,
-    primary: semanticTokens.dark.primary,
-    background: semanticTokens.dark.background,
-    card: semanticTokens.dark.card,
-    text: semanticTokens.dark.foreground,
-    border: semanticTokens.dark.border,
-    notification: semanticTokens.dark.destructive,
-  },
-};
+export function useNavigationTheme(scheme: "light" | "dark"): Theme {
+  const c = useThemeColors();
+  return useMemo(() => {
+    const base = scheme === "dark" ? DarkTheme : DefaultTheme;
+    return {
+      ...base,
+      dark: scheme === "dark",
+      fonts,
+      colors: {
+        ...base.colors,
+        primary: c.primary,
+        background: c.background,
+        card: c.card,
+        text: c.foreground,
+        border: c.border,
+        notification: c.destructive,
+      },
+    };
+  }, [scheme, c.primary, c.background, c.card, c.foreground, c.border, c.destructive]);
+}

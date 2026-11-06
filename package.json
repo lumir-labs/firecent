@@ -20,7 +20,6 @@
     "db:push": "turbo run db:push --filter=@app/db",
     "db:seed": "bun apps/web/scripts/seed.ts",
     "env:check": "node scripts/check-env.mjs",
-    "tokens:sync": "bun scripts/sync-tokens.ts",
     "db:migrate": "turbo run db:migrate --filter=@app/db",
     "db:studio": "turbo run db:studio --filter=@app/db",
     "db:purge": "node scripts/purge-expired.mjs",

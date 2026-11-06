@@ -20,10 +20,7 @@ import { authClient } from "@/lib/auth-client";
 import { isAuthenticatedSession } from "@/lib/auth-guard";
 import { I18nProvider } from "@/lib/i18n-provider";
 import { ThemeProvider as AppThemeProvider, useThemePreference } from "@/lib/theme-provider";
-import {
-  darkNavigationTheme,
-  lightNavigationTheme,
-} from "@/lib/navigation-theme";
+import { useNavigationTheme } from "@/lib/navigation-theme";
 import { TRPCProvider } from "@/lib/trpc";
 
 // Prevents a flash of the default background before the first frame;
@@ -46,9 +43,10 @@ export default function RootLayout() {
 function RootNavigator() {
   // EFFECTIVE theme (user's choice in Profile > Theme, or system).
   // `useThemePreference` calls `Uniwind.setTheme`, which is what moves the
-  // `@variant light/dark` vars in tokens/*.uniwind.native.css.
+  // `@variant light/dark` vars in tokens/tokens.css.
   const { resolved } = useThemePreference();
   const scheme = resolved;
+  const navigationTheme = useNavigationTheme(scheme);
   // No `require()`: the package exposes each weight as a module.
   // The keys (Inter_400Regular, …) are the `fontFamily`s available at
   // runtime (Expo Go / web). In native dev builds, the `expo-font`
@@ -98,11 +96,11 @@ function RootNavigator() {
     // including scroll bounce). Without this, the window's default white
     // remains even when the system is in dark mode. Pure JS: no rebuild needed.
     SystemUI.setBackgroundColorAsync(
-      scheme === "dark" ? "#0f172a" : "#f8fafc",
+      navigationTheme.colors.background,
     ).catch(() => {
       // no-op on platforms without support
     });
-  }, [scheme]);
+  }, [navigationTheme.colors.background]);
 
   if (!fontsReady) {
     return <View className="flex-1 bg-background" />;
@@ -114,9 +112,7 @@ function RootNavigator() {
     // ThemeProvider paints the React Navigation chrome (tab bar, each
     // screen's background, headers, tints) according to the system theme;
     // the `View` with bg-background covers the gap behind the navigator.
-    <ThemeProvider
-      value={scheme === "dark" ? darkNavigationTheme : lightNavigationTheme}
-    >
+    <ThemeProvider value={navigationTheme}>
       {/* Required by react-native-gesture-handler (drawers, swipe...). */}
       <GestureHandlerRootView style={{ flex: 1 }}>
         <View className="flex-1 bg-background">

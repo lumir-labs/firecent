@@ -10,9 +10,8 @@ import {
   type LucideIcon,
 } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useThemePreference } from "@/lib/theme-provider";
 import { useI18n } from "@/lib/i18n-provider";
-import { semanticTokens } from "@app/lib/tokens/semantic";
+import { useThemeColors } from "@/lib/theme-colors";
 import { FloatingTabBar } from "@/components/navigation/floating-tab-bar";
 
 /**
@@ -46,18 +45,17 @@ function TabBarIcon({
 }
 
 export default function TabsLayout() {
-  const { resolved } = useThemePreference();
   const { t } = useI18n();
   const insets = useSafeAreaInsets();
   const blurTargetRef = useRef<View>(null);
-  const palette = semanticTokens[resolved];
+  const palette = useThemeColors();
 
   // ---- STABLE HYBRID: expo-router Tabs + sibling FloatingTabBar ----
   return (
     <View
       style={{
         flex: 1,
-        backgroundColor: resolved === "dark" ? "#0f172a" : "#f8fafc",
+        backgroundColor: palette.background,
       }}
     >
       <BlurTargetView ref={blurTargetRef} style={{ flex: 1 }}>

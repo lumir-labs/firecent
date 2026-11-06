@@ -9,8 +9,7 @@ import { authClient } from "@/lib/auth-client";
 import { trpc } from "@/lib/trpc";
 import { Text } from "@/components/ui/text";
 import { Icon } from "@/components/ui/icon";
-import { semanticTokens } from "@app/lib/tokens/semantic";
-import { useThemePreference } from "@/lib/theme-provider";
+import { useThemeColors } from "@/lib/theme-colors";
 
 /**
  * Home: greeting header + own account card + weekly chart + shortcuts.
@@ -21,8 +20,7 @@ import { useThemePreference } from "@/lib/theme-provider";
 export default function Home() {
   const { data: session } = authClient.useSession();
   const { t } = useI18n();
-  const { resolved } = useThemePreference();
-  const muted = semanticTokens[resolved]["muted-foreground"];
+  const muted = useThemeColors()["muted-foreground"];
   const profile = trpc.users.getOwn.useQuery();
 
   const displayName =

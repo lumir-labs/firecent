@@ -2,7 +2,7 @@
 
 Honest multi-surface boilerplate: **Turborepo + Bun 1.3.x + Next 16 + Expo SDK 57 (Uniwind) + Better Auth (magic-link + Google, no passwords) + Prisma 7 + tRPC 11 + shadcn/ui web + MCP server with org API keys**.
 
-What it DOES ship: passwordless auth, onboarding with organization, RBAC with permissions (`p.*`), admin CRUD (users/roles/orgs/permissions), user area (`/`, profile, billing placeholder, organization/api-keys), org invitations with email acceptance, active-organization switcher, mobile profile editing (tRPC), real account deletion (anonymization + cascade + `db:purge`), TOTP 2FA with backup codes (magic-link sign-in asks for a code, web and mobile), mobile app (sign-in, tabs, ui-kit, canonical drawer), ES/EN single-source i18n, theme tokens with `tokens:sync`, docs in `docs/`.
+What it DOES ship: passwordless auth, onboarding with organization, RBAC with permissions (`p.*`), admin CRUD (users/roles/orgs/permissions), user area (`/`, profile, billing placeholder, organization/api-keys), org invitations with email acceptance, active-organization switcher, mobile profile editing (tRPC), real account deletion (anonymization + cascade + `db:purge`), TOTP 2FA with backup codes (magic-link sign-in asks for a code, web and mobile), mobile app (sign-in, tabs, ui-kit, canonical drawer), ES/EN single-source i18n, single-file theme tokens (web + mobile), docs in `docs/`.
 
 What it does NOT ship: payments/Stripe, GDPR/SOC2/ISO certifications (see disclaimer below). The landing (`/en/landing`) and the user dashboard use declared demo data.
 
@@ -18,7 +18,7 @@ bun run dev:web
 # → http://localhost:3000/en/landing
 ```
 
-Commands: `bun run dev | dev:web | dev:mobile | build | typecheck | tokens:sync | docs:gen | env:check | db:purge`.
+Commands: `bun run dev | dev:web | dev:mobile | build | typecheck | docs:gen | env:check | db:purge`.
 
 ## License & changelog
 

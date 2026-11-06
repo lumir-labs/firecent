@@ -1,18 +1,11 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { Pressable, type PressableStateCallbackType } from "react-native";
-import { useCSSVariable } from "uniwind";
+import { useUniwind } from "uniwind";
 import { TextClassContext } from "@/components/ui/text";
 import { IconClassContext, IconSizeContext } from "@/components/ui/icon";
-import { useColorScheme } from "@/hooks/use-color-scheme";
 import { cn, withAlpha } from "@/lib/utils";
-import { semanticTokens } from "@app/lib/tokens/semantic";
-
-// Reads the CSS variable RESOLVED by Uniwind's theme store — the same one
-// that paints the `className`. `useCSSVariable` subscribes to `Theme` and
-// `Variables` (hooks/useCSSVariable/useCSSVariable.ts:55), so on theme change
-// it re-renders on its own. Returns `string | number | undefined` (in native
-// colors arrive as hex and lengths as numbers).
+import { useThemeColors, type ThemeColorName } from "@/lib/theme-colors";
 
 const buttonVariants = cva(
   "group shrink-0 flex-row items-center justify-center gap-2 rounded-2xl active:opacity-90",
@@ -73,46 +66,18 @@ const buttonTextVariants = cva("text-sm font-inter-semibold text-foreground", {
   },
 });
 
-// Token variable that paints each variant's TEXT (same source as
+// Token that paints each variant's TEXT (same source as
 // buttonTextVariants): the icon reads the same resolved variable (see below).
-const buttonIconVars = {
-  default: "--primary-foreground",
-  destructive: "--destructive",
-  outline: "--foreground",
-  secondary: "--secondary-foreground",
-  ghost: "--foreground",
-  link: "--primary",
-} as const;
-
-// Backup in case the variable does not resolve (same source: semantic.ts).
-const buttonIconFallback: Record<
+const buttonIconTokens: Record<
   NonNullable<ButtonProps["variant"]>,
-  { light: string; dark: string }
+  ThemeColorName
 > = {
-  default: {
-    light: semanticTokens.light["primary-foreground"],
-    dark: semanticTokens.dark["primary-foreground"],
-  },
-  destructive: {
-    light: semanticTokens.light.destructive,
-    dark: semanticTokens.dark.destructive,
-  },
-  outline: {
-    light: semanticTokens.light.foreground,
-    dark: semanticTokens.dark.foreground,
-  },
-  secondary: {
-    light: semanticTokens.light["secondary-foreground"],
-    dark: semanticTokens.dark["secondary-foreground"],
-  },
-  ghost: {
-    light: semanticTokens.light.foreground,
-    dark: semanticTokens.dark.foreground,
-  },
-  link: {
-    light: semanticTokens.light.primary,
-    dark: semanticTokens.dark.primary,
-  },
+  default: "primary-foreground",
+  destructive: "destructive",
+  outline: "foreground",
+  secondary: "secondary-foreground",
+  ghost: "foreground",
+  link: "primary",
 };
 
 // Child icon size according to the button's `size`. Only icon sizes set it
@@ -141,28 +106,14 @@ function Button({
   onPressOut,
   ...props
 }: ButtonProps) {
-  const colorScheme = useColorScheme();
   const v = variant ?? "default";
-  const varName = buttonIconVars[v];
-  // Reads the CSS variable RESOLVED by Uniwind's theme store — the same one
-  // that paints the text — instead of deciding the color by hook. This way
-  // icon and text cannot diverge even if the theme hook is stale relative to
-  // a manual theme. It is reactive: on theme change it re-renders on its own.
-  const liveColor = useCSSVariable(varName ?? "--foreground");
-  const iconColor =
-    typeof liveColor === "string"
-      ? liveColor
-      : buttonIconFallback[v][colorScheme];
-  // Dark theme? Deduced from the RESOLVED `--input` (same source that
-  // paints), NOT from the hook: if the hook is stale relative to a manual
-  // theme, the outline's dark tint would be skipped and the solid bg-card
-  // would remain ("100%").
-  // Falls back to the hook if the variable does not resolve.
-  const liveInput = useCSSVariable("--input");
-  const isDark =
-    typeof liveInput === "string"
-      ? liveInput.toLowerCase() === semanticTokens.dark.input
-      : colorScheme === "dark";
+  // Colors RESOLVED by Uniwind's theme store — the same one that paints the
+  // text — so icon and text cannot diverge, and it re-renders on theme change.
+  const colors = useThemeColors();
+  const iconColor = colors[buttonIconTokens[v]];
+  // Effective theme straight from Uniwind (the owner of the active theme),
+  // not from the RN hook, which can be stale relative to a manual theme.
+  const isDark = useUniwind().theme === "dark";
 
   // Own pressed state (NOT Pressable's `style={(state) => ...}` callback):
   // the wrapper merges `style` with spread and a function inside gets lost
@@ -210,20 +161,17 @@ function Button({
             style={[
               v === "destructive"
                 ? {
-                    backgroundColor: withAlpha(
-                      semanticTokens[colorScheme].destructive,
-                      0.1,
-                    ),
+                    backgroundColor: withAlpha(colors.destructive, 0.1),
                   }
                 : null,
               v === "outline" && isDark
                 ? {
-                    backgroundColor: withAlpha(semanticTokens.dark.input, 0.1),
+                    backgroundColor: withAlpha(colors.input, 0.1),
                   }
                 : null,
               pressed && v === "outline" && isDark
                 ? {
-                    backgroundColor: withAlpha(semanticTokens.dark.input, 0.2),
+                    backgroundColor: withAlpha(colors.input, 0.2),
                   }
                 : null,
               typeof styleProp === "function"

@@ -1,8 +1,8 @@
 import { View } from "react-native";
 import { Bar, CartesianChart } from "victory-native";
 import { LinearGradient, vec } from "@shopify/react-native-skia";
-import { useThemePreference } from "@/lib/theme-provider";
-import { semanticTokens } from "@app/lib/tokens/semantic";
+import { useThemeColors } from "@/lib/theme-colors";
+import { withAlpha } from "@/lib/utils";
 import { Text } from "@/components/ui/text";
 import { useI18n } from "@/lib/i18n-provider";
 import { WEEK_ACTIVITY, WEEK_TOTAL } from "@/lib/demo-week";
@@ -18,8 +18,7 @@ import { WEEK_ACTIVITY, WEEK_TOTAL } from "@/lib/demo-week";
  */
 export function WeeklyChart() {
   const { t } = useI18n();
-  const { resolved } = useThemePreference();
-  const palette = semanticTokens[resolved];
+  const palette = useThemeColors();
   const initials = t("Home.weekInitials").split(" ");
 
   return (
@@ -49,7 +48,7 @@ export function WeeklyChart() {
               <LinearGradient
                 start={vec(0, 0)}
                 end={vec(0, 220)}
-                colors={[palette.primary, `${palette.primary}55`]}
+                colors={[palette.primary, withAlpha(palette.primary, 0x55 / 255)]}
               />
             </Bar>
           )}

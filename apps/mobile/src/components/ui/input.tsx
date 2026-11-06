@@ -8,12 +8,12 @@ import {
 
 import { cn, withAlpha } from "@/lib/utils";
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { semanticTokens } from "@app/lib/tokens/semantic";
+import { useThemeColors } from "@/lib/theme-colors";
 
 // 100% deterministic Input: NO `className`. In this stack, `className` on
 // TextInput proved fragile (ghost elevation breaking glyphs, invalidation
-// by props identity). Everything goes via `style` with tokens from
-// `semantic.ts`: same values as the classes, zero magic. That is why the
+// by props identity). Everything goes via `style` with the RESOLVED theme
+// tokens (`useThemeColors`): same values as the classes, zero magic. That is why the
 // type OMITS `className` on purpose (use `style` to customize).
 //
 // h-12 (48px, same height as Button/Trigger), radius 12, Inter like sign-in.
@@ -48,7 +48,7 @@ function Input({
   ...props
 }: InputProps) {
   const scheme = useColorScheme();
-  const tokens = semanticTokens[scheme];
+  const tokens = useThemeColors();
   const [focused, setFocused] = React.useState(false);
   const disabled = editable === false;
 

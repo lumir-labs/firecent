@@ -30,7 +30,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { semanticTokens } from "@app/lib/tokens/semantic";
+import { useThemeColors } from "@/lib/theme-colors";
 import { type Locale } from "@app/lib/messages";
 
 type Sheet = "language" | "theme" | "editName" | null;
@@ -38,7 +38,7 @@ type Sheet = "language" | "theme" | "editName" | null;
 export default function Profile() {
   const { data: session, refetch: refetchSession } = authClient.useSession();
   const { t, locale, setLocale } = useI18n();
-  const { theme, setTheme, resolved } = useThemePreference();
+  const { theme, setTheme } = useThemePreference();
   const { colors } = useTheme();
   const [sheet, setSheet] = useState<Sheet>(null);
   const [draft, setDraft] = useState<{
@@ -59,9 +59,8 @@ export default function Profile() {
   });
 
   const user = session?.user;
-  // Row grays (icon + chevron) from the single source of tokens, instead
-  // of hardcoding hex per theme as Icon/Button do.
-  const muted = semanticTokens[resolved]["muted-foreground"];
+  // Row grays (icon + chevron) resolved from the theme tokens.
+  const muted = useThemeColors()["muted-foreground"];
   // expo-router's `useTheme` types colors as ColorValue; at runtime they
   // are hex: normalized to string for the lucide icons.
   const primary = String(colors.primary);

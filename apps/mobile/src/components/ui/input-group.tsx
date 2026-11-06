@@ -8,7 +8,7 @@ import { IconClassContext } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { semanticTokens } from "@app/lib/tokens/semantic";
+import { useThemeColors } from "@/lib/theme-colors";
 
 // shadcn-style InputGroup: box with input + addons (icons, text, buttons).
 // Port with mandatory native adaptations:
@@ -66,6 +66,7 @@ type InputGroupProps = ViewProps;
 
 function InputGroup({ className, style, children, ...props }: InputGroupProps) {
   const scheme = useColorScheme();
+  const input = useThemeColors().input;
   const [focused, setFocused] = React.useState(false);
   const contextValue = React.useMemo(() => ({ setFocused }), []);
 
@@ -85,7 +86,7 @@ function InputGroup({ className, style, children, ...props }: InputGroupProps) {
         // No dim of its own: the inner input already dims itself when disabled.
         style={[
           scheme === "dark"
-            ? { backgroundColor: withAlpha(semanticTokens.dark.input, 0.2) }
+            ? { backgroundColor: withAlpha(input, 0.2) }
             : { backgroundColor: "transparent" },
           style,
         ]}
@@ -120,8 +121,7 @@ function InputGroupAddon({
   children,
   ...props
 }: InputGroupAddonProps) {
-  const scheme = useColorScheme();
-  const muted = semanticTokens[scheme]["muted-foreground"];
+  const muted = useThemeColors()["muted-foreground"];
   return (
     <TextClassContext.Provider value="text-sm text-muted-foreground">
       <IconClassContext.Provider value={muted}>

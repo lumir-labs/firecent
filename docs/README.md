@@ -40,8 +40,8 @@ apps/mobile     # Expo SDK 57 + expo-router + Uniwind: sign-in, tabs, ui-kit
 apps/mcp        # HTTP MCP server (port 3001): org API key auth, 3 tools
 packages/api    # tRPC (routers, permissions, api-keys service), single source of permissions
 packages/db     # Prisma schema + client
-packages/lib    # i18n single source (messages/) + theme tokens (tokens/semantic.ts)
-scripts/        # sync-tokens.ts, check-env.mjs, gen-architecture.mjs
+packages/lib    # i18n single source (messages/) + theme tokens (tokens/tokens.css)
+scripts/        # check-env.mjs, check-tokens.mjs, gen-architecture.mjs, purge-expired.mjs
 docs/           # THIS documentation (single source of truth)
 ```
 
@@ -54,8 +54,8 @@ docs/           # THIS documentation (single source of truth)
   `validatePermission()` gate on the server. Never filter UI without a server gate.
 - i18n: messages live in `packages/lib/src/messages/{es,en}.json`. A new namespace →
   both languages + `bun run --cwd apps/web check:i18n` green.
-- Tokens: `packages/lib/src/tokens/semantic.ts` is the source; `bun run tokens:sync`
-  generates the CSS. Never hand-edit a generated `*.css`.
+- Tokens: `packages/lib/src/tokens/tokens.css` is the single source (web + mobile
+  import it as-is). In mobile JS read colors with `useThemeColors()`.
 - Shared web↔mobile data → **tRPC** in `packages/api`. Server Actions only for
   `revalidatePath`/`cookies`/`FormData` (see `TRPC.md`).
 - Changed routes, Prisma schema or API → run `bun run docs:gen` and commit

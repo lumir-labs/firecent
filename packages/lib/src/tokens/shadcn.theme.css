@@ -4,9 +4,8 @@
  *
  * `inline` = the variable's value is injected into the utility, so that
  * `var(--background)` is resolved at RUNTIME (web: `.dark` class; native:
- * `@media (prefers-color-scheme: dark)`). The light/dark values live in
- * shadcn.light.css / shadcn.dark.web.css / shadcn.dark.native.css so that
- * theme + light can be shared with the mobile app. */
+ * Uniwind's active theme). The light/dark values live in tokens.css, shared
+ * as-is by web and mobile. */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

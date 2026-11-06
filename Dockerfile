@@ -27,8 +27,6 @@ RUN --mount=type=cache,target=/root/.bun/install/cache \
     bun install --frozen-lockfile
 
 COPY --from=pruner /app/out/full/ .
-# `apps/web` ejecuta scripts/sync-tokens.ts de la raíz en su build; prune no lo copia
-COPY scripts ./scripts
 
 # Variables que se necesitan AL COMPILAR (pásalas en Dokploy como Build-time Arguments).
 # - NEXT_PUBLIC_*: Next las incrusta en el bundle; sin ellas quedan vacías.

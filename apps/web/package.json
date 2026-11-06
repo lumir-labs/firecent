@@ -4,9 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "bun ../../scripts/sync-tokens.ts --check && node scripts/check-locale-parity.mjs && next build",
+    "build": "node scripts/check-locale-parity.mjs && next build",
     "check:i18n": "node scripts/check-locale-parity.mjs",
-    "check:tokens": "bun ../../scripts/sync-tokens.ts --check",
     "db:seed": "bun scripts/seed.ts",
     "typecheck": "tsc --noEmit",
     "start": "next start",

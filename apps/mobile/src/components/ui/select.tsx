@@ -22,8 +22,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { useColorScheme } from "@/hooks/use-color-scheme";
-import { semanticTokens } from "@app/lib/tokens/semantic";
+import { useThemeColors } from "@/lib/theme-colors";
 
 // Select with two presentations controlled by `variant` on the root:
 //
@@ -335,13 +334,13 @@ export function SelectTrigger({
 }: SelectTriggerProps) {
   const { variant, open, setOpen, disabled: rootDisabled } = useSelect();
   const isDisabled = disabled ?? rootDisabled;
-  const scheme = useColorScheme();
+  const colors = useThemeColors();
 
   const chevron = (
     <Icon
       icon={ChevronDown}
       size={18}
-      color={semanticTokens[scheme]["muted-foreground"]}
+      color={colors["muted-foreground"]}
     />
   );
 
@@ -706,7 +705,7 @@ function DrawerSelectItem({
     setOpen,
     registerItemNode,
   } = useSelect();
-  const scheme = useColorScheme();
+  const colors = useThemeColors();
   const isSelected = selected === value;
 
   const setNodeRef = React.useCallback(
@@ -752,7 +751,7 @@ function DrawerSelectItem({
       <Icon
         icon={Check}
         size={18}
-        color={isSelected ? semanticTokens[scheme].primary : "transparent"}
+        color={isSelected ? colors.primary : "transparent"}
       />
     </Pressable>
   );
@@ -769,7 +768,7 @@ function DropdownSelectItem({
 }: SelectItemProps) {
   const { value: selected } = SelectPrimitive.useRootContext();
   const { registerItemNode } = useSelect();
-  const scheme = useColorScheme();
+  const colors = useThemeColors();
   const isSelected = selected?.value === value;
 
   // FIX #6: priority: `label` prop > children string > value as fallback.
@@ -801,7 +800,7 @@ function DropdownSelectItem({
         <Icon
           icon={Check}
           size={18}
-          color={isSelected ? semanticTokens[scheme].primary : "transparent"}
+          color={isSelected ? colors.primary : "transparent"}
         />
       </SelectPrimitive.ItemIndicator>
     </SelectPrimitive.Item>
