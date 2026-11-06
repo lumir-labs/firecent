@@ -68,6 +68,19 @@ app/[locale]/                 # everything under locale (routing.ts: localePrefi
 - ❌ Bad: `useEffect(() => fetch("/api/users"))` in a client without a server gate.
   ✅ Good: the server page validates → passes data to the client component.
 
+## SEO metadata
+
+- Site-wide SEO (description, robots, Open Graph, Twitter, JSON-LD Organization +
+  WebSite) lives in `generateMetadata` of `apps/web/app/[locale]/layout.tsx`,
+  localized from the `Seo` namespace. `og:locale` follows the route locale
+  (`es_ES` / `en_US`), with the other one as `og:locale:alternate`.
+- The root layout has **no** `canonical`, `og:url` or `hreflang` on purpose: they would
+  be inherited by every page. Set them per page with `alternates` if needed.
+- A child segment that sets `openGraph` **replaces** the whole object (no deep merge):
+  repeat the image/locale there.
+- The production `/` is the static `public/splash/index.html` (see `proxy.ts`); its
+  tags are hand-written and must be kept in sync manually.
+
 ## `proxy.ts` as the single guard
 
 `apps/web/proxy.ts` (API) + (pages). Order: bypass

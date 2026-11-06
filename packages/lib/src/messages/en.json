@@ -942,5 +942,12 @@
     "termsTitle": "Terms (template)",
     "termsBody": "This is a boilerplate template. Replace it with your real terms before operating.",
     "companyPlaceholder": "[YOUR COMPANY]"
+  },
+  "Seo": {
+    "title": "firecent | Personal and shared finances, with clear goals",
+    "ogTitle": "firecent | Your money, clear. Your goals, on fire.",
+    "description": "firecent helps you see your money clearly, share expenses with friends and reach your savings goals. Join the waitlist and get early access.",
+    "ogImageAlt": "firecent: orange and violet flame logo on a dark background, with the tagline “Your money, clear. Your goals, on fire.”",
+    "slogan": "Your money, clear. Your goals, on fire."
   }
 }

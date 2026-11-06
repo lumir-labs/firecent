@@ -942,5 +942,12 @@
     "termsTitle": "Términos (plantilla)",
     "termsBody": "Esta es una plantilla de boilerplate. Reemplázala con tus términos reales antes de operar.",
     "companyPlaceholder": "[TU EMPRESA]"
+  },
+  "Seo": {
+    "title": "firecent | Finanzas personales y compartidas, con metas claras",
+    "ogTitle": "firecent | Tu dinero, claro. Tus metas, en llamas.",
+    "description": "firecent te ayuda a ver tu dinero con claridad, compartir gastos con amigos y alcanzar tus metas de ahorro. Únete a la lista de espera y obtén acceso anticipado.",
+    "ogImageAlt": "firecent: logo con llama naranja y violeta sobre fondo oscuro, con el lema «Tu dinero, claro. Tus metas, en llamas.»",
+    "slogan": "Tu dinero, claro. Tus metas, en llamas."
   }
 }

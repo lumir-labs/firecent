@@ -1,11 +1,11 @@
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { locale } from "next/root-params";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { Merriweather, Fira_Code, Inter } from "next/font/google";
 
-import { routing } from "@/i18n/routing";
+import { routing, type Locale } from "@/i18n/routing";
 import { isLocale } from "@/i18n/utils";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
@@ -31,12 +31,57 @@ const firaCode = Fira_Code({
   weight: ["400", "500", "600", "700"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    template: "App | %s",
-    default: "App | Boilerplate",
+// Production origin: OG/Twitter images must be absolute URLs crawlers can reach,
+// so this stays on the public domain even in local dev.
+const SITE_URL = "https://firecent.app";
+const SITE_NAME = "firecent";
+const OG_IMAGE = {
+  url: "/splash/og-image.png",
+  width: 1200,
+  height: 630,
+  type: "image/png",
+};
+
+// Open Graph locale per route locale (`og:locale` expects language_TERRITORY).
+const OG_LOCALES: Record<Locale, string> = { es: "es_ES", en: "en_US" };
+
+const ROBOTS: Metadata["robots"] = {
+  index: true,
+  follow: true,
+  googleBot: {
+    index: true,
+    follow: true,
+    "max-image-preview": "large",
+    "max-snippet": -1,
+    "max-video-preview": -1,
   },
-  description: "App boilerplate",
+};
+
+const STATIC_METADATA = {
+  metadataBase: new URL(SITE_URL),
+  applicationName: SITE_NAME,
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  referrer: "strict-origin-when-cross-origin",
+  keywords: [
+    "firecent",
+    "finanzas personales",
+    "gastos compartidos",
+    "dividir gastos",
+    "metas de ahorro",
+    "app de finanzas",
+    "personal finance",
+    "shared expenses",
+    "savings goals",
+  ],
+  formatDetection: { telephone: false },
+  appleWebApp: {
+    capable: true,
+    title: SITE_NAME,
+    statusBarStyle: "black-translucent",
+  },
+  robots: ROBOTS,
   icons: {
     icon: [
       { url: "/splash/app-icons/favicon.svg", type: "image/svg+xml" },
@@ -52,7 +97,77 @@ export const metadata: Metadata = {
     other: [{ rel: "mask-icon", url: "/splash/icon.svg", color: "#ff7a3d" }],
   },
   manifest: "/site.webmanifest",
-};
+} satisfies Metadata;
+
+// Site-wide SEO, localized per route locale. No `canonical`, `og:url` or
+// `hreflang` here on purpose: root-layout metadata is inherited by every page,
+// so those would point all routes at the same URL. Set them per page instead.
+export async function generateMetadata(): Promise<Metadata> {
+  const localeValue = await locale();
+  if (!isLocale(localeValue)) return STATIC_METADATA;
+
+  const t = await getTranslations({ locale: localeValue, namespace: "Seo" });
+  const ogImage = { ...OG_IMAGE, alt: t("ogImageAlt") };
+
+  return {
+    ...STATIC_METADATA,
+    title: {
+      template: `%s | ${SITE_NAME}`,
+      default: t("title"),
+    },
+    description: t("description"),
+    openGraph: {
+      type: "website",
+      siteName: SITE_NAME,
+      title: t("ogTitle"),
+      description: t("description"),
+      locale: OG_LOCALES[localeValue],
+      alternateLocale: routing.locales
+        .filter((l) => l !== localeValue)
+        .map((l) => OG_LOCALES[l]),
+      images: [ogImage],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("ogTitle"),
+      description: t("description"),
+      images: [ogImage],
+    },
+  };
+}
+
+function siteJsonLd(description: string, slogan: string, inLanguage: Locale) {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        name: SITE_NAME,
+        url: `${SITE_URL}/`,
+        logo: {
+          "@type": "ImageObject",
+          "@id": `${SITE_URL}/#logo`,
+          url: OG_LOGO_URL,
+          width: 1102,
+          height: 384,
+          caption: SITE_NAME,
+        },
+        image: `${SITE_URL}${OG_IMAGE.url}`,
+        slogan,
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        url: `${SITE_URL}/`,
+        name: SITE_NAME,
+        description,
+        inLanguage,
+        publisher: { "@id": `${SITE_URL}/#organization` },
+      },
+    ],
+  };
+}
 
 // `og:logo` uses `property=` (OpenGraph), which `metadata.other` can't emit
 // (it renders `name=`). React 19 hoists this <meta> into <head>.
@@ -75,6 +190,11 @@ export default async function LocaleLayout({ children }: Props) {
   }
 
   const messages = await getMessages();
+  const tSeo = await getTranslations({ locale: localeValue, namespace: "Seo" });
+  // Escape `<` so message text can never close the <script> tag.
+  const jsonLd = JSON.stringify(
+    siteJsonLd(tSeo("description"), tSeo("slogan"), localeValue),
+  ).replace(/</g, "\\u003c");
 
   return (
     <html
@@ -84,6 +204,10 @@ export default async function LocaleLayout({ children }: Props) {
     >
       <body className="font-geist-sans antialiased">
         <meta property="og:logo" content={OG_LOGO_URL} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLd }}
+        />
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider
             attribute="class"
