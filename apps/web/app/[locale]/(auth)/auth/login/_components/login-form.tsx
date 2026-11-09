@@ -33,6 +33,12 @@ import { Input } from "@/components/ui/input";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { authClient } from "@/lib/auth-client";
 import { Link } from "@/i18n/navigation";
+import { useMagicLinkCooldown } from "@/hooks/use-magic-link-cooldown";
+import {
+  formatMagicLinkWait,
+  getMagicLinkNextWait,
+  getMagicLinkRetryAfter,
+} from "@app/lib/magic-link";
 
 function GoogleColorIcon({ className = "size-4" }: { className?: string }) {
   return (
@@ -83,6 +89,12 @@ export function LoginForm({
   const [isVerifying, setIsVerifying] = React.useState(false);
   const [isSent, setIsSent] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+  // Magic-link backoff: survives refresh, bringing back the email and the
+  // "sent" screen while it runs (the server would reject a new link anyway).
+  const cooldown = useMagicLinkCooldown((saved) => {
+    setEmail(saved.email);
+    setIsSent(saved.sent);
+  });
 
   // Restore remembered email on mount
   React.useEffect(() => {
@@ -126,28 +138,44 @@ export function LoginForm({
     });
   };
 
-  const sendMagicLink = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!email.trim()) return;
+  const requestMagicLink = async () => {
+    const target = email.trim();
+    if (!target) return;
 
     setIsSending(true);
     setErrorMessage(null);
-    persistRememberMe(email);
+    persistRememberMe(target);
 
-    const { error } = await authClient.signIn.magicLink({
-      email: email.trim(),
+    const { data, error } = await authClient.signIn.magicLink({
+      email: target,
       callbackURL: callbackUrl,
     });
 
     setIsSending(false);
 
+    const retryAfter = getMagicLinkRetryAfter(error);
+    if (retryAfter !== null) {
+      cooldown.start(target, retryAfter, isSent);
+      setErrorMessage(t("magicLinkCooldown"));
+      return;
+    }
     if (error) {
       setErrorMessage(error.message ?? t("magicLinkError"));
       return;
     }
 
+    const nextWait = getMagicLinkNextWait(data);
+    if (nextWait !== null) cooldown.start(target, nextWait, true);
     setIsSent(true);
   };
+
+  const sendMagicLink = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    void requestMagicLink();
+  };
+
+  const secondsLeft = cooldown.secondsFor(email);
+  const timeLeft = formatMagicLinkWait(secondsLeft);
 
   async function verifyCode(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -300,12 +328,34 @@ export function LoginForm({
           <Button
             type="button"
             variant="outline"
-            onClick={() => setIsSent(false)}
-            className="w-full text-xs font-medium"
+            disabled={isSending || secondsLeft > 0}
+            onClick={() => void requestMagicLink()}
+            className="w-full text-xs font-medium tabular-nums"
           >
-            <RefreshCw className="h-3.5 w-3.5 mr-2" />
-            <span>Usar otro correo o reenviar</span>
+            {isSending ? (
+              <Loader2 className="h-3.5 w-3.5 mr-2 animate-spin" />
+            ) : (
+              <RefreshCw className="h-3.5 w-3.5 mr-2" />
+            )}
+            <span>
+              {isSending
+                ? t("magicLinkSending")
+                : secondsLeft > 0
+                  ? t("magicLinkResendIn", { time: timeLeft })
+                  : t("magicLinkResend")}
+            </span>
           </Button>
+          {errorMessage ? <FieldError>{errorMessage}</FieldError> : null}
+          <button
+            type="button"
+            className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-4 transition-colors"
+            onClick={() => {
+              setIsSent(false);
+              setErrorMessage(null);
+            }}
+          >
+            {t("useAnotherEmail")}
+          </button>
         </div>
 
         <div className="flex items-center justify-center gap-2 pt-2 text-xs text-muted-foreground/80">
@@ -394,7 +444,7 @@ export function LoginForm({
         <Button
           variant="gradient"
           type="submit"
-          disabled={isSending || email.trim() === ""}
+          disabled={isSending || email.trim() === "" || secondsLeft > 0}
           className="w-full font-semibold shadow-sm hover:shadow-md active:scale-[0.99] transition-all flex items-center justify-center gap-2 mt-2"
         >
           {isSending ? (
@@ -402,6 +452,10 @@ export function LoginForm({
               <Loader2 className="h-4 w-4 animate-spin" />
               <span>{t("magicLinkSending")}</span>
             </>
+          ) : secondsLeft > 0 ? (
+            <span className="tabular-nums">
+              {t("magicLinkRetryIn", { time: timeLeft })}
+            </span>
           ) : (
             <>
               <span>{t("loginButton")}</span>

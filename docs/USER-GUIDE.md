@@ -12,7 +12,10 @@ There are no passwords. Two ways to sign in, both from the login page:
 
 - **Magic link** — type your email, press the button, and check your inbox.
   The link logs you in (or creates your account on the very first use) and
-  expires in 15 minutes.
+  expires in 15 minutes. After sending, a "Resend" button unlocks after a
+  wait that doubles each time for the same email (1.5 min, 3, 6, 12, up to
+  24 min); the countdown survives a page refresh. Signing in, or an hour
+  without requests, resets it.
 - **Google** — one click with your Google account.
 
 The first time you sign in, a short 3-step onboarding wizard greets you: a

@@ -106,19 +106,34 @@ function Wave() {
     >
       <defs>
         <linearGradient id="nw-wave-a" x1="0" x2="1">
-          <stop offset="0" style={{ stopColor: "var(--chart-5)", stopOpacity: 0 }} />
-          <stop offset="1" style={{ stopColor: "var(--primary)", stopOpacity: 0.55 }} />
+          <stop
+            offset="0"
+            style={{ stopColor: "var(--chart-5)", stopOpacity: 0 }}
+          />
+          <stop
+            offset="1"
+            style={{ stopColor: "var(--primary)", stopOpacity: 0.55 }}
+          />
         </linearGradient>
         <linearGradient id="nw-wave-b" x1="0" x2="1">
-          <stop offset="0" style={{ stopColor: "var(--chart-2)", stopOpacity: 0 }} />
-          <stop offset="1" style={{ stopColor: "var(--chart-3)", stopOpacity: 0.45 }} />
+          <stop
+            offset="0"
+            style={{ stopColor: "var(--chart-2)", stopOpacity: 0 }}
+          />
+          <stop
+            offset="1"
+            style={{ stopColor: "var(--chart-3)", stopOpacity: 0.45 }}
+          />
         </linearGradient>
       </defs>
       <path
         d="M0 200 C120 190 210 150 290 110 C340 85 375 70 400 40 L400 200Z"
         fill="url(#nw-wave-a)"
       />
-      <path d="M120 200 C220 190 300 170 400 120 L400 200Z" fill="url(#nw-wave-b)" />
+      <path
+        d="M120 200 C220 190 300 170 400 120 L400 200Z"
+        fill="url(#nw-wave-b)"
+      />
     </svg>
   );
 }
@@ -138,7 +153,8 @@ export function NetWorthCard({ className }: { className?: string }) {
       { placeholderData: keepPreviousData },
     );
 
-  const withYear = (key: string) => key.slice(0, 4) !== String(now.getFullYear());
+  const withYear = (key: string) =>
+    key.slice(0, 4) !== String(now.getFullYear());
   const labelOf = (key: string) => monthLabel(locale, key, withYear(key));
   const showScope = (data?.memberCount ?? 1) > 1;
   const prev = previousMonthKey(month);

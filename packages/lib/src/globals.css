@@ -11,13 +11,33 @@
 @import "./tokens/shadcn.theme.css";
 @import "./tokens/tokens.css";
 
-/* What `@variant light` / `@variant dark` mean on the web. tokens.css uses
- * them on `:root` itself, so `dark` must also match <html class="dark">
- * (`:is(.dark, .dark *)`, not just descendants; `:is` keeps the same
- * specificity the `dark:` utilities had with `&:is(.dark *)`). Mobile gets these two
- * variants from Uniwind instead. */
-@custom-variant dark (&:is(.dark, .dark *));
-@custom-variant light (&:not(.dark, .dark *));
+/* What `@variant light` / `@variant dark` mean on the web. Mobile gets these
+ * two variants from Uniwind instead.
+ *
+ * 1st selector — `&:is(.dark, .dark *)`: the `dark:` utilities, and tokens.css
+ *   on `:root` itself (<html class="dark">). `:is` keeps the specificity the
+ *   `dark:` utilities had with `&:is(.dark *)`.
+ * 2nd selector — `:where(:root:is(&)) .dark`: theme ISLANDS. tokens.css
+ *   declares the values on `:root` (Uniwind requires it), which alone
+ *   compiles to `:root:is(.dark, …)` and never matches a nested `.dark`
+ *   element, so an always-dark surface (`<Card className="dark">`) would just
+ *   inherit the light values. When `&` is `:root` this becomes `:root .dark`,
+ *   re-declaring the tokens on the island at the specificity the old
+ *   `.dark {}` block had (`:where` adds nothing, also to wrapped utilities).
+ *   For a utility (`&` = `.dark\:x`) it requires <html> to carry that class,
+ *   so it never matches. Same for `.light`. */
+@custom-variant dark {
+  &:is(.dark, .dark *),
+  :where(:root:is(&)) .dark {
+    @slot;
+  }
+}
+@custom-variant light {
+  &:not(.dark, .dark *),
+  :where(:root:is(&)) .light {
+    @slot;
+  }
+}
 
 @layer base {
   * {

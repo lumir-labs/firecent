@@ -12,6 +12,7 @@ import { deleteSessionCookie } from "better-auth/cookies";
 import { generateRandomString } from "better-auth/crypto";
 import { ROLE_USER } from "@app/api/roles";
 import { ensureRole } from "./roles";
+import { magicLinkBackoff } from "./magic-link-backoff";
 import {
   isEmailConfigured,
   logMailToConsole,
@@ -320,6 +321,8 @@ export const auth = betterAuth({
      * (web) and `apps/mobile/src/app/sign-in.tsx` (mobile).
      */
     twoFactor({ allowPasswordless: true }),
+    // Before signInTwoFactorHook: it needs `newSession` to reset the streak.
+    magicLinkBackoff,
     signInTwoFactorHook,
     customSession(async ({ user, session }) => {
       if (!user) {

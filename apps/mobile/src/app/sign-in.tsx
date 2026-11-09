@@ -11,6 +11,12 @@ import Constants from "expo-constants";
 import { SafeAreaView } from "@/components/ui/safe-area-view";
 import { router } from "expo-router";
 import { authClient } from "@/lib/auth-client";
+import { useMagicLinkCooldown } from "@/hooks/use-cooldown";
+import {
+  formatMagicLinkWait,
+  getMagicLinkNextWait,
+  getMagicLinkRetryAfter,
+} from "@app/lib/magic-link";
 import { useI18n } from "@/lib/i18n-provider";
 import { useThemePreference } from "@/lib/theme-provider";
 import {
@@ -54,6 +60,9 @@ export default function SignIn() {
   const { resolved } = useThemePreference();
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
+  const cooldown = useMagicLinkCooldown();
+  const secondsLeft = cooldown.secondsFor(email);
+  const timeLeft = formatMagicLinkWait(secondsLeft);
   const [sent, setSent] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -91,14 +100,21 @@ export default function SignIn() {
     setSending(true);
     setError(null);
     try {
-      const { error } = await authClient.signIn.magicLink({
-        email: email.trim(),
+      const target = email.trim();
+      const { data, error } = await authClient.signIn.magicLink({
+        email: target,
         // The backend redirects to the native scheme (see trustedOrigins on the web).
         callbackURL: "/(tabs)",
       });
-      if (error) {
+      const retryAfter = getMagicLinkRetryAfter(error);
+      if (retryAfter !== null) {
+        cooldown.start(target, retryAfter);
+        setError(t("Auth.magicLinkCooldown"));
+      } else if (error) {
         setError(error.message ?? t("Auth.magicLinkError"));
       } else {
+        const nextWait = getMagicLinkNextWait(data);
+        if (nextWait !== null) cooldown.start(target, nextWait);
         setSent(true);
       }
     } catch (e) {
@@ -313,6 +329,22 @@ export default function SignIn() {
                   </Text>
                   <Button
                     variant="outline"
+                    onPress={onMagicLink}
+                    disabled={sending || secondsLeft > 0}
+                    accessibilityRole="button"
+                  >
+                    {sending ? (
+                      <ActivityIndicator size="small" />
+                    ) : (
+                      <Text>
+                        {secondsLeft > 0
+                          ? t("Auth.magicLinkResendIn", { time: timeLeft })
+                          : t("Auth.magicLinkResend")}
+                      </Text>
+                    )}
+                  </Button>
+                  <Button
+                    variant="outline"
                     onPress={() => setNeeds2FA(true)}
                     accessibilityRole="button"
                   >
@@ -344,7 +376,7 @@ export default function SignIn() {
                   />
                   <Button
                     onPress={onMagicLink}
-                    disabled={sending || email.trim() === ""}
+                    disabled={sending || email.trim() === "" || secondsLeft > 0}
                     className="w-full"
                   >
                     {sending ? (
@@ -352,6 +384,10 @@ export default function SignIn() {
                         size="small"
                         colorClassName="accent-primary-foreground"
                       />
+                    ) : secondsLeft > 0 ? (
+                      <Text>
+                        {t("Auth.magicLinkRetryIn", { time: timeLeft })}
+                      </Text>
                     ) : (
                       <>
                         <Icon icon={Mail} size={20} />

@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "dev": "turbo run dev",
-    "dev:web": "turbo run dev --filter=@app/web",
+    "dev:web": "cd apps/web && next dev",
     "dev:mobile": "turbo run dev --filter=@app/mobile",
     "start": "turbo run start --filter=@app/web",
     "android": "turbo run android --filter=@app/mobile",

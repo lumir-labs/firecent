@@ -17,6 +17,12 @@ import { useSearchParams } from "next/navigation";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { authClient } from "@/lib/auth-client";
 import { Link } from "@/i18n/navigation";
+import { useMagicLinkCooldown } from "@/hooks/use-magic-link-cooldown";
+import {
+  formatMagicLinkWait,
+  getMagicLinkNextWait,
+  getMagicLinkRetryAfter,
+} from "@app/lib/magic-link";
 
 export function ResetForm({
   className,
@@ -31,26 +37,46 @@ export function ResetForm({
   const [isSending, setIsSending] = useState(false);
   const [isSent, setIsSent] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const cooldown = useMagicLinkCooldown((saved) => {
+    setEmail(saved.email);
+    setIsSent(saved.sent);
+  });
 
-  const sendMagicLink = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const requestMagicLink = async () => {
+    const target = email.trim();
     setIsSending(true);
     setErrorMessage(null);
 
-    const { error } = await authClient.signIn.magicLink({
-      email: email.trim(),
+    const { data, error } = await authClient.signIn.magicLink({
+      email: target,
       callbackURL: callbackUrl,
     });
 
     setIsSending(false);
 
+    const retryAfter = getMagicLinkRetryAfter(error);
+    if (retryAfter !== null) {
+      cooldown.start(target, retryAfter, isSent);
+      setErrorMessage(t("magicLinkCooldown"));
+      return;
+    }
     if (error) {
       setErrorMessage(error.message ?? t("magicLinkError"));
       return;
     }
 
+    const nextWait = getMagicLinkNextWait(data);
+    if (nextWait !== null) cooldown.start(target, nextWait, true);
     setIsSent(true);
   };
+
+  const sendMagicLink = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    void requestMagicLink();
+  };
+
+  const secondsLeft = cooldown.secondsFor(email);
+  const timeLeft = formatMagicLinkWait(secondsLeft);
 
   return (
     <form
@@ -66,9 +92,40 @@ export function ResetForm({
           </p>
         </div>
         {isSent ? (
-          <p className="text-center text-sm text-muted-foreground">
-            {t("magicLinkSent", { email })}
-          </p>
+          <Field>
+            <p className="text-center text-sm text-muted-foreground">
+              {t("magicLinkSent", { email })}
+            </p>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isSending || secondsLeft > 0}
+              onClick={() => void requestMagicLink()}
+            >
+              {isSending
+                ? t("magicLinkSending")
+                : secondsLeft > 0
+                  ? t("magicLinkResendIn", { time: timeLeft })
+                  : t("magicLinkResend")}
+            </Button>
+            {errorMessage ? (
+              <p className="text-center text-sm text-destructive">
+                {errorMessage}
+              </p>
+            ) : null}
+            <FieldDescription className="text-center">
+              <button
+                type="button"
+                className="underline underline-offset-4"
+                onClick={() => {
+                  setIsSent(false);
+                  setErrorMessage(null);
+                }}
+              >
+                {t("useAnotherEmail")}
+              </button>
+            </FieldDescription>
+          </Field>
         ) : (
           <>
             <Field>
@@ -88,8 +145,15 @@ export function ResetForm({
               ) : null}
             </Field>
             <Field>
-              <Button type="submit" disabled={isSending || email.trim() === ""}>
-                {isSending ? t("magicLinkSending") : t("loginButton")}
+              <Button
+                type="submit"
+                disabled={isSending || email.trim() === "" || secondsLeft > 0}
+              >
+                {isSending
+                  ? t("magicLinkSending")
+                  : secondsLeft > 0
+                    ? t("magicLinkRetryIn", { time: timeLeft })
+                    : t("loginButton")}
               </Button>
             </Field>
           </>

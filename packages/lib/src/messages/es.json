@@ -169,6 +169,10 @@
     "magicLinkSent": "Revisa tu correo: enviamos un enlace a {email}",
     "magicLinkHint": "Sin contraseña. Si no tienes cuenta, el enlace también te registra.",
     "magicLinkError": "No se pudo enviar el enlace. Inténtalo de nuevo.",
+    "magicLinkCooldown": "Pediste demasiados enlaces. Espera un momento antes de reintentar.",
+    "magicLinkRetryIn": "Reintentar en {time}",
+    "magicLinkResend": "Reenviar enlace",
+    "magicLinkResendIn": "Reenviar en {time}",
     "twoFactor": {
       "stepTitle": "Verificación en dos pasos",
       "stepDescription": "Tu cuenta tiene 2FA activo. Introduce el código de tu app authenticator para entrar.",

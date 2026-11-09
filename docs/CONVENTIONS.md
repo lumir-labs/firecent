@@ -97,6 +97,29 @@ Lists: `publicRoutes = ["/error", "/landing", "/api-docs", "/privacy", "/terms"]
 Do not put guards in layouts: the proxy already redirects; the page only checks
 the **fine-grained permission** (`AccessAlert`).
 
+## Magic-link anti-abuse
+
+- Two layers on `/sign-in/magic-link`: the per-IP `rateLimit` rule in
+  `apps/web/lib/auth.ts` (5/min) and a per-email exponential backoff
+  (`magicLinkBackoff`, `apps/web/lib/magic-link-backoff.ts`).
+- Schedule + client helper live in `@app/lib/magic-link` (pure, tested):
+  waits of 0 → 90s → 3m → 6m → 12m → 24m (capped); the streak resets
+  after 1h without requests or on a successful `/magic-link/verify`.
+- State is a row in `Verification` (`magic-link-backoff:<sha256(email)>`), no
+  schema change. Blocked requests get a 429 with
+  `{ code: "MAGIC_LINK_COOLDOWN", retryAfter }` + `X-Retry-After`.
+- A successful send answers `{ status: true, retryAfter }` (after hook), so
+  the "check your inbox" screen shows "Resend in m:ss" right away.
+- Clients read `getMagicLinkNextWait(data)` / `getMagicLinkRetryAfter(error)`
+  and count down per email: web `hooks/use-magic-link-cooldown.ts` (persisted
+  in localStorage, so a refresh restores the email, the sent screen and the
+  timer), mobile `src/hooks/use-cooldown.ts` (in memory).
+- `magicLinkBackoff` must stay registered before `signInTwoFactorHook`
+  (that hook clears `newSession`, which the reset needs).
+- The email template (`services/email.ts` → `magicLinkHtml`) embeds the logo
+  as an inline CID attachment (`services/email-logo.ts`), so it renders even
+  when the app runs on localhost.
+
 ## 2FA (TOTP) — how it works in this repo
 
 - `twoFactor({ allowPasswordless: true })` plugin (`apps/web/lib/auth.ts`) +

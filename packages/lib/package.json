@@ -9,6 +9,7 @@
     "./utils": "./src/utils.ts",
     "./permissions": "./src/permissions.ts",
     "./messages": "./src/messages.ts",
+    "./magic-link": "./src/magic-link.ts",
     "./messages/es.json": "./src/messages/es.json",
     "./messages/en.json": "./src/messages/en.json",
     "./globals.css": "./src/globals.css",

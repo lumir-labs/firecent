@@ -169,6 +169,10 @@
     "magicLinkSent": "Check your inbox: we sent a link to {email}",
     "magicLinkHint": "Passwordless. If you have no account, the link signs you up too.",
     "magicLinkError": "Could not send the link. Try again.",
+    "magicLinkCooldown": "Too many links requested. Wait a moment before trying again.",
+    "magicLinkRetryIn": "Try again in {time}",
+    "magicLinkResend": "Resend link",
+    "magicLinkResendIn": "Resend in {time}",
     "twoFactor": {
       "stepTitle": "Two-step verification",
       "stepDescription": "Your account has 2FA enabled. Enter the code from your authenticator app to sign in.",
