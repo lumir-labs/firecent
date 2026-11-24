@@ -18,26 +18,51 @@ const netWorthInput = z.object({
   month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/),
 });
 
-/**
- * `dashboard` router: read-only aggregates for the home dashboard.
- * Every procedure is gated with `dashboard:basic` and scoped to `ctx.orgId`
- * (the organization in the session) — it never reads another org's data.
- */
+const homeInput = z.object({
+  /** Month shown, "YYYY-MM". Defaults to current UTC month. */
+  month: z
+    .string()
+    .regex(/^\d{4}-(0[1-9]|1[0-2])$/)
+    .optional(),
+});
+
+function computeCardDue(paymentDay: number | null, now: Date) {
+  if (!paymentDay || paymentDay < 1 || paymentDay > 31) return null;
+  const todayUtc = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+  );
+  const daysThisMonth = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0),
+  ).getUTCDate();
+  let target = new Date(
+    Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      Math.min(paymentDay, daysThisMonth),
+    ),
+  );
+  if (target < todayUtc) {
+    const nextMonthDays = new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 2, 0),
+    ).getUTCDate();
+    target = new Date(
+      Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth() + 1,
+        Math.min(paymentDay, nextMonthDays),
+      ),
+    );
+  }
+  const dueInDays = Math.round(
+    (target.getTime() - todayUtc.getTime()) / (1000 * 60 * 60 * 24),
+  );
+  return {
+    date: target.toISOString().slice(0, 10),
+    dueInDays,
+  };
+}
+
 export const dashboardRouter = router({
-  /**
-   * Hero card: balance (net worth) at the END of `month`, its change during
-   * that month, and the month's income / expenses.
-   *
-   * - An account's balance is the SUM OF ITS RECORDS (same rule as the
-   *   accounts list); the `BankAccount.balance` column is not trusted.
-   *   Records without a date always count.
-   * - Accounts count unless soft-deleted, archived, inactive or flagged
-   *   `excludeFromStats`. Negative balance (credit card) = liability.
-   * - Currencies are NOT converted: the one with most accounts is shown,
-   *   the rest are listed in `others`.
-   * - Delta = every record of the month (transfers between two counted
-   *   accounts cancel out). Income/expenses ignore transfers.
-   */
   netWorth: protectedProcedure
     .use(requirePermission(p.dashboard.basic))
     .input(netWorthInput)
@@ -70,7 +95,6 @@ export const dashboardRouter = router({
         }),
       ]);
 
-      // Main currency = the one with the most accounts (tie → alphabetical).
       const byCurrency = new Map<string, number>();
       for (const a of accounts) {
         byCurrency.set(a.currency, (byCurrency.get(a.currency) ?? 0) + 1);
@@ -91,7 +115,6 @@ export const dashboardRouter = router({
       };
 
       const [perAccount, during] = await Promise.all([
-        // Balance of each account at the end of the month.
         db.record.groupBy({
           by: ["accountId"],
           where: {
@@ -100,7 +123,6 @@ export const dashboardRouter = router({
           },
           _sum: { amount: true },
         }),
-        // Movements inside the month, by type.
         db.record.groupBy({
           by: ["type", "transfer"],
           where: { ...base, recordDate: { gte: start, lt: nextStart } },
@@ -147,9 +169,7 @@ export const dashboardRouter = router({
           incomeCount: income.count,
           expense: expense.amount / MINOR_UNIT,
           expenseCount: expense.count,
-          /** Change of the balance during the month. */
           delta: deltaMinor / MINOR_UNIT,
-          /** % vs. the previous month end; null when it has no base. */
           deltaPct:
             previousMinor !== 0
               ? (deltaMinor / Math.abs(previousMinor)) * 100
@@ -157,6 +177,338 @@ export const dashboardRouter = router({
         },
         others: ranked.slice(1).map(([currency]) => currency),
         memberCount,
+      };
+    }),
+
+  /**
+   * Firecent Phase 3A · Home dashboard aggregate in a single call.
+   */
+  home: protectedProcedure
+    .use(requirePermission(p.dashboard.basic))
+    .input(homeInput.optional())
+    .query(async ({ ctx, input }) => {
+      const orgId = ctx.orgId;
+      const userId = ctx.session?.user.id;
+      if (!orgId || !userId) {
+        throw new TRPCError({
+          code: "PRECONDITION_FAILED",
+          message: "No active organization",
+        });
+      }
+
+      const now = new Date();
+      const monthStr =
+        input?.month ??
+        `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, "0")}`;
+      const [year, monthNum] = monthStr.split("-").map(Number);
+      const monthStart = new Date(Date.UTC(year, monthNum - 1, 1));
+      const nextMonthStart = new Date(Date.UTC(year, monthNum, 1));
+      const daysInMonth = new Date(Date.UTC(year, monthNum, 0)).getUTCDate();
+      const isCurrentMonth =
+        year === now.getUTCFullYear() && monthNum === now.getUTCMonth() + 1;
+      const currentDay = isCurrentMonth ? now.getUTCDate() : daysInMonth;
+      const pace = Math.min(1, Math.max(0, currentDay / daysInMonth));
+      const daysLeft = Math.max(0, daysInMonth - currentDay);
+
+      const accounts = await db.bankAccount.findMany({
+        where: {
+          organizationId: orgId,
+          deletedAt: null,
+          archived: false,
+          isActive: true,
+        },
+        select: {
+          id: true,
+          name: true,
+          type: true,
+          currency: true,
+          excludeFromStats: true,
+          paymentDay: true,
+          paymentDayType: true,
+        },
+      });
+
+      if (accounts.length === 0) {
+        return {
+          isEmpty: true,
+          month: monthStr,
+          hasRecords: false,
+          balance: null,
+          change: 0,
+          trend: [] as { label: string; value: number }[],
+          split: null,
+          monthSummary: {
+            currency: "USD",
+            in: 0,
+            out: 0,
+            byNature: { DEBO: 0, NECESITO: 0, QUIERO: 0 },
+            pace,
+            daysLeft,
+          },
+          upcoming: [] as {
+            id: string;
+            accountId: number;
+            date: string;
+            title: string;
+            amount: number;
+            currency: string;
+            dueInDays: number;
+          }[],
+          recent: [] as {
+            id: number;
+            type: "EXPENSE" | "INCOME" | "TRANSFER";
+            amount: number;
+            currency: string;
+            date: string | null;
+            title: string;
+            category: { name: string; icon: string | null } | null;
+            accountName: string;
+          }[],
+          insight: null,
+        };
+      }
+
+      const statsAccounts = accounts.filter((a) => !a.excludeFromStats);
+      const byCurrency = new Map<string, number>();
+      for (const a of statsAccounts) {
+        byCurrency.set(a.currency, (byCurrency.get(a.currency) ?? 0) + 1);
+      }
+      const rankedCurrencies = [...byCurrency.entries()].sort(
+        (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]),
+      );
+      const primaryCurrency = rankedCurrencies[0]?.[0] ?? accounts[0].currency;
+
+      const primaryAccountIds = statsAccounts
+        .filter((a) => a.currency === primaryCurrency)
+        .map((a) => a.id);
+
+      // 6 month checkpoints (start of month -5 .. current month + end of current month)
+      const trendDates: Date[] = [];
+      for (let i = 5; i >= 0; i--) {
+        trendDates.push(new Date(Date.UTC(year, monthNum - 1 - i, 1)));
+      }
+      trendDates.push(nextMonthStart);
+      const earliestTrendDate = trendDates[0];
+
+      const [
+        allAccountSums,
+        beforeTrendAgg,
+        trendRecords,
+        monthRecords,
+        recentRows,
+        recordCount,
+      ] = await Promise.all([
+        db.record.groupBy({
+          by: ["accountId"],
+          where: {
+            organizationId: orgId,
+            deletedAt: null,
+            OR: [{ recordDate: { lt: nextMonthStart } }, { recordDate: null }],
+          },
+          _sum: { amount: true },
+        }),
+        primaryAccountIds.length > 0
+          ? db.record.aggregate({
+              where: {
+                organizationId: orgId,
+                deletedAt: null,
+                accountId: { in: primaryAccountIds },
+                OR: [
+                  { recordDate: { lt: earliestTrendDate } },
+                  { recordDate: null },
+                ],
+              },
+              _sum: { amount: true },
+            })
+          : Promise.resolve({ _sum: { amount: 0 } }),
+        primaryAccountIds.length > 0
+          ? db.record.findMany({
+              where: {
+                organizationId: orgId,
+                deletedAt: null,
+                accountId: { in: primaryAccountIds },
+                recordDate: { gte: earliestTrendDate, lt: nextMonthStart },
+              },
+              select: { amount: true, recordDate: true },
+            })
+          : Promise.resolve([] as { amount: number; recordDate: Date | null }[]),
+        primaryAccountIds.length > 0
+          ? db.record.findMany({
+              where: {
+                organizationId: orgId,
+                deletedAt: null,
+                accountId: { in: primaryAccountIds },
+                recordDate: { gte: monthStart, lt: nextMonthStart },
+              },
+              select: {
+                amount: true,
+                type: true,
+                transfer: true,
+                excludeFromStats: true,
+                spendingNature: true,
+                category: { select: { spendingNature: true } },
+              },
+            })
+          : Promise.resolve([]),
+        db.record.findMany({
+          where: {
+            organizationId: orgId,
+            deletedAt: null,
+            NOT: { AND: [{ transfer: true }, { amount: { gt: 0 } }] },
+          },
+          orderBy: [
+            { recordDate: { sort: "desc", nulls: "last" } },
+            { recordTime: { sort: "desc", nulls: "last" } },
+            { id: "desc" },
+          ],
+          take: 5,
+          select: {
+            id: true,
+            type: true,
+            transfer: true,
+            amount: true,
+            note: true,
+            recordDate: true,
+            payee: { select: { name: true } },
+            category: { select: { name: true, icon: true } },
+            account: { select: { name: true, currency: true } },
+            transferAccount: { select: { name: true } },
+          },
+        }),
+        db.record.count({ where: { organizationId: orgId, deletedAt: null } }),
+      ]);
+
+      const balanceByAccount = new Map<number, number>();
+      for (const s of allAccountSums) {
+        balanceByAccount.set(s.accountId, s._sum.amount ?? 0);
+      }
+
+      // Totals by currency
+      const primaryTotalMinor = primaryAccountIds.reduce(
+        (sum, id) => sum + (balanceByAccount.get(id) ?? 0),
+        0,
+      );
+      const others = rankedCurrencies.slice(1).map(([currency]) => {
+        const ids = statsAccounts
+          .filter((a) => a.currency === currency)
+          .map((a) => a.id);
+        const totalMinor = ids.reduce(
+          (sum, id) => sum + (balanceByAccount.get(id) ?? 0),
+          0,
+        );
+        return { currency, amount: totalMinor / MINOR_UNIT };
+      });
+
+      // 7-point trend: balance at start of each of the last 6 months + current
+      const trendPoints: { label: string; value: number }[] = [];
+      let runningMinor = beforeTrendAgg._sum.amount ?? 0;
+      const monthShort = (d: Date) =>
+        d.toLocaleString("en-US", { month: "short", timeZone: "UTC" });
+
+      for (let i = 0; i < trendDates.length; i++) {
+        if (i > 0) {
+          const prevBoundary = trendDates[i - 1];
+          const curBoundary = trendDates[i];
+          for (const r of trendRecords) {
+            if (
+              r.recordDate &&
+              r.recordDate >= prevBoundary &&
+              r.recordDate < curBoundary
+            ) {
+              runningMinor += r.amount;
+            }
+          }
+        }
+        const label =
+          i === trendDates.length - 1
+            ? "Now"
+            : monthShort(trendDates[i]);
+        trendPoints.push({ label, value: runningMinor / MINOR_UNIT });
+      }
+
+      // Month summary (in, out, byNature, change)
+      let monthChangeMinor = 0;
+      let monthInMinor = 0;
+      let monthOutMinor = 0;
+      const byNatureMinor = { DEBO: 0, NECESITO: 0, QUIERO: 0 };
+
+      for (const r of monthRecords) {
+        monthChangeMinor += r.amount;
+        if (r.transfer || r.type === "TRANSFER" || r.excludeFromStats) continue;
+        if (r.type === "INCOME") {
+          monthInMinor += r.amount;
+        } else if (r.type === "EXPENSE") {
+          const abs = -r.amount;
+          monthOutMinor += abs;
+          const nature = r.spendingNature ?? r.category?.spendingNature ?? "NECESITO";
+          byNatureMinor[nature] += abs;
+        }
+      }
+
+      // Upcoming (next 7 days): credit card payments due
+      const upcoming = accounts
+        .filter((a) => a.type === "CREDIT_CARD" && a.paymentDay != null)
+        .map((card) => {
+          const due = computeCardDue(card.paymentDay, now);
+          if (!due || due.dueInDays > 7) return null;
+          const balanceMinor = balanceByAccount.get(card.id) ?? 0;
+          const owed = Math.max(0, -balanceMinor) / MINOR_UNIT;
+          if (owed <= 0) return null;
+          return {
+            id: `card-${card.id}`,
+            accountId: card.id,
+            date: due.date,
+            title: card.name,
+            amount: owed,
+            currency: card.currency,
+            dueInDays: due.dueInDays,
+          };
+        })
+        .filter((x): x is NonNullable<typeof x> => x !== null)
+        .sort((a, b) => a.dueInDays - b.dueInDays);
+
+      const recent = recentRows.map((r) => ({
+        id: r.id,
+        type: r.type,
+        amount: r.amount / MINOR_UNIT,
+        currency: r.account.currency,
+        date: r.recordDate ? r.recordDate.toISOString().slice(0, 10) : null,
+        title: r.transfer
+          ? r.transferAccount
+            ? `${r.account.name} → ${r.transferAccount.name}`
+            : r.account.name
+          : r.payee?.name || r.category?.name || r.note || r.account.name,
+        category: r.category,
+        accountName: r.account.name,
+      }));
+
+      return {
+        isEmpty: false,
+        month: monthStr,
+        hasRecords: recordCount > 0,
+        balance: {
+          currency: primaryCurrency,
+          amount: primaryTotalMinor / MINOR_UNIT,
+          others,
+        },
+        change: monthChangeMinor / MINOR_UNIT,
+        trend: trendPoints,
+        split: null,
+        monthSummary: {
+          currency: primaryCurrency,
+          in: monthInMinor / MINOR_UNIT,
+          out: monthOutMinor / MINOR_UNIT,
+          byNature: {
+            DEBO: byNatureMinor.DEBO / MINOR_UNIT,
+            NECESITO: byNatureMinor.NECESITO / MINOR_UNIT,
+            QUIERO: byNatureMinor.QUIERO / MINOR_UNIT,
+          },
+          pace,
+          daysLeft,
+        },
+        upcoming,
+        recent,
+        insight: null,
       };
     }),
 });

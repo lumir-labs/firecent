@@ -49,6 +49,7 @@ export type DebtMinAggregateOutputType = {
   note: string | null
   amount: number | null
   remainingAmount: number | null
+  currency: string | null
   creationDate: Date | null
   payBackDate: Date | null
   paidBack: boolean | null
@@ -69,6 +70,7 @@ export type DebtMaxAggregateOutputType = {
   note: string | null
   amount: number | null
   remainingAmount: number | null
+  currency: string | null
   creationDate: Date | null
   payBackDate: Date | null
   paidBack: boolean | null
@@ -89,6 +91,7 @@ export type DebtCountAggregateOutputType = {
   note: number
   amount: number
   remainingAmount: number
+  currency: number
   creationDate: number
   payBackDate: number
   paidBack: number
@@ -125,6 +128,7 @@ export type DebtMinAggregateInputType = {
   note?: true
   amount?: true
   remainingAmount?: true
+  currency?: true
   creationDate?: true
   payBackDate?: true
   paidBack?: true
@@ -145,6 +149,7 @@ export type DebtMaxAggregateInputType = {
   note?: true
   amount?: true
   remainingAmount?: true
+  currency?: true
   creationDate?: true
   payBackDate?: true
   paidBack?: true
@@ -165,6 +170,7 @@ export type DebtCountAggregateInputType = {
   note?: true
   amount?: true
   remainingAmount?: true
+  currency?: true
   creationDate?: true
   payBackDate?: true
   paidBack?: true
@@ -272,6 +278,7 @@ export type DebtGroupByOutputType = {
   note: string | null
   amount: number
   remainingAmount: number | null
+  currency: string
   creationDate: Date
   payBackDate: Date | null
   paidBack: boolean
@@ -315,6 +322,7 @@ export type DebtWhereInput = {
   note?: Prisma.StringNullableFilter<"Debt"> | string | null
   amount?: Prisma.IntFilter<"Debt"> | number
   remainingAmount?: Prisma.IntNullableFilter<"Debt"> | number | null
+  currency?: Prisma.StringFilter<"Debt"> | string
   creationDate?: Prisma.DateTimeFilter<"Debt"> | Date | string
   payBackDate?: Prisma.DateTimeNullableFilter<"Debt"> | Date | string | null
   paidBack?: Prisma.BoolFilter<"Debt"> | boolean
@@ -338,6 +346,7 @@ export type DebtOrderByWithRelationInput = {
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   amount?: Prisma.SortOrder
   remainingAmount?: Prisma.SortOrderInput | Prisma.SortOrder
+  currency?: Prisma.SortOrder
   creationDate?: Prisma.SortOrder
   payBackDate?: Prisma.SortOrderInput | Prisma.SortOrder
   paidBack?: Prisma.SortOrder
@@ -364,6 +373,7 @@ export type DebtWhereUniqueInput = Prisma.AtLeast<{
   note?: Prisma.StringNullableFilter<"Debt"> | string | null
   amount?: Prisma.IntFilter<"Debt"> | number
   remainingAmount?: Prisma.IntNullableFilter<"Debt"> | number | null
+  currency?: Prisma.StringFilter<"Debt"> | string
   creationDate?: Prisma.DateTimeFilter<"Debt"> | Date | string
   payBackDate?: Prisma.DateTimeNullableFilter<"Debt"> | Date | string | null
   paidBack?: Prisma.BoolFilter<"Debt"> | boolean
@@ -387,6 +397,7 @@ export type DebtOrderByWithAggregationInput = {
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   amount?: Prisma.SortOrder
   remainingAmount?: Prisma.SortOrderInput | Prisma.SortOrder
+  currency?: Prisma.SortOrder
   creationDate?: Prisma.SortOrder
   payBackDate?: Prisma.SortOrderInput | Prisma.SortOrder
   paidBack?: Prisma.SortOrder
@@ -415,6 +426,7 @@ export type DebtScalarWhereWithAggregatesInput = {
   note?: Prisma.StringNullableWithAggregatesFilter<"Debt"> | string | null
   amount?: Prisma.IntWithAggregatesFilter<"Debt"> | number
   remainingAmount?: Prisma.IntNullableWithAggregatesFilter<"Debt"> | number | null
+  currency?: Prisma.StringWithAggregatesFilter<"Debt"> | string
   creationDate?: Prisma.DateTimeWithAggregatesFilter<"Debt"> | Date | string
   payBackDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Debt"> | Date | string | null
   paidBack?: Prisma.BoolWithAggregatesFilter<"Debt"> | boolean
@@ -432,6 +444,7 @@ export type DebtCreateInput = {
   note?: string | null
   amount: number
   remainingAmount?: number | null
+  currency?: string
   creationDate: Date | string
   payBackDate?: Date | string | null
   paidBack?: boolean
@@ -455,6 +468,7 @@ export type DebtUncheckedCreateInput = {
   note?: string | null
   amount: number
   remainingAmount?: number | null
+  currency?: string
   creationDate: Date | string
   payBackDate?: Date | string | null
   paidBack?: boolean
@@ -473,6 +487,7 @@ export type DebtUpdateInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   remainingAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   creationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payBackDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paidBack?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -496,6 +511,7 @@ export type DebtUncheckedUpdateInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   remainingAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   creationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payBackDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paidBack?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -517,6 +533,7 @@ export type DebtCreateManyInput = {
   note?: string | null
   amount: number
   remainingAmount?: number | null
+  currency?: string
   creationDate: Date | string
   payBackDate?: Date | string | null
   paidBack?: boolean
@@ -534,6 +551,7 @@ export type DebtUpdateManyMutationInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   remainingAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   creationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payBackDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paidBack?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -554,6 +572,7 @@ export type DebtUncheckedUpdateManyInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   remainingAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   creationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payBackDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paidBack?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -584,6 +603,7 @@ export type DebtCountOrderByAggregateInput = {
   note?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   remainingAmount?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
   creationDate?: Prisma.SortOrder
   payBackDate?: Prisma.SortOrder
   paidBack?: Prisma.SortOrder
@@ -611,6 +631,7 @@ export type DebtMaxOrderByAggregateInput = {
   note?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   remainingAmount?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
   creationDate?: Prisma.SortOrder
   payBackDate?: Prisma.SortOrder
   paidBack?: Prisma.SortOrder
@@ -631,6 +652,7 @@ export type DebtMinOrderByAggregateInput = {
   note?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   remainingAmount?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
   creationDate?: Prisma.SortOrder
   payBackDate?: Prisma.SortOrder
   paidBack?: Prisma.SortOrder
@@ -781,6 +803,7 @@ export type DebtCreateWithoutAccountInput = {
   note?: string | null
   amount: number
   remainingAmount?: number | null
+  currency?: string
   creationDate: Date | string
   payBackDate?: Date | string | null
   paidBack?: boolean
@@ -802,6 +825,7 @@ export type DebtUncheckedCreateWithoutAccountInput = {
   note?: string | null
   amount: number
   remainingAmount?: number | null
+  currency?: string
   creationDate: Date | string
   payBackDate?: Date | string | null
   paidBack?: boolean
@@ -852,6 +876,7 @@ export type DebtScalarWhereInput = {
   note?: Prisma.StringNullableFilter<"Debt"> | string | null
   amount?: Prisma.IntFilter<"Debt"> | number
   remainingAmount?: Prisma.IntNullableFilter<"Debt"> | number | null
+  currency?: Prisma.StringFilter<"Debt"> | string
   creationDate?: Prisma.DateTimeFilter<"Debt"> | Date | string
   payBackDate?: Prisma.DateTimeNullableFilter<"Debt"> | Date | string | null
   paidBack?: Prisma.BoolFilter<"Debt"> | boolean
@@ -869,6 +894,7 @@ export type DebtCreateWithoutRecordsInput = {
   note?: string | null
   amount: number
   remainingAmount?: number | null
+  currency?: string
   creationDate: Date | string
   payBackDate?: Date | string | null
   paidBack?: boolean
@@ -891,6 +917,7 @@ export type DebtUncheckedCreateWithoutRecordsInput = {
   note?: string | null
   amount: number
   remainingAmount?: number | null
+  currency?: string
   creationDate: Date | string
   payBackDate?: Date | string | null
   paidBack?: boolean
@@ -929,6 +956,7 @@ export type DebtCreateWithoutOrganizationInput = {
   note?: string | null
   amount: number
   remainingAmount?: number | null
+  currency?: string
   creationDate: Date | string
   payBackDate?: Date | string | null
   paidBack?: boolean
@@ -950,6 +978,7 @@ export type DebtUncheckedCreateWithoutOrganizationInput = {
   note?: string | null
   amount: number
   remainingAmount?: number | null
+  currency?: string
   creationDate: Date | string
   payBackDate?: Date | string | null
   paidBack?: boolean
@@ -996,6 +1025,7 @@ export type DebtCreateManyAccountInput = {
   note?: string | null
   amount: number
   remainingAmount?: number | null
+  currency?: string
   creationDate: Date | string
   payBackDate?: Date | string | null
   paidBack?: boolean
@@ -1013,6 +1043,7 @@ export type DebtUpdateWithoutAccountInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   remainingAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   creationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payBackDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paidBack?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1034,6 +1065,7 @@ export type DebtUncheckedUpdateWithoutAccountInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   remainingAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   creationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payBackDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paidBack?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1054,6 +1086,7 @@ export type DebtUncheckedUpdateManyWithoutAccountInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   remainingAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   creationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payBackDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paidBack?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1071,6 +1104,7 @@ export type DebtUpdateWithoutRecordsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   remainingAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   creationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payBackDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paidBack?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1093,6 +1127,7 @@ export type DebtUncheckedUpdateWithoutRecordsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   remainingAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   creationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payBackDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paidBack?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1113,6 +1148,7 @@ export type DebtUncheckedUpdateManyWithoutRecordsInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   remainingAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   creationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payBackDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paidBack?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1132,6 +1168,7 @@ export type DebtCreateManyOrganizationInput = {
   note?: string | null
   amount: number
   remainingAmount?: number | null
+  currency?: string
   creationDate: Date | string
   payBackDate?: Date | string | null
   paidBack?: boolean
@@ -1149,6 +1186,7 @@ export type DebtUpdateWithoutOrganizationInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   remainingAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   creationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payBackDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paidBack?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1170,6 +1208,7 @@ export type DebtUncheckedUpdateWithoutOrganizationInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   remainingAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   creationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payBackDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paidBack?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1190,6 +1229,7 @@ export type DebtUncheckedUpdateManyWithoutOrganizationInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
   remainingAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
   creationDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   payBackDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   paidBack?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1241,6 +1281,7 @@ export type DebtSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   note?: boolean
   amount?: boolean
   remainingAmount?: boolean
+  currency?: boolean
   creationDate?: boolean
   payBackDate?: boolean
   paidBack?: boolean
@@ -1265,6 +1306,7 @@ export type DebtSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   note?: boolean
   amount?: boolean
   remainingAmount?: boolean
+  currency?: boolean
   creationDate?: boolean
   payBackDate?: boolean
   paidBack?: boolean
@@ -1287,6 +1329,7 @@ export type DebtSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   note?: boolean
   amount?: boolean
   remainingAmount?: boolean
+  currency?: boolean
   creationDate?: boolean
   payBackDate?: boolean
   paidBack?: boolean
@@ -1309,6 +1352,7 @@ export type DebtSelectScalar = {
   note?: boolean
   amount?: boolean
   remainingAmount?: boolean
+  currency?: boolean
   creationDate?: boolean
   payBackDate?: boolean
   paidBack?: boolean
@@ -1320,7 +1364,7 @@ export type DebtSelectScalar = {
   deletedAt?: boolean
 }
 
-export type DebtOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "accountId" | "type" | "name" | "note" | "amount" | "remainingAmount" | "creationDate" | "payBackDate" | "paidBack" | "createdBy" | "updatedBy" | "deletedBy" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["debt"]>
+export type DebtOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "accountId" | "type" | "name" | "note" | "amount" | "remainingAmount" | "currency" | "creationDate" | "payBackDate" | "paidBack" | "createdBy" | "updatedBy" | "deletedBy" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["debt"]>
 export type DebtInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   account?: boolean | Prisma.Debt$accountArgs<ExtArgs>
@@ -1352,6 +1396,7 @@ export type $DebtPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     note: string | null
     amount: number
     remainingAmount: number | null
+    currency: string
     creationDate: Date
     payBackDate: Date | null
     paidBack: boolean
@@ -1795,6 +1840,7 @@ export interface DebtFieldRefs {
   readonly note: Prisma.FieldRef<"Debt", 'String'>
   readonly amount: Prisma.FieldRef<"Debt", 'Int'>
   readonly remainingAmount: Prisma.FieldRef<"Debt", 'Int'>
+  readonly currency: Prisma.FieldRef<"Debt", 'String'>
   readonly creationDate: Prisma.FieldRef<"Debt", 'DateTime'>
   readonly payBackDate: Prisma.FieldRef<"Debt", 'DateTime'>
   readonly paidBack: Prisma.FieldRef<"Debt", 'Boolean'>

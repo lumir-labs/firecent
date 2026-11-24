@@ -415,7 +415,12 @@ export const ModelName = {
   Invitation: 'Invitation',
   ApiKey: 'ApiKey',
   TwoFactor: 'TwoFactor',
-  Waitlist: 'Waitlist'
+  Waitlist: 'Waitlist',
+  Budget: 'Budget',
+  BudgetNature: 'BudgetNature',
+  BudgetCategory: 'BudgetCategory',
+  Recurring: 'Recurring',
+  RecurringOccurrence: 'RecurringOccurrence'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -431,7 +436,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "role" | "permission" | "user" | "session" | "account" | "verification" | "bankAccount" | "category" | "payee" | "envelope" | "record" | "debt" | "label" | "organization" | "member" | "invitation" | "apiKey" | "twoFactor" | "waitlist"
+    modelProps: "role" | "permission" | "user" | "session" | "account" | "verification" | "bankAccount" | "category" | "payee" | "envelope" | "record" | "debt" | "label" | "organization" | "member" | "invitation" | "apiKey" | "twoFactor" | "waitlist" | "budget" | "budgetNature" | "budgetCategory" | "recurring" | "recurringOccurrence"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1841,6 +1846,376 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Budget: {
+      payload: Prisma.$BudgetPayload<ExtArgs>
+      fields: Prisma.BudgetFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BudgetFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BudgetFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPayload>
+        }
+        findFirst: {
+          args: Prisma.BudgetFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BudgetFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPayload>
+        }
+        findMany: {
+          args: Prisma.BudgetFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPayload>[]
+        }
+        create: {
+          args: Prisma.BudgetCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPayload>
+        }
+        createMany: {
+          args: Prisma.BudgetCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BudgetCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPayload>[]
+        }
+        delete: {
+          args: Prisma.BudgetDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPayload>
+        }
+        update: {
+          args: Prisma.BudgetUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPayload>
+        }
+        deleteMany: {
+          args: Prisma.BudgetDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BudgetUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BudgetUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPayload>[]
+        }
+        upsert: {
+          args: Prisma.BudgetUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetPayload>
+        }
+        aggregate: {
+          args: Prisma.BudgetAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBudget>
+        }
+        groupBy: {
+          args: Prisma.BudgetGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BudgetGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BudgetCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BudgetCountAggregateOutputType> | number
+        }
+      }
+    }
+    BudgetNature: {
+      payload: Prisma.$BudgetNaturePayload<ExtArgs>
+      fields: Prisma.BudgetNatureFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BudgetNatureFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetNaturePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BudgetNatureFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetNaturePayload>
+        }
+        findFirst: {
+          args: Prisma.BudgetNatureFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetNaturePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BudgetNatureFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetNaturePayload>
+        }
+        findMany: {
+          args: Prisma.BudgetNatureFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetNaturePayload>[]
+        }
+        create: {
+          args: Prisma.BudgetNatureCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetNaturePayload>
+        }
+        createMany: {
+          args: Prisma.BudgetNatureCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BudgetNatureCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetNaturePayload>[]
+        }
+        delete: {
+          args: Prisma.BudgetNatureDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetNaturePayload>
+        }
+        update: {
+          args: Prisma.BudgetNatureUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetNaturePayload>
+        }
+        deleteMany: {
+          args: Prisma.BudgetNatureDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BudgetNatureUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BudgetNatureUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetNaturePayload>[]
+        }
+        upsert: {
+          args: Prisma.BudgetNatureUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetNaturePayload>
+        }
+        aggregate: {
+          args: Prisma.BudgetNatureAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBudgetNature>
+        }
+        groupBy: {
+          args: Prisma.BudgetNatureGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BudgetNatureGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BudgetNatureCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BudgetNatureCountAggregateOutputType> | number
+        }
+      }
+    }
+    BudgetCategory: {
+      payload: Prisma.$BudgetCategoryPayload<ExtArgs>
+      fields: Prisma.BudgetCategoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BudgetCategoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetCategoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BudgetCategoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetCategoryPayload>
+        }
+        findFirst: {
+          args: Prisma.BudgetCategoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetCategoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BudgetCategoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetCategoryPayload>
+        }
+        findMany: {
+          args: Prisma.BudgetCategoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetCategoryPayload>[]
+        }
+        create: {
+          args: Prisma.BudgetCategoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetCategoryPayload>
+        }
+        createMany: {
+          args: Prisma.BudgetCategoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BudgetCategoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetCategoryPayload>[]
+        }
+        delete: {
+          args: Prisma.BudgetCategoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetCategoryPayload>
+        }
+        update: {
+          args: Prisma.BudgetCategoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetCategoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.BudgetCategoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BudgetCategoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BudgetCategoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetCategoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.BudgetCategoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BudgetCategoryPayload>
+        }
+        aggregate: {
+          args: Prisma.BudgetCategoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBudgetCategory>
+        }
+        groupBy: {
+          args: Prisma.BudgetCategoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BudgetCategoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BudgetCategoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BudgetCategoryCountAggregateOutputType> | number
+        }
+      }
+    }
+    Recurring: {
+      payload: Prisma.$RecurringPayload<ExtArgs>
+      fields: Prisma.RecurringFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RecurringFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RecurringFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringPayload>
+        }
+        findFirst: {
+          args: Prisma.RecurringFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RecurringFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringPayload>
+        }
+        findMany: {
+          args: Prisma.RecurringFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringPayload>[]
+        }
+        create: {
+          args: Prisma.RecurringCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringPayload>
+        }
+        createMany: {
+          args: Prisma.RecurringCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RecurringCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringPayload>[]
+        }
+        delete: {
+          args: Prisma.RecurringDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringPayload>
+        }
+        update: {
+          args: Prisma.RecurringUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringPayload>
+        }
+        deleteMany: {
+          args: Prisma.RecurringDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RecurringUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RecurringUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringPayload>[]
+        }
+        upsert: {
+          args: Prisma.RecurringUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringPayload>
+        }
+        aggregate: {
+          args: Prisma.RecurringAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRecurring>
+        }
+        groupBy: {
+          args: Prisma.RecurringGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RecurringGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RecurringCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RecurringCountAggregateOutputType> | number
+        }
+      }
+    }
+    RecurringOccurrence: {
+      payload: Prisma.$RecurringOccurrencePayload<ExtArgs>
+      fields: Prisma.RecurringOccurrenceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RecurringOccurrenceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringOccurrencePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RecurringOccurrenceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringOccurrencePayload>
+        }
+        findFirst: {
+          args: Prisma.RecurringOccurrenceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringOccurrencePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RecurringOccurrenceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringOccurrencePayload>
+        }
+        findMany: {
+          args: Prisma.RecurringOccurrenceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringOccurrencePayload>[]
+        }
+        create: {
+          args: Prisma.RecurringOccurrenceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringOccurrencePayload>
+        }
+        createMany: {
+          args: Prisma.RecurringOccurrenceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RecurringOccurrenceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringOccurrencePayload>[]
+        }
+        delete: {
+          args: Prisma.RecurringOccurrenceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringOccurrencePayload>
+        }
+        update: {
+          args: Prisma.RecurringOccurrenceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringOccurrencePayload>
+        }
+        deleteMany: {
+          args: Prisma.RecurringOccurrenceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RecurringOccurrenceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RecurringOccurrenceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringOccurrencePayload>[]
+        }
+        upsert: {
+          args: Prisma.RecurringOccurrenceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecurringOccurrencePayload>
+        }
+        aggregate: {
+          args: Prisma.RecurringOccurrenceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRecurringOccurrence>
+        }
+        groupBy: {
+          args: Prisma.RecurringOccurrenceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RecurringOccurrenceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RecurringOccurrenceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RecurringOccurrenceCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2010,6 +2385,7 @@ export const CategoryScalarFieldEnum = {
   name: 'name',
   color: 'color',
   icon: 'icon',
+  type: 'type',
   spendingNature: 'spendingNature',
   hidden: 'hidden',
   parentId: 'parentId',
@@ -2065,6 +2441,7 @@ export const RecordScalarFieldEnum = {
   payeeId: 'payeeId',
   envelopeId: 'envelopeId',
   type: 'type',
+  spendingNature: 'spendingNature',
   paymentType: 'paymentType',
   paymentTypeLocal: 'paymentTypeLocal',
   amount: 'amount',
@@ -2079,6 +2456,8 @@ export const RecordScalarFieldEnum = {
   gpsAccuracy: 'gpsAccuracy',
   warrantyInMonth: 'warrantyInMonth',
   customCategory: 'customCategory',
+  excludeFromStats: 'excludeFromStats',
+  recurringId: 'recurringId',
   createdBy: 'createdBy',
   updatedBy: 'updatedBy',
   deletedBy: 'deletedBy',
@@ -2100,6 +2479,7 @@ export const DebtScalarFieldEnum = {
   note: 'note',
   amount: 'amount',
   remainingAmount: 'remainingAmount',
+  currency: 'currency',
   creationDate: 'creationDate',
   payBackDate: 'payBackDate',
   paidBack: 'paidBack',
@@ -2216,6 +2596,86 @@ export const WaitlistScalarFieldEnum = {
 } as const
 
 export type WaitlistScalarFieldEnum = (typeof WaitlistScalarFieldEnum)[keyof typeof WaitlistScalarFieldEnum]
+
+
+export const BudgetScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  month: 'month',
+  expectedIncome: 'expectedIncome',
+  createdBy: 'createdBy',
+  updatedBy: 'updatedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type BudgetScalarFieldEnum = (typeof BudgetScalarFieldEnum)[keyof typeof BudgetScalarFieldEnum]
+
+
+export const BudgetNatureScalarFieldEnum = {
+  id: 'id',
+  budgetId: 'budgetId',
+  nature: 'nature',
+  amount: 'amount'
+} as const
+
+export type BudgetNatureScalarFieldEnum = (typeof BudgetNatureScalarFieldEnum)[keyof typeof BudgetNatureScalarFieldEnum]
+
+
+export const BudgetCategoryScalarFieldEnum = {
+  id: 'id',
+  budgetId: 'budgetId',
+  categoryId: 'categoryId',
+  amount: 'amount'
+} as const
+
+export type BudgetCategoryScalarFieldEnum = (typeof BudgetCategoryScalarFieldEnum)[keyof typeof BudgetCategoryScalarFieldEnum]
+
+
+export const RecurringScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  name: 'name',
+  type: 'type',
+  amount: 'amount',
+  isEstimate: 'isEstimate',
+  accountId: 'accountId',
+  transferAccountId: 'transferAccountId',
+  categoryId: 'categoryId',
+  payeeId: 'payeeId',
+  mode: 'mode',
+  frequency: 'frequency',
+  interval: 'interval',
+  daysOfMonth: 'daysOfMonth',
+  startDate: 'startDate',
+  nextDate: 'nextDate',
+  endDate: 'endDate',
+  pausedAt: 'pausedAt',
+  note: 'note',
+  createdBy: 'createdBy',
+  updatedBy: 'updatedBy',
+  deletedBy: 'deletedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type RecurringScalarFieldEnum = (typeof RecurringScalarFieldEnum)[keyof typeof RecurringScalarFieldEnum]
+
+
+export const RecurringOccurrenceScalarFieldEnum = {
+  id: 'id',
+  recurringId: 'recurringId',
+  dueDate: 'dueDate',
+  amount: 'amount',
+  status: 'status',
+  recordId: 'recordId',
+  decidedBy: 'decidedBy',
+  decidedAt: 'decidedAt'
+} as const
+
+export type RecurringOccurrenceScalarFieldEnum = (typeof RecurringOccurrenceScalarFieldEnum)[keyof typeof RecurringOccurrenceScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2354,20 +2814,6 @@ export type ListEnumDisplayCreditModeFieldRefInput<$PrismaModel> = FieldRefInput
 
 
 /**
- * Reference to a field of type 'SpendingNature'
- */
-export type EnumSpendingNatureFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SpendingNature'>
-    
-
-
-/**
- * Reference to a field of type 'SpendingNature[]'
- */
-export type ListEnumSpendingNatureFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SpendingNature[]'>
-    
-
-
-/**
  * Reference to a field of type 'RecordType'
  */
 export type EnumRecordTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecordType'>
@@ -2378,6 +2824,20 @@ export type EnumRecordTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prism
  * Reference to a field of type 'RecordType[]'
  */
 export type ListEnumRecordTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecordType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SpendingNature'
+ */
+export type EnumSpendingNatureFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SpendingNature'>
+    
+
+
+/**
+ * Reference to a field of type 'SpendingNature[]'
+ */
+export type ListEnumSpendingNatureFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SpendingNature[]'>
     
 
 
@@ -2420,6 +2880,48 @@ export type EnumDebtTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
  * Reference to a field of type 'DebtType[]'
  */
 export type ListEnumDebtTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DebtType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'RecurringMode'
+ */
+export type EnumRecurringModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecurringMode'>
+    
+
+
+/**
+ * Reference to a field of type 'RecurringMode[]'
+ */
+export type ListEnumRecurringModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecurringMode[]'>
+    
+
+
+/**
+ * Reference to a field of type 'RecurringFrequency'
+ */
+export type EnumRecurringFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecurringFrequency'>
+    
+
+
+/**
+ * Reference to a field of type 'RecurringFrequency[]'
+ */
+export type ListEnumRecurringFrequencyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecurringFrequency[]'>
+    
+
+
+/**
+ * Reference to a field of type 'OccurrenceStatus'
+ */
+export type EnumOccurrenceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OccurrenceStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'OccurrenceStatus[]'
+ */
+export type ListEnumOccurrenceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OccurrenceStatus[]'>
     
 
 /**
@@ -2592,6 +3094,11 @@ export type GlobalOmitConfig = {
   apiKey?: Prisma.ApiKeyOmit
   twoFactor?: Prisma.TwoFactorOmit
   waitlist?: Prisma.WaitlistOmit
+  budget?: Prisma.BudgetOmit
+  budgetNature?: Prisma.BudgetNatureOmit
+  budgetCategory?: Prisma.BudgetCategoryOmit
+  recurring?: Prisma.RecurringOmit
+  recurringOccurrence?: Prisma.RecurringOccurrenceOmit
 }
 
 /* Types for Logging */

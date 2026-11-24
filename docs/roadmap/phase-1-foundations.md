@@ -31,7 +31,7 @@ componentes de chat, onboarding y presupuestos (llegan en sus fases).
 | 1A | Tokens y tipografía | — | **Sonnet** | ✅ |
 | 1B | Variantes de Firecent en primitivas shadcn | 1A | **Sonnet** | ✅ |
 | 1C | Componentes de dominio (`components/finance/`) | 1B | **Opus** | ✅ |
-| 1D | App shell: sidebar, tab bar, cabeceras, rutas | 1C | **Opus** | ⏳ |
+| 1D | App shell: sidebar, tab bar, cabeceras, rutas | 1C | **Opus** | ✅ |
 | 1E | Seed de demo (Maya y Daniel) | — | **Sonnet** | ✅ |
 
 ---

@@ -51,3 +51,5 @@ export { StateBlock, LoadingRegion } from "./state-block";
 export type { StateAction, StateBlockProps, StateKind } from "./state-block";
 export { CategoryIcon, resolveCategoryIcon } from "./category-icon";
 export type { CategoryIconProps, CategoryIconSize } from "./category-icon";
+export { AmountKeypad } from "./amount-keypad";
+export type { AmountKeypadProps } from "./amount-keypad";

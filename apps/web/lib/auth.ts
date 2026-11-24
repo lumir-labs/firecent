@@ -1,4 +1,6 @@
+import { cache } from "react";
 import { betterAuth } from "better-auth";
+import { resolveActiveOrg } from "./actions/org-guard";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { db } from "@app/db";
 import { nextCookies } from "better-auth/next-js";
@@ -344,6 +346,12 @@ export const auth = betterAuth({
               permissions: true,
             },
           },
+          memberships: {
+            select: {
+              organization: { select: { id: true, name: true } },
+            },
+            orderBy: { createdAt: "asc" },
+          },
         },
       });
 
@@ -381,6 +389,8 @@ export const auth = betterAuth({
         ) ?? [];
 
       const uniquePermissions = [...new Set(permissions)];
+      const organizations =
+        userWithPermissions?.memberships.map((m) => m.organization) ?? [];
 
       return {
         user: {
@@ -390,6 +400,7 @@ export const auth = betterAuth({
           deletedAt: userWithPermissions?.deletedAt ?? null,
           permissions: uniquePermissions,
           roles: roles.map((r) => r.id) ?? [],
+          organizations,
         },
         session,
       };
@@ -429,7 +440,26 @@ export const auth = betterAuth({
 
 export type Session = typeof auth.$Infer.Session;
 
-export async function getServerSession() {
+export function resolveSessionOrgId(session: Session | null): string | null {
+  if (!session?.user) return null;
+  const activeId =
+    (session.session as { activeOrganizationId?: string | null })
+      ?.activeOrganizationId ?? null;
+  const orgs =
+    (session.user as { organizations?: { id: string; name: string }[] })
+      .organizations ?? [];
+  return resolveActiveOrg(
+    orgs.map((o) => o.id),
+    activeId,
+  ) ?? null;
+}
+
+/**
+ * Memoized per-request with React `cache()` so layout, page, `validatePermission`,
+ * and helpers within a single render share ONE session lookup instead of
+ * multiplying DB round-trips.
+ */
+export const getServerSession = cache(async function getServerSession() {
   try {
     const session = await auth.api.getSession({ headers: await headers() });
     // DSR guard: anonymized/deleted account = no session. We clear cookies
@@ -456,4 +486,4 @@ export async function getServerSession() {
     cookieStore.delete("better-auth.account_data");
     return null;
   }
-}
+});

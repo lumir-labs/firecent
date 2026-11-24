@@ -34,9 +34,9 @@ Cada pantalla abre sola con parámetros, por ejemplo `transactions.html?theme=da
 | Fase | Entrega | Estado | Doc |
 | --- | --- | --- | --- |
 | 0 | Decisiones bloqueantes | ✅ Cerrada (ver tabla de decisiones) | este README |
-| 1 | Tokens, componentes de marca, app shell, seed de demo | ⏳ Lista para ejecutar | [phase-1](phase-1-foundations.md) |
-| 2 | Accounts, Transactions, alta rápida | ⏳ Lista (depende de 1) | [phase-2](phase-2-accounts-transactions.md) |
-| 3 | Home | ⏳ Lista (depende de 1 y 2; 3B espera la decisión H1) | [phase-3](phase-3-home.md) |
+| 1 | Tokens, componentes de marca, app shell, seed de demo | ✅ Hecha | [phase-1](phase-1-foundations.md) |
+| 2 | Accounts, Transactions, alta rápida | ✅ Hecha (pendiente aplicar migración con Postgres activo) | [phase-2](phase-2-accounts-transactions.md) |
+| 3 | Home | ✅ Hecha (H1: 4 bloques mobile + Recent desktop) | [phase-3](phase-3-home.md) |
 | 4 | Spaces y privacidad | 📝 Resumen abajo | — |
 | 5 | Budget | 📝 Resumen abajo | — |
 | 6 | Recurring y Notifications | 📝 Resumen abajo | — |

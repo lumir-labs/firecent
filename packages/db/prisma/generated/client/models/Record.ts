@@ -39,6 +39,7 @@ export type RecordAvgAggregateOutputType = {
   gpsLongitude: runtime.Decimal | null
   gpsAccuracy: runtime.Decimal | null
   warrantyInMonth: number | null
+  recurringId: number | null
   transferAccountId: number | null
 }
 
@@ -55,6 +56,7 @@ export type RecordSumAggregateOutputType = {
   gpsLongitude: runtime.Decimal | null
   gpsAccuracy: runtime.Decimal | null
   warrantyInMonth: number | null
+  recurringId: number | null
   transferAccountId: number | null
 }
 
@@ -66,6 +68,7 @@ export type RecordMinAggregateOutputType = {
   payeeId: number | null
   envelopeId: number | null
   type: $Enums.RecordType | null
+  spendingNature: $Enums.SpendingNature | null
   paymentType: $Enums.PaymentType | null
   paymentTypeLocal: string | null
   amount: number | null
@@ -80,6 +83,8 @@ export type RecordMinAggregateOutputType = {
   gpsAccuracy: runtime.Decimal | null
   warrantyInMonth: number | null
   customCategory: boolean | null
+  excludeFromStats: boolean | null
+  recurringId: number | null
   createdBy: string | null
   updatedBy: string | null
   deletedBy: string | null
@@ -97,6 +102,7 @@ export type RecordMaxAggregateOutputType = {
   payeeId: number | null
   envelopeId: number | null
   type: $Enums.RecordType | null
+  spendingNature: $Enums.SpendingNature | null
   paymentType: $Enums.PaymentType | null
   paymentTypeLocal: string | null
   amount: number | null
@@ -111,6 +117,8 @@ export type RecordMaxAggregateOutputType = {
   gpsAccuracy: runtime.Decimal | null
   warrantyInMonth: number | null
   customCategory: boolean | null
+  excludeFromStats: boolean | null
+  recurringId: number | null
   createdBy: string | null
   updatedBy: string | null
   deletedBy: string | null
@@ -128,6 +136,7 @@ export type RecordCountAggregateOutputType = {
   payeeId: number
   envelopeId: number
   type: number
+  spendingNature: number
   paymentType: number
   paymentTypeLocal: number
   amount: number
@@ -142,6 +151,8 @@ export type RecordCountAggregateOutputType = {
   gpsAccuracy: number
   warrantyInMonth: number
   customCategory: number
+  excludeFromStats: number
+  recurringId: number
   createdBy: number
   updatedBy: number
   deletedBy: number
@@ -166,6 +177,7 @@ export type RecordAvgAggregateInputType = {
   gpsLongitude?: true
   gpsAccuracy?: true
   warrantyInMonth?: true
+  recurringId?: true
   transferAccountId?: true
 }
 
@@ -182,6 +194,7 @@ export type RecordSumAggregateInputType = {
   gpsLongitude?: true
   gpsAccuracy?: true
   warrantyInMonth?: true
+  recurringId?: true
   transferAccountId?: true
 }
 
@@ -193,6 +206,7 @@ export type RecordMinAggregateInputType = {
   payeeId?: true
   envelopeId?: true
   type?: true
+  spendingNature?: true
   paymentType?: true
   paymentTypeLocal?: true
   amount?: true
@@ -207,6 +221,8 @@ export type RecordMinAggregateInputType = {
   gpsAccuracy?: true
   warrantyInMonth?: true
   customCategory?: true
+  excludeFromStats?: true
+  recurringId?: true
   createdBy?: true
   updatedBy?: true
   deletedBy?: true
@@ -224,6 +240,7 @@ export type RecordMaxAggregateInputType = {
   payeeId?: true
   envelopeId?: true
   type?: true
+  spendingNature?: true
   paymentType?: true
   paymentTypeLocal?: true
   amount?: true
@@ -238,6 +255,8 @@ export type RecordMaxAggregateInputType = {
   gpsAccuracy?: true
   warrantyInMonth?: true
   customCategory?: true
+  excludeFromStats?: true
+  recurringId?: true
   createdBy?: true
   updatedBy?: true
   deletedBy?: true
@@ -255,6 +274,7 @@ export type RecordCountAggregateInputType = {
   payeeId?: true
   envelopeId?: true
   type?: true
+  spendingNature?: true
   paymentType?: true
   paymentTypeLocal?: true
   amount?: true
@@ -269,6 +289,8 @@ export type RecordCountAggregateInputType = {
   gpsAccuracy?: true
   warrantyInMonth?: true
   customCategory?: true
+  excludeFromStats?: true
+  recurringId?: true
   createdBy?: true
   updatedBy?: true
   deletedBy?: true
@@ -373,6 +395,7 @@ export type RecordGroupByOutputType = {
   payeeId: number | null
   envelopeId: number | null
   type: $Enums.RecordType
+  spendingNature: $Enums.SpendingNature | null
   paymentType: $Enums.PaymentType
   paymentTypeLocal: string | null
   amount: number
@@ -387,6 +410,8 @@ export type RecordGroupByOutputType = {
   gpsAccuracy: runtime.Decimal | null
   warrantyInMonth: number | null
   customCategory: boolean
+  excludeFromStats: boolean
+  recurringId: number | null
   createdBy: string | null
   updatedBy: string | null
   deletedBy: string | null
@@ -427,6 +452,7 @@ export type RecordWhereInput = {
   payeeId?: Prisma.IntNullableFilter<"Record"> | number | null
   envelopeId?: Prisma.IntNullableFilter<"Record"> | number | null
   type?: Prisma.EnumRecordTypeFilter<"Record"> | $Enums.RecordType
+  spendingNature?: Prisma.EnumSpendingNatureNullableFilter<"Record"> | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFilter<"Record"> | $Enums.PaymentType
   paymentTypeLocal?: Prisma.StringNullableFilter<"Record"> | string | null
   amount?: Prisma.IntFilter<"Record"> | number
@@ -441,6 +467,8 @@ export type RecordWhereInput = {
   gpsAccuracy?: Prisma.DecimalNullableFilter<"Record"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.IntNullableFilter<"Record"> | number | null
   customCategory?: Prisma.BoolFilter<"Record"> | boolean
+  excludeFromStats?: Prisma.BoolFilter<"Record"> | boolean
+  recurringId?: Prisma.IntNullableFilter<"Record"> | number | null
   createdBy?: Prisma.StringNullableFilter<"Record"> | string | null
   updatedBy?: Prisma.StringNullableFilter<"Record"> | string | null
   deletedBy?: Prisma.StringNullableFilter<"Record"> | string | null
@@ -466,6 +494,7 @@ export type RecordOrderByWithRelationInput = {
   payeeId?: Prisma.SortOrderInput | Prisma.SortOrder
   envelopeId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
+  spendingNature?: Prisma.SortOrderInput | Prisma.SortOrder
   paymentType?: Prisma.SortOrder
   paymentTypeLocal?: Prisma.SortOrderInput | Prisma.SortOrder
   amount?: Prisma.SortOrder
@@ -480,6 +509,8 @@ export type RecordOrderByWithRelationInput = {
   gpsAccuracy?: Prisma.SortOrderInput | Prisma.SortOrder
   warrantyInMonth?: Prisma.SortOrderInput | Prisma.SortOrder
   customCategory?: Prisma.SortOrder
+  excludeFromStats?: Prisma.SortOrder
+  recurringId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdBy?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -508,6 +539,7 @@ export type RecordWhereUniqueInput = Prisma.AtLeast<{
   payeeId?: Prisma.IntNullableFilter<"Record"> | number | null
   envelopeId?: Prisma.IntNullableFilter<"Record"> | number | null
   type?: Prisma.EnumRecordTypeFilter<"Record"> | $Enums.RecordType
+  spendingNature?: Prisma.EnumSpendingNatureNullableFilter<"Record"> | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFilter<"Record"> | $Enums.PaymentType
   paymentTypeLocal?: Prisma.StringNullableFilter<"Record"> | string | null
   amount?: Prisma.IntFilter<"Record"> | number
@@ -522,6 +554,8 @@ export type RecordWhereUniqueInput = Prisma.AtLeast<{
   gpsAccuracy?: Prisma.DecimalNullableFilter<"Record"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.IntNullableFilter<"Record"> | number | null
   customCategory?: Prisma.BoolFilter<"Record"> | boolean
+  excludeFromStats?: Prisma.BoolFilter<"Record"> | boolean
+  recurringId?: Prisma.IntNullableFilter<"Record"> | number | null
   createdBy?: Prisma.StringNullableFilter<"Record"> | string | null
   updatedBy?: Prisma.StringNullableFilter<"Record"> | string | null
   deletedBy?: Prisma.StringNullableFilter<"Record"> | string | null
@@ -547,6 +581,7 @@ export type RecordOrderByWithAggregationInput = {
   payeeId?: Prisma.SortOrderInput | Prisma.SortOrder
   envelopeId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
+  spendingNature?: Prisma.SortOrderInput | Prisma.SortOrder
   paymentType?: Prisma.SortOrder
   paymentTypeLocal?: Prisma.SortOrderInput | Prisma.SortOrder
   amount?: Prisma.SortOrder
@@ -561,6 +596,8 @@ export type RecordOrderByWithAggregationInput = {
   gpsAccuracy?: Prisma.SortOrderInput | Prisma.SortOrder
   warrantyInMonth?: Prisma.SortOrderInput | Prisma.SortOrder
   customCategory?: Prisma.SortOrder
+  excludeFromStats?: Prisma.SortOrder
+  recurringId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdBy?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   deletedBy?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -586,6 +623,7 @@ export type RecordScalarWhereWithAggregatesInput = {
   payeeId?: Prisma.IntNullableWithAggregatesFilter<"Record"> | number | null
   envelopeId?: Prisma.IntNullableWithAggregatesFilter<"Record"> | number | null
   type?: Prisma.EnumRecordTypeWithAggregatesFilter<"Record"> | $Enums.RecordType
+  spendingNature?: Prisma.EnumSpendingNatureNullableWithAggregatesFilter<"Record"> | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeWithAggregatesFilter<"Record"> | $Enums.PaymentType
   paymentTypeLocal?: Prisma.StringNullableWithAggregatesFilter<"Record"> | string | null
   amount?: Prisma.IntWithAggregatesFilter<"Record"> | number
@@ -600,6 +638,8 @@ export type RecordScalarWhereWithAggregatesInput = {
   gpsAccuracy?: Prisma.DecimalNullableWithAggregatesFilter<"Record"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.IntNullableWithAggregatesFilter<"Record"> | number | null
   customCategory?: Prisma.BoolWithAggregatesFilter<"Record"> | boolean
+  excludeFromStats?: Prisma.BoolWithAggregatesFilter<"Record"> | boolean
+  recurringId?: Prisma.IntNullableWithAggregatesFilter<"Record"> | number | null
   createdBy?: Prisma.StringNullableWithAggregatesFilter<"Record"> | string | null
   updatedBy?: Prisma.StringNullableWithAggregatesFilter<"Record"> | string | null
   deletedBy?: Prisma.StringNullableWithAggregatesFilter<"Record"> | string | null
@@ -611,6 +651,7 @@ export type RecordScalarWhereWithAggregatesInput = {
 
 export type RecordCreateInput = {
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -625,6 +666,8 @@ export type RecordCreateInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -649,6 +692,7 @@ export type RecordUncheckedCreateInput = {
   payeeId?: number | null
   envelopeId?: number | null
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -663,6 +707,8 @@ export type RecordUncheckedCreateInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -676,6 +722,7 @@ export type RecordUncheckedCreateInput = {
 
 export type RecordUpdateInput = {
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -690,6 +737,8 @@ export type RecordUpdateInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -714,6 +763,7 @@ export type RecordUncheckedUpdateInput = {
   payeeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   envelopeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -728,6 +778,8 @@ export type RecordUncheckedUpdateInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -747,6 +799,7 @@ export type RecordCreateManyInput = {
   payeeId?: number | null
   envelopeId?: number | null
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -761,6 +814,8 @@ export type RecordCreateManyInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -772,6 +827,7 @@ export type RecordCreateManyInput = {
 
 export type RecordUpdateManyMutationInput = {
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -786,6 +842,8 @@ export type RecordUpdateManyMutationInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -802,6 +860,7 @@ export type RecordUncheckedUpdateManyInput = {
   payeeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   envelopeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -816,6 +875,8 @@ export type RecordUncheckedUpdateManyInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -843,6 +904,7 @@ export type RecordCountOrderByAggregateInput = {
   payeeId?: Prisma.SortOrder
   envelopeId?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  spendingNature?: Prisma.SortOrder
   paymentType?: Prisma.SortOrder
   paymentTypeLocal?: Prisma.SortOrder
   amount?: Prisma.SortOrder
@@ -857,6 +919,8 @@ export type RecordCountOrderByAggregateInput = {
   gpsAccuracy?: Prisma.SortOrder
   warrantyInMonth?: Prisma.SortOrder
   customCategory?: Prisma.SortOrder
+  excludeFromStats?: Prisma.SortOrder
+  recurringId?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   updatedBy?: Prisma.SortOrder
   deletedBy?: Prisma.SortOrder
@@ -879,6 +943,7 @@ export type RecordAvgOrderByAggregateInput = {
   gpsLongitude?: Prisma.SortOrder
   gpsAccuracy?: Prisma.SortOrder
   warrantyInMonth?: Prisma.SortOrder
+  recurringId?: Prisma.SortOrder
   transferAccountId?: Prisma.SortOrder
 }
 
@@ -890,6 +955,7 @@ export type RecordMaxOrderByAggregateInput = {
   payeeId?: Prisma.SortOrder
   envelopeId?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  spendingNature?: Prisma.SortOrder
   paymentType?: Prisma.SortOrder
   paymentTypeLocal?: Prisma.SortOrder
   amount?: Prisma.SortOrder
@@ -904,6 +970,8 @@ export type RecordMaxOrderByAggregateInput = {
   gpsAccuracy?: Prisma.SortOrder
   warrantyInMonth?: Prisma.SortOrder
   customCategory?: Prisma.SortOrder
+  excludeFromStats?: Prisma.SortOrder
+  recurringId?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   updatedBy?: Prisma.SortOrder
   deletedBy?: Prisma.SortOrder
@@ -921,6 +989,7 @@ export type RecordMinOrderByAggregateInput = {
   payeeId?: Prisma.SortOrder
   envelopeId?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  spendingNature?: Prisma.SortOrder
   paymentType?: Prisma.SortOrder
   paymentTypeLocal?: Prisma.SortOrder
   amount?: Prisma.SortOrder
@@ -935,6 +1004,8 @@ export type RecordMinOrderByAggregateInput = {
   gpsAccuracy?: Prisma.SortOrder
   warrantyInMonth?: Prisma.SortOrder
   customCategory?: Prisma.SortOrder
+  excludeFromStats?: Prisma.SortOrder
+  recurringId?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
   updatedBy?: Prisma.SortOrder
   deletedBy?: Prisma.SortOrder
@@ -957,6 +1028,7 @@ export type RecordSumOrderByAggregateInput = {
   gpsLongitude?: Prisma.SortOrder
   gpsAccuracy?: Prisma.SortOrder
   warrantyInMonth?: Prisma.SortOrder
+  recurringId?: Prisma.SortOrder
   transferAccountId?: Prisma.SortOrder
 }
 
@@ -1170,10 +1242,6 @@ export type RecordUncheckedUpdateManyWithoutEnvelopeNestedInput = {
   deleteMany?: Prisma.RecordScalarWhereInput | Prisma.RecordScalarWhereInput[]
 }
 
-export type EnumRecordTypeFieldUpdateOperationsInput = {
-  set?: $Enums.RecordType
-}
-
 export type EnumPaymentTypeFieldUpdateOperationsInput = {
   set?: $Enums.PaymentType
 }
@@ -1306,6 +1374,7 @@ export type RecordUncheckedUpdateManyWithoutOrganizationNestedInput = {
 
 export type RecordCreateWithoutAccountInput = {
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -1320,6 +1389,8 @@ export type RecordCreateWithoutAccountInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -1342,6 +1413,7 @@ export type RecordUncheckedCreateWithoutAccountInput = {
   payeeId?: number | null
   envelopeId?: number | null
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -1356,6 +1428,8 @@ export type RecordUncheckedCreateWithoutAccountInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -1379,6 +1453,7 @@ export type RecordCreateManyAccountInputEnvelope = {
 
 export type RecordCreateWithoutTransferAccountInput = {
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -1393,6 +1468,8 @@ export type RecordCreateWithoutTransferAccountInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -1416,6 +1493,7 @@ export type RecordUncheckedCreateWithoutTransferAccountInput = {
   payeeId?: number | null
   envelopeId?: number | null
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -1430,6 +1508,8 @@ export type RecordUncheckedCreateWithoutTransferAccountInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -1477,6 +1557,7 @@ export type RecordScalarWhereInput = {
   payeeId?: Prisma.IntNullableFilter<"Record"> | number | null
   envelopeId?: Prisma.IntNullableFilter<"Record"> | number | null
   type?: Prisma.EnumRecordTypeFilter<"Record"> | $Enums.RecordType
+  spendingNature?: Prisma.EnumSpendingNatureNullableFilter<"Record"> | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFilter<"Record"> | $Enums.PaymentType
   paymentTypeLocal?: Prisma.StringNullableFilter<"Record"> | string | null
   amount?: Prisma.IntFilter<"Record"> | number
@@ -1491,6 +1572,8 @@ export type RecordScalarWhereInput = {
   gpsAccuracy?: Prisma.DecimalNullableFilter<"Record"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.IntNullableFilter<"Record"> | number | null
   customCategory?: Prisma.BoolFilter<"Record"> | boolean
+  excludeFromStats?: Prisma.BoolFilter<"Record"> | boolean
+  recurringId?: Prisma.IntNullableFilter<"Record"> | number | null
   createdBy?: Prisma.StringNullableFilter<"Record"> | string | null
   updatedBy?: Prisma.StringNullableFilter<"Record"> | string | null
   deletedBy?: Prisma.StringNullableFilter<"Record"> | string | null
@@ -1518,6 +1601,7 @@ export type RecordUpdateManyWithWhereWithoutTransferAccountInput = {
 
 export type RecordCreateWithoutCategoryInput = {
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -1532,6 +1616,8 @@ export type RecordCreateWithoutCategoryInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -1554,6 +1640,7 @@ export type RecordUncheckedCreateWithoutCategoryInput = {
   payeeId?: number | null
   envelopeId?: number | null
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -1568,6 +1655,8 @@ export type RecordUncheckedCreateWithoutCategoryInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -1607,6 +1696,7 @@ export type RecordUpdateManyWithWhereWithoutCategoryInput = {
 
 export type RecordCreateWithoutPayeeInput = {
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -1621,6 +1711,8 @@ export type RecordCreateWithoutPayeeInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -1643,6 +1735,7 @@ export type RecordUncheckedCreateWithoutPayeeInput = {
   categoryId?: number | null
   envelopeId?: number | null
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -1657,6 +1750,8 @@ export type RecordUncheckedCreateWithoutPayeeInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -1696,6 +1791,7 @@ export type RecordUpdateManyWithWhereWithoutPayeeInput = {
 
 export type RecordCreateWithoutEnvelopeInput = {
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -1710,6 +1806,8 @@ export type RecordCreateWithoutEnvelopeInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -1732,6 +1830,7 @@ export type RecordUncheckedCreateWithoutEnvelopeInput = {
   categoryId?: number | null
   payeeId?: number | null
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -1746,6 +1845,8 @@ export type RecordUncheckedCreateWithoutEnvelopeInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -1785,6 +1886,7 @@ export type RecordUpdateManyWithWhereWithoutEnvelopeInput = {
 
 export type RecordCreateWithoutRecordsOnDebtsInput = {
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -1799,6 +1901,8 @@ export type RecordCreateWithoutRecordsOnDebtsInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -1822,6 +1926,7 @@ export type RecordUncheckedCreateWithoutRecordsOnDebtsInput = {
   payeeId?: number | null
   envelopeId?: number | null
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -1836,6 +1941,8 @@ export type RecordUncheckedCreateWithoutRecordsOnDebtsInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -1869,6 +1976,7 @@ export type RecordUpdateManyWithWhereWithoutRecordsOnDebtsInput = {
 
 export type RecordCreateWithoutLabelsInput = {
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -1883,6 +1991,8 @@ export type RecordCreateWithoutLabelsInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -1906,6 +2016,7 @@ export type RecordUncheckedCreateWithoutLabelsInput = {
   payeeId?: number | null
   envelopeId?: number | null
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -1920,6 +2031,8 @@ export type RecordUncheckedCreateWithoutLabelsInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -1953,6 +2066,7 @@ export type RecordUpdateManyWithWhereWithoutLabelsInput = {
 
 export type RecordCreateWithoutOrganizationInput = {
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -1967,6 +2081,8 @@ export type RecordCreateWithoutOrganizationInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -1989,6 +2105,7 @@ export type RecordUncheckedCreateWithoutOrganizationInput = {
   payeeId?: number | null
   envelopeId?: number | null
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -2003,6 +2120,8 @@ export type RecordUncheckedCreateWithoutOrganizationInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -2047,6 +2166,7 @@ export type RecordCreateManyAccountInput = {
   payeeId?: number | null
   envelopeId?: number | null
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -2061,6 +2181,8 @@ export type RecordCreateManyAccountInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -2078,6 +2200,7 @@ export type RecordCreateManyTransferAccountInput = {
   payeeId?: number | null
   envelopeId?: number | null
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -2092,6 +2215,8 @@ export type RecordCreateManyTransferAccountInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -2102,6 +2227,7 @@ export type RecordCreateManyTransferAccountInput = {
 
 export type RecordUpdateWithoutAccountInput = {
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2116,6 +2242,8 @@ export type RecordUpdateWithoutAccountInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2138,6 +2266,7 @@ export type RecordUncheckedUpdateWithoutAccountInput = {
   payeeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   envelopeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2152,6 +2281,8 @@ export type RecordUncheckedUpdateWithoutAccountInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2170,6 +2301,7 @@ export type RecordUncheckedUpdateManyWithoutAccountInput = {
   payeeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   envelopeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2184,6 +2316,8 @@ export type RecordUncheckedUpdateManyWithoutAccountInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2195,6 +2329,7 @@ export type RecordUncheckedUpdateManyWithoutAccountInput = {
 
 export type RecordUpdateWithoutTransferAccountInput = {
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2209,6 +2344,8 @@ export type RecordUpdateWithoutTransferAccountInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2232,6 +2369,7 @@ export type RecordUncheckedUpdateWithoutTransferAccountInput = {
   payeeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   envelopeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2246,6 +2384,8 @@ export type RecordUncheckedUpdateWithoutTransferAccountInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2264,6 +2404,7 @@ export type RecordUncheckedUpdateManyWithoutTransferAccountInput = {
   payeeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   envelopeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2278,6 +2419,8 @@ export type RecordUncheckedUpdateManyWithoutTransferAccountInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2293,6 +2436,7 @@ export type RecordCreateManyCategoryInput = {
   payeeId?: number | null
   envelopeId?: number | null
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -2307,6 +2451,8 @@ export type RecordCreateManyCategoryInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -2318,6 +2464,7 @@ export type RecordCreateManyCategoryInput = {
 
 export type RecordUpdateWithoutCategoryInput = {
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2332,6 +2479,8 @@ export type RecordUpdateWithoutCategoryInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2354,6 +2503,7 @@ export type RecordUncheckedUpdateWithoutCategoryInput = {
   payeeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   envelopeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2368,6 +2518,8 @@ export type RecordUncheckedUpdateWithoutCategoryInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2386,6 +2538,7 @@ export type RecordUncheckedUpdateManyWithoutCategoryInput = {
   payeeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   envelopeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2400,6 +2553,8 @@ export type RecordUncheckedUpdateManyWithoutCategoryInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2416,6 +2571,7 @@ export type RecordCreateManyPayeeInput = {
   categoryId?: number | null
   envelopeId?: number | null
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -2430,6 +2586,8 @@ export type RecordCreateManyPayeeInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -2441,6 +2599,7 @@ export type RecordCreateManyPayeeInput = {
 
 export type RecordUpdateWithoutPayeeInput = {
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2455,6 +2614,8 @@ export type RecordUpdateWithoutPayeeInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2477,6 +2638,7 @@ export type RecordUncheckedUpdateWithoutPayeeInput = {
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   envelopeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2491,6 +2653,8 @@ export type RecordUncheckedUpdateWithoutPayeeInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2509,6 +2673,7 @@ export type RecordUncheckedUpdateManyWithoutPayeeInput = {
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   envelopeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2523,6 +2688,8 @@ export type RecordUncheckedUpdateManyWithoutPayeeInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2539,6 +2706,7 @@ export type RecordCreateManyEnvelopeInput = {
   categoryId?: number | null
   payeeId?: number | null
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -2553,6 +2721,8 @@ export type RecordCreateManyEnvelopeInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -2564,6 +2734,7 @@ export type RecordCreateManyEnvelopeInput = {
 
 export type RecordUpdateWithoutEnvelopeInput = {
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2578,6 +2749,8 @@ export type RecordUpdateWithoutEnvelopeInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2600,6 +2773,7 @@ export type RecordUncheckedUpdateWithoutEnvelopeInput = {
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   payeeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2614,6 +2788,8 @@ export type RecordUncheckedUpdateWithoutEnvelopeInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2632,6 +2808,7 @@ export type RecordUncheckedUpdateManyWithoutEnvelopeInput = {
   categoryId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   payeeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2646,6 +2823,8 @@ export type RecordUncheckedUpdateManyWithoutEnvelopeInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2657,6 +2836,7 @@ export type RecordUncheckedUpdateManyWithoutEnvelopeInput = {
 
 export type RecordUpdateWithoutRecordsOnDebtsInput = {
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2671,6 +2851,8 @@ export type RecordUpdateWithoutRecordsOnDebtsInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2694,6 +2876,7 @@ export type RecordUncheckedUpdateWithoutRecordsOnDebtsInput = {
   payeeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   envelopeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2708,6 +2891,8 @@ export type RecordUncheckedUpdateWithoutRecordsOnDebtsInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2726,6 +2911,7 @@ export type RecordUncheckedUpdateManyWithoutRecordsOnDebtsInput = {
   payeeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   envelopeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2740,6 +2926,8 @@ export type RecordUncheckedUpdateManyWithoutRecordsOnDebtsInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2751,6 +2939,7 @@ export type RecordUncheckedUpdateManyWithoutRecordsOnDebtsInput = {
 
 export type RecordUpdateWithoutLabelsInput = {
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2765,6 +2954,8 @@ export type RecordUpdateWithoutLabelsInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2788,6 +2979,7 @@ export type RecordUncheckedUpdateWithoutLabelsInput = {
   payeeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   envelopeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2802,6 +2994,8 @@ export type RecordUncheckedUpdateWithoutLabelsInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2820,6 +3014,7 @@ export type RecordUncheckedUpdateManyWithoutLabelsInput = {
   payeeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   envelopeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2834,6 +3029,8 @@ export type RecordUncheckedUpdateManyWithoutLabelsInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2850,6 +3047,7 @@ export type RecordCreateManyOrganizationInput = {
   payeeId?: number | null
   envelopeId?: number | null
   type?: $Enums.RecordType
+  spendingNature?: $Enums.SpendingNature | null
   paymentType?: $Enums.PaymentType
   paymentTypeLocal?: string | null
   amount: number
@@ -2864,6 +3062,8 @@ export type RecordCreateManyOrganizationInput = {
   gpsAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: number | null
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: number | null
   createdBy?: string | null
   updatedBy?: string | null
   deletedBy?: string | null
@@ -2875,6 +3075,7 @@ export type RecordCreateManyOrganizationInput = {
 
 export type RecordUpdateWithoutOrganizationInput = {
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2889,6 +3090,8 @@ export type RecordUpdateWithoutOrganizationInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2911,6 +3114,7 @@ export type RecordUncheckedUpdateWithoutOrganizationInput = {
   payeeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   envelopeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2925,6 +3129,8 @@ export type RecordUncheckedUpdateWithoutOrganizationInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2943,6 +3149,7 @@ export type RecordUncheckedUpdateManyWithoutOrganizationInput = {
   payeeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   envelopeId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
+  spendingNature?: Prisma.NullableEnumSpendingNatureFieldUpdateOperationsInput | $Enums.SpendingNature | null
   paymentType?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   paymentTypeLocal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2957,6 +3164,8 @@ export type RecordUncheckedUpdateManyWithoutOrganizationInput = {
   gpsAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   warrantyInMonth?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   customCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  recurringId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3014,6 +3223,7 @@ export type RecordSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   payeeId?: boolean
   envelopeId?: boolean
   type?: boolean
+  spendingNature?: boolean
   paymentType?: boolean
   paymentTypeLocal?: boolean
   amount?: boolean
@@ -3028,6 +3238,8 @@ export type RecordSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   gpsAccuracy?: boolean
   warrantyInMonth?: boolean
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: boolean
   createdBy?: boolean
   updatedBy?: boolean
   deletedBy?: boolean
@@ -3054,6 +3266,7 @@ export type RecordSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   payeeId?: boolean
   envelopeId?: boolean
   type?: boolean
+  spendingNature?: boolean
   paymentType?: boolean
   paymentTypeLocal?: boolean
   amount?: boolean
@@ -3068,6 +3281,8 @@ export type RecordSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   gpsAccuracy?: boolean
   warrantyInMonth?: boolean
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: boolean
   createdBy?: boolean
   updatedBy?: boolean
   deletedBy?: boolean
@@ -3091,6 +3306,7 @@ export type RecordSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   payeeId?: boolean
   envelopeId?: boolean
   type?: boolean
+  spendingNature?: boolean
   paymentType?: boolean
   paymentTypeLocal?: boolean
   amount?: boolean
@@ -3105,6 +3321,8 @@ export type RecordSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   gpsAccuracy?: boolean
   warrantyInMonth?: boolean
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: boolean
   createdBy?: boolean
   updatedBy?: boolean
   deletedBy?: boolean
@@ -3128,6 +3346,7 @@ export type RecordSelectScalar = {
   payeeId?: boolean
   envelopeId?: boolean
   type?: boolean
+  spendingNature?: boolean
   paymentType?: boolean
   paymentTypeLocal?: boolean
   amount?: boolean
@@ -3142,6 +3361,8 @@ export type RecordSelectScalar = {
   gpsAccuracy?: boolean
   warrantyInMonth?: boolean
   customCategory?: boolean
+  excludeFromStats?: boolean
+  recurringId?: boolean
   createdBy?: boolean
   updatedBy?: boolean
   deletedBy?: boolean
@@ -3151,7 +3372,7 @@ export type RecordSelectScalar = {
   transferAccountId?: boolean
 }
 
-export type RecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "accountId" | "categoryId" | "payeeId" | "envelopeId" | "type" | "paymentType" | "paymentTypeLocal" | "amount" | "refCurrencyAmount" | "note" | "recordDate" | "recordTime" | "transfer" | "transferGroupId" | "gpsLatitude" | "gpsLongitude" | "gpsAccuracy" | "warrantyInMonth" | "customCategory" | "createdBy" | "updatedBy" | "deletedBy" | "createdAt" | "updatedAt" | "deletedAt" | "transferAccountId", ExtArgs["result"]["record"]>
+export type RecordOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "accountId" | "categoryId" | "payeeId" | "envelopeId" | "type" | "spendingNature" | "paymentType" | "paymentTypeLocal" | "amount" | "refCurrencyAmount" | "note" | "recordDate" | "recordTime" | "transfer" | "transferGroupId" | "gpsLatitude" | "gpsLongitude" | "gpsAccuracy" | "warrantyInMonth" | "customCategory" | "excludeFromStats" | "recurringId" | "createdBy" | "updatedBy" | "deletedBy" | "createdAt" | "updatedAt" | "deletedAt" | "transferAccountId", ExtArgs["result"]["record"]>
 export type RecordInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   account?: boolean | Prisma.BankAccountDefaultArgs<ExtArgs>
   transferAccount?: boolean | Prisma.Record$transferAccountArgs<ExtArgs>
@@ -3200,6 +3421,7 @@ export type $RecordPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     payeeId: number | null
     envelopeId: number | null
     type: $Enums.RecordType
+    spendingNature: $Enums.SpendingNature | null
     paymentType: $Enums.PaymentType
     paymentTypeLocal: string | null
     amount: number
@@ -3214,6 +3436,8 @@ export type $RecordPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     gpsAccuracy: runtime.Decimal | null
     warrantyInMonth: number | null
     customCategory: boolean
+    excludeFromStats: boolean
+    recurringId: number | null
     createdBy: string | null
     updatedBy: string | null
     deletedBy: string | null
@@ -3659,6 +3883,7 @@ export interface RecordFieldRefs {
   readonly payeeId: Prisma.FieldRef<"Record", 'Int'>
   readonly envelopeId: Prisma.FieldRef<"Record", 'Int'>
   readonly type: Prisma.FieldRef<"Record", 'RecordType'>
+  readonly spendingNature: Prisma.FieldRef<"Record", 'SpendingNature'>
   readonly paymentType: Prisma.FieldRef<"Record", 'PaymentType'>
   readonly paymentTypeLocal: Prisma.FieldRef<"Record", 'String'>
   readonly amount: Prisma.FieldRef<"Record", 'Int'>
@@ -3673,6 +3898,8 @@ export interface RecordFieldRefs {
   readonly gpsAccuracy: Prisma.FieldRef<"Record", 'Decimal'>
   readonly warrantyInMonth: Prisma.FieldRef<"Record", 'Int'>
   readonly customCategory: Prisma.FieldRef<"Record", 'Boolean'>
+  readonly excludeFromStats: Prisma.FieldRef<"Record", 'Boolean'>
+  readonly recurringId: Prisma.FieldRef<"Record", 'Int'>
   readonly createdBy: Prisma.FieldRef<"Record", 'String'>
   readonly updatedBy: Prisma.FieldRef<"Record", 'String'>
   readonly deletedBy: Prisma.FieldRef<"Record", 'String'>

@@ -3,11 +3,10 @@ import { getMessages, getTranslations } from "next-intl/server";
 import { locale } from "next/root-params";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { Fira_Code, Inter } from "next/font/google";
+import { Inter } from "next/font/google";
 
 import { routing, type Locale } from "@/i18n/routing";
 import { isLocale } from "@/i18n/utils";
-import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/providers/theme-provider";
 
@@ -17,12 +16,6 @@ const inter = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
   axes: ["opsz"],
-});
-
-const firaCode = Fira_Code({
-  variable: "--font-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
 });
 
 // Production origin: OG/Twitter images must be absolute URLs crawlers can reach,
@@ -205,7 +198,7 @@ export default async function LocaleLayout({ children }: Props) {
   return (
     <html
       lang={localeValue}
-      className={cn(inter.variable, firaCode.variable)}
+      className={inter.variable}
       suppressHydrationWarning
     >
       <body className="font-sans antialiased">

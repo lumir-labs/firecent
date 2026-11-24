@@ -3,22 +3,22 @@ import type React from "react";
 import { locale } from "next/root-params";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { p } from "@app/api/permissions";
 
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { UserSidebar } from "./_components/user-sidebar";
-import Header from "./_components/header";
-import { NavlinksResponsive } from "./_components/navlinks-responsive";
-import { getServerSession } from "@/lib/auth";
+import { getServerSession, resolveSessionOrgId } from "@/lib/auth";
 import { redirect } from "@/i18n/navigation";
 import { isLocale } from "@/i18n/utils";
 import { TRPCProvider } from "@/providers/trpc-provider";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ShellProvider } from "./_components/shell/shell-context";
+import { AppSidebar } from "./_components/shell/app-sidebar";
+import { MobileTopBar } from "./_components/shell/mobile-top-bar";
+import { MobileTabBar } from "./_components/shell/mobile-tab-bar";
 
 export async function generateMetadata(): Promise<Metadata> {
   const tNav = await getTranslations("Nav");
   return {
     title: {
-      template: `%s | ${process.env.NEXT_PUBLIC_APP_NAME}`,
+      template: `%s | ${process.env.NEXT_PUBLIC_APP_NAME ?? "Firecent"}`,
       default: tNav("home"),
     },
   };
@@ -32,32 +32,44 @@ export default async function Layout({
   const localeValue = await locale();
   if (!isLocale(localeValue)) notFound();
 
-  // Session guard: requires login, without the admin's view-as block and
-  // without the redirect to `/auth/reset` (a route the admin uses but this
-  // area doesn't need as a gate).
   const session = await getServerSession();
   if (!session?.user) {
     return redirect({ href: "/auth/login", locale: localeValue });
   }
 
-  const sessionPermissions = session.user.permissions || [];
+  const spaces = (
+    (session.user as { organizations?: { id: string; name: string }[] })
+      .organizations ?? []
+  ).map((o) => ({ id: o.id, name: o.name }));
+  const activeSpaceId = resolveSessionOrgId(session);
 
-  // "12:23  Error: Do not pass children as props. Instead, nest children between the opening and closing tags.  react/no-children-prop"
+  const permissions = session.user.permissions ?? [];
+  const canAccessAdmin = permissions.some(
+    (perm) => p.users.menu.includes(perm) || p.roles.menu.includes(perm),
+  );
+
   return (
     <TRPCProvider>
-      <SidebarProvider className="max-h-dvh w-dvw overflow-hidden">
-        <UserSidebar permissions={sessionPermissions} />
-        <SidebarInset className="min-w-0 mb-0 sm:mb-0 bg-background">
-          <Header user={session.user} />
-          {/* Padding goes INSIDE the viewport: on the root it shrinks the
-              viewport, which then clips the cards' outer ring/shadow and
-              leaves dead, non-scrolling space under the content. */}
-          <ScrollArea className="min-h-0 flex-1">
-            <div className="p-4 pb-28 sm:px-6 sm:pb-6">{children}</div>
-          </ScrollArea>
-        </SidebarInset>
-        <NavlinksResponsive session={session} />
-      </SidebarProvider>
+      <ShellProvider spaces={spaces} activeSpaceId={activeSpaceId}>
+        <div className="flex min-h-dvh w-full bg-background text-foreground">
+          <AppSidebar
+            user={{
+              id: session.user.id,
+              name: session.user.name,
+              email: session.user.email,
+              image: session.user.image,
+            }}
+            canAccessAdmin={canAccessAdmin}
+          />
+          <div className="flex min-h-dvh min-w-0 flex-1 flex-col lg:h-dvh lg:overflow-y-auto">
+            <MobileTopBar />
+            <main className="mx-auto w-full max-w-[560px] flex-1 pb-28 lg:max-w-[1120px] lg:px-8 lg:pb-12">
+              {children}
+            </main>
+          </div>
+          <MobileTabBar />
+        </div>
+      </ShellProvider>
     </TRPCProvider>
   );
 }

@@ -372,11 +372,11 @@ export type DemoDebt = {
 };
 
 export const DEBTS: DemoDebt[] = [
-  { id: "d1", type: "ME_TO_ANYONE", name: "Toyota Financial", amount: 1840000, remaining: 1120000, created: "2024-10-05", payBack: "2029-10-05", account: "JC", note: "Car loan. $320.00 a month, 35 payments left" },
-  { id: "d2", type: "ME_TO_ANYONE", name: "Nelnet", amount: 2400000, remaining: 808500, created: "2021-08-20", payBack: "2028-07-20", account: "MC", note: "Student loan. $385.00 a month, 21 payments" },
-  { id: "d3", type: "ME_TO_ANYONE", name: "Elena Torres", amount: 150000, remaining: 60000, created: "2026-05-02", payBack: "2027-02-28", account: "MC", note: "Moving costs. No fixed schedule" },
-  { id: "d4", type: "ANYONE_TO_ME", name: "Leo Reyes", amount: 60000, remaining: 35000, created: "2026-08-15", payBack: "2026-12-15", account: "JC", note: "Lent for car repair" },
-  { id: "d5", type: "ANYONE_TO_ME", name: "Sofía Torres", amount: 7130, remaining: 7130, created: "2026-11-11", payBack: "2026-11-30", account: "JC", note: "Her concert ticket (half of 1041)" },
+  { id: "d1", type: "ANYONE_TO_ME", name: "Toyota Financial", amount: 1840000, remaining: 1120000, created: "2024-10-05", payBack: "2029-10-05", account: "JC", note: "Car loan. $320.00 a month, 35 payments left" },
+  { id: "d2", type: "ANYONE_TO_ME", name: "Nelnet", amount: 2400000, remaining: 808500, created: "2021-08-20", payBack: "2028-07-20", account: "MC", note: "Student loan. $385.00 a month, 21 payments" },
+  { id: "d3", type: "ANYONE_TO_ME", name: "Elena Torres", amount: 150000, remaining: 60000, created: "2026-05-02", payBack: "2027-02-28", account: "MC", note: "Moving costs. No fixed schedule" },
+  { id: "d4", type: "ME_TO_ANYONE", name: "Leo Reyes", amount: 60000, remaining: 35000, created: "2026-08-15", payBack: "2026-12-15", account: "JC", note: "Lent for car repair" },
+  { id: "d5", type: "ME_TO_ANYONE", name: "Sofía Torres", amount: 7130, remaining: 7130, created: "2026-11-11", payBack: "2026-11-30", account: "JC", note: "Her concert ticket (half of 1041)" },
 ];
 
 /** First day of the history (opening balances are dated here). */

@@ -12,7 +12,20 @@ if (!connectionString) {
   );
 }
 
-const adapter = new PrismaPg({ connectionString });
-const db = new PrismaClient({ adapter });
+const globalForPrisma = globalThis as unknown as {
+  __firecentDb?: PrismaClient;
+};
+
+function createPrismaClient() {
+  const adapter = new PrismaPg({ connectionString });
+  return new PrismaClient({ adapter });
+}
+
+// Keep a single warm connection pool across Next.js dev HMR reloads
+// (huge win when Postgres is reached over an SSH tunnel or remote host).
+const db = globalForPrisma.__firecentDb ?? createPrismaClient();
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.__firecentDb = db;
+}
 
 export { db };

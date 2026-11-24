@@ -113,3 +113,28 @@ export type TwoFactor = Prisma.TwoFactorModel
  * Soft delete: `deletedAt`; re-adding a deleted email restores the row.
  */
 export type Waitlist = Prisma.WaitlistModel
+/**
+ * Model Budget
+ * 
+ */
+export type Budget = Prisma.BudgetModel
+/**
+ * Model BudgetNature
+ * 
+ */
+export type BudgetNature = Prisma.BudgetNatureModel
+/**
+ * Model BudgetCategory
+ * 
+ */
+export type BudgetCategory = Prisma.BudgetCategoryModel
+/**
+ * Model Recurring
+ * 
+ */
+export type Recurring = Prisma.RecurringModel
+/**
+ * Model RecurringOccurrence
+ * 
+ */
+export type RecurringOccurrence = Prisma.RecurringOccurrenceModel

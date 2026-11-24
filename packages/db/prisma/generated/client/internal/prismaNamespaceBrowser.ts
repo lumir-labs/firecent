@@ -69,7 +69,12 @@ export const ModelName = {
   Invitation: 'Invitation',
   ApiKey: 'ApiKey',
   TwoFactor: 'TwoFactor',
-  Waitlist: 'Waitlist'
+  Waitlist: 'Waitlist',
+  Budget: 'Budget',
+  BudgetNature: 'BudgetNature',
+  BudgetCategory: 'BudgetCategory',
+  Recurring: 'Recurring',
+  RecurringOccurrence: 'RecurringOccurrence'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -218,6 +223,7 @@ export const CategoryScalarFieldEnum = {
   name: 'name',
   color: 'color',
   icon: 'icon',
+  type: 'type',
   spendingNature: 'spendingNature',
   hidden: 'hidden',
   parentId: 'parentId',
@@ -273,6 +279,7 @@ export const RecordScalarFieldEnum = {
   payeeId: 'payeeId',
   envelopeId: 'envelopeId',
   type: 'type',
+  spendingNature: 'spendingNature',
   paymentType: 'paymentType',
   paymentTypeLocal: 'paymentTypeLocal',
   amount: 'amount',
@@ -287,6 +294,8 @@ export const RecordScalarFieldEnum = {
   gpsAccuracy: 'gpsAccuracy',
   warrantyInMonth: 'warrantyInMonth',
   customCategory: 'customCategory',
+  excludeFromStats: 'excludeFromStats',
+  recurringId: 'recurringId',
   createdBy: 'createdBy',
   updatedBy: 'updatedBy',
   deletedBy: 'deletedBy',
@@ -308,6 +317,7 @@ export const DebtScalarFieldEnum = {
   note: 'note',
   amount: 'amount',
   remainingAmount: 'remainingAmount',
+  currency: 'currency',
   creationDate: 'creationDate',
   payBackDate: 'payBackDate',
   paidBack: 'paidBack',
@@ -424,6 +434,86 @@ export const WaitlistScalarFieldEnum = {
 } as const
 
 export type WaitlistScalarFieldEnum = (typeof WaitlistScalarFieldEnum)[keyof typeof WaitlistScalarFieldEnum]
+
+
+export const BudgetScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  month: 'month',
+  expectedIncome: 'expectedIncome',
+  createdBy: 'createdBy',
+  updatedBy: 'updatedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type BudgetScalarFieldEnum = (typeof BudgetScalarFieldEnum)[keyof typeof BudgetScalarFieldEnum]
+
+
+export const BudgetNatureScalarFieldEnum = {
+  id: 'id',
+  budgetId: 'budgetId',
+  nature: 'nature',
+  amount: 'amount'
+} as const
+
+export type BudgetNatureScalarFieldEnum = (typeof BudgetNatureScalarFieldEnum)[keyof typeof BudgetNatureScalarFieldEnum]
+
+
+export const BudgetCategoryScalarFieldEnum = {
+  id: 'id',
+  budgetId: 'budgetId',
+  categoryId: 'categoryId',
+  amount: 'amount'
+} as const
+
+export type BudgetCategoryScalarFieldEnum = (typeof BudgetCategoryScalarFieldEnum)[keyof typeof BudgetCategoryScalarFieldEnum]
+
+
+export const RecurringScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  name: 'name',
+  type: 'type',
+  amount: 'amount',
+  isEstimate: 'isEstimate',
+  accountId: 'accountId',
+  transferAccountId: 'transferAccountId',
+  categoryId: 'categoryId',
+  payeeId: 'payeeId',
+  mode: 'mode',
+  frequency: 'frequency',
+  interval: 'interval',
+  daysOfMonth: 'daysOfMonth',
+  startDate: 'startDate',
+  nextDate: 'nextDate',
+  endDate: 'endDate',
+  pausedAt: 'pausedAt',
+  note: 'note',
+  createdBy: 'createdBy',
+  updatedBy: 'updatedBy',
+  deletedBy: 'deletedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type RecurringScalarFieldEnum = (typeof RecurringScalarFieldEnum)[keyof typeof RecurringScalarFieldEnum]
+
+
+export const RecurringOccurrenceScalarFieldEnum = {
+  id: 'id',
+  recurringId: 'recurringId',
+  dueDate: 'dueDate',
+  amount: 'amount',
+  status: 'status',
+  recordId: 'recordId',
+  decidedBy: 'decidedBy',
+  decidedAt: 'decidedAt'
+} as const
+
+export type RecurringOccurrenceScalarFieldEnum = (typeof RecurringOccurrenceScalarFieldEnum)[keyof typeof RecurringOccurrenceScalarFieldEnum]
 
 
 export const SortOrder = {

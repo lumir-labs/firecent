@@ -85,7 +85,7 @@ export function AddRecord() {
   );
 }
 
-function AddRecordForm({ onDone }: { onDone: () => void }) {
+export function AddRecordForm({ onDone }: { onDone: () => void }) {
   const t = useTranslations("Transactions.add");
   const utils = trpc.useUtils();
   const options = trpc.records.formOptions.useQuery();

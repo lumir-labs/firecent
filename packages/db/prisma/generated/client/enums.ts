@@ -86,3 +86,29 @@ export const Colors = {
 } as const
 
 export type Colors = (typeof Colors)[keyof typeof Colors]
+
+
+export const RecurringMode = {
+  AUTO: 'AUTO',
+  MANUAL: 'MANUAL'
+} as const
+
+export type RecurringMode = (typeof RecurringMode)[keyof typeof RecurringMode]
+
+
+export const RecurringFrequency = {
+  WEEKLY: 'WEEKLY',
+  MONTHLY: 'MONTHLY',
+  YEARLY: 'YEARLY'
+} as const
+
+export type RecurringFrequency = (typeof RecurringFrequency)[keyof typeof RecurringFrequency]
+
+
+export const OccurrenceStatus = {
+  PENDING: 'PENDING',
+  CONFIRMED: 'CONFIRMED',
+  SKIPPED: 'SKIPPED'
+} as const
+
+export type OccurrenceStatus = (typeof OccurrenceStatus)[keyof typeof OccurrenceStatus]

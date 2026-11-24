@@ -1,18 +1,24 @@
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { p } from "@app/api/permissions";
 
 import AccessAlert from "@/components/common/access-alert";
 import { validatePermission } from "@/lib/actions/permissions";
-import { p } from "@app/api/permissions";
-import { NetWorthCard } from "./_components/net-worth-card";
+import { getServerSession } from "@/lib/auth";
+import { HomeView } from "./_components/home/home-view";
 
-/**
- * Home dashboard. Gate `dashboard:basic` (server-side); the data itself is
- * fetched by each card through tRPC, which re-checks the same permission.
- */
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Shell");
+  return { title: t("nav.home") };
+}
+
 export default async function Page() {
-  const tAdmin = await getTranslations("Admin");
+  const [tAdmin, session, access] = await Promise.all([
+    getTranslations("Admin"),
+    getServerSession(),
+    validatePermission(p.dashboard.basic),
+  ]);
 
-  const access = await validatePermission(p.dashboard.basic);
   if (!access.hasPermission) {
     return (
       <AccessAlert
@@ -22,9 +28,6 @@ export default async function Page() {
     );
   }
 
-  return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-      <NetWorthCard className="lg:col-span-8" />
-    </div>
-  );
+  const userName = session?.user?.name || session?.user?.email || "";
+  return <HomeView userName={userName} />;
 }
