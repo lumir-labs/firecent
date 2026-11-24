@@ -204,13 +204,20 @@ export function Money({
   const { sign, color } = resolveMoney(value, tone, kind);
   const s = splitAmount(locale, Math.abs(value), currency, trimZeroCents);
   const hero = surface === "hero";
+  const tinted = surface === "tinted";
   const dim = dimCents ?? size === "hero";
-  const dimText = hero ? "text-hero-muted" : "text-muted-foreground";
+  const dimText = tinted
+    ? "opacity-65"
+    : hero
+      ? "text-hero-muted"
+      : "text-muted-foreground";
 
   const colorClass = muted
-    ? hero
-      ? "text-hero-muted"
-      : "text-muted-foreground/70"
+    ? tinted
+      ? "opacity-65"
+      : hero
+        ? "text-hero-muted"
+        : "text-muted-foreground/70"
     : color === "positive"
       ? hero
         ? "text-hero-positive"

@@ -211,8 +211,8 @@ export function AccountDetailView({ accountId }: { accountId: number }) {
         }
       />
 
-      <div className="grid gap-6 px-5 lg:grid-cols-12 lg:items-start lg:px-0">
-        <div className="flex flex-col gap-5 lg:col-span-5">
+      <div className="grid grid-cols-1 gap-6 px-5 lg:grid-cols-12 lg:items-start lg:px-0">
+        <div className="flex min-w-0 flex-col gap-5 lg:col-span-5">
           {(() => {
             const finish = resolveAccountFinish(acc.color);
             const useCardHero = isCard || finish?.kind === "metallic";
@@ -226,18 +226,18 @@ export function AccountDetailView({ accountId }: { accountId: number }) {
               return (
                 <section
                   style={{ background: bg, color: ink, borderColor: border }}
-                  className="flex flex-col gap-4 rounded-3xl border p-6 shadow-xs"
+                  className="flex min-w-0 flex-col gap-3.5 rounded-2xl border p-5 shadow-xs sm:gap-4 sm:rounded-3xl sm:p-6"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span
-                      className="text-[12px] font-semibold uppercase tracking-wider"
+                      className="truncate text-[11px] font-semibold uppercase tracking-wider sm:text-[12px]"
                       style={{ color: mutedInk }}
                     >
                       {t(`types.${acc.type}` as never)} · {acc.currency}
                     </span>
                     {acc.accountNumber && (
                       <span
-                        className="num text-[13px] font-medium"
+                        className="num shrink-0 text-[12px] font-medium sm:text-[13px]"
                         style={{ color: mutedInk }}
                       >
                         ···· {acc.accountNumber}
@@ -246,27 +246,32 @@ export function AccountDetailView({ accountId }: { accountId: number }) {
                   </div>
 
                   <div className="flex flex-col gap-0.5">
-                    <span className="text-[13px]" style={{ color: mutedInk }}>
+                    <span
+                      className="text-[12px] sm:text-[13px]"
+                      style={{ color: mutedInk }}
+                    >
                       {isCard ? t("detail.youOwe") : t("balanceLabel")}
                     </span>
                     <Money
                       value={isCard ? acc.debt : acc.balance}
                       currency={acc.currency}
-                      size="hero"
+                      size="sheet"
                       tone="plain"
+                      surface="tinted"
                       dimCents
+                      className="sm:text-[40px] sm:leading-[44px]"
                     />
                   </div>
 
                   {isCard && acc.creditLimit != null && (
-                    <div className="flex flex-col gap-1.5 pt-1">
+                    <div className="flex flex-col gap-1.5 pt-0.5">
                       <div
                         role="progressbar"
                         aria-valuenow={usedPct}
                         aria-valuemin={0}
                         aria-valuemax={100}
                         aria-label={t("detail.creditUsage")}
-                        className="h-2 w-full overflow-hidden rounded-full"
+                        className="h-1.5 w-full overflow-hidden rounded-full sm:h-2"
                         style={{ backgroundColor: "rgba(0,0,0,0.18)" }}
                       >
                         <div
@@ -278,7 +283,7 @@ export function AccountDetailView({ accountId }: { accountId: number }) {
                         />
                       </div>
                       <div
-                        className="flex items-center justify-between text-[12px] font-medium"
+                        className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5 text-[12px] font-medium"
                         style={{ color: mutedInk }}
                       >
                         <span>
@@ -386,7 +391,7 @@ export function AccountDetailView({ accountId }: { accountId: number }) {
           )}
         </div>
 
-        <div className="flex flex-col gap-3 lg:col-span-7">
+        <div className="flex min-w-0 flex-col gap-3 lg:col-span-7">
           <SectionHeader
             title={t("detail.recentTransactions")}
             action={{

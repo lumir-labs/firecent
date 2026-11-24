@@ -48,19 +48,23 @@ export default async function Layout({
     (perm) => p.users.menu.includes(perm) || p.roles.menu.includes(perm),
   );
 
+  const shellUser = {
+    id: session.user.id,
+    name: session.user.name,
+    email: session.user.email,
+    image: session.user.image,
+  };
+
   return (
     <TRPCProvider>
-      <ShellProvider spaces={spaces} activeSpaceId={activeSpaceId}>
-        <div className="flex min-h-dvh w-full bg-background text-foreground">
-          <AppSidebar
-            user={{
-              id: session.user.id,
-              name: session.user.name,
-              email: session.user.email,
-              image: session.user.image,
-            }}
-            canAccessAdmin={canAccessAdmin}
-          />
+      <ShellProvider
+        spaces={spaces}
+        activeSpaceId={activeSpaceId}
+        user={shellUser}
+        canAccessAdmin={canAccessAdmin}
+      >
+        <div className="flex min-h-dvh w-full overflow-x-clip bg-background text-foreground">
+          <AppSidebar user={shellUser} canAccessAdmin={canAccessAdmin} />
           <div className="flex min-h-dvh min-w-0 flex-1 flex-col lg:h-dvh lg:overflow-y-auto">
             <MobileTopBar />
             <main className="mx-auto w-full max-w-[560px] flex-1 pb-28 lg:max-w-[1120px] lg:px-8 lg:pb-12">

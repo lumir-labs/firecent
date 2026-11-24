@@ -15,6 +15,7 @@ const MORE_CHILD_PREFIXES = [
   "/analytics",
   "/recurring",
   "/debts",
+  "/categories",
   "/settings",
   "/profile",
   "/organization",
@@ -37,16 +38,18 @@ function isMoreActive(pathname: string) {
 export function MobileTabBar() {
   const t = useTranslations("Shell");
   const pathname = usePathname();
-  const { isAddOpen, openAddTransaction } = useShell();
+  const { isAddOpen, openAddTransaction, isMoreOpen, toggleMore } = useShell();
 
   if (isAddOpen) return null;
 
-  const homeActive = pathname === "/";
+  const homeActive = !isMoreOpen && pathname === "/";
   const txActive =
-    pathname === "/transactions" || pathname.startsWith("/transactions/");
+    !isMoreOpen &&
+    (pathname === "/transactions" || pathname.startsWith("/transactions/"));
   const assistantActive =
-    pathname === "/assistant" || pathname.startsWith("/assistant/");
-  const moreActive = isMoreActive(pathname);
+    !isMoreOpen &&
+    (pathname === "/assistant" || pathname.startsWith("/assistant/"));
+  const moreActive = isMoreOpen || isMoreActive(pathname);
 
   const tabClass = (active: boolean) =>
     cn(
@@ -102,14 +105,16 @@ export function MobileTabBar() {
           <span>{t("nav.assistant")}</span>
         </Link>
 
-        <Link
-          href="/more"
-          aria-current={moreActive ? "page" : undefined}
+        <button
+          type="button"
+          onClick={toggleMore}
+          aria-expanded={isMoreOpen}
+          aria-haspopup="dialog"
           className={tabClass(moreActive)}
         >
           <Menu className="size-[22px]" aria-hidden />
           <span>{t("nav.more")}</span>
-        </Link>
+        </button>
       </div>
     </nav>
   );

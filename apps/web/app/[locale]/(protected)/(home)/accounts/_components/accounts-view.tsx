@@ -39,7 +39,7 @@ export function AccountsView() {
       .reduce((sum, a) => sum + a.balance, 0);
 
     return (
-      <section className="flex flex-col gap-2">
+      <section className="flex min-w-0 flex-col gap-2">
         <div className="flex items-baseline justify-between px-1">
           <h2 className="text-[13px] font-semibold tracking-tight text-muted-foreground">
             {title}
@@ -118,8 +118,8 @@ export function AccountsView() {
     <div className="flex flex-col gap-6">
       <PageHeader
         title={t("title")}
-        back="/more"
-        backLabel={tShell("nav.more")}
+        back="/"
+        backLabel={tShell("nav.home")}
         actions={
           <Button
             variant="ghost"
@@ -213,7 +213,7 @@ export function AccountsView() {
             )}
 
             {/* Account Groups */}
-            <div className="grid gap-6 lg:grid-cols-3 lg:items-start">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-start">
               {renderGroup(t("groups.cash"), data.groups.cash)}
               {renderGroup(t("groups.savings"), data.groups.savings)}
               {renderGroup(t("groups.cards"), data.groups.cards)}

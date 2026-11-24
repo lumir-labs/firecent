@@ -38,10 +38,12 @@ export type ColorName =
 export type Scope = "everything" | "shared" | "only-you";
 
 /**
- * Where a component sits. "hero" = the always-dark balance card of Home
- * (`bg-hero`), which uses the `hero-*` tokens instead of the page ones.
+ * Where a component sits.
+ * - "hero": the always-dark balance card of Home (`bg-hero`).
+ * - "tinted": custom metallic or colored card surfaces where the parent sets
+ *   contrast-safe `color: ink`, so dimmed `$`/cents inherit ink via opacity.
  */
-export type Surface = "default" | "hero";
+export type Surface = "default" | "hero" | "tinted";
 
 /** A calendar day: "YYYY-MM-DD" (preferred) or a Date at UTC midnight. */
 export type DayInput = string | Date;

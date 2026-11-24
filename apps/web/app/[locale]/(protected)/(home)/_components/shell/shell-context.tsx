@@ -11,6 +11,8 @@ import {
 } from "react";
 
 import { AddTransactionSheet } from "@/components/finance/add-transaction/add-transaction-sheet";
+import type { ShellUser } from "./app-sidebar";
+import { MobileMoreSheet } from "./mobile-more-sheet";
 
 export type SwitcherSpace = {
   id: string;
@@ -25,6 +27,10 @@ type ShellContextValue = {
   isAddOpen: boolean;
   openAddTransaction: (opts?: { accountId?: number; editId?: number }) => void;
   closeAddTransaction: () => void;
+  isMoreOpen: boolean;
+  openMore: () => void;
+  closeMore: () => void;
+  toggleMore: () => void;
   defaultAccountId: number | undefined;
   editRecordId: number | undefined;
 };
@@ -50,18 +56,28 @@ function isEditableElement(target: EventTarget | null): boolean {
 export function ShellProvider({
   spaces,
   activeSpaceId,
+  user,
+  canAccessAdmin,
   children,
 }: {
   spaces: SwitcherSpace[];
   activeSpaceId: string | null;
+  user: ShellUser;
+  canAccessAdmin: boolean;
   children: ReactNode;
 }) {
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
   const [defaultAccountId, setDefaultAccountId] = useState<number | undefined>();
   const [editRecordId, setEditRecordId] = useState<number | undefined>();
 
+  const openMore = useCallback(() => setIsMoreOpen(true), []);
+  const closeMore = useCallback(() => setIsMoreOpen(false), []);
+  const toggleMore = useCallback(() => setIsMoreOpen((v) => !v), []);
+
   const openAddTransaction = useCallback(
     (opts?: { accountId?: number; editId?: number }) => {
+      setIsMoreOpen(false);
       setDefaultAccountId(opts?.accountId);
       setEditRecordId(opts?.editId);
       setIsAddOpen(true);
@@ -102,6 +118,10 @@ export function ShellProvider({
       isAddOpen,
       openAddTransaction,
       closeAddTransaction,
+      isMoreOpen,
+      openMore,
+      closeMore,
+      toggleMore,
       defaultAccountId,
       editRecordId,
     }),
@@ -112,6 +132,10 @@ export function ShellProvider({
       isAddOpen,
       openAddTransaction,
       closeAddTransaction,
+      isMoreOpen,
+      openMore,
+      closeMore,
+      toggleMore,
       defaultAccountId,
       editRecordId,
     ],
@@ -120,6 +144,12 @@ export function ShellProvider({
   return (
     <ShellContext.Provider value={value}>
       {children}
+      <MobileMoreSheet
+        open={isMoreOpen}
+        onOpenChange={setIsMoreOpen}
+        user={user}
+        canAccessAdmin={canAccessAdmin}
+      />
       <AddTransactionSheet
         open={isAddOpen}
         onOpenChange={(open) => {
