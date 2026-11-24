@@ -39,6 +39,9 @@ export type CategorySumAggregateOutputType = {
 export type CategoryMinAggregateOutputType = {
   id: number | null
   name: string | null
+  nameEn: string | null
+  nameEs: string | null
+  isSystem: boolean | null
   color: string | null
   icon: string | null
   type: $Enums.RecordType | null
@@ -57,6 +60,9 @@ export type CategoryMinAggregateOutputType = {
 export type CategoryMaxAggregateOutputType = {
   id: number | null
   name: string | null
+  nameEn: string | null
+  nameEs: string | null
+  isSystem: boolean | null
   color: string | null
   icon: string | null
   type: $Enums.RecordType | null
@@ -75,6 +81,9 @@ export type CategoryMaxAggregateOutputType = {
 export type CategoryCountAggregateOutputType = {
   id: number
   name: number
+  nameEn: number
+  nameEs: number
+  isSystem: number
   color: number
   icon: number
   type: number
@@ -105,6 +114,9 @@ export type CategorySumAggregateInputType = {
 export type CategoryMinAggregateInputType = {
   id?: true
   name?: true
+  nameEn?: true
+  nameEs?: true
+  isSystem?: true
   color?: true
   icon?: true
   type?: true
@@ -123,6 +135,9 @@ export type CategoryMinAggregateInputType = {
 export type CategoryMaxAggregateInputType = {
   id?: true
   name?: true
+  nameEn?: true
+  nameEs?: true
+  isSystem?: true
   color?: true
   icon?: true
   type?: true
@@ -141,6 +156,9 @@ export type CategoryMaxAggregateInputType = {
 export type CategoryCountAggregateInputType = {
   id?: true
   name?: true
+  nameEn?: true
+  nameEs?: true
+  isSystem?: true
   color?: true
   icon?: true
   type?: true
@@ -246,6 +264,9 @@ export type CategoryGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 export type CategoryGroupByOutputType = {
   id: number
   name: string
+  nameEn: string | null
+  nameEs: string | null
+  isSystem: boolean
   color: string | null
   icon: string | null
   type: $Enums.RecordType
@@ -287,6 +308,9 @@ export type CategoryWhereInput = {
   NOT?: Prisma.CategoryWhereInput | Prisma.CategoryWhereInput[]
   id?: Prisma.IntFilter<"Category"> | number
   name?: Prisma.StringFilter<"Category"> | string
+  nameEn?: Prisma.StringNullableFilter<"Category"> | string | null
+  nameEs?: Prisma.StringNullableFilter<"Category"> | string | null
+  isSystem?: Prisma.BoolFilter<"Category"> | boolean
   color?: Prisma.StringNullableFilter<"Category"> | string | null
   icon?: Prisma.StringNullableFilter<"Category"> | string | null
   type?: Prisma.EnumRecordTypeFilter<"Category"> | $Enums.RecordType
@@ -310,6 +334,9 @@ export type CategoryWhereInput = {
 export type CategoryOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameEn?: Prisma.SortOrderInput | Prisma.SortOrder
+  nameEs?: Prisma.SortOrderInput | Prisma.SortOrder
+  isSystem?: Prisma.SortOrder
   color?: Prisma.SortOrderInput | Prisma.SortOrder
   icon?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -332,11 +359,13 @@ export type CategoryOrderByWithRelationInput = {
 
 export type CategoryWhereUniqueInput = Prisma.AtLeast<{
   id?: number
-  organizationId_name?: Prisma.CategoryOrganizationIdNameCompoundUniqueInput
   AND?: Prisma.CategoryWhereInput | Prisma.CategoryWhereInput[]
   OR?: Prisma.CategoryWhereInput[]
   NOT?: Prisma.CategoryWhereInput | Prisma.CategoryWhereInput[]
   name?: Prisma.StringFilter<"Category"> | string
+  nameEn?: Prisma.StringNullableFilter<"Category"> | string | null
+  nameEs?: Prisma.StringNullableFilter<"Category"> | string | null
+  isSystem?: Prisma.BoolFilter<"Category"> | boolean
   color?: Prisma.StringNullableFilter<"Category"> | string | null
   icon?: Prisma.StringNullableFilter<"Category"> | string | null
   type?: Prisma.EnumRecordTypeFilter<"Category"> | $Enums.RecordType
@@ -355,11 +384,14 @@ export type CategoryWhereUniqueInput = Prisma.AtLeast<{
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
   records?: Prisma.RecordListRelationFilter
   budgetCategories?: Prisma.BudgetCategoryListRelationFilter
-}, "id" | "organizationId_name">
+}, "id">
 
 export type CategoryOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameEn?: Prisma.SortOrderInput | Prisma.SortOrder
+  nameEs?: Prisma.SortOrderInput | Prisma.SortOrder
+  isSystem?: Prisma.SortOrder
   color?: Prisma.SortOrderInput | Prisma.SortOrder
   icon?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -386,6 +418,9 @@ export type CategoryScalarWhereWithAggregatesInput = {
   NOT?: Prisma.CategoryScalarWhereWithAggregatesInput | Prisma.CategoryScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Category"> | number
   name?: Prisma.StringWithAggregatesFilter<"Category"> | string
+  nameEn?: Prisma.StringNullableWithAggregatesFilter<"Category"> | string | null
+  nameEs?: Prisma.StringNullableWithAggregatesFilter<"Category"> | string | null
+  isSystem?: Prisma.BoolWithAggregatesFilter<"Category"> | boolean
   color?: Prisma.StringNullableWithAggregatesFilter<"Category"> | string | null
   icon?: Prisma.StringNullableWithAggregatesFilter<"Category"> | string | null
   type?: Prisma.EnumRecordTypeWithAggregatesFilter<"Category"> | $Enums.RecordType
@@ -403,6 +438,9 @@ export type CategoryScalarWhereWithAggregatesInput = {
 
 export type CategoryCreateInput = {
   name: string
+  nameEn?: string | null
+  nameEs?: string | null
+  isSystem?: boolean
   color?: string | null
   icon?: string | null
   type?: $Enums.RecordType
@@ -424,6 +462,9 @@ export type CategoryCreateInput = {
 export type CategoryUncheckedCreateInput = {
   id?: number
   name: string
+  nameEn?: string | null
+  nameEs?: string | null
+  isSystem?: boolean
   color?: string | null
   icon?: string | null
   type?: $Enums.RecordType
@@ -444,6 +485,9 @@ export type CategoryUncheckedCreateInput = {
 
 export type CategoryUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
@@ -465,6 +509,9 @@ export type CategoryUpdateInput = {
 export type CategoryUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
@@ -486,6 +533,9 @@ export type CategoryUncheckedUpdateInput = {
 export type CategoryCreateManyInput = {
   id?: number
   name: string
+  nameEn?: string | null
+  nameEs?: string | null
+  isSystem?: boolean
   color?: string | null
   icon?: string | null
   type?: $Enums.RecordType
@@ -503,6 +553,9 @@ export type CategoryCreateManyInput = {
 
 export type CategoryUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
@@ -519,6 +572,9 @@ export type CategoryUpdateManyMutationInput = {
 export type CategoryUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
@@ -549,14 +605,12 @@ export type CategoryOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type CategoryOrganizationIdNameCompoundUniqueInput = {
-  organizationId: string
-  name: string
-}
-
 export type CategoryCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameEn?: Prisma.SortOrder
+  nameEs?: Prisma.SortOrder
+  isSystem?: Prisma.SortOrder
   color?: Prisma.SortOrder
   icon?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -580,6 +634,9 @@ export type CategoryAvgOrderByAggregateInput = {
 export type CategoryMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameEn?: Prisma.SortOrder
+  nameEs?: Prisma.SortOrder
+  isSystem?: Prisma.SortOrder
   color?: Prisma.SortOrder
   icon?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -598,6 +655,9 @@ export type CategoryMaxOrderByAggregateInput = {
 export type CategoryMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameEn?: Prisma.SortOrder
+  nameEs?: Prisma.SortOrder
+  isSystem?: Prisma.SortOrder
   color?: Prisma.SortOrder
   icon?: Prisma.SortOrder
   type?: Prisma.SortOrder
@@ -763,6 +823,9 @@ export type CategoryUpdateOneRequiredWithoutBudgetCategoriesNestedInput = {
 
 export type CategoryCreateWithoutChildrenInput = {
   name: string
+  nameEn?: string | null
+  nameEs?: string | null
+  isSystem?: boolean
   color?: string | null
   icon?: string | null
   type?: $Enums.RecordType
@@ -783,6 +846,9 @@ export type CategoryCreateWithoutChildrenInput = {
 export type CategoryUncheckedCreateWithoutChildrenInput = {
   id?: number
   name: string
+  nameEn?: string | null
+  nameEs?: string | null
+  isSystem?: boolean
   color?: string | null
   icon?: string | null
   type?: $Enums.RecordType
@@ -807,6 +873,9 @@ export type CategoryCreateOrConnectWithoutChildrenInput = {
 
 export type CategoryCreateWithoutParentInput = {
   name: string
+  nameEn?: string | null
+  nameEs?: string | null
+  isSystem?: boolean
   color?: string | null
   icon?: string | null
   type?: $Enums.RecordType
@@ -827,6 +896,9 @@ export type CategoryCreateWithoutParentInput = {
 export type CategoryUncheckedCreateWithoutParentInput = {
   id?: number
   name: string
+  nameEn?: string | null
+  nameEs?: string | null
+  isSystem?: boolean
   color?: string | null
   icon?: string | null
   type?: $Enums.RecordType
@@ -867,6 +939,9 @@ export type CategoryUpdateToOneWithWhereWithoutChildrenInput = {
 
 export type CategoryUpdateWithoutChildrenInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
@@ -887,6 +962,9 @@ export type CategoryUpdateWithoutChildrenInput = {
 export type CategoryUncheckedUpdateWithoutChildrenInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
@@ -926,6 +1004,9 @@ export type CategoryScalarWhereInput = {
   NOT?: Prisma.CategoryScalarWhereInput | Prisma.CategoryScalarWhereInput[]
   id?: Prisma.IntFilter<"Category"> | number
   name?: Prisma.StringFilter<"Category"> | string
+  nameEn?: Prisma.StringNullableFilter<"Category"> | string | null
+  nameEs?: Prisma.StringNullableFilter<"Category"> | string | null
+  isSystem?: Prisma.BoolFilter<"Category"> | boolean
   color?: Prisma.StringNullableFilter<"Category"> | string | null
   icon?: Prisma.StringNullableFilter<"Category"> | string | null
   type?: Prisma.EnumRecordTypeFilter<"Category"> | $Enums.RecordType
@@ -943,6 +1024,9 @@ export type CategoryScalarWhereInput = {
 
 export type CategoryCreateWithoutRecordsInput = {
   name: string
+  nameEn?: string | null
+  nameEs?: string | null
+  isSystem?: boolean
   color?: string | null
   icon?: string | null
   type?: $Enums.RecordType
@@ -963,6 +1047,9 @@ export type CategoryCreateWithoutRecordsInput = {
 export type CategoryUncheckedCreateWithoutRecordsInput = {
   id?: number
   name: string
+  nameEn?: string | null
+  nameEs?: string | null
+  isSystem?: boolean
   color?: string | null
   icon?: string | null
   type?: $Enums.RecordType
@@ -998,6 +1085,9 @@ export type CategoryUpdateToOneWithWhereWithoutRecordsInput = {
 
 export type CategoryUpdateWithoutRecordsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
@@ -1018,6 +1108,9 @@ export type CategoryUpdateWithoutRecordsInput = {
 export type CategoryUncheckedUpdateWithoutRecordsInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
@@ -1037,6 +1130,9 @@ export type CategoryUncheckedUpdateWithoutRecordsInput = {
 
 export type CategoryCreateWithoutOrganizationInput = {
   name: string
+  nameEn?: string | null
+  nameEs?: string | null
+  isSystem?: boolean
   color?: string | null
   icon?: string | null
   type?: $Enums.RecordType
@@ -1057,6 +1153,9 @@ export type CategoryCreateWithoutOrganizationInput = {
 export type CategoryUncheckedCreateWithoutOrganizationInput = {
   id?: number
   name: string
+  nameEn?: string | null
+  nameEs?: string | null
+  isSystem?: boolean
   color?: string | null
   icon?: string | null
   type?: $Enums.RecordType
@@ -1102,6 +1201,9 @@ export type CategoryUpdateManyWithWhereWithoutOrganizationInput = {
 
 export type CategoryCreateWithoutBudgetCategoriesInput = {
   name: string
+  nameEn?: string | null
+  nameEs?: string | null
+  isSystem?: boolean
   color?: string | null
   icon?: string | null
   type?: $Enums.RecordType
@@ -1122,6 +1224,9 @@ export type CategoryCreateWithoutBudgetCategoriesInput = {
 export type CategoryUncheckedCreateWithoutBudgetCategoriesInput = {
   id?: number
   name: string
+  nameEn?: string | null
+  nameEs?: string | null
+  isSystem?: boolean
   color?: string | null
   icon?: string | null
   type?: $Enums.RecordType
@@ -1157,6 +1262,9 @@ export type CategoryUpdateToOneWithWhereWithoutBudgetCategoriesInput = {
 
 export type CategoryUpdateWithoutBudgetCategoriesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
@@ -1177,6 +1285,9 @@ export type CategoryUpdateWithoutBudgetCategoriesInput = {
 export type CategoryUncheckedUpdateWithoutBudgetCategoriesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
@@ -1197,6 +1308,9 @@ export type CategoryUncheckedUpdateWithoutBudgetCategoriesInput = {
 export type CategoryCreateManyParentInput = {
   id?: number
   name: string
+  nameEn?: string | null
+  nameEs?: string | null
+  isSystem?: boolean
   color?: string | null
   icon?: string | null
   type?: $Enums.RecordType
@@ -1213,6 +1327,9 @@ export type CategoryCreateManyParentInput = {
 
 export type CategoryUpdateWithoutParentInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
@@ -1233,6 +1350,9 @@ export type CategoryUpdateWithoutParentInput = {
 export type CategoryUncheckedUpdateWithoutParentInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
@@ -1253,6 +1373,9 @@ export type CategoryUncheckedUpdateWithoutParentInput = {
 export type CategoryUncheckedUpdateManyWithoutParentInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
@@ -1270,6 +1393,9 @@ export type CategoryUncheckedUpdateManyWithoutParentInput = {
 export type CategoryCreateManyOrganizationInput = {
   id?: number
   name: string
+  nameEn?: string | null
+  nameEs?: string | null
+  isSystem?: boolean
   color?: string | null
   icon?: string | null
   type?: $Enums.RecordType
@@ -1286,6 +1412,9 @@ export type CategoryCreateManyOrganizationInput = {
 
 export type CategoryUpdateWithoutOrganizationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
@@ -1306,6 +1435,9 @@ export type CategoryUpdateWithoutOrganizationInput = {
 export type CategoryUncheckedUpdateWithoutOrganizationInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
@@ -1326,6 +1458,9 @@ export type CategoryUncheckedUpdateWithoutOrganizationInput = {
 export type CategoryUncheckedUpdateManyWithoutOrganizationInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nameEs?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSystem?: Prisma.BoolFieldUpdateOperationsInput | boolean
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   icon?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumRecordTypeFieldUpdateOperationsInput | $Enums.RecordType
@@ -1392,6 +1527,9 @@ export type CategoryCountOutputTypeCountBudgetCategoriesArgs<ExtArgs extends run
 export type CategorySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  nameEn?: boolean
+  nameEs?: boolean
+  isSystem?: boolean
   color?: boolean
   icon?: boolean
   type?: boolean
@@ -1416,6 +1554,9 @@ export type CategorySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type CategorySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  nameEn?: boolean
+  nameEs?: boolean
+  isSystem?: boolean
   color?: boolean
   icon?: boolean
   type?: boolean
@@ -1436,6 +1577,9 @@ export type CategorySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type CategorySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  nameEn?: boolean
+  nameEs?: boolean
+  isSystem?: boolean
   color?: boolean
   icon?: boolean
   type?: boolean
@@ -1456,6 +1600,9 @@ export type CategorySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type CategorySelectScalar = {
   id?: boolean
   name?: boolean
+  nameEn?: boolean
+  nameEs?: boolean
+  isSystem?: boolean
   color?: boolean
   icon?: boolean
   type?: boolean
@@ -1471,7 +1618,7 @@ export type CategorySelectScalar = {
   deletedAt?: boolean
 }
 
-export type CategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "color" | "icon" | "type" | "spendingNature" | "hidden" | "parentId" | "organizationId" | "createdBy" | "updatedBy" | "deletedBy" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["category"]>
+export type CategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "nameEn" | "nameEs" | "isSystem" | "color" | "icon" | "type" | "spendingNature" | "hidden" | "parentId" | "organizationId" | "createdBy" | "updatedBy" | "deletedBy" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["category"]>
 export type CategoryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   parent?: boolean | Prisma.Category$parentArgs<ExtArgs>
   children?: boolean | Prisma.Category$childrenArgs<ExtArgs>
@@ -1501,6 +1648,9 @@ export type $CategoryPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     name: string
+    nameEn: string | null
+    nameEs: string | null
+    isSystem: boolean
     color: string | null
     icon: string | null
     type: $Enums.RecordType
@@ -1944,6 +2094,9 @@ export interface Prisma__CategoryClient<T, Null = never, ExtArgs extends runtime
 export interface CategoryFieldRefs {
   readonly id: Prisma.FieldRef<"Category", 'Int'>
   readonly name: Prisma.FieldRef<"Category", 'String'>
+  readonly nameEn: Prisma.FieldRef<"Category", 'String'>
+  readonly nameEs: Prisma.FieldRef<"Category", 'String'>
+  readonly isSystem: Prisma.FieldRef<"Category", 'Boolean'>
   readonly color: Prisma.FieldRef<"Category", 'String'>
   readonly icon: Prisma.FieldRef<"Category", 'String'>
   readonly type: Prisma.FieldRef<"Category", 'RecordType'>

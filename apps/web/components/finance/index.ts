@@ -4,6 +4,7 @@
  */
 
 export * from "./types";
+export { localizeCategoryName } from "./utils";
 
 export { Money, MoneySkeleton, formatMoneyText, resolveMoney } from "./money";
 export type { MoneyProps, MoneySize, MoneyTone } from "./money";
@@ -53,3 +54,14 @@ export { CategoryIcon, resolveCategoryIcon } from "./category-icon";
 export type { CategoryIconProps, CategoryIconSize } from "./category-icon";
 export { AmountKeypad } from "./amount-keypad";
 export type { AmountKeypadProps } from "./amount-keypad";
+export {
+  AccountSwatch,
+  METALLIC_FINISHES,
+  ACCOUNT_COLOR_PRESETS,
+  resolveAccountFinish,
+} from "./account-finish";
+export type {
+  MetallicFinishKey,
+  PresetColorKey,
+  ResolvedFinish,
+} from "./account-finish";

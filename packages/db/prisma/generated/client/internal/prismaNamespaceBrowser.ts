@@ -221,6 +221,9 @@ export type BankAccountScalarFieldEnum = (typeof BankAccountScalarFieldEnum)[key
 export const CategoryScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  nameEn: 'nameEn',
+  nameEs: 'nameEs',
+  isSystem: 'isSystem',
   color: 'color',
   icon: 'icon',
   type: 'type',

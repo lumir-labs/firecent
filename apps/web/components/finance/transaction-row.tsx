@@ -15,7 +15,11 @@ import type { ColorName, TransactionKind } from "./types";
 export type TransactionRowProps = {
   /** Payee or note. */
   title: string;
-  category: { icon: string | LucideIcon | null; name: string; color?: ColorName | null };
+  category: {
+    icon: string | LucideIcon | null;
+    name: string;
+    color?: ColorName | string | null;
+  };
   /** Account name, or "From a private account" for another member's private transfer. */
   account: string;
   /** Major units, signed (D1). */

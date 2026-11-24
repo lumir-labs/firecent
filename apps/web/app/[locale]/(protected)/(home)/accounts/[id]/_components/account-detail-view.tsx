@@ -26,6 +26,8 @@ import {
   TransactionRow,
   TransactionRowSkeleton,
   formatMoneyText,
+  localizeCategoryName,
+  resolveAccountFinish,
 } from "@/components/finance";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -211,91 +213,154 @@ export function AccountDetailView({ accountId }: { accountId: number }) {
 
       <div className="grid gap-6 px-5 lg:grid-cols-12 lg:items-start lg:px-0">
         <div className="flex flex-col gap-5 lg:col-span-5">
-          <section className="flex flex-col gap-2">
-            <span className="text-[13px] text-muted-foreground">
-              {isCard ? t("detail.youOwe") : t("balanceLabel")}
-            </span>
-            <Money
-              value={isCard ? acc.debt : acc.balance}
-              currency={acc.currency}
-              size="hero"
-              tone="plain"
-              dimCents
-            />
-            {!isCard && (
-              <ChangeLine
-                value={acc.monthChange}
-                currency={acc.currency}
-                context={t("detail.thisMonth")}
-              />
-            )}
-            <div className="flex flex-wrap items-center gap-1.5 pt-1">
-              <Badge variant="neutral">
-                {t(`types.${acc.type}` as never)}
-              </Badge>
-              {acc.accountNumber && (
-                <Badge variant="neutral">···· {acc.accountNumber}</Badge>
-              )}
-              <Badge variant="neutral">{acc.currency}</Badge>
-            </div>
-          </section>
+          {(() => {
+            const finish = resolveAccountFinish(acc.color);
+            const useCardHero = isCard || finish?.kind === "metallic";
+            if (useCardHero) {
+              const bg =
+                finish?.cardBackground ??
+                "linear-gradient(135deg, #2b3446 0%, #141c2c 48%, #090e18 100%)";
+              const ink = finish?.ink ?? "#f8fafc";
+              const mutedInk = finish?.mutedInk ?? "rgba(248,250,252,0.72)";
+              const border = finish?.border ?? "rgba(255,255,255,0.14)";
+              return (
+                <section
+                  style={{ background: bg, color: ink, borderColor: border }}
+                  className="flex flex-col gap-4 rounded-3xl border p-6 shadow-xs"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span
+                      className="text-[12px] font-semibold uppercase tracking-wider"
+                      style={{ color: mutedInk }}
+                    >
+                      {t(`types.${acc.type}` as never)} · {acc.currency}
+                    </span>
+                    {acc.accountNumber && (
+                      <span
+                        className="num text-[13px] font-medium"
+                        style={{ color: mutedInk }}
+                      >
+                        ···· {acc.accountNumber}
+                      </span>
+                    )}
+                  </div>
 
-          {isCard ? (
-            <>
-              {acc.creditLimit != null && (
-                <Card variant="plain" className="flex flex-col gap-2.5 p-4">
-                  <div
-                    role="progressbar"
-                    aria-valuenow={usedPct}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    aria-label={t("detail.creditUsage")}
-                    className="h-2 w-full overflow-hidden rounded-full bg-muted"
-                  >
-                    <div
-                      className="h-full rounded-full bg-primary transition-all"
-                      style={{ width: `${usedPct}%` }}
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[13px]" style={{ color: mutedInk }}>
+                      {isCard ? t("detail.youOwe") : t("balanceLabel")}
+                    </span>
+                    <Money
+                      value={isCard ? acc.debt : acc.balance}
+                      currency={acc.currency}
+                      size="hero"
+                      tone="plain"
+                      dimCents
                     />
                   </div>
-                  <div className="flex items-center justify-between text-[13px]">
-                    <span className="font-medium text-foreground">
-                      {t("available", {
-                        amount: formatMoneyText(
-                          locale,
-                          acc.available ?? 0,
-                          acc.currency,
-                          { tone: "plain" },
-                        ),
-                      })}
-                    </span>
-                    <span className="num text-muted-foreground">
-                      {t("detail.ofLimit", {
-                        limit: formatMoneyText(locale, acc.creditLimit, acc.currency, {
-                          tone: "plain",
-                        }),
-                      })}
-                    </span>
-                  </div>
-                </Card>
-              )}
 
-              <Card variant="plain" className="divide-y overflow-hidden">
-                <FieldRow
-                  label={t("detail.paymentDue")}
-                  value={
-                    acc.nextDueDate
-                      ? `${acc.nextDueDate}${acc.dueInDays != null ? ` (${acc.dueInDays}d)` : ""}`
-                      : "—"
-                  }
+                  {isCard && acc.creditLimit != null && (
+                    <div className="flex flex-col gap-1.5 pt-1">
+                      <div
+                        role="progressbar"
+                        aria-valuenow={usedPct}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-label={t("detail.creditUsage")}
+                        className="h-2 w-full overflow-hidden rounded-full"
+                        style={{ backgroundColor: "rgba(0,0,0,0.18)" }}
+                      >
+                        <div
+                          className="h-full rounded-full transition-all"
+                          style={{
+                            width: `${usedPct}%`,
+                            backgroundColor: ink,
+                          }}
+                        />
+                      </div>
+                      <div
+                        className="flex items-center justify-between text-[12px] font-medium"
+                        style={{ color: mutedInk }}
+                      >
+                        <span>
+                          {t("available", {
+                            amount: formatMoneyText(
+                              locale,
+                              acc.available ?? 0,
+                              acc.currency,
+                              { tone: "plain" },
+                            ),
+                          })}
+                        </span>
+                        <span className="num">
+                          {t("detail.ofLimit", {
+                            limit: formatMoneyText(
+                              locale,
+                              acc.creditLimit,
+                              acc.currency,
+                              { tone: "plain" },
+                            ),
+                          })}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </section>
+              );
+            }
+
+            return (
+              <section className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  {finish && (
+                    <span
+                      className="size-2.5 rounded-full"
+                      style={{ backgroundColor: finish.accent }}
+                    />
+                  )}
+                  <span className="text-[13px] text-muted-foreground">
+                    {t("balanceLabel")}
+                  </span>
+                </div>
+                <Money
+                  value={acc.balance}
+                  currency={acc.currency}
+                  size="hero"
+                  tone="plain"
+                  dimCents
                 />
-                <FieldRow
-                  label={t("form.apr")}
-                  value={
-                    acc.interestRate != null ? `${acc.interestRate}%` : "—"
-                  }
+                <ChangeLine
+                  value={acc.monthChange}
+                  currency={acc.currency}
+                  context={t("detail.thisMonth")}
                 />
-              </Card>
-            </>
+                <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                  <Badge variant="neutral">
+                    {t(`types.${acc.type}` as never)}
+                  </Badge>
+                  {acc.accountNumber && (
+                    <Badge variant="neutral">···· {acc.accountNumber}</Badge>
+                  )}
+                  <Badge variant="neutral">{acc.currency}</Badge>
+                </div>
+              </section>
+            );
+          })()}
+
+          {isCard ? (
+            <Card variant="plain" className="divide-y overflow-hidden">
+              <FieldRow
+                label={t("detail.paymentDue")}
+                value={
+                  acc.nextDueDate
+                    ? `${acc.nextDueDate}${acc.dueInDays != null ? ` (${acc.dueInDays}d)` : ""}`
+                    : "—"
+                }
+              />
+              <FieldRow
+                label={t("form.apr")}
+                value={acc.interestRate != null ? `${acc.interestRate}%` : "—"}
+              />
+            </Card>
           ) : (
             <div className="flex flex-col gap-1.5">
               <StatPair
@@ -367,7 +432,11 @@ export function AccountDetailView({ accountId }: { accountId: number }) {
                           title={title}
                           category={
                             r.category
-                              ? { icon: r.category.icon, name: r.category.name }
+                              ? {
+                                  icon: r.category.icon,
+                                  name: localizeCategoryName(r.category, locale),
+                                  color: r.category.color,
+                                }
                               : { icon: null, name: r.account.name }
                           }
                           account={r.account.name}

@@ -1040,6 +1040,7 @@
       "analytics": "Análisis",
       "recurring": "Recurrentes",
       "debts": "Deudas",
+      "categories": "Categorías",
       "assistant": "Asistente",
       "settings": "Ajustes",
       "more": "Más",
@@ -1069,7 +1070,7 @@
     "types": {
       "EXPENSE": "Gasto",
       "INCOME": "Ingreso",
-      "TRANSFER": "Transferencia"
+      "TRANSFER": "Transfer"
     },
     "nature": {
       "DEBO": "Debo",
@@ -1077,7 +1078,16 @@
       "QUIERO": "Quiero"
     },
     "more": "Más",
+    "back": "Volver",
     "done": "Listo",
+    "clear": "Limpiar",
+    "pickCategory": "Categoría",
+    "newCategory": "Nueva",
+    "newCategoryPlaceholder": "Nombre de categoría",
+    "topLevel": "Categoría principal",
+    "add": "Crear",
+    "createFromSearch": "Crear \"{name}\"",
+    "categoryCreated": "Categoría \"{name}\" creada",
     "searchCategories": "Buscar categorías",
     "pickAccount": "Elegir cuenta",
     "fromAccount": "Desde",
@@ -1085,6 +1095,7 @@
     "theyReceive": "Recibe ({currency})",
     "transferNotice": "Esto lo registra en Firecent. No mueve dinero en tu banco.",
     "date": "Fecha",
+    "time": "Hora",
     "moreDetails": "Más detalles",
     "payee": "Comercio o persona",
     "payeePlaceholder": "Tienda o persona",
@@ -1123,6 +1134,7 @@
     "bulkDeleted": "Se eliminaron {count} movimientos",
     "chips": {
       "all": "Todos",
+      "EXPENSE": "Gastos",
       "DEBO": "Debo",
       "NECESITO": "Necesito",
       "QUIERO": "Quiero",
@@ -1195,6 +1207,8 @@
     "form": {
       "addTitle": "Nueva cuenta",
       "editTitle": "Editar cuenta",
+      "cardFinish": "Acabado y color",
+      "customColor": "Color personalizado",
       "type": "Tipo de cuenta",
       "name": "Nombre de la cuenta",
       "namePlaceholder": "Ej. Débito principal",
@@ -1250,6 +1264,9 @@
     "trendAria": "Tendencia del balance en 6 meses",
     "thisMonth": "Este mes",
     "setPlan": "Armar plan",
+    "seeAnalytics": "Análisis",
+    "topCategories": "Categorías principales",
+    "noExpensesMonth": "Aún no hay gastos registrados este mes.",
     "moneyIn": "Entró",
     "moneyOut": "Salió",
     "natureBreakdownAria": "Gasto por Debo, Necesito y Quiero",
@@ -1489,7 +1506,7 @@
     "types": {
       "EXPENSE": "Gasto",
       "INCOME": "Ingreso",
-      "TRANSFER": "Transferencia"
+      "TRANSFER": "Transfer"
     },
     "freq": {
       "WEEKLY": "Semanal",
@@ -1500,6 +1517,45 @@
       "AUTO": "Auto",
       "MANUAL": "Manual",
       "expected": "Esperado"
+    }
+  },
+  "Categories": {
+    "title": "Categorías",
+    "addCategory": "Nueva categoría",
+    "addSubcategory": "Agregar subcategoría",
+    "tabs": {
+      "EXPENSE": "Gastos",
+      "INCOME": "Ingresos"
+    },
+    "emptyTitle": "Aún no hay categorías",
+    "emptyBody": "Crea categorías para organizar tus gastos e ingresos.",
+    "recordsCount": "{count} mov.",
+    "retry": "Intentar de nuevo",
+    "form": {
+      "addTitle": "Nueva categoría",
+      "editTitle": "Editar categoría",
+      "name": "Nombre",
+      "namePlaceholder": "Ej. Café, Gimnasio, Freelance",
+      "type": "Tipo",
+      "parent": "Grupo",
+      "topLevel": "Categoría principal",
+      "color": "Color",
+      "customColor": "Color personalizado",
+      "icon": "Ícono",
+      "create": "Crear categoría",
+      "save": "Guardar cambios",
+      "saving": "Guardando…",
+      "delete": "Eliminar categoría",
+      "deleteConfirm": "Sí, eliminar",
+      "cancel": "Cancelar",
+      "deleteHint": "Tus movimientos anteriores no se borran; solo dejará de aparecer en los selectores.",
+      "deleteWithChildrenHint": "También ocultará {count} subcategorías de los selectores. Tus movimientos anteriores quedan intactos.",
+      "created": "Categoría creada",
+      "updated": "Categoría actualizada",
+      "deleted": "Categoría eliminada",
+      "restored": "Categoría restaurada",
+      "undo": "Deshacer",
+      "duplicateError": "Ya existe una categoría con ese nombre."
     }
   }
 }

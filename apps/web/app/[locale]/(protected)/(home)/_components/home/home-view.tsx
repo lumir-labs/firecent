@@ -11,9 +11,9 @@ import {
 import { trpc } from "@app/api/client";
 
 import {
+  CategoryIcon,
   ChangeLine,
   Money,
-  NatureSwatch,
   PaceLegend,
   SectionHeader,
   Sparkline,
@@ -23,6 +23,7 @@ import {
   TransactionRow,
   UpcomingRow,
   formatMoneyText,
+  localizeCategoryName,
 } from "@/components/finance";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -92,23 +93,8 @@ export function HomeView({ userName }: { userName: string }) {
   }
 
   const primaryCurrency = data.balance?.currency ?? data.monthSummary.currency;
-  const totalNatureSpent =
-    data.monthSummary.byNature.DEBO +
-    data.monthSummary.byNature.NECESITO +
-    data.monthSummary.byNature.QUIERO;
-
-  const owePct =
-    totalNatureSpent > 0
-      ? (data.monthSummary.byNature.DEBO / totalNatureSpent) * 100
-      : 0;
-  const needPct =
-    totalNatureSpent > 0
-      ? (data.monthSummary.byNature.NECESITO / totalNatureSpent) * 100
-      : 0;
-  const wantPct =
-    totalNatureSpent > 0
-      ? (data.monthSummary.byNature.QUIERO / totalNatureSpent) * 100
-      : 0;
+  const topCategories = data.monthSummary.topCategories ?? [];
+  const maxCatSpent = Math.max(1, ...topCategories.map((c) => c.spent));
 
   return (
     <div className="flex flex-col gap-6 px-5 pt-2 lg:px-0 lg:pt-8">
@@ -188,11 +174,9 @@ export function HomeView({ userName }: { userName: string }) {
           </section>
         </div>
       ) : (
-        /* Main 12-col desktop / 1-col mobile layout (H1) */
         <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
           {/* Left column (lg: 1–7): Balance Hero + Coming up */}
           <div className="flex flex-col gap-6 lg:col-span-7">
-            {/* Block 1 · Hero Balance Card */}
             <Link
               href="/accounts"
               className="block rounded-3xl bg-hero p-6 text-hero-foreground transition-opacity hover:opacity-95"
@@ -253,7 +237,7 @@ export function HomeView({ userName }: { userName: string }) {
               )}
             </Link>
 
-            {/* Block 3 · Coming up (next 7 days) */}
+            {/* Coming up (next 7 days) */}
             <section className="flex flex-col gap-3">
               <SectionHeader title={t("comingUp")} />
               <Card variant="plain" className="divide-y overflow-hidden">
@@ -281,13 +265,12 @@ export function HomeView({ userName }: { userName: string }) {
             </section>
           </div>
 
-          {/* Right column (lg: 8–12): This month + Recent activity (desktop) */}
+          {/* Right column (lg: 8–12): This month (Category-first!) + Recent activity */}
           <div className="flex flex-col gap-6 lg:col-span-5">
-            {/* Block 2 · This month */}
             <section className="flex flex-col gap-3">
               <SectionHeader
                 title={t("thisMonth")}
-                action={{ label: t("setPlan"), href: "/budget" }}
+                action={{ label: t("seeAnalytics"), href: "/analytics" }}
               />
               <StatPair
                 items={[
@@ -306,58 +289,73 @@ export function HomeView({ userName }: { userName: string }) {
                 ]}
               />
 
-              {/* Owe / Need / Want stacked bar */}
+              {/* Top spending categories this month */}
               <Card variant="plain" className="flex flex-col gap-3 p-4">
-                <div
-                  role="img"
-                  aria-label={t("natureBreakdownAria")}
-                  className="flex h-2.5 w-full overflow-hidden rounded-full bg-muted"
-                >
-                  {owePct > 0 && (
-                    <div
-                      className="h-full bg-nature-owe"
-                      style={{ width: `${owePct}%` }}
-                    />
-                  )}
-                  {needPct > 0 && (
-                    <div
-                      className="h-full bg-nature-need"
-                      style={{ width: `${needPct}%` }}
-                    />
-                  )}
-                  {wantPct > 0 && (
-                    <div
-                      className="h-full bg-nature-want"
-                      style={{ width: `${wantPct}%` }}
-                    />
-                  )}
+                <div className="flex items-center justify-between">
+                  <span className="text-[13px] font-semibold text-foreground">
+                    {t("topCategories")}
+                  </span>
+                  <PaceLegend
+                    label={t("daysLeft", {
+                      days: String(data.monthSummary.daysLeft),
+                    })}
+                  />
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 text-[12px]">
-                  {(["DEBO", "NECESITO", "QUIERO"] as const).map((nature) => (
-                    <div key={nature} className="flex flex-col gap-0.5">
-                      <span className="flex items-center gap-1.5 text-muted-foreground">
-                        <NatureSwatch nature={nature} />
-                        <span>{t(`nature.${nature}`)}</span>
-                      </span>
-                      <Money
-                        value={data.monthSummary.byNature[nature]}
-                        currency={primaryCurrency}
-                        size="inline"
-                        tone="plain"
-                        className="font-semibold text-foreground"
-                      />
-                    </div>
-                  ))}
-                </div>
+                {topCategories.length === 0 ? (
+                  <p className="text-[13px] text-muted-foreground">
+                    {t("noExpensesMonth")}
+                  </p>
+                ) : (
+                  <div className="flex flex-col gap-2.5">
+                    {topCategories.map((cat) => {
+                      const pct = Math.min(100, (cat.spent / maxCatSpent) * 100);
+                      const label = localizeCategoryName(cat, locale);
+                      const rowContent = (
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center justify-between gap-2 text-[13px]">
+                            <span className="flex min-w-0 items-center gap-2 font-medium text-foreground">
+                              <CategoryIcon icon={cat.icon} color={cat.color} size="sm" />
+                              <span className="truncate">{label}</span>
+                            </span>
+                            <Money
+                              value={cat.spent}
+                              currency={primaryCurrency}
+                              size="inline"
+                              tone="plain"
+                              className="shrink-0 font-semibold text-foreground"
+                            />
+                          </div>
+                          <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                            <div
+                              className="h-full rounded-full transition-all"
+                              style={{
+                                width: `${pct}%`,
+                                backgroundColor: cat.color || "var(--primary)",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      );
 
-                <PaceLegend
-                  label={t("daysLeft", { days: String(data.monthSummary.daysLeft) })}
-                />
+                      return cat.id ? (
+                        <Link
+                          key={cat.id}
+                          href={`/transactions?month=${month}&category=${cat.id}`}
+                          className="rounded-lg transition-opacity hover:opacity-80"
+                        >
+                          {rowContent}
+                        </Link>
+                      ) : (
+                        <div key={cat.name}>{rowContent}</div>
+                      );
+                    })}
+                  </div>
+                )}
               </Card>
             </section>
 
-            {/* Block 4 (Desktop only per H1) · Recent activity */}
+            {/* Recent activity (Desktop) */}
             <section className="hidden flex-col gap-3 lg:flex">
               <SectionHeader
                 title={t("recentActivity")}
@@ -378,7 +376,11 @@ export function HomeView({ userName }: { userName: string }) {
                       title={r.title}
                       category={
                         r.category
-                          ? { icon: r.category.icon, name: r.category.name }
+                          ? {
+                              icon: r.category.icon,
+                              name: localizeCategoryName(r.category, locale),
+                              color: r.category.color,
+                            }
                           : { icon: null, name: r.accountName }
                       }
                       account={r.accountName}

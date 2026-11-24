@@ -13,6 +13,8 @@ import {
   Car,
   ChartLine,
   CircleDashed,
+  CircleParking,
+  Clapperboard,
   Coffee,
   Coins,
   CreditCard,
@@ -32,6 +34,7 @@ import {
   Hammer,
   HandCoins,
   Heart,
+  HeartHandshake,
   HeartPulse,
   Hotel,
   House,
@@ -50,9 +53,11 @@ import {
   Pill,
   Pizza,
   Plane,
+  PlusCircle,
   Popcorn,
   Receipt,
   Repeat,
+  RotateCcw,
   Scissors,
   Shapes,
   Shield,
@@ -69,10 +74,12 @@ import {
   Ticket,
   Train,
   TreePine,
+  TrendingUp,
   Trophy,
   Truck,
   Tv,
   Umbrella,
+  Users,
   Utensils,
   Wallet,
   Wifi,
@@ -111,6 +118,9 @@ const ICONS: Record<string, LucideIcon> = {
   car: Car,
   "chart-line": ChartLine,
   "circle-dashed": CircleDashed,
+  "circle-parking": CircleParking,
+  "parking-circle": CircleParking,
+  clapperboard: Clapperboard,
   coffee: Coffee,
   coins: Coins,
   "credit-card": CreditCard,
@@ -130,6 +140,7 @@ const ICONS: Record<string, LucideIcon> = {
   hammer: Hammer,
   "hand-coins": HandCoins,
   heart: Heart,
+  "heart-handshake": HeartHandshake,
   "heart-pulse": HeartPulse,
   home: House,
   hotel: Hotel,
@@ -148,9 +159,11 @@ const ICONS: Record<string, LucideIcon> = {
   pill: Pill,
   pizza: Pizza,
   plane: Plane,
+  "plus-circle": PlusCircle,
   popcorn: Popcorn,
   receipt: Receipt,
   repeat: Repeat,
+  "rotate-ccw": RotateCcw,
   scissors: Scissors,
   shapes: Shapes,
   shield: Shield,
@@ -167,10 +180,12 @@ const ICONS: Record<string, LucideIcon> = {
   ticket: Ticket,
   train: Train,
   "tree-pine": TreePine,
+  "trending-up": TrendingUp,
   trophy: Trophy,
   truck: Truck,
   tv: Tv,
   umbrella: Umbrella,
+  users: Users,
   utensils: Utensils,
   wallet: Wallet,
   wifi: Wifi,
@@ -206,12 +221,34 @@ export type CategoryIconProps = {
   icon: string | LucideIcon | null | undefined;
   size?: CategoryIconSize;
   /**
-   * SPEC §3.1 decision: tiles are neutral (`bg-muted`). The prototype HTML
-   * tints them with the category color; pass `color` to opt in.
+   * Accepts a `ColorName` token OR any hex color (`#ec4899`, `#0284c7`, etc.).
+   * Falls back to a neutral `bg-muted` tile when omitted.
    */
-  color?: ColorName | null;
+  color?: ColorName | string | null;
   className?: string;
 };
+
+function hexStyle(hex: string): React.CSSProperties | undefined {
+  const clean = hex.trim();
+  if (!/^#[0-9a-fA-F]{6}$/.test(clean)) return undefined;
+  const r = Number.parseInt(clean.slice(1, 3), 16);
+  const g = Number.parseInt(clean.slice(3, 5), 16);
+  const b = Number.parseInt(clean.slice(5, 7), 16);
+  const luma = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  // Very dark hexes (e.g. #212121, #334155) get a crisp solid tile with light ink
+  if (luma < 0.25) {
+    return {
+      backgroundColor: clean,
+      color: "#f8fafc",
+      borderColor: "rgba(255, 255, 255, 0.14)",
+    };
+  }
+  return {
+    backgroundColor: `${clean}22`,
+    color: clean,
+    borderColor: `${clean}38`,
+  };
+}
 
 /** Icon tile for a category or account. Decorative (`aria-hidden`). */
 export function CategoryIcon({
@@ -224,13 +261,18 @@ export function CategoryIcon({
   const icon$ = createElement(
     typeof icon === "string" || icon == null ? resolveCategoryIcon(icon) : icon,
   );
+  const tokenClass =
+    color && color in COLOR_TILE ? COLOR_TILE[color as ColorName] : undefined;
+  const customStyle = !tokenClass && color ? hexStyle(color) : undefined;
+
   return (
     <span
       aria-hidden="true"
       data-slot="category-icon"
+      style={customStyle}
       className={cn(
-        "grid shrink-0 place-items-center rounded-xl",
-        color ? COLOR_TILE[color] : "bg-muted text-foreground",
+        "grid shrink-0 place-items-center rounded-xl border border-transparent",
+        tokenClass ?? (!customStyle && "bg-muted text-foreground"),
         TILE[size],
         className,
       )}

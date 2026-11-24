@@ -53,3 +53,12 @@ export const clamp01 = (n: number) =>
 
 /** Skeleton fill on the always-dark hero card (`bg-muted` would glow there). */
 export const HERO_SKELETON = "bg-hero-foreground/10";
+
+/** Browser-safe category name localization (`en` / `es`). */
+export function localizeCategoryName(
+  cat: { name: string; nameEn?: string | null; nameEs?: string | null },
+  locale: string,
+): string {
+  if (locale.startsWith("es")) return cat.nameEs || cat.name;
+  return cat.nameEn || cat.name;
+}

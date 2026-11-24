@@ -103,6 +103,7 @@ export function AccountsView() {
                 last4={acc.accountNumber ?? undefined}
                 balance={displayAmount}
                 currency={acc.currency}
+                finish={acc.color}
                 secondary={secondary}
                 href={`/accounts/${acc.id}`}
               />

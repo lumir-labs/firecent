@@ -146,6 +146,7 @@ export function AppSidebar({
           href="/settings"
           aria-current={
             isRouteActive(pathname, "/settings") ||
+            isRouteActive(pathname, "/categories") ||
             isRouteActive(pathname, "/profile") ||
             isRouteActive(pathname, "/organization") ||
             isRouteActive(pathname, "/billing")

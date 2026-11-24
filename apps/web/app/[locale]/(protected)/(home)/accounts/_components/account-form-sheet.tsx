@@ -1,10 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
-import { AlertCircle } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { AlertCircle, Check } from "lucide-react";
 import { trpc } from "@app/api/client";
 
+import {
+  ACCOUNT_COLOR_PRESETS,
+  METALLIC_FINISHES,
+  resolveAccountFinish,
+} from "@/components/finance";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +17,7 @@ import { ResponsiveSheet } from "@/components/ui/responsive-sheet";
 import { firecentToast } from "@/components/ui/sonner";
 import { Switch } from "@/components/ui/switch";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { cn } from "@/lib/utils";
 
 type CreatableType = "CHECKING_ACCOUNT" | "SAVINGS_ACCOUNT" | "CASH" | "CREDIT_CARD";
 
@@ -22,6 +28,7 @@ export type EditableAccount = {
   name: string;
   type: string;
   currency: string;
+  color: string | null;
   accountNumber: string | null;
   creditLimit: number | null;
   paymentDay: number | null;
@@ -41,6 +48,7 @@ export function AccountFormSheet({
   account?: EditableAccount | null;
   onSaved?: (id: number) => void;
 }) {
+  const locale = useLocale();
   const t = useTranslations("Accounts");
   const tShell = useTranslations("Shell");
   const utils = trpc.useUtils();
@@ -50,6 +58,7 @@ export function AccountFormSheet({
   const [name, setName] = useState("");
   const [type, setType] = useState<CreatableType>("CHECKING_ACCOUNT");
   const [currency, setCurrency] = useState("USD");
+  const [color, setColor] = useState<string>("indigo");
   const [accountNumber, setAccountNumber] = useState("");
   const [currentBalance, setCurrentBalance] = useState("");
   const [creditLimit, setCreditLimit] = useState("");
@@ -71,6 +80,7 @@ export function AccountFormSheet({
           : "CHECKING_ACCOUNT",
       );
       setCurrency(account.currency);
+      setColor(account.color || (account.type === "CREDIT_CARD" ? "obsidian" : "indigo"));
       setAccountNumber(account.accountNumber ?? "");
       setCurrentBalance("");
       setCreditLimit(account.creditLimit != null ? String(account.creditLimit) : "");
@@ -83,6 +93,7 @@ export function AccountFormSheet({
       setName("");
       setType("CHECKING_ACCOUNT");
       setCurrency("USD");
+      setColor("indigo");
       setAccountNumber("");
       setCurrentBalance("");
       setCreditLimit("");
@@ -123,7 +134,10 @@ export function AccountFormSheet({
   });
 
   const isPending = createMutation.isPending || updateMutation.isPending;
-  const isCard = (account ? account.type : type) === "CREDIT_CARD";
+  const effectiveType = account ? account.type : type;
+  const isCard = effectiveType === "CREDIT_CARD";
+  const resolvedFinish = resolveAccountFinish(color);
+  const isEs = locale.startsWith("es");
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -138,6 +152,7 @@ export function AccountFormSheet({
       updateMutation.mutate({
         id: account.id,
         name: name.trim(),
+        color: color || null,
         accountNumber: accountNumber.trim() || null,
         creditLimit:
           isCard && Number.isFinite(parsedLimit) && parsedLimit > 0
@@ -161,6 +176,7 @@ export function AccountFormSheet({
       name: name.trim(),
       type,
       currency,
+      color: color || null,
       accountNumber: accountNumber.trim() || null,
       currentBalance: Number.isFinite(parsedBalance) ? parsedBalance : 0,
       creditLimit:
@@ -193,35 +209,143 @@ export function AccountFormSheet({
           </Alert>
         )}
 
-        {!isEdit && (
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[13px] font-medium text-muted-foreground">
-              {t("form.type")}
-            </label>
-            <ToggleGroup
-              variant="segmented"
-              value={[type]}
-              onValueChange={(vals) => {
-                const next = vals[0] as CreatableType | undefined;
-                if (next) setType(next);
-              }}
-              className="w-full"
+        {/* Live compact preview card */}
+        <div
+          style={{
+            background:
+              resolvedFinish?.cardBackground ??
+              "linear-gradient(135deg, #334155 0%, #0f172a 100%)",
+            color: resolvedFinish?.ink ?? "#ffffff",
+            borderColor: resolvedFinish?.border ?? "rgba(255,255,255,0.14)",
+          }}
+          className="flex items-center justify-between rounded-2xl border px-4 py-3.5 shadow-xs transition-all"
+        >
+          <div className="min-w-0">
+            <p
+              className="text-[11px] font-medium uppercase tracking-wider"
+              style={{ color: resolvedFinish?.mutedInk ?? "rgba(255,255,255,0.72)" }}
             >
-              <ToggleGroupItem value="CHECKING_ACCOUNT" className="flex-1 text-[12px]">
-                {t("types.CHECKING_ACCOUNT")}
-              </ToggleGroupItem>
-              <ToggleGroupItem value="SAVINGS_ACCOUNT" className="flex-1 text-[12px]">
-                {t("types.SAVINGS_ACCOUNT")}
-              </ToggleGroupItem>
-              <ToggleGroupItem value="CASH" className="flex-1 text-[12px]">
-                {t("types.CASH")}
-              </ToggleGroupItem>
-              <ToggleGroupItem value="CREDIT_CARD" className="flex-1 text-[12px]">
-                {t("types.CREDIT_CARD")}
-              </ToggleGroupItem>
-            </ToggleGroup>
+              {t(`types.${effectiveType}` as never)} · {currency}
+            </p>
+            <p className="mt-0.5 truncate text-[16px] font-semibold">
+              {name.trim() || t("form.namePlaceholder")}
+            </p>
           </div>
+          {accountNumber.trim() ? (
+            <span
+              className="num shrink-0 text-[13px] font-medium"
+              style={{ color: resolvedFinish?.mutedInk ?? "rgba(255,255,255,0.72)" }}
+            >
+              ···· {accountNumber.trim().slice(-4)}
+            </span>
+          ) : (
+            <span
+              aria-hidden
+              className="h-5 w-7 shrink-0 rounded-md"
+              style={{
+                backgroundColor: resolvedFinish?.ink ?? "#ffffff",
+                opacity: 0.25,
+              }}
+            />
+          )}
+        </div>
+
+        {!isEdit && (
+          <ToggleGroup
+            variant="segmented"
+            value={[type]}
+            onValueChange={(vals) => {
+              const next = vals[0] as CreatableType | undefined;
+              if (next) {
+                setType(next);
+                if (next === "CREDIT_CARD" && color === "indigo") {
+                  setColor("gold");
+                }
+              }
+            }}
+            className="w-full"
+          >
+            <ToggleGroupItem value="CHECKING_ACCOUNT" className="flex-1 text-[12px]">
+              {t("types.CHECKING_ACCOUNT")}
+            </ToggleGroupItem>
+            <ToggleGroupItem value="SAVINGS_ACCOUNT" className="flex-1 text-[12px]">
+              {t("types.SAVINGS_ACCOUNT")}
+            </ToggleGroupItem>
+            <ToggleGroupItem value="CASH" className="flex-1 text-[12px]">
+              {t("types.CASH")}
+            </ToggleGroupItem>
+            <ToggleGroupItem value="CREDIT_CARD" className="flex-1 text-[12px]">
+              {t("types.CREDIT_CARD")}
+            </ToggleGroupItem>
+          </ToggleGroup>
         )}
+
+        {/* Appearance: Metallic finishes + Bank colors + Custom */}
+        <div className="flex flex-col gap-2">
+          <span className="text-[12px] font-medium text-muted-foreground">
+            {t("form.cardFinish")}
+          </span>
+          <div className="flex flex-wrap gap-1.5">
+            {METALLIC_FINISHES.map((m) => {
+              const active = color.toLowerCase() === m.key;
+              return (
+                <button
+                  key={m.key}
+                  type="button"
+                  onClick={() => setColor(m.key)}
+                  style={{
+                    background: m.finish.cardBackground,
+                    color: m.finish.ink,
+                    borderColor: active ? "var(--ring)" : m.finish.border,
+                  }}
+                  className={cn(
+                    "inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-[12px] font-semibold transition-transform active:scale-95",
+                    active && "ring-2 ring-ring ring-offset-1 ring-offset-card",
+                  )}
+                >
+                  {active && <Check className="size-3.5" aria-hidden />}
+                  <span>{isEs ? m.labelEs : m.labelEn}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 pt-0.5">
+            {ACCOUNT_COLOR_PRESETS.map((p) => {
+              const active =
+                color.toLowerCase() === p.key ||
+                color.toLowerCase() === p.hex.toLowerCase();
+              return (
+                <button
+                  key={p.key}
+                  type="button"
+                  aria-label={isEs ? p.labelEs : p.labelEn}
+                  onClick={() => setColor(p.hex)}
+                  style={{ backgroundColor: p.hex }}
+                  className={cn(
+                    "grid size-7 place-items-center rounded-full text-white transition-transform hover:scale-105",
+                    active && "ring-2 ring-ring ring-offset-2 ring-offset-card",
+                  )}
+                >
+                  {active && <Check className="size-3.5" aria-hidden />}
+                </button>
+              );
+            })}
+            <label
+              aria-label={t("form.customColor")}
+              className="relative grid size-7 cursor-pointer place-items-center overflow-hidden rounded-full border border-dashed border-muted-foreground/50 bg-muted text-[11px] font-semibold text-muted-foreground hover:border-foreground"
+              title={t("form.customColor")}
+            >
+              +
+              <input
+                type="color"
+                value={color.startsWith("#") ? color : "#5e54f0"}
+                onChange={(e) => setColor(e.target.value)}
+                className="absolute inset-0 cursor-pointer opacity-0"
+              />
+            </label>
+          </div>
+        </div>
 
         <div className="flex flex-col gap-1.5">
           <label className="text-[13px] font-medium text-muted-foreground">

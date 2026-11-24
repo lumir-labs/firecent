@@ -203,6 +203,9 @@ model BankAccount {
 model Category {
   id             Int             @id @default(autoincrement())
   name           String
+  nameEn         String?
+  nameEs         String?
+  isSystem       Boolean         @default(false)
   color          String?
   icon           String?
   type           RecordType      @default(EXPENSE)
@@ -223,7 +226,6 @@ model Category {
   records          Record[]
   budgetCategories BudgetCategory[]
 
-  @@unique([organizationId, name])
   @@index([organizationId])
   @@index([parentId])
 }

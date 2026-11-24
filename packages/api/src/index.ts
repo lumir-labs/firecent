@@ -6,3 +6,4 @@ export * from "./api-keys/service";
 export * from "./api-keys/schemas";
 export type { SessionUser, ContextSession, Context } from "./trpc";
 export * from "./escalation-detector";
+export * from "./default-categories";

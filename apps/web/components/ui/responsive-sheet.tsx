@@ -53,8 +53,8 @@ function ResponsiveSheet({
     <div
       data-slot="responsive-sheet-header"
       className={cn(
-        "flex h-14 shrink-0 items-center justify-between gap-3 px-5",
-        hideTitle && "justify-end"
+        "flex shrink-0 items-center justify-between gap-3 px-5",
+        hideTitle ? "h-9 justify-end px-3" : "h-14"
       )}
     >
       <Title
@@ -138,14 +138,14 @@ function ResponsiveSheet({
           data-presentation="drawer"
           {...(description ? {} : { "aria-describedby": undefined })}
           className={cn(
-            "fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[92dvh] max-w-[430px] flex-col rounded-t-3xl bg-card text-sm text-card-foreground outline-none",
+            "fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[96dvh] max-w-[430px] flex-col rounded-t-3xl bg-card text-sm text-card-foreground outline-none",
             SHEET_SHADOW,
             className
           )}
         >
           <div
             aria-hidden
-            className="mx-auto mt-2.5 h-1 w-9 shrink-0 rounded-full bg-muted-foreground/30"
+            className="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-muted-foreground/30"
           />
           {header(DrawerPrimitive.Title)}
           {description ? (
@@ -153,7 +153,7 @@ function ResponsiveSheet({
               {description}
             </DrawerPrimitive.Description>
           ) : null}
-          <div className="min-h-0 flex-1 overflow-y-auto pb-8">{children}</div>
+          <div className="min-h-0 flex-1 overflow-y-auto pb-5">{children}</div>
         </DrawerPrimitive.Content>
       </DrawerPrimitive.Portal>
     </DrawerPrimitive.Root>

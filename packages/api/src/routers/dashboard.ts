@@ -242,6 +242,15 @@ export const dashboardRouter = router({
             in: 0,
             out: 0,
             byNature: { DEBO: 0, NECESITO: 0, QUIERO: 0 },
+            topCategories: [] as {
+              id: number | null;
+              name: string;
+              nameEn: string | null;
+              nameEs: string | null;
+              icon: string | null;
+              color: string | null;
+              spent: number;
+            }[],
             pace,
             daysLeft,
           },
@@ -261,7 +270,13 @@ export const dashboardRouter = router({
             currency: string;
             date: string | null;
             title: string;
-            category: { name: string; icon: string | null } | null;
+            category: {
+              name: string;
+              nameEn: string | null;
+              nameEs: string | null;
+              icon: string | null;
+              color: string | null;
+            } | null;
             accountName: string;
           }[],
           insight: null,
@@ -346,7 +361,17 @@ export const dashboardRouter = router({
                 transfer: true,
                 excludeFromStats: true,
                 spendingNature: true,
-                category: { select: { spendingNature: true } },
+                category: {
+                  select: {
+                    id: true,
+                    name: true,
+                    nameEn: true,
+                    nameEs: true,
+                    icon: true,
+                    color: true,
+                    spendingNature: true,
+                  },
+                },
               },
             })
           : Promise.resolve([]),
@@ -370,7 +395,15 @@ export const dashboardRouter = router({
             note: true,
             recordDate: true,
             payee: { select: { name: true } },
-            category: { select: { name: true, icon: true } },
+            category: {
+              select: {
+                name: true,
+                nameEn: true,
+                nameEs: true,
+                icon: true,
+                color: true,
+              },
+            },
             account: { select: { name: true, currency: true } },
             transferAccount: { select: { name: true } },
           },
@@ -426,11 +459,23 @@ export const dashboardRouter = router({
         trendPoints.push({ label, value: runningMinor / MINOR_UNIT });
       }
 
-      // Month summary (in, out, byNature, change)
+      // Month summary (in, out, byNature, topCategories, change)
       let monthChangeMinor = 0;
       let monthInMinor = 0;
       let monthOutMinor = 0;
       const byNatureMinor = { DEBO: 0, NECESITO: 0, QUIERO: 0 };
+      const byCategoryMap = new Map<
+        string,
+        {
+          id: number | null;
+          name: string;
+          nameEn: string | null;
+          nameEs: string | null;
+          icon: string | null;
+          color: string | null;
+          spentMinor: number;
+        }
+      >();
 
       for (const r of monthRecords) {
         monthChangeMinor += r.amount;
@@ -442,8 +487,36 @@ export const dashboardRouter = router({
           monthOutMinor += abs;
           const nature = r.spendingNature ?? r.category?.spendingNature ?? "NECESITO";
           byNatureMinor[nature] += abs;
+          const key = r.category ? String(r.category.id) : "uncategorized";
+          const prev = byCategoryMap.get(key);
+          if (prev) {
+            prev.spentMinor += abs;
+          } else {
+            byCategoryMap.set(key, {
+              id: r.category?.id ?? null,
+              name: r.category?.name ?? "Other",
+              nameEn: r.category?.nameEn ?? null,
+              nameEs: r.category?.nameEs ?? null,
+              icon: r.category?.icon ?? "tag",
+              color: r.category?.color ?? null,
+              spentMinor: abs,
+            });
+          }
         }
       }
+
+      const topCategories = [...byCategoryMap.values()]
+        .sort((a, b) => b.spentMinor - a.spentMinor)
+        .slice(0, 5)
+        .map((c) => ({
+          id: c.id,
+          name: c.name,
+          nameEn: c.nameEn,
+          nameEs: c.nameEs,
+          icon: c.icon,
+          color: c.color,
+          spent: c.spentMinor / MINOR_UNIT,
+        }));
 
       // Upcoming (next 7 days): credit card payments due
       const upcoming = accounts
@@ -503,6 +576,7 @@ export const dashboardRouter = router({
             NECESITO: byNatureMinor.NECESITO / MINOR_UNIT,
             QUIERO: byNatureMinor.QUIERO / MINOR_UNIT,
           },
+          topCategories,
           pace,
           daysLeft,
         },

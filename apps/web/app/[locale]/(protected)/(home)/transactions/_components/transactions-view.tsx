@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { keepPreviousData } from "@tanstack/react-query";
 import {
   ChevronLeft,
@@ -21,11 +21,11 @@ import {
   CategoryIcon,
   DayHeader,
   Money,
-  NatureSwatch,
   PageHeader,
   StateBlock,
   TransactionRow,
   TransactionRowSkeleton,
+  localizeCategoryName,
 } from "@/components/finance";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -47,7 +47,7 @@ import { cn } from "@/lib/utils";
 import { useShell } from "../../_components/shell/shell-context";
 import { TransactionDetailSheet } from "./transaction-detail-sheet";
 
-type ChipKey = "all" | "DEBO" | "NECESITO" | "QUIERO" | "INCOME" | "TRANSFER";
+type ChipKey = "all" | "EXPENSE" | "INCOME" | "TRANSFER";
 
 function currentMonthStr() {
   const d = new Date();
@@ -70,6 +70,7 @@ function formatMonthLabel(ym: string) {
 }
 
 export function TransactionsView() {
+  const locale = useLocale();
   const t = useTranslations("TransactionsV2");
   const tShell = useTranslations("Shell");
   const searchParams = useSearchParams();
@@ -127,12 +128,8 @@ export function TransactionsView() {
       month,
       search: debouncedSearch.trim() || undefined,
       type:
-        chip === "INCOME" || chip === "TRANSFER"
+        chip === "EXPENSE" || chip === "INCOME" || chip === "TRANSFER"
           ? chip
-          : undefined,
-      natures:
-        chip === "DEBO" || chip === "NECESITO" || chip === "QUIERO"
-          ? ([chip] as ("DEBO" | "NECESITO" | "QUIERO")[])
           : undefined,
       accountId,
       categoryId,
@@ -287,31 +284,41 @@ export function TransactionsView() {
           </Button>
         </div>
 
-        {/* Nature & Type chips */}
+        {/* Type & Category quick chips */}
         <div className="no-scrollbar flex items-center gap-2 overflow-x-auto pb-0.5">
-          {(
-            [
-              "all",
-              "DEBO",
-              "NECESITO",
-              "QUIERO",
-              "INCOME",
-              "TRANSFER",
-            ] as ChipKey[]
-          ).map((k) => (
+          {(["all", "EXPENSE", "INCOME", "TRANSFER"] as ChipKey[]).map((k) => (
             <Toggle
               key={k}
               variant="chip"
-              pressed={chip === k}
-              onPressedChange={() => setChip(k)}
-              className="shrink-0 gap-1.5"
+              pressed={chip === k && !categoryId}
+              onPressedChange={() => {
+                setChip(k);
+                setCategoryId(undefined);
+              }}
+              className="shrink-0"
             >
-              {(k === "DEBO" || k === "NECESITO" || k === "QUIERO") && (
-                <NatureSwatch nature={k} />
-              )}
               <span>{t(`chips.${k}`)}</span>
             </Toggle>
           ))}
+          {(options.data?.categories ?? [])
+            .filter((c) => c.parentId === null && c.type === "EXPENSE")
+            .map((cat) => {
+              const pressed = categoryId === cat.id;
+              return (
+                <Toggle
+                  key={cat.id}
+                  variant="chip"
+                  pressed={pressed}
+                  onPressedChange={(on) => {
+                    setCategoryId(on ? cat.id : undefined);
+                    if (on) setChip("all");
+                  }}
+                  className="shrink-0 gap-1.5"
+                >
+                  <span>{localizeCategoryName(cat, locale)}</span>
+                </Toggle>
+              );
+            })}
         </div>
 
         {/* Month bar with In / Out */}
@@ -443,20 +450,24 @@ export function TransactionsView() {
                   />
                   <Card variant="plain" className="divide-y overflow-hidden">
                     {group.items.map((r) => {
+                      const catName = r.category
+                        ? localizeCategoryName(r.category, locale)
+                        : null;
                       const title =
                         r.transfer && r.transferAccount
                           ? `${r.account.name} → ${r.transferAccount.name}`
-                          : r.payee ||
-                            r.category?.name ||
-                            r.note ||
-                            r.account.name;
+                          : r.payee || catName || r.note || r.account.name;
                       return (
                         <TransactionRow
                           key={r.id}
                           title={title}
                           category={
-                            r.category
-                              ? { icon: r.category.icon, name: r.category.name }
+                            r.category && catName
+                              ? {
+                                  icon: r.category.icon,
+                                  name: catName,
+                                  color: r.category.color,
+                                }
                               : { icon: null, name: r.account.name }
                           }
                           account={r.account.name}
@@ -499,13 +510,13 @@ export function TransactionsView() {
                 </TableHeader>
                 <TableBody>
                   {rows.map((r) => {
+                    const catName = r.category
+                      ? localizeCategoryName(r.category, locale)
+                      : null;
                     const title =
                       r.transfer && r.transferAccount
                         ? `${r.account.name} → ${r.transferAccount.name}`
-                        : r.payee ||
-                          r.category?.name ||
-                          r.note ||
-                          r.account.name;
+                        : r.payee || catName || r.note || r.account.name;
                     return (
                       <TableRow
                         key={r.id}
@@ -526,6 +537,7 @@ export function TransactionsView() {
                           <div className="flex items-center gap-2.5">
                             <CategoryIcon
                               icon={r.category?.icon}
+                              color={r.category?.color}
                               size="sm"
                             />
                             <div className="min-w-0">
@@ -539,10 +551,7 @@ export function TransactionsView() {
                           </div>
                         </TableCell>
                         <TableCell className="text-[13px] text-muted-foreground">
-                          <span className="inline-flex items-center gap-1.5">
-                            {r.nature && <NatureSwatch nature={r.nature} />}
-                            <span>{r.category?.name ?? "—"}</span>
-                          </span>
+                          <span>{catName ?? "—"}</span>
                         </TableCell>
                         <TableCell className="text-[13px] text-muted-foreground">
                           {r.account.name}
@@ -622,7 +631,8 @@ export function TransactionsView() {
               <option value="">{t("filters.allCategories")}</option>
               {(options.data?.categories ?? []).map((c) => (
                 <option key={c.id} value={c.id}>
-                  {c.name}
+                  {c.parentId ? "↳ " : ""}
+                  {localizeCategoryName(c, locale)}
                 </option>
               ))}
             </select>

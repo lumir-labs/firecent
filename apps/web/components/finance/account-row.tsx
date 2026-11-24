@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
+import { AccountSwatch } from "./account-finish";
 import { CategoryIcon } from "./category-icon";
 import { Money } from "./money";
 import type { AccountType, ColorName } from "./types";
@@ -46,6 +47,8 @@ export type AccountRowProps = {
   converted?: { value: number; currency: string };
   /** Opt-in tinted tile (the SPEC default is neutral). */
   color?: ColorName | null;
+  /** Account finish or hex color (`gold`, `silver`, `platinum`, `#0148af`…). */
+  finish?: string | null;
   href?: string;
   className?: string;
 };
@@ -68,6 +71,7 @@ export function AccountRow({
   secondaryTone = "muted",
   converted,
   color,
+  finish,
   href,
   className,
 }: AccountRowProps) {
@@ -82,7 +86,11 @@ export function AccountRow({
 
   const body = (
     <>
-      <CategoryIcon icon={ACCOUNT_TYPE_ICON[type]} color={color} size="lg" />
+      {finish !== undefined ? (
+        <AccountSwatch type={type} color={finish} size="md" />
+      ) : (
+        <CategoryIcon icon={ACCOUNT_TYPE_ICON[type]} color={color} size="lg" />
+      )}
       <span className="min-w-0 flex-1">
         <span className="flex items-baseline justify-between gap-2">
           <span className="truncate font-medium">{name}</span>

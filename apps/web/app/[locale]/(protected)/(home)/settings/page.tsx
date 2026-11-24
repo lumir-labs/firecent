@@ -4,6 +4,7 @@ import {
   CreditCard,
   KeyRound,
   Shield,
+  Tag,
   User as UserIcon,
 } from "lucide-react";
 import { p } from "@app/api/permissions";
@@ -31,6 +32,11 @@ export default async function SettingsPage() {
       <section className="flex flex-col gap-3">
         <SectionHeader title={t("settings.spaceSection")} />
         <Card variant="plain" className="divide-y overflow-hidden">
+          <NavRow
+            icon={Tag}
+            label={t("nav.categories")}
+            href="/categories"
+          />
           {canOrg && (
             <NavRow
               icon={Building2}

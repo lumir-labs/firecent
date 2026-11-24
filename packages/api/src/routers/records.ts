@@ -56,7 +56,7 @@ const createInput = z
     paymentType: z.enum(["CASH", "CREDIT_CARD", "WEB_PAYMENT"]).default("CASH"),
     note: z.string().trim().max(500).nullish(),
     recordDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-    recordTime: z.string().regex(/^\d{2}:\d{2}$/),
+    recordTime: z.string().regex(/^\d{2}:\d{2}$/).nullish(),
   })
   .refine(
     (v) =>
@@ -87,7 +87,7 @@ const updateInput = z.object({
   recordTime: z
     .string()
     .regex(/^\d{2}:\d{2}$/)
-    .optional(),
+    .nullish(),
 });
 
 const recordSelect = {
@@ -104,7 +104,15 @@ const recordSelect = {
   createdBy: true,
   payee: { select: { id: true, name: true } },
   category: {
-    select: { id: true, name: true, color: true, icon: true, spendingNature: true },
+    select: {
+      id: true,
+      name: true,
+      nameEn: true,
+      nameEs: true,
+      color: true,
+      icon: true,
+      spendingNature: true,
+    },
   },
   account: { select: { id: true, name: true, color: true, currency: true } },
   transferAccount: { select: { id: true, name: true, color: true, currency: true } },
@@ -235,6 +243,8 @@ async function buildWhere(
       { note: { contains: q, mode: "insensitive" } },
       { payee: { name: { contains: q, mode: "insensitive" } } },
       { category: { name: { contains: q, mode: "insensitive" } } },
+      { category: { nameEn: { contains: q, mode: "insensitive" } } },
+      { category: { nameEs: { contains: q, mode: "insensitive" } } },
       { account: { name: { contains: q, mode: "insensitive" } } },
     ];
     // Improvement over prototype: approximate amount match (e.g. "41" matches $41.00..$41.99)
@@ -503,13 +513,16 @@ export const recordsRouter = router({
           select: {
             id: true,
             name: true,
+            nameEn: true,
+            nameEs: true,
+            isSystem: true,
             color: true,
             icon: true,
             type: true,
             spendingNature: true,
             parentId: true,
           },
-          orderBy: { name: "asc" },
+          orderBy: [{ parentId: "asc" }, { name: "asc" }],
         }),
         db.payee.findMany({
           where: { organizationId: orgId, deletedAt: null },
@@ -559,7 +572,7 @@ export const recordsRouter = router({
             recordDate: true,
             recordTime: true,
             payee: { select: { id: true, name: true } },
-            category: { select: { id: true, name: true, icon: true } },
+            category: { select: { id: true, name: true, nameEn: true, nameEs: true, icon: true } },
             account: { select: { id: true, name: true, currency: true } },
           },
           orderBy: { recordDate: "desc" },
@@ -575,6 +588,8 @@ export const recordsRouter = router({
           select: {
             id: true,
             name: true,
+            nameEn: true,
+            nameEs: true,
             icon: true,
             color: true,
             spendingNature: true,
@@ -740,7 +755,9 @@ export const recordsRouter = router({
         paymentType: input.paymentType,
         note: input.note || null,
         recordDate: new Date(`${input.recordDate}T00:00:00.000Z`),
-        recordTime: new Date(`1970-01-01T${input.recordTime}:00.000Z`),
+        recordTime: input.recordTime
+          ? new Date(`1970-01-01T${input.recordTime}:00.000Z`)
+          : null,
         createdBy: userId,
       };
 
@@ -830,9 +847,12 @@ export const recordsRouter = router({
       const nextDate = input.recordDate
         ? new Date(`${input.recordDate}T00:00:00.000Z`)
         : undefined;
-      const nextTime = input.recordTime
-        ? new Date(`1970-01-01T${input.recordTime}:00.000Z`)
-        : undefined;
+      const nextTime =
+        input.recordTime === undefined
+          ? undefined
+          : input.recordTime
+            ? new Date(`1970-01-01T${input.recordTime}:00.000Z`)
+            : null;
 
       // Transfer pair update in one transaction (D6)
       if (existing.transfer && existing.transferGroupId) {

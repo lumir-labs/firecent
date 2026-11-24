@@ -6,6 +6,7 @@ import {
   HandCoins,
   Repeat,
   Settings,
+  Tag,
   User as UserIcon,
   Wallet,
 } from "lucide-react";
@@ -32,6 +33,7 @@ export default async function MorePage() {
           />
           <NavRow icon={Repeat} label={t("nav.recurring")} href="/recurring" />
           <NavRow icon={HandCoins} label={t("nav.debts")} href="/debts" />
+          <NavRow icon={Tag} label={t("nav.categories")} href="/categories" />
         </Card>
       </section>
 
