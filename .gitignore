@@ -58,3 +58,7 @@ Thumbs.db
 
 # next-intl generated message declarations
 packages/lib/src/messages/*.d.json.ts
+
+# Local editor tooling and discarded prototype
+.claude/
+/fable/
