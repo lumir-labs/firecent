@@ -33,7 +33,11 @@ export function DayHeader({
 }: DayHeaderProps) {
   const t = useTranslations("Finance.day");
   const locale = useLocale();
+  const utcDay = toUtcDay(date);
+  const todayUtc = today != null ? toUtcDay(today) : null;
   const diff = today != null ? dayDiff(date, today) : null;
+  const includeYear =
+    todayUtc != null && utcDay.getUTCFullYear() !== todayUtc.getUTCFullYear();
   const text =
     label ??
     (diff === 0
@@ -44,8 +48,9 @@ export function DayHeader({
             weekday: "short",
             month: "short",
             day: "numeric",
+            ...(includeYear ? { year: "numeric" } : {}),
             timeZone: "UTC",
-          }).format(toUtcDay(date)));
+          }).format(utcDay));
 
   return (
     <div

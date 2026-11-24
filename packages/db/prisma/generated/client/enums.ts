@@ -97,6 +97,7 @@ export type RecurringMode = (typeof RecurringMode)[keyof typeof RecurringMode]
 
 
 export const RecurringFrequency = {
+  DAILY: 'DAILY',
   WEEKLY: 'WEEKLY',
   MONTHLY: 'MONTHLY',
   YEARLY: 'YEARLY'
@@ -112,3 +113,30 @@ export const OccurrenceStatus = {
 } as const
 
 export type OccurrenceStatus = (typeof OccurrenceStatus)[keyof typeof OccurrenceStatus]
+
+
+export const AssistantRole = {
+  USER: 'USER',
+  ASSISTANT: 'ASSISTANT'
+} as const
+
+export type AssistantRole = (typeof AssistantRole)[keyof typeof AssistantRole]
+
+
+export const AssistantProposalKind = {
+  STATEMENT_IMPORT: 'STATEMENT_IMPORT',
+  TRANSFER_MATCH: 'TRANSFER_MATCH'
+} as const
+
+export type AssistantProposalKind = (typeof AssistantProposalKind)[keyof typeof AssistantProposalKind]
+
+
+export const AssistantProposalStatus = {
+  AWAITING_ACCOUNT: 'AWAITING_ACCOUNT',
+  PENDING: 'PENDING',
+  APPLIED: 'APPLIED',
+  DISMISSED: 'DISMISSED',
+  SUPERSEDED: 'SUPERSEDED'
+} as const
+
+export type AssistantProposalStatus = (typeof AssistantProposalStatus)[keyof typeof AssistantProposalStatus]

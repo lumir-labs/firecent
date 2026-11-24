@@ -250,6 +250,8 @@ export type OrganizationWhereInput = {
   debts?: Prisma.DebtListRelationFilter
   budgets?: Prisma.BudgetListRelationFilter
   recurrings?: Prisma.RecurringListRelationFilter
+  assistantThreads?: Prisma.AssistantThreadListRelationFilter
+  assistantProposals?: Prisma.AssistantProposalListRelationFilter
 }
 
 export type OrganizationOrderByWithRelationInput = {
@@ -277,6 +279,8 @@ export type OrganizationOrderByWithRelationInput = {
   debts?: Prisma.DebtOrderByRelationAggregateInput
   budgets?: Prisma.BudgetOrderByRelationAggregateInput
   recurrings?: Prisma.RecurringOrderByRelationAggregateInput
+  assistantThreads?: Prisma.AssistantThreadOrderByRelationAggregateInput
+  assistantProposals?: Prisma.AssistantProposalOrderByRelationAggregateInput
 }
 
 export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -307,6 +311,8 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   debts?: Prisma.DebtListRelationFilter
   budgets?: Prisma.BudgetListRelationFilter
   recurrings?: Prisma.RecurringListRelationFilter
+  assistantThreads?: Prisma.AssistantThreadListRelationFilter
+  assistantProposals?: Prisma.AssistantProposalListRelationFilter
 }, "id" | "name" | "slug">
 
 export type OrganizationOrderByWithAggregationInput = {
@@ -370,6 +376,8 @@ export type OrganizationCreateInput = {
   debts?: Prisma.DebtCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateInput = {
@@ -397,6 +405,8 @@ export type OrganizationUncheckedCreateInput = {
   debts?: Prisma.DebtUncheckedCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUpdateInput = {
@@ -424,6 +434,8 @@ export type OrganizationUpdateInput = {
   debts?: Prisma.DebtUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateInput = {
@@ -451,6 +463,8 @@ export type OrganizationUncheckedUpdateInput = {
   debts?: Prisma.DebtUncheckedUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateManyInput = {
@@ -716,6 +730,34 @@ export type OrganizationUpdateOneRequiredWithoutRecurringsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutRecurringsInput, Prisma.OrganizationUpdateWithoutRecurringsInput>, Prisma.OrganizationUncheckedUpdateWithoutRecurringsInput>
 }
 
+export type OrganizationCreateNestedOneWithoutAssistantThreadsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAssistantThreadsInput, Prisma.OrganizationUncheckedCreateWithoutAssistantThreadsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAssistantThreadsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutAssistantThreadsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAssistantThreadsInput, Prisma.OrganizationUncheckedCreateWithoutAssistantThreadsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAssistantThreadsInput
+  upsert?: Prisma.OrganizationUpsertWithoutAssistantThreadsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutAssistantThreadsInput, Prisma.OrganizationUpdateWithoutAssistantThreadsInput>, Prisma.OrganizationUncheckedUpdateWithoutAssistantThreadsInput>
+}
+
+export type OrganizationCreateNestedOneWithoutAssistantProposalsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAssistantProposalsInput, Prisma.OrganizationUncheckedCreateWithoutAssistantProposalsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAssistantProposalsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutAssistantProposalsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutAssistantProposalsInput, Prisma.OrganizationUncheckedCreateWithoutAssistantProposalsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutAssistantProposalsInput
+  upsert?: Prisma.OrganizationUpsertWithoutAssistantProposalsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutAssistantProposalsInput, Prisma.OrganizationUpdateWithoutAssistantProposalsInput>, Prisma.OrganizationUncheckedUpdateWithoutAssistantProposalsInput>
+}
+
 export type OrganizationCreateWithoutBankAccountsInput = {
   id?: string
   name: string
@@ -740,6 +782,8 @@ export type OrganizationCreateWithoutBankAccountsInput = {
   debts?: Prisma.DebtCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutBankAccountsInput = {
@@ -766,6 +810,8 @@ export type OrganizationUncheckedCreateWithoutBankAccountsInput = {
   debts?: Prisma.DebtUncheckedCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutBankAccountsInput = {
@@ -808,6 +854,8 @@ export type OrganizationUpdateWithoutBankAccountsInput = {
   debts?: Prisma.DebtUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutBankAccountsInput = {
@@ -834,6 +882,8 @@ export type OrganizationUncheckedUpdateWithoutBankAccountsInput = {
   debts?: Prisma.DebtUncheckedUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutCategoriesInput = {
@@ -860,6 +910,8 @@ export type OrganizationCreateWithoutCategoriesInput = {
   debts?: Prisma.DebtCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutCategoriesInput = {
@@ -886,6 +938,8 @@ export type OrganizationUncheckedCreateWithoutCategoriesInput = {
   debts?: Prisma.DebtUncheckedCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutCategoriesInput = {
@@ -928,6 +982,8 @@ export type OrganizationUpdateWithoutCategoriesInput = {
   debts?: Prisma.DebtUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutCategoriesInput = {
@@ -954,6 +1010,8 @@ export type OrganizationUncheckedUpdateWithoutCategoriesInput = {
   debts?: Prisma.DebtUncheckedUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutPayeesInput = {
@@ -980,6 +1038,8 @@ export type OrganizationCreateWithoutPayeesInput = {
   debts?: Prisma.DebtCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutPayeesInput = {
@@ -1006,6 +1066,8 @@ export type OrganizationUncheckedCreateWithoutPayeesInput = {
   debts?: Prisma.DebtUncheckedCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutPayeesInput = {
@@ -1048,6 +1110,8 @@ export type OrganizationUpdateWithoutPayeesInput = {
   debts?: Prisma.DebtUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutPayeesInput = {
@@ -1074,6 +1138,8 @@ export type OrganizationUncheckedUpdateWithoutPayeesInput = {
   debts?: Prisma.DebtUncheckedUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutEnvelopesInput = {
@@ -1100,6 +1166,8 @@ export type OrganizationCreateWithoutEnvelopesInput = {
   debts?: Prisma.DebtCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutEnvelopesInput = {
@@ -1126,6 +1194,8 @@ export type OrganizationUncheckedCreateWithoutEnvelopesInput = {
   debts?: Prisma.DebtUncheckedCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutEnvelopesInput = {
@@ -1168,6 +1238,8 @@ export type OrganizationUpdateWithoutEnvelopesInput = {
   debts?: Prisma.DebtUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutEnvelopesInput = {
@@ -1194,6 +1266,8 @@ export type OrganizationUncheckedUpdateWithoutEnvelopesInput = {
   debts?: Prisma.DebtUncheckedUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutRecordsInput = {
@@ -1220,6 +1294,8 @@ export type OrganizationCreateWithoutRecordsInput = {
   debts?: Prisma.DebtCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutRecordsInput = {
@@ -1246,6 +1322,8 @@ export type OrganizationUncheckedCreateWithoutRecordsInput = {
   debts?: Prisma.DebtUncheckedCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutRecordsInput = {
@@ -1288,6 +1366,8 @@ export type OrganizationUpdateWithoutRecordsInput = {
   debts?: Prisma.DebtUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutRecordsInput = {
@@ -1314,6 +1394,8 @@ export type OrganizationUncheckedUpdateWithoutRecordsInput = {
   debts?: Prisma.DebtUncheckedUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutDebtsInput = {
@@ -1340,6 +1422,8 @@ export type OrganizationCreateWithoutDebtsInput = {
   records?: Prisma.RecordCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutDebtsInput = {
@@ -1366,6 +1450,8 @@ export type OrganizationUncheckedCreateWithoutDebtsInput = {
   records?: Prisma.RecordUncheckedCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutDebtsInput = {
@@ -1408,6 +1494,8 @@ export type OrganizationUpdateWithoutDebtsInput = {
   records?: Prisma.RecordUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutDebtsInput = {
@@ -1434,6 +1522,8 @@ export type OrganizationUncheckedUpdateWithoutDebtsInput = {
   records?: Prisma.RecordUncheckedUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutLabelsInput = {
@@ -1460,6 +1550,8 @@ export type OrganizationCreateWithoutLabelsInput = {
   debts?: Prisma.DebtCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutLabelsInput = {
@@ -1486,6 +1578,8 @@ export type OrganizationUncheckedCreateWithoutLabelsInput = {
   debts?: Prisma.DebtUncheckedCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutLabelsInput = {
@@ -1528,6 +1622,8 @@ export type OrganizationUpdateWithoutLabelsInput = {
   debts?: Prisma.DebtUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutLabelsInput = {
@@ -1554,6 +1650,8 @@ export type OrganizationUncheckedUpdateWithoutLabelsInput = {
   debts?: Prisma.DebtUncheckedUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutMembersInput = {
@@ -1580,6 +1678,8 @@ export type OrganizationCreateWithoutMembersInput = {
   debts?: Prisma.DebtCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutMembersInput = {
@@ -1606,6 +1706,8 @@ export type OrganizationUncheckedCreateWithoutMembersInput = {
   debts?: Prisma.DebtUncheckedCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutMembersInput = {
@@ -1648,6 +1750,8 @@ export type OrganizationUpdateWithoutMembersInput = {
   debts?: Prisma.DebtUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutMembersInput = {
@@ -1674,6 +1778,8 @@ export type OrganizationUncheckedUpdateWithoutMembersInput = {
   debts?: Prisma.DebtUncheckedUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutInvitationsInput = {
@@ -1700,6 +1806,8 @@ export type OrganizationCreateWithoutInvitationsInput = {
   debts?: Prisma.DebtCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutInvitationsInput = {
@@ -1726,6 +1834,8 @@ export type OrganizationUncheckedCreateWithoutInvitationsInput = {
   debts?: Prisma.DebtUncheckedCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutInvitationsInput = {
@@ -1768,6 +1878,8 @@ export type OrganizationUpdateWithoutInvitationsInput = {
   debts?: Prisma.DebtUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutInvitationsInput = {
@@ -1794,6 +1906,8 @@ export type OrganizationUncheckedUpdateWithoutInvitationsInput = {
   debts?: Prisma.DebtUncheckedUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutApiKeysInput = {
@@ -1820,6 +1934,8 @@ export type OrganizationCreateWithoutApiKeysInput = {
   debts?: Prisma.DebtCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutApiKeysInput = {
@@ -1846,6 +1962,8 @@ export type OrganizationUncheckedCreateWithoutApiKeysInput = {
   debts?: Prisma.DebtUncheckedCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutApiKeysInput = {
@@ -1888,6 +2006,8 @@ export type OrganizationUpdateWithoutApiKeysInput = {
   debts?: Prisma.DebtUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutApiKeysInput = {
@@ -1914,6 +2034,8 @@ export type OrganizationUncheckedUpdateWithoutApiKeysInput = {
   debts?: Prisma.DebtUncheckedUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutBudgetsInput = {
@@ -1940,6 +2062,8 @@ export type OrganizationCreateWithoutBudgetsInput = {
   records?: Prisma.RecordCreateNestedManyWithoutOrganizationInput
   debts?: Prisma.DebtCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutBudgetsInput = {
@@ -1966,6 +2090,8 @@ export type OrganizationUncheckedCreateWithoutBudgetsInput = {
   records?: Prisma.RecordUncheckedCreateNestedManyWithoutOrganizationInput
   debts?: Prisma.DebtUncheckedCreateNestedManyWithoutOrganizationInput
   recurrings?: Prisma.RecurringUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutBudgetsInput = {
@@ -2008,6 +2134,8 @@ export type OrganizationUpdateWithoutBudgetsInput = {
   records?: Prisma.RecordUpdateManyWithoutOrganizationNestedInput
   debts?: Prisma.DebtUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutBudgetsInput = {
@@ -2034,6 +2162,8 @@ export type OrganizationUncheckedUpdateWithoutBudgetsInput = {
   records?: Prisma.RecordUncheckedUpdateManyWithoutOrganizationNestedInput
   debts?: Prisma.DebtUncheckedUpdateManyWithoutOrganizationNestedInput
   recurrings?: Prisma.RecurringUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationCreateWithoutRecurringsInput = {
@@ -2060,6 +2190,8 @@ export type OrganizationCreateWithoutRecurringsInput = {
   records?: Prisma.RecordCreateNestedManyWithoutOrganizationInput
   debts?: Prisma.DebtCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationUncheckedCreateWithoutRecurringsInput = {
@@ -2086,6 +2218,8 @@ export type OrganizationUncheckedCreateWithoutRecurringsInput = {
   records?: Prisma.RecordUncheckedCreateNestedManyWithoutOrganizationInput
   debts?: Prisma.DebtUncheckedCreateNestedManyWithoutOrganizationInput
   budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutOrganizationInput
 }
 
 export type OrganizationCreateOrConnectWithoutRecurringsInput = {
@@ -2128,6 +2262,8 @@ export type OrganizationUpdateWithoutRecurringsInput = {
   records?: Prisma.RecordUpdateManyWithoutOrganizationNestedInput
   debts?: Prisma.DebtUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutOrganizationNestedInput
 }
 
 export type OrganizationUncheckedUpdateWithoutRecurringsInput = {
@@ -2154,6 +2290,264 @@ export type OrganizationUncheckedUpdateWithoutRecurringsInput = {
   records?: Prisma.RecordUncheckedUpdateManyWithoutOrganizationNestedInput
   debts?: Prisma.DebtUncheckedUpdateManyWithoutOrganizationNestedInput
   budgets?: Prisma.BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutAssistantThreadsInput = {
+  id?: string
+  name: string
+  slug?: string | null
+  logo?: string | null
+  description?: string | null
+  metadata?: string | null
+  createdBy?: string | null
+  updatedBy?: string | null
+  deletedBy?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  invitations?: Prisma.InvitationCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.MemberCreateNestedManyWithoutOrganizationInput
+  apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
+  labels?: Prisma.LabelCreateNestedManyWithoutOrganizationInput
+  bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutOrganizationInput
+  categories?: Prisma.CategoryCreateNestedManyWithoutOrganizationInput
+  payees?: Prisma.PayeeCreateNestedManyWithoutOrganizationInput
+  envelopes?: Prisma.EnvelopeCreateNestedManyWithoutOrganizationInput
+  records?: Prisma.RecordCreateNestedManyWithoutOrganizationInput
+  debts?: Prisma.DebtCreateNestedManyWithoutOrganizationInput
+  budgets?: Prisma.BudgetCreateNestedManyWithoutOrganizationInput
+  recurrings?: Prisma.RecurringCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutAssistantThreadsInput = {
+  id?: string
+  name: string
+  slug?: string | null
+  logo?: string | null
+  description?: string | null
+  metadata?: string | null
+  createdBy?: string | null
+  updatedBy?: string | null
+  deletedBy?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.MemberUncheckedCreateNestedManyWithoutOrganizationInput
+  apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
+  labels?: Prisma.LabelUncheckedCreateNestedManyWithoutOrganizationInput
+  bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  payees?: Prisma.PayeeUncheckedCreateNestedManyWithoutOrganizationInput
+  envelopes?: Prisma.EnvelopeUncheckedCreateNestedManyWithoutOrganizationInput
+  records?: Prisma.RecordUncheckedCreateNestedManyWithoutOrganizationInput
+  debts?: Prisma.DebtUncheckedCreateNestedManyWithoutOrganizationInput
+  budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutOrganizationInput
+  recurrings?: Prisma.RecurringUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutAssistantThreadsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutAssistantThreadsInput, Prisma.OrganizationUncheckedCreateWithoutAssistantThreadsInput>
+}
+
+export type OrganizationUpsertWithoutAssistantThreadsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutAssistantThreadsInput, Prisma.OrganizationUncheckedUpdateWithoutAssistantThreadsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutAssistantThreadsInput, Prisma.OrganizationUncheckedCreateWithoutAssistantThreadsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutAssistantThreadsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutAssistantThreadsInput, Prisma.OrganizationUncheckedUpdateWithoutAssistantThreadsInput>
+}
+
+export type OrganizationUpdateWithoutAssistantThreadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  invitations?: Prisma.InvitationUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.MemberUpdateManyWithoutOrganizationNestedInput
+  apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
+  labels?: Prisma.LabelUpdateManyWithoutOrganizationNestedInput
+  bankAccounts?: Prisma.BankAccountUpdateManyWithoutOrganizationNestedInput
+  categories?: Prisma.CategoryUpdateManyWithoutOrganizationNestedInput
+  payees?: Prisma.PayeeUpdateManyWithoutOrganizationNestedInput
+  envelopes?: Prisma.EnvelopeUpdateManyWithoutOrganizationNestedInput
+  records?: Prisma.RecordUpdateManyWithoutOrganizationNestedInput
+  debts?: Prisma.DebtUpdateManyWithoutOrganizationNestedInput
+  budgets?: Prisma.BudgetUpdateManyWithoutOrganizationNestedInput
+  recurrings?: Prisma.RecurringUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutAssistantThreadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  invitations?: Prisma.InvitationUncheckedUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.MemberUncheckedUpdateManyWithoutOrganizationNestedInput
+  apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
+  labels?: Prisma.LabelUncheckedUpdateManyWithoutOrganizationNestedInput
+  bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  categories?: Prisma.CategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  payees?: Prisma.PayeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  envelopes?: Prisma.EnvelopeUncheckedUpdateManyWithoutOrganizationNestedInput
+  records?: Prisma.RecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  debts?: Prisma.DebtUncheckedUpdateManyWithoutOrganizationNestedInput
+  budgets?: Prisma.BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
+  recurrings?: Prisma.RecurringUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutAssistantProposalsInput = {
+  id?: string
+  name: string
+  slug?: string | null
+  logo?: string | null
+  description?: string | null
+  metadata?: string | null
+  createdBy?: string | null
+  updatedBy?: string | null
+  deletedBy?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  invitations?: Prisma.InvitationCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.MemberCreateNestedManyWithoutOrganizationInput
+  apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
+  labels?: Prisma.LabelCreateNestedManyWithoutOrganizationInput
+  bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutOrganizationInput
+  categories?: Prisma.CategoryCreateNestedManyWithoutOrganizationInput
+  payees?: Prisma.PayeeCreateNestedManyWithoutOrganizationInput
+  envelopes?: Prisma.EnvelopeCreateNestedManyWithoutOrganizationInput
+  records?: Prisma.RecordCreateNestedManyWithoutOrganizationInput
+  debts?: Prisma.DebtCreateNestedManyWithoutOrganizationInput
+  budgets?: Prisma.BudgetCreateNestedManyWithoutOrganizationInput
+  recurrings?: Prisma.RecurringCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutAssistantProposalsInput = {
+  id?: string
+  name: string
+  slug?: string | null
+  logo?: string | null
+  description?: string | null
+  metadata?: string | null
+  createdBy?: string | null
+  updatedBy?: string | null
+  deletedBy?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.MemberUncheckedCreateNestedManyWithoutOrganizationInput
+  apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
+  labels?: Prisma.LabelUncheckedCreateNestedManyWithoutOrganizationInput
+  bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  payees?: Prisma.PayeeUncheckedCreateNestedManyWithoutOrganizationInput
+  envelopes?: Prisma.EnvelopeUncheckedCreateNestedManyWithoutOrganizationInput
+  records?: Prisma.RecordUncheckedCreateNestedManyWithoutOrganizationInput
+  debts?: Prisma.DebtUncheckedCreateNestedManyWithoutOrganizationInput
+  budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutOrganizationInput
+  recurrings?: Prisma.RecurringUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutAssistantProposalsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutAssistantProposalsInput, Prisma.OrganizationUncheckedCreateWithoutAssistantProposalsInput>
+}
+
+export type OrganizationUpsertWithoutAssistantProposalsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutAssistantProposalsInput, Prisma.OrganizationUncheckedUpdateWithoutAssistantProposalsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutAssistantProposalsInput, Prisma.OrganizationUncheckedCreateWithoutAssistantProposalsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutAssistantProposalsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutAssistantProposalsInput, Prisma.OrganizationUncheckedUpdateWithoutAssistantProposalsInput>
+}
+
+export type OrganizationUpdateWithoutAssistantProposalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  invitations?: Prisma.InvitationUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.MemberUpdateManyWithoutOrganizationNestedInput
+  apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
+  labels?: Prisma.LabelUpdateManyWithoutOrganizationNestedInput
+  bankAccounts?: Prisma.BankAccountUpdateManyWithoutOrganizationNestedInput
+  categories?: Prisma.CategoryUpdateManyWithoutOrganizationNestedInput
+  payees?: Prisma.PayeeUpdateManyWithoutOrganizationNestedInput
+  envelopes?: Prisma.EnvelopeUpdateManyWithoutOrganizationNestedInput
+  records?: Prisma.RecordUpdateManyWithoutOrganizationNestedInput
+  debts?: Prisma.DebtUpdateManyWithoutOrganizationNestedInput
+  budgets?: Prisma.BudgetUpdateManyWithoutOrganizationNestedInput
+  recurrings?: Prisma.RecurringUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutAssistantProposalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  invitations?: Prisma.InvitationUncheckedUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.MemberUncheckedUpdateManyWithoutOrganizationNestedInput
+  apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
+  labels?: Prisma.LabelUncheckedUpdateManyWithoutOrganizationNestedInput
+  bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  categories?: Prisma.CategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  payees?: Prisma.PayeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  envelopes?: Prisma.EnvelopeUncheckedUpdateManyWithoutOrganizationNestedInput
+  records?: Prisma.RecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  debts?: Prisma.DebtUncheckedUpdateManyWithoutOrganizationNestedInput
+  budgets?: Prisma.BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
+  recurrings?: Prisma.RecurringUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutOrganizationNestedInput
 }
 
 
@@ -2174,6 +2568,8 @@ export type OrganizationCountOutputType = {
   debts: number
   budgets: number
   recurrings: number
+  assistantThreads: number
+  assistantProposals: number
 }
 
 export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2189,6 +2585,8 @@ export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Exte
   debts?: boolean | OrganizationCountOutputTypeCountDebtsArgs
   budgets?: boolean | OrganizationCountOutputTypeCountBudgetsArgs
   recurrings?: boolean | OrganizationCountOutputTypeCountRecurringsArgs
+  assistantThreads?: boolean | OrganizationCountOutputTypeCountAssistantThreadsArgs
+  assistantProposals?: boolean | OrganizationCountOutputTypeCountAssistantProposalsArgs
 }
 
 /**
@@ -2285,6 +2683,20 @@ export type OrganizationCountOutputTypeCountRecurringsArgs<ExtArgs extends runti
   where?: Prisma.RecurringWhereInput
 }
 
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountAssistantThreadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AssistantThreadWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountAssistantProposalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AssistantProposalWhereInput
+}
+
 
 export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2311,6 +2723,8 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   debts?: boolean | Prisma.Organization$debtsArgs<ExtArgs>
   budgets?: boolean | Prisma.Organization$budgetsArgs<ExtArgs>
   recurrings?: boolean | Prisma.Organization$recurringsArgs<ExtArgs>
+  assistantThreads?: boolean | Prisma.Organization$assistantThreadsArgs<ExtArgs>
+  assistantProposals?: boolean | Prisma.Organization$assistantProposalsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["organization"]>
 
@@ -2373,6 +2787,8 @@ export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   debts?: boolean | Prisma.Organization$debtsArgs<ExtArgs>
   budgets?: boolean | Prisma.Organization$budgetsArgs<ExtArgs>
   recurrings?: boolean | Prisma.Organization$recurringsArgs<ExtArgs>
+  assistantThreads?: boolean | Prisma.Organization$assistantThreadsArgs<ExtArgs>
+  assistantProposals?: boolean | Prisma.Organization$assistantProposalsArgs<ExtArgs>
   _count?: boolean | Prisma.OrganizationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -2393,6 +2809,8 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     debts: Prisma.$DebtPayload<ExtArgs>[]
     budgets: Prisma.$BudgetPayload<ExtArgs>[]
     recurrings: Prisma.$RecurringPayload<ExtArgs>[]
+    assistantThreads: Prisma.$AssistantThreadPayload<ExtArgs>[]
+    assistantProposals: Prisma.$AssistantProposalPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2813,6 +3231,8 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   debts<T extends Prisma.Organization$debtsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$debtsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DebtPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   budgets<T extends Prisma.Organization$budgetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$budgetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BudgetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   recurrings<T extends Prisma.Organization$recurringsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$recurringsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RecurringPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assistantThreads<T extends Prisma.Organization$assistantThreadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$assistantThreadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssistantThreadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assistantProposals<T extends Prisma.Organization$assistantProposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$assistantProposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssistantProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3532,6 +3952,54 @@ export type Organization$recurringsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.RecurringScalarFieldEnum | Prisma.RecurringScalarFieldEnum[]
+}
+
+/**
+ * Organization.assistantThreads
+ */
+export type Organization$assistantThreadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AssistantThread
+   */
+  select?: Prisma.AssistantThreadSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AssistantThread
+   */
+  omit?: Prisma.AssistantThreadOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssistantThreadInclude<ExtArgs> | null
+  where?: Prisma.AssistantThreadWhereInput
+  orderBy?: Prisma.AssistantThreadOrderByWithRelationInput | Prisma.AssistantThreadOrderByWithRelationInput[]
+  cursor?: Prisma.AssistantThreadWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AssistantThreadScalarFieldEnum | Prisma.AssistantThreadScalarFieldEnum[]
+}
+
+/**
+ * Organization.assistantProposals
+ */
+export type Organization$assistantProposalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AssistantProposal
+   */
+  select?: Prisma.AssistantProposalSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AssistantProposal
+   */
+  omit?: Prisma.AssistantProposalOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssistantProposalInclude<ExtArgs> | null
+  where?: Prisma.AssistantProposalWhereInput
+  orderBy?: Prisma.AssistantProposalOrderByWithRelationInput | Prisma.AssistantProposalOrderByWithRelationInput[]
+  cursor?: Prisma.AssistantProposalWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AssistantProposalScalarFieldEnum | Prisma.AssistantProposalScalarFieldEnum[]
 }
 
 /**

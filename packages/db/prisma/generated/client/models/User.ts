@@ -270,6 +270,8 @@ export type UserWhereInput = {
   createdApiKeys?: Prisma.ApiKeyListRelationFilter
   twoFactors?: Prisma.TwoFactorListRelationFilter
   bankAccounts?: Prisma.BankAccountListRelationFilter
+  assistantThreads?: Prisma.AssistantThreadListRelationFilter
+  assistantProposals?: Prisma.AssistantProposalListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -296,6 +298,8 @@ export type UserOrderByWithRelationInput = {
   createdApiKeys?: Prisma.ApiKeyOrderByRelationAggregateInput
   twoFactors?: Prisma.TwoFactorOrderByRelationAggregateInput
   bankAccounts?: Prisma.BankAccountOrderByRelationAggregateInput
+  assistantThreads?: Prisma.AssistantThreadOrderByRelationAggregateInput
+  assistantProposals?: Prisma.AssistantProposalOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -325,6 +329,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdApiKeys?: Prisma.ApiKeyListRelationFilter
   twoFactors?: Prisma.TwoFactorListRelationFilter
   bankAccounts?: Prisma.BankAccountListRelationFilter
+  assistantThreads?: Prisma.AssistantThreadListRelationFilter
+  assistantProposals?: Prisma.AssistantProposalListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -393,6 +399,8 @@ export type UserCreateInput = {
   createdApiKeys?: Prisma.ApiKeyCreateNestedManyWithoutCreatedByInput
   twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -419,6 +427,8 @@ export type UserUncheckedCreateInput = {
   createdApiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -445,6 +455,8 @@ export type UserUpdateInput = {
   createdApiKeys?: Prisma.ApiKeyUpdateManyWithoutCreatedByNestedInput
   twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -471,6 +483,8 @@ export type UserUncheckedUpdateInput = {
   createdApiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -736,6 +750,34 @@ export type UserUpdateOneRequiredWithoutTwoFactorsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTwoFactorsInput, Prisma.UserUpdateWithoutTwoFactorsInput>, Prisma.UserUncheckedUpdateWithoutTwoFactorsInput>
 }
 
+export type UserCreateNestedOneWithoutAssistantThreadsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAssistantThreadsInput, Prisma.UserUncheckedCreateWithoutAssistantThreadsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssistantThreadsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAssistantThreadsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAssistantThreadsInput, Prisma.UserUncheckedCreateWithoutAssistantThreadsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssistantThreadsInput
+  upsert?: Prisma.UserUpsertWithoutAssistantThreadsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAssistantThreadsInput, Prisma.UserUpdateWithoutAssistantThreadsInput>, Prisma.UserUncheckedUpdateWithoutAssistantThreadsInput>
+}
+
+export type UserCreateNestedOneWithoutAssistantProposalsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAssistantProposalsInput, Prisma.UserUncheckedCreateWithoutAssistantProposalsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssistantProposalsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAssistantProposalsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAssistantProposalsInput, Prisma.UserUncheckedCreateWithoutAssistantProposalsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssistantProposalsInput
+  upsert?: Prisma.UserUpsertWithoutAssistantProposalsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAssistantProposalsInput, Prisma.UserUpdateWithoutAssistantProposalsInput>, Prisma.UserUncheckedUpdateWithoutAssistantProposalsInput>
+}
+
 export type UserCreateWithoutRolesInput = {
   id?: string
   email: string
@@ -759,6 +801,8 @@ export type UserCreateWithoutRolesInput = {
   createdApiKeys?: Prisma.ApiKeyCreateNestedManyWithoutCreatedByInput
   twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRolesInput = {
@@ -784,6 +828,8 @@ export type UserUncheckedCreateWithoutRolesInput = {
   createdApiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRolesInput = {
@@ -851,6 +897,8 @@ export type UserCreateWithoutSessionsInput = {
   createdApiKeys?: Prisma.ApiKeyCreateNestedManyWithoutCreatedByInput
   twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -876,6 +924,8 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   createdApiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -917,6 +967,8 @@ export type UserUpdateWithoutSessionsInput = {
   createdApiKeys?: Prisma.ApiKeyUpdateManyWithoutCreatedByNestedInput
   twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -942,6 +994,8 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   createdApiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -967,6 +1021,8 @@ export type UserCreateWithoutAccountsInput = {
   createdApiKeys?: Prisma.ApiKeyCreateNestedManyWithoutCreatedByInput
   twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -992,6 +1048,8 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   createdApiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -1033,6 +1091,8 @@ export type UserUpdateWithoutAccountsInput = {
   createdApiKeys?: Prisma.ApiKeyUpdateManyWithoutCreatedByNestedInput
   twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -1058,6 +1118,8 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   createdApiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutBankAccountsInput = {
@@ -1083,6 +1145,8 @@ export type UserCreateWithoutBankAccountsInput = {
   roles?: Prisma.RoleCreateNestedManyWithoutUsersInput
   createdApiKeys?: Prisma.ApiKeyCreateNestedManyWithoutCreatedByInput
   twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutBankAccountsInput = {
@@ -1108,6 +1172,8 @@ export type UserUncheckedCreateWithoutBankAccountsInput = {
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutUsersInput
   createdApiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutBankAccountsInput = {
@@ -1149,6 +1215,8 @@ export type UserUpdateWithoutBankAccountsInput = {
   roles?: Prisma.RoleUpdateManyWithoutUsersNestedInput
   createdApiKeys?: Prisma.ApiKeyUpdateManyWithoutCreatedByNestedInput
   twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBankAccountsInput = {
@@ -1174,6 +1242,8 @@ export type UserUncheckedUpdateWithoutBankAccountsInput = {
   roles?: Prisma.RoleUncheckedUpdateManyWithoutUsersNestedInput
   createdApiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMembershipsInput = {
@@ -1199,6 +1269,8 @@ export type UserCreateWithoutMembershipsInput = {
   createdApiKeys?: Prisma.ApiKeyCreateNestedManyWithoutCreatedByInput
   twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -1224,6 +1296,8 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   createdApiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -1265,6 +1339,8 @@ export type UserUpdateWithoutMembershipsInput = {
   createdApiKeys?: Prisma.ApiKeyUpdateManyWithoutCreatedByNestedInput
   twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -1290,6 +1366,8 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   createdApiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSentInvitationsInput = {
@@ -1315,6 +1393,8 @@ export type UserCreateWithoutSentInvitationsInput = {
   createdApiKeys?: Prisma.ApiKeyCreateNestedManyWithoutCreatedByInput
   twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSentInvitationsInput = {
@@ -1340,6 +1420,8 @@ export type UserUncheckedCreateWithoutSentInvitationsInput = {
   createdApiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSentInvitationsInput = {
@@ -1381,6 +1463,8 @@ export type UserUpdateWithoutSentInvitationsInput = {
   createdApiKeys?: Prisma.ApiKeyUpdateManyWithoutCreatedByNestedInput
   twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSentInvitationsInput = {
@@ -1406,6 +1490,8 @@ export type UserUncheckedUpdateWithoutSentInvitationsInput = {
   createdApiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedApiKeysInput = {
@@ -1431,6 +1517,8 @@ export type UserCreateWithoutCreatedApiKeysInput = {
   roles?: Prisma.RoleCreateNestedManyWithoutUsersInput
   twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedApiKeysInput = {
@@ -1456,6 +1544,8 @@ export type UserUncheckedCreateWithoutCreatedApiKeysInput = {
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutUsersInput
   twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedApiKeysInput = {
@@ -1497,6 +1587,8 @@ export type UserUpdateWithoutCreatedApiKeysInput = {
   roles?: Prisma.RoleUpdateManyWithoutUsersNestedInput
   twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedApiKeysInput = {
@@ -1522,6 +1614,8 @@ export type UserUncheckedUpdateWithoutCreatedApiKeysInput = {
   roles?: Prisma.RoleUncheckedUpdateManyWithoutUsersNestedInput
   twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTwoFactorsInput = {
@@ -1547,6 +1641,8 @@ export type UserCreateWithoutTwoFactorsInput = {
   roles?: Prisma.RoleCreateNestedManyWithoutUsersInput
   createdApiKeys?: Prisma.ApiKeyCreateNestedManyWithoutCreatedByInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTwoFactorsInput = {
@@ -1572,6 +1668,8 @@ export type UserUncheckedCreateWithoutTwoFactorsInput = {
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutUsersInput
   createdApiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTwoFactorsInput = {
@@ -1613,6 +1711,8 @@ export type UserUpdateWithoutTwoFactorsInput = {
   roles?: Prisma.RoleUpdateManyWithoutUsersNestedInput
   createdApiKeys?: Prisma.ApiKeyUpdateManyWithoutCreatedByNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTwoFactorsInput = {
@@ -1638,6 +1738,256 @@ export type UserUncheckedUpdateWithoutTwoFactorsInput = {
   roles?: Prisma.RoleUncheckedUpdateManyWithoutUsersNestedInput
   createdApiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutAssistantThreadsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  firstName?: string | null
+  middleName?: string | null
+  lastName?: string | null
+  lastName2?: string | null
+  isOnboarded?: boolean
+  emailVerified?: boolean
+  pwdReset?: boolean
+  image?: string | null
+  twoFactorEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sentInvitations?: Prisma.InvitationCreateNestedManyWithoutInviterInput
+  memberships?: Prisma.MemberCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  roles?: Prisma.RoleCreateNestedManyWithoutUsersInput
+  createdApiKeys?: Prisma.ApiKeyCreateNestedManyWithoutCreatedByInput
+  twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
+  bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAssistantThreadsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  firstName?: string | null
+  middleName?: string | null
+  lastName?: string | null
+  lastName2?: string | null
+  isOnboarded?: boolean
+  emailVerified?: boolean
+  pwdReset?: boolean
+  image?: string | null
+  twoFactorEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sentInvitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutInviterInput
+  memberships?: Prisma.MemberUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutUsersInput
+  createdApiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
+  twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
+  bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAssistantThreadsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAssistantThreadsInput, Prisma.UserUncheckedCreateWithoutAssistantThreadsInput>
+}
+
+export type UserUpsertWithoutAssistantThreadsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAssistantThreadsInput, Prisma.UserUncheckedUpdateWithoutAssistantThreadsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAssistantThreadsInput, Prisma.UserUncheckedCreateWithoutAssistantThreadsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAssistantThreadsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAssistantThreadsInput, Prisma.UserUncheckedUpdateWithoutAssistantThreadsInput>
+}
+
+export type UserUpdateWithoutAssistantThreadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnboarded?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pwdReset?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sentInvitations?: Prisma.InvitationUpdateManyWithoutInviterNestedInput
+  memberships?: Prisma.MemberUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutUsersNestedInput
+  createdApiKeys?: Prisma.ApiKeyUpdateManyWithoutCreatedByNestedInput
+  twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
+  bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAssistantThreadsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnboarded?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pwdReset?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sentInvitations?: Prisma.InvitationUncheckedUpdateManyWithoutInviterNestedInput
+  memberships?: Prisma.MemberUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutUsersNestedInput
+  createdApiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
+  twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
+  bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutAssistantProposalsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  firstName?: string | null
+  middleName?: string | null
+  lastName?: string | null
+  lastName2?: string | null
+  isOnboarded?: boolean
+  emailVerified?: boolean
+  pwdReset?: boolean
+  image?: string | null
+  twoFactorEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sentInvitations?: Prisma.InvitationCreateNestedManyWithoutInviterInput
+  memberships?: Prisma.MemberCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  roles?: Prisma.RoleCreateNestedManyWithoutUsersInput
+  createdApiKeys?: Prisma.ApiKeyCreateNestedManyWithoutCreatedByInput
+  twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
+  bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAssistantProposalsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  firstName?: string | null
+  middleName?: string | null
+  lastName?: string | null
+  lastName2?: string | null
+  isOnboarded?: boolean
+  emailVerified?: boolean
+  pwdReset?: boolean
+  image?: string | null
+  twoFactorEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sentInvitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutInviterInput
+  memberships?: Prisma.MemberUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutUsersInput
+  createdApiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
+  twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
+  bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAssistantProposalsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAssistantProposalsInput, Prisma.UserUncheckedCreateWithoutAssistantProposalsInput>
+}
+
+export type UserUpsertWithoutAssistantProposalsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAssistantProposalsInput, Prisma.UserUncheckedUpdateWithoutAssistantProposalsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAssistantProposalsInput, Prisma.UserUncheckedCreateWithoutAssistantProposalsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAssistantProposalsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAssistantProposalsInput, Prisma.UserUncheckedUpdateWithoutAssistantProposalsInput>
+}
+
+export type UserUpdateWithoutAssistantProposalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnboarded?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pwdReset?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sentInvitations?: Prisma.InvitationUpdateManyWithoutInviterNestedInput
+  memberships?: Prisma.MemberUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutUsersNestedInput
+  createdApiKeys?: Prisma.ApiKeyUpdateManyWithoutCreatedByNestedInput
+  twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
+  bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAssistantProposalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnboarded?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pwdReset?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sentInvitations?: Prisma.InvitationUncheckedUpdateManyWithoutInviterNestedInput
+  memberships?: Prisma.MemberUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutUsersNestedInput
+  createdApiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
+  twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
+  bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpdateWithoutRolesInput = {
@@ -1663,6 +2013,8 @@ export type UserUpdateWithoutRolesInput = {
   createdApiKeys?: Prisma.ApiKeyUpdateManyWithoutCreatedByNestedInput
   twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRolesInput = {
@@ -1688,6 +2040,8 @@ export type UserUncheckedUpdateWithoutRolesInput = {
   createdApiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutRolesInput = {
@@ -1722,6 +2076,8 @@ export type UserCountOutputType = {
   createdApiKeys: number
   twoFactors: number
   bankAccounts: number
+  assistantThreads: number
+  assistantProposals: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1733,6 +2089,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   createdApiKeys?: boolean | UserCountOutputTypeCountCreatedApiKeysArgs
   twoFactors?: boolean | UserCountOutputTypeCountTwoFactorsArgs
   bankAccounts?: boolean | UserCountOutputTypeCountBankAccountsArgs
+  assistantThreads?: boolean | UserCountOutputTypeCountAssistantThreadsArgs
+  assistantProposals?: boolean | UserCountOutputTypeCountAssistantProposalsArgs
 }
 
 /**
@@ -1801,6 +2159,20 @@ export type UserCountOutputTypeCountBankAccountsArgs<ExtArgs extends runtime.Typ
   where?: Prisma.BankAccountWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAssistantThreadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AssistantThreadWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAssistantProposalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AssistantProposalWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1826,6 +2198,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdApiKeys?: boolean | Prisma.User$createdApiKeysArgs<ExtArgs>
   twoFactors?: boolean | Prisma.User$twoFactorsArgs<ExtArgs>
   bankAccounts?: boolean | Prisma.User$bankAccountsArgs<ExtArgs>
+  assistantThreads?: boolean | Prisma.User$assistantThreadsArgs<ExtArgs>
+  assistantProposals?: boolean | Prisma.User$assistantProposalsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1893,6 +2267,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   createdApiKeys?: boolean | Prisma.User$createdApiKeysArgs<ExtArgs>
   twoFactors?: boolean | Prisma.User$twoFactorsArgs<ExtArgs>
   bankAccounts?: boolean | Prisma.User$bankAccountsArgs<ExtArgs>
+  assistantThreads?: boolean | Prisma.User$assistantThreadsArgs<ExtArgs>
+  assistantProposals?: boolean | Prisma.User$assistantProposalsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1909,6 +2285,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     createdApiKeys: Prisma.$ApiKeyPayload<ExtArgs>[]
     twoFactors: Prisma.$TwoFactorPayload<ExtArgs>[]
     bankAccounts: Prisma.$BankAccountPayload<ExtArgs>[]
+    assistantThreads: Prisma.$AssistantThreadPayload<ExtArgs>[]
+    assistantProposals: Prisma.$AssistantProposalPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2328,6 +2706,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   createdApiKeys<T extends Prisma.User$createdApiKeysArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdApiKeysArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   twoFactors<T extends Prisma.User$twoFactorsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$twoFactorsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TwoFactorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   bankAccounts<T extends Prisma.User$bankAccountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$bankAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BankAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assistantThreads<T extends Prisma.User$assistantThreadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$assistantThreadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssistantThreadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assistantProposals<T extends Prisma.User$assistantProposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$assistantProposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssistantProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2954,6 +3334,54 @@ export type User$bankAccountsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.BankAccountScalarFieldEnum | Prisma.BankAccountScalarFieldEnum[]
+}
+
+/**
+ * User.assistantThreads
+ */
+export type User$assistantThreadsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AssistantThread
+   */
+  select?: Prisma.AssistantThreadSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AssistantThread
+   */
+  omit?: Prisma.AssistantThreadOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssistantThreadInclude<ExtArgs> | null
+  where?: Prisma.AssistantThreadWhereInput
+  orderBy?: Prisma.AssistantThreadOrderByWithRelationInput | Prisma.AssistantThreadOrderByWithRelationInput[]
+  cursor?: Prisma.AssistantThreadWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AssistantThreadScalarFieldEnum | Prisma.AssistantThreadScalarFieldEnum[]
+}
+
+/**
+ * User.assistantProposals
+ */
+export type User$assistantProposalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AssistantProposal
+   */
+  select?: Prisma.AssistantProposalSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AssistantProposal
+   */
+  omit?: Prisma.AssistantProposalOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssistantProposalInclude<ExtArgs> | null
+  where?: Prisma.AssistantProposalWhereInput
+  orderBy?: Prisma.AssistantProposalOrderByWithRelationInput | Prisma.AssistantProposalOrderByWithRelationInput[]
+  cursor?: Prisma.AssistantProposalWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AssistantProposalScalarFieldEnum | Prisma.AssistantProposalScalarFieldEnum[]
 }
 
 /**

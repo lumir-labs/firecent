@@ -16,6 +16,16 @@ const filterInput = z.object({
     .string()
     .regex(/^\d{4}-(0[1-9]|1[0-2])$/)
     .nullish(),
+  /** Inclusive start date "YYYY-MM-DD" */
+  fromDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .nullish(),
+  /** Inclusive end date "YYYY-MM-DD" */
+  toDate: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .nullish(),
   type: z.enum(["EXPENSE", "INCOME", "TRANSFER"]).nullish(),
   natures: z.array(natureEnum).nullish(),
   accountId: z.number().int().positive().nullish(),
@@ -137,6 +147,16 @@ function monthBounds(month: string) {
   };
 }
 
+function parseUtcDate(iso: string) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d));
+}
+
+function nextUtcDay(iso: string) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d + 1));
+}
+
 async function buildWhere(
   orgId: string,
   input: z.infer<typeof filterInput>,
@@ -163,16 +183,26 @@ async function buildWhere(
   }
 
   // Transfer deduplication (D6): when not viewing a single account, hide the
-  // positive entry half of transfers so each transfer appears once (the exit).
+  // positive entry half of PAIRED transfers so each transfer appears once.
+  // Unmatched incoming transfers (transferGroupId: null) remain visible.
   if (!singleAccountMode) {
     and.push({
       NOT: {
-        AND: [{ transfer: true }, { amount: { gt: 0 } }],
+        AND: [
+          { transfer: true },
+          { amount: { gt: 0 } },
+          { transferGroupId: { not: null } },
+        ],
       },
     });
   }
 
-  if (input.month) {
+  if (input.fromDate || input.toDate) {
+    const dateFilter: Prisma.DateTimeNullableFilter = {};
+    if (input.fromDate) dateFilter.gte = parseUtcDate(input.fromDate);
+    if (input.toDate) dateFilter.lt = nextUtcDay(input.toDate);
+    and.push({ recordDate: dateFilter });
+  } else if (input.month) {
     const { start, end } = monthBounds(input.month);
     and.push({ recordDate: { gte: start, lt: end } });
   }
@@ -314,15 +344,9 @@ export const recordsRouter = router({
       const orgId = requireOrg(ctx.orgId);
       const offset = input.cursor ?? 0;
 
-      const { where, singleAccountMode } = await buildWhere(orgId, input);
-      const withBalance =
-        singleAccountMode &&
-        !input.categoryId &&
-        !input.search &&
-        !input.type &&
-        !(input.natures && input.natures.length > 0);
+      const { where } = await buildWhere(orgId, input);
 
-      const [rows, total, accountSum, newer, members] = await Promise.all([
+      const [rows, total, members] = await Promise.all([
         db.record.findMany({
           where,
           orderBy: [...listOrder],
@@ -331,22 +355,45 @@ export const recordsRouter = router({
           select: recordSelect,
         }),
         offset === 0 ? db.record.count({ where }) : Promise.resolve(null),
-        withBalance
-          ? db.record.aggregate({ where, _sum: { amount: true } })
-          : Promise.resolve(null),
-        withBalance && offset > 0
-          ? db.record.findMany({
-              where,
-              orderBy: [...listOrder],
-              take: offset,
-              select: { amount: true },
-            })
-          : Promise.resolve([] as { amount: number }[]),
         db.member.findMany({
           where: { organizationId: orgId },
           select: { user: { select: { id: true, name: true, email: true } } },
         }),
       ]);
+
+      const hasMore = rows.length > input.limit;
+      const pageRows = rows.slice(0, input.limit);
+
+      // Compute exact historical per-account running balance after each record
+      // on this page across all non-deleted records of those accounts.
+      const balanceById = new Map<number, number>();
+      if (pageRows.length > 0) {
+        const recordIds = pageRows.map((r) => r.id);
+        const accountIds = [...new Set(pageRows.map((r) => r.account.id))];
+        const balanceRows = await db.$queryRaw<
+          { id: number; running_balance: bigint | number | string }[]
+        >`
+          WITH ranked AS (
+            SELECT
+              id,
+              SUM(amount) OVER (
+                PARTITION BY "accountId"
+                ORDER BY "recordDate" ASC NULLS FIRST, "recordTime" ASC NULLS FIRST, id ASC
+                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+              ) AS running_balance
+            FROM "Record"
+            WHERE "organizationId" = ${orgId}::uuid
+              AND "deletedAt" IS NULL
+              AND "accountId" = ANY(${accountIds}::int[])
+          )
+          SELECT id, running_balance
+          FROM ranked
+          WHERE id = ANY(${recordIds}::int[])
+        `;
+        for (const row of balanceRows) {
+          balanceById.set(row.id, Number(row.running_balance) / MINOR_UNIT);
+        }
+      }
 
       const userMap = new Map<string, { name: string; initial: string }>();
       for (const m of members) {
@@ -357,14 +404,8 @@ export const recordsRouter = router({
         });
       }
 
-      const hasMore = rows.length > input.limit;
-      let running =
-        (accountSum?._sum.amount ?? 0) -
-        newer.reduce((sum, r) => sum + r.amount, 0);
-
-      const items = rows.slice(0, input.limit).map((r) => {
-        const balance = withBalance ? running / MINOR_UNIT : null;
-        running -= r.amount;
+      const items = pageRows.map((r) => {
+        const balance = balanceById.get(r.id) ?? null;
         const effectiveNature =
           r.type === "EXPENSE" && !r.transfer
             ? (r.spendingNature ?? r.category?.spendingNature ?? null)

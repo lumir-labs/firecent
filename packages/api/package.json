@@ -10,13 +10,16 @@
     "./server": "./src/server.ts",
     "./permissions": "./src/permissions.ts",
     "./roles": "./src/roles.ts",
-    "./constants": "./src/api-keys/constants.ts"
+    "./constants": "./src/api-keys/constants.ts",
+    "./assistant-types": "./src/assistant/types.ts",
+    "./assistant": "./src/assistant/orchestrator.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@app/db": "workspace:*",
+    "@app/env": "workspace:*",
     "@trpc/client": "^11.18.0",
     "@trpc/react-query": "^11.18.0",
     "@trpc/server": "^11.18.0",

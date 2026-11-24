@@ -74,7 +74,10 @@ export const ModelName = {
   BudgetNature: 'BudgetNature',
   BudgetCategory: 'BudgetCategory',
   Recurring: 'Recurring',
-  RecurringOccurrence: 'RecurringOccurrence'
+  RecurringOccurrence: 'RecurringOccurrence',
+  AssistantThread: 'AssistantThread',
+  AssistantMessage: 'AssistantMessage',
+  AssistantProposal: 'AssistantProposal'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -519,12 +522,76 @@ export const RecurringOccurrenceScalarFieldEnum = {
 export type RecurringOccurrenceScalarFieldEnum = (typeof RecurringOccurrenceScalarFieldEnum)[keyof typeof RecurringOccurrenceScalarFieldEnum]
 
 
+export const AssistantThreadScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  userId: 'userId',
+  title: 'title',
+  activeAccountId: 'activeAccountId',
+  contextJson: 'contextJson',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type AssistantThreadScalarFieldEnum = (typeof AssistantThreadScalarFieldEnum)[keyof typeof AssistantThreadScalarFieldEnum]
+
+
+export const AssistantMessageScalarFieldEnum = {
+  id: 'id',
+  threadId: 'threadId',
+  role: 'role',
+  content: 'content',
+  attachments: 'attachments',
+  uiBlocks: 'uiBlocks',
+  tokenUsage: 'tokenUsage',
+  createdAt: 'createdAt'
+} as const
+
+export type AssistantMessageScalarFieldEnum = (typeof AssistantMessageScalarFieldEnum)[keyof typeof AssistantMessageScalarFieldEnum]
+
+
+export const AssistantProposalScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  userId: 'userId',
+  threadId: 'threadId',
+  messageId: 'messageId',
+  kind: 'kind',
+  status: 'status',
+  accountId: 'accountId',
+  title: 'title',
+  payload: 'payload',
+  appliedRecordIds: 'appliedRecordIds',
+  appliedAt: 'appliedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AssistantProposalScalarFieldEnum = (typeof AssistantProposalScalarFieldEnum)[keyof typeof AssistantProposalScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -541,4 +608,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

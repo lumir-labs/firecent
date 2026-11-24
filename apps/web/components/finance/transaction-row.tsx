@@ -36,8 +36,10 @@ export type TransactionRowProps = {
   tags?: ReactNode;
   /** Amount in the base currency, second line `≈ −$56.85`. */
   converted?: { value: number; currency: string };
-  /** Second line under the amount when not converted (time, "Pending"). */
+  /** Second line under the amount when not converted (time, "Pending", running balance). */
   secondary?: string;
+  /** Tooltip/title for the secondary line under the amount. */
+  secondaryTitle?: string;
   /** Excluded from totals: struck title, muted. */
   excluded?: boolean;
   href?: string;
@@ -64,6 +66,7 @@ export function TransactionRow({
   tags,
   converted,
   secondary,
+  secondaryTitle,
   excluded,
   href,
   onClick,
@@ -125,7 +128,12 @@ export function TransactionRow({
           className={cn(excluded && "text-muted-foreground line-through")}
         />
         {!converted && secondary && (
-          <span className="block text-[12px] text-muted-foreground">{secondary}</span>
+          <span
+            title={secondaryTitle}
+            className="num block text-[12px] text-muted-foreground"
+          >
+            {secondary}
+          </span>
         )}
       </span>
     </>

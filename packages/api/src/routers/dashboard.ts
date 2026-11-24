@@ -379,7 +379,13 @@ export const dashboardRouter = router({
           where: {
             organizationId: orgId,
             deletedAt: null,
-            NOT: { AND: [{ transfer: true }, { amount: { gt: 0 } }] },
+            NOT: {
+              AND: [
+                { transfer: true },
+                { amount: { gt: 0 } },
+                { transferGroupId: { not: null } },
+              ],
+            },
           },
           orderBy: [
             { recordDate: { sort: "desc", nulls: "last" } },

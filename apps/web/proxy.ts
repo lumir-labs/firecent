@@ -41,6 +41,7 @@ export async function proxy(request: NextRequest) {
   // "Document could not be loaded".
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isTrpcRoute = nextUrl.pathname.startsWith("/api/trpc");
+  const isAssistantRoute = nextUrl.pathname.startsWith("/api/assistant");
   const isInfoRoute = nextUrl.pathname.startsWith("/api/v1/info");
   const isWaitlistRoute = nextUrl.pathname.startsWith("/api/v1/waitlist");
   const isMcpRoute = nextUrl.pathname.startsWith("/api/mcp");
@@ -60,7 +61,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (isTrpcRoute) {
+  if (isTrpcRoute || isAssistantRoute) {
     const session = await getServerSession();
     if (session) return NextResponse.next();
     return NextResponse.json(

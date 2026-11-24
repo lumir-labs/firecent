@@ -1,12 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { keepPreviousData } from "@tanstack/react-query";
 import {
-  ChevronLeft,
-  ChevronRight,
   Download,
   Plus,
   Receipt,
@@ -18,56 +16,34 @@ import {
 import { trpc } from "@app/api/client";
 
 import {
-  CategoryIcon,
-  DayHeader,
-  Money,
   PageHeader,
   StateBlock,
-  TransactionRow,
   TransactionRowSkeleton,
   localizeCategoryName,
 } from "@/components/finance";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { ResponsiveSheet } from "@/components/ui/responsive-sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { firecentToast } from "@/components/ui/sonner";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Toggle } from "@/components/ui/toggle";
 import { cn } from "@/lib/utils";
 import { useShell } from "../../_components/shell/shell-context";
+import {
+  DatePeriodBar,
+  currentMonthStr,
+  parsePeriodFromParams,
+  periodExportSlug,
+  resolvePeriodQuery,
+  type DatePeriod,
+} from "./date-period-bar";
 import { TransactionDetailSheet } from "./transaction-detail-sheet";
+import { VirtualizedTransactions } from "./virtualized-transactions";
 
 type ChipKey = "all" | "EXPENSE" | "INCOME" | "TRANSFER";
 
-function currentMonthStr() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-}
-
-function shiftMonth(ym: string, delta: number) {
-  const [y, m] = ym.split("-").map(Number);
-  const d = new Date(Date.UTC(y, m - 1 + delta, 1));
-  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
-}
-
-function formatMonthLabel(ym: string) {
-  const [y, m] = ym.split("-").map(Number);
-  return new Date(Date.UTC(y, m - 1, 1)).toLocaleString(undefined, {
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
-  });
-}
+const PAGE_SIZE = 100;
 
 export function TransactionsView() {
   const locale = useLocale();
@@ -78,10 +54,10 @@ export function TransactionsView() {
   const utils = trpc.useUtils();
 
   // Client-side filter state initialized from URL; synced silently with
-  // history.replaceState so changing month/chips/search NEVER triggers a full
+  // history.replaceState so changing period/chips/search NEVER triggers a full
   // Next.js RSC round-trip.
-  const [month, setMonth] = useState(
-    () => searchParams.get("month") || currentMonthStr(),
+  const [period, setPeriod] = useState<DatePeriod>(() =>
+    parsePeriodFromParams(new URLSearchParams(searchParams.toString())),
   );
   const [chip, setChip] = useState<ChipKey>(
     () => (searchParams.get("chip") as ChipKey) || "all",
@@ -102,7 +78,10 @@ export function TransactionsView() {
   const [minAmount, setMinAmount] = useState("");
   const [maxAmount, setMaxAmount] = useState("");
   const [detailId, setDetailId] = useState<number | null>(null);
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [selection, setSelection] = useState<{ key: string; ids: number[] }>({
+    key: "",
+    ids: [],
+  });
 
   useEffect(() => {
     const id = setTimeout(() => setDebouncedSearch(searchInput), 250);
@@ -111,7 +90,17 @@ export function TransactionsView() {
 
   useEffect(() => {
     const params = new URLSearchParams();
-    if (month && month !== currentMonthStr()) params.set("month", month);
+    if (period.kind === "month") {
+      if (period.month !== currentMonthStr()) {
+        params.set("month", period.month);
+      }
+    } else if (period.kind === "custom") {
+      params.set("period", "custom");
+      params.set("from", period.from);
+      params.set("to", period.to);
+    } else {
+      params.set("period", period.kind);
+    }
     if (chip !== "all") params.set("chip", chip);
     if (accountId) params.set("account", String(accountId));
     if (categoryId) params.set("category", String(categoryId));
@@ -119,13 +108,15 @@ export function TransactionsView() {
     const qs = params.toString();
     const url = `${window.location.pathname}${qs ? `?${qs}` : ""}`;
     window.history.replaceState(null, "", url);
-  }, [month, chip, accountId, categoryId, debouncedSearch]);
+  }, [period, chip, accountId, categoryId, debouncedSearch]);
+
+  const periodQuery = useMemo(() => resolvePeriodQuery(period), [period]);
 
   const queryFilter = useMemo(() => {
     const min = Number.parseFloat(minAmount);
     const max = Number.parseFloat(maxAmount);
     return {
-      month,
+      ...periodQuery,
       search: debouncedSearch.trim() || undefined,
       type:
         chip === "EXPENSE" || chip === "INCOME" || chip === "TRANSFER"
@@ -136,7 +127,25 @@ export function TransactionsView() {
       minAmount: Number.isFinite(min) && min >= 0 ? min : undefined,
       maxAmount: Number.isFinite(max) && max >= 0 ? max : undefined,
     };
-  }, [month, debouncedSearch, chip, accountId, categoryId, minAmount, maxAmount]);
+  }, [
+    periodQuery,
+    debouncedSearch,
+    chip,
+    accountId,
+    categoryId,
+    minAmount,
+    maxAmount,
+  ]);
+
+  const filterKey = useMemo(() => JSON.stringify(queryFilter), [queryFilter]);
+  const selectedIds = useMemo(
+    () => (selection.key === filterKey ? selection.ids : []),
+    [selection, filterKey],
+  );
+  const clearSelection = useCallback(
+    () => setSelection({ key: filterKey, ids: [] }),
+    [filterKey],
+  );
 
   const activeFilterCount =
     (accountId ? 1 : 0) +
@@ -152,7 +161,7 @@ export function TransactionsView() {
     placeholderData: keepPreviousData,
   });
   const list = trpc.records.list.useInfiniteQuery(
-    { ...queryFilter, limit: 60 },
+    { ...queryFilter, limit: PAGE_SIZE },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
       placeholderData: keepPreviousData,
@@ -161,7 +170,7 @@ export function TransactionsView() {
 
   const bulkDelete = trpc.records.bulkDelete.useMutation({
     onSuccess: async (res) => {
-      setSelectedIds([]);
+      clearSelection();
       await Promise.all([
         utils.records.list.invalidate(),
         utils.records.monthSummary.invalidate(),
@@ -176,20 +185,17 @@ export function TransactionsView() {
     () => list.data?.pages.flatMap((p) => p.items) ?? [],
     [list.data],
   );
+  const totalCount =
+    list.data?.pages[0]?.total ?? summary.data?.count ?? null;
 
-  const groupedByDay = useMemo(() => {
-    const groups: { date: string; items: typeof rows }[] = [];
-    for (const r of rows) {
-      const key = r.date ?? "undated";
-      const last = groups[groups.length - 1];
-      if (last && last.date === key) {
-        last.items.push(r);
-      } else {
-        groups.push({ date: key, items: [r] });
-      }
-    }
-    return groups;
-  }, [rows]);
+  const activeAccount = useMemo(
+    () => (options.data?.accounts ?? []).find((a) => a.id === accountId),
+    [options.data?.accounts, accountId],
+  );
+  const activeCategory = useMemo(
+    () => (options.data?.categories ?? []).find((c) => c.id === categoryId),
+    [options.data?.categories, categoryId],
+  );
 
   async function handleExportCsv() {
     const res = await utils.records.exportCsv.fetch(queryFilter);
@@ -197,7 +203,7 @@ export function TransactionsView() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `firecent-transactions-${month}.csv`;
+    a.download = `firecent-transactions-${periodExportSlug(period)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
     firecentToast(t("exported", { count: String(res.count) }));
@@ -213,11 +219,38 @@ export function TransactionsView() {
     setCategoryId(undefined);
   }
 
-  function toggleRowSelection(id: number) {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    );
-  }
+  const toggleRowSelection = useCallback(
+    (id: number) => {
+      setSelection((prev) => {
+        const current = prev.key === filterKey ? prev.ids : [];
+        return {
+          key: filterKey,
+          ids: current.includes(id)
+            ? current.filter((x) => x !== id)
+            : [...current, id],
+        };
+      });
+    },
+    [filterKey],
+  );
+
+  const handleSelectAll = useCallback(
+    (checked: boolean) => {
+      setSelection({
+        key: filterKey,
+        ids: checked ? rows.map((r) => r.id) : [],
+      });
+    },
+    [filterKey, rows],
+  );
+
+  const handleLoadMore = useCallback(() => {
+    if (list.hasNextPage && !list.isFetchingNextPage) {
+      void list.fetchNextPage();
+    }
+  }, [list]);
+
+  const layoutKey = `${selectedIds.length > 0 ? 1 : 0}-${activeFilterCount}-${period.kind}`;
 
   return (
     <div className="flex flex-col gap-4">
@@ -284,93 +317,51 @@ export function TransactionsView() {
           </Button>
         </div>
 
-        {/* Type & Category quick chips */}
+        {/* Type quick chips (no category clutter) + removable secondary filter pills */}
         <div className="no-scrollbar flex items-center gap-2 overflow-x-auto pb-0.5">
           {(["all", "EXPENSE", "INCOME", "TRANSFER"] as ChipKey[]).map((k) => (
             <Toggle
               key={k}
               variant="chip"
-              pressed={chip === k && !categoryId}
-              onPressedChange={() => {
-                setChip(k);
-                setCategoryId(undefined);
-              }}
+              pressed={chip === k}
+              onPressedChange={() => setChip(k)}
               className="shrink-0"
             >
               <span>{t(`chips.${k}`)}</span>
             </Toggle>
           ))}
-          {(options.data?.categories ?? [])
-            .filter((c) => c.parentId === null && c.type === "EXPENSE")
-            .map((cat) => {
-              const pressed = categoryId === cat.id;
-              return (
-                <Toggle
-                  key={cat.id}
-                  variant="chip"
-                  pressed={pressed}
-                  onPressedChange={(on) => {
-                    setCategoryId(on ? cat.id : undefined);
-                    if (on) setChip("all");
-                  }}
-                  className="shrink-0 gap-1.5"
-                >
-                  <span>{localizeCategoryName(cat, locale)}</span>
-                </Toggle>
-              );
-            })}
-        </div>
 
-        {/* Month bar with In / Out */}
-        <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border bg-card px-3 py-2">
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon-touch"
-              aria-label={t("prevMonth")}
-              onClick={() => setMonth((m) => shiftMonth(m, -1))}
+          {activeAccount && (
+            <button
+              type="button"
+              onClick={() => setAccountId(undefined)}
+              className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-primary/25 bg-primary/10 px-3 text-[13px] font-medium text-primary transition-colors hover:bg-primary/15"
             >
-              <ChevronLeft aria-hidden />
-            </Button>
-            <span className="min-w-[130px] text-center text-[15px] font-semibold capitalize">
-              {formatMonthLabel(month)}
-            </span>
-            <Button
-              variant="ghost"
-              size="icon-touch"
-              aria-label={t("nextMonth")}
-              onClick={() => setMonth((m) => shiftMonth(m, 1))}
-            >
-              <ChevronRight aria-hidden />
-            </Button>
-          </div>
+              <span className="truncate">{activeAccount.name}</span>
+              <X className="size-3.5 shrink-0" aria-hidden />
+            </button>
+          )}
 
-          {summary.data && (
-            <div className="flex items-center gap-3 pr-2 text-[13px]">
-              <span className="flex items-center gap-1 text-muted-foreground">
-                <Money
-                  value={summary.data.in}
-                  currency={summary.data.currency}
-                  size="inline"
-                  tone="movement"
-                  kind="INCOME"
-                />
-                <span>{t("in")}</span>
+          {activeCategory && (
+            <button
+              type="button"
+              onClick={() => setCategoryId(undefined)}
+              className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-primary/25 bg-primary/10 px-3 text-[13px] font-medium text-primary transition-colors hover:bg-primary/15"
+            >
+              <span className="truncate">
+                {localizeCategoryName(activeCategory, locale)}
               </span>
-              <span className="text-muted-foreground/50">·</span>
-              <span className="flex items-center gap-1 text-muted-foreground">
-                <Money
-                  value={-summary.data.out}
-                  currency={summary.data.currency}
-                  size="inline"
-                  tone="movement"
-                  kind="EXPENSE"
-                />
-                <span>{t("out")}</span>
-              </span>
-            </div>
+              <X className="size-3.5 shrink-0" aria-hidden />
+            </button>
           )}
         </div>
+
+        {/* Date period selector & cashflow bar */}
+        <DatePeriodBar
+          period={period}
+          onChange={setPeriod}
+          summary={summary.data}
+        />
 
         {/* Desktop bulk selection bar */}
         {selectedIds.length > 0 && (
@@ -382,7 +373,7 @@ export function TransactionsView() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setSelectedIds([])}
+                onClick={clearSelection}
                 className="text-background hover:bg-background/15 hover:text-background"
               >
                 {t("clearSelection")}
@@ -400,7 +391,7 @@ export function TransactionsView() {
           </div>
         )}
 
-        {/* Loading / Error / Empty / Data */}
+        {/* Loading / Error / Empty / Virtualized Data */}
         {list.isPending ? (
           <div className="flex flex-col gap-5 pt-2">
             {[0, 1].map((g) => (
@@ -438,153 +429,27 @@ export function TransactionsView() {
             />
           )
         ) : (
-          <>
-            {/* Mobile day-grouped list */}
-            <div className="flex flex-col gap-5 lg:hidden">
-              {groupedByDay.map((group) => (
-                <section key={group.date} className="flex flex-col gap-2">
-                  <DayHeader
-                    date={group.date === "undated" ? t("undated") : group.date}
-                    net={summary.data?.byDay?.[group.date] ?? 0}
-                    currency={summary.data?.currency ?? "USD"}
-                  />
-                  <Card variant="plain" className="divide-y overflow-hidden">
-                    {group.items.map((r) => {
-                      const catName = r.category
-                        ? localizeCategoryName(r.category, locale)
-                        : null;
-                      const title =
-                        r.transfer && r.transferAccount
-                          ? `${r.account.name} → ${r.transferAccount.name}`
-                          : r.payee || catName || r.note || r.account.name;
-                      return (
-                        <TransactionRow
-                          key={r.id}
-                          title={title}
-                          category={
-                            r.category && catName
-                              ? {
-                                  icon: r.category.icon,
-                                  name: catName,
-                                  color: r.category.color,
-                                }
-                              : { icon: null, name: r.account.name }
-                          }
-                          account={r.account.name}
-                          amount={r.amount}
-                          currency={r.currency}
-                          kind={r.transfer ? "TRANSFER" : r.type}
-                          onClick={() => setDetailId(r.id)}
-                        />
-                      );
-                    })}
-                  </Card>
-                </section>
-              ))}
-            </div>
-
-            {/* Desktop table */}
-            <Card variant="plain" className="hidden overflow-hidden lg:block">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-10">
-                      <Checkbox
-                        aria-label={t("selectAll")}
-                        checked={
-                          rows.length > 0 && selectedIds.length === rows.length
-                        }
-                        onCheckedChange={(checked) =>
-                          setSelectedIds(checked ? rows.map((r) => r.id) : [])
-                        }
-                      />
-                    </TableHead>
-                    <TableHead>{t("columns.date")}</TableHead>
-                    <TableHead>{t("columns.description")}</TableHead>
-                    <TableHead>{t("columns.category")}</TableHead>
-                    <TableHead>{t("columns.account")}</TableHead>
-                    <TableHead className="text-right">
-                      {t("columns.amount")}
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {rows.map((r) => {
-                    const catName = r.category
-                      ? localizeCategoryName(r.category, locale)
-                      : null;
-                    const title =
-                      r.transfer && r.transferAccount
-                        ? `${r.account.name} → ${r.transferAccount.name}`
-                        : r.payee || catName || r.note || r.account.name;
-                    return (
-                      <TableRow
-                        key={r.id}
-                        className="cursor-pointer hover:bg-accent/50"
-                        onClick={() => setDetailId(r.id)}
-                      >
-                        <TableCell onClick={(e) => e.stopPropagation()}>
-                          <Checkbox
-                            aria-label={title}
-                            checked={selectedIds.includes(r.id)}
-                            onCheckedChange={() => toggleRowSelection(r.id)}
-                          />
-                        </TableCell>
-                        <TableCell className="num whitespace-nowrap text-[13px] text-muted-foreground">
-                          {r.date ?? "—"}
-                        </TableCell>
-                        <TableCell className="max-w-[260px]">
-                          <div className="flex items-center gap-2.5">
-                            <CategoryIcon
-                              icon={r.category?.icon}
-                              color={r.category?.color}
-                              size="sm"
-                            />
-                            <div className="min-w-0">
-                              <p className="truncate font-medium">{title}</p>
-                              {r.note && r.payee && (
-                                <p className="truncate text-[12px] text-muted-foreground">
-                                  {r.note}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-[13px] text-muted-foreground">
-                          <span>{catName ?? "—"}</span>
-                        </TableCell>
-                        <TableCell className="text-[13px] text-muted-foreground">
-                          {r.account.name}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <Money
-                            value={r.amount}
-                            currency={r.currency}
-                            size="row"
-                            tone="movement"
-                            kind={r.transfer ? "TRANSFER" : r.type}
-                          />
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </Card>
-
-            {list.hasNextPage && (
-              <div className="flex justify-center pt-2">
-                <Button
-                  variant="outline"
-                  size="touch"
-                  disabled={list.isFetchingNextPage}
-                  onClick={() => list.fetchNextPage()}
-                >
-                  {list.isFetchingNextPage ? t("loadingMore") : t("loadMore")}
-                </Button>
-              </div>
+          <div
+            className={cn(
+              "transition-opacity duration-150",
+              list.isPlaceholderData && "pointer-events-none opacity-60",
             )}
-          </>
+          >
+            <VirtualizedTransactions
+              rows={rows}
+              total={totalCount}
+              byDay={summary.data?.byDay}
+              summaryCurrency={summary.data?.currency}
+              selectedIds={selectedIds}
+              onToggleSelect={toggleRowSelection}
+              onSelectAll={handleSelectAll}
+              onRowClick={setDetailId}
+              hasNextPage={Boolean(list.hasNextPage)}
+              isFetchingNextPage={list.isFetchingNextPage}
+              onLoadMore={handleLoadMore}
+              layoutKey={layoutKey}
+            />
+          </div>
         )}
       </div>
 

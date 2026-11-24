@@ -162,3 +162,18 @@ export type Recurring = Prisma.RecurringModel
  * 
  */
 export type RecurringOccurrence = Prisma.RecurringOccurrenceModel
+/**
+ * Model AssistantThread
+ * 
+ */
+export type AssistantThread = Prisma.AssistantThreadModel
+/**
+ * Model AssistantMessage
+ * 
+ */
+export type AssistantMessage = Prisma.AssistantMessageModel
+/**
+ * Model AssistantProposal
+ * 
+ */
+export type AssistantProposal = Prisma.AssistantProposalModel

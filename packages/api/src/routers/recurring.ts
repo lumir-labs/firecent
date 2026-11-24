@@ -16,38 +16,89 @@ function requireOrg(orgId: string | null): string {
   return orgId;
 }
 
+type RecFreq = "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
+
+function normalizeDaysOfMonth(days: number[]): number[] {
+  return [...new Set(days.filter((d) => d >= 1 && d <= 31))].sort(
+    (a, b) => a - b,
+  );
+}
+
+function clampDay(year: number, month: number, day: number): Date {
+  const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+  return new Date(Date.UTC(year, month, Math.min(day, daysInMonth)));
+}
+
+/** First scheduled occurrence on or after `startDate`. */
+function firstOccurrenceDate(
+  start: Date,
+  frequency: RecFreq,
+  daysOfMonth: number[],
+): Date {
+  if (frequency !== "MONTHLY") return start;
+  const days = normalizeDaysOfMonth(daysOfMonth);
+  if (days.length === 0) return start;
+  const y = start.getUTCFullYear();
+  const m = start.getUTCMonth();
+  const startDay = start.getUTCDate();
+  const daysInThisMonth = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+
+  for (const target of days) {
+    const actual = Math.min(target, daysInThisMonth);
+    if (actual >= startDay) {
+      return new Date(Date.UTC(y, m, actual));
+    }
+  }
+  return clampDay(y, m + 1, days[0]!);
+}
+
 function advanceDate(
   from: Date,
-  frequency: "WEEKLY" | "MONTHLY" | "YEARLY",
+  frequency: RecFreq,
   interval: number,
   daysOfMonth: number[],
 ): Date {
+  const step = Math.max(1, interval);
   const y = from.getUTCFullYear();
   const m = from.getUTCMonth();
   const d = from.getUTCDate();
 
+  if (frequency === "DAILY") {
+    return new Date(Date.UTC(y, m, d + step));
+  }
   if (frequency === "WEEKLY") {
-    return new Date(Date.UTC(y, m, d + 7 * Math.max(1, interval)));
+    return new Date(Date.UTC(y, m, d + 7 * step));
   }
   if (frequency === "YEARLY") {
-    return new Date(Date.UTC(y + Math.max(1, interval), m, d));
+    return clampDay(y + step, m, d);
   }
-  // MONTHLY
-  const targetDay = daysOfMonth[0] ?? d;
-  const nextMonth = m + Math.max(1, interval);
-  const daysInTarget = new Date(Date.UTC(y, nextMonth + 1, 0)).getUTCDate();
-  return new Date(Date.UTC(y, nextMonth, Math.min(targetDay, daysInTarget)));
+  // MONTHLY (supports single day [15], end-of-month [31], and multi-day [15, 31] / [1, 15])
+  const days = normalizeDaysOfMonth(daysOfMonth);
+  const effectiveDays = days.length > 0 ? days : [d];
+  const daysInCurrent = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+
+  for (const target of effectiveDays) {
+    const actual = Math.min(target, daysInCurrent);
+    if (actual > d) {
+      return new Date(Date.UTC(y, m, actual));
+    }
+  }
+
+  return clampDay(y, m + step, effectiveDays[0]!);
 }
 
 function monthlyEquivalent(
   amountMinor: number,
-  frequency: "WEEKLY" | "MONTHLY" | "YEARLY",
+  frequency: RecFreq,
   interval: number,
+  daysOfMonth: number[],
 ): number {
   const step = Math.max(1, interval);
+  if (frequency === "DAILY") return (amountMinor * 30.4375) / step;
   if (frequency === "WEEKLY") return (amountMinor * 52) / 12 / step;
   if (frequency === "YEARLY") return amountMinor / 12 / step;
-  return amountMinor / step;
+  const occurrencesPerCycle = Math.max(1, normalizeDaysOfMonth(daysOfMonth).length);
+  return (amountMinor * occurrencesPerCycle) / step;
 }
 
 function daysUntil(date: Date | null, now = new Date()): number | null {
@@ -81,7 +132,14 @@ export const recurringRouter = router({
         }),
         db.category.findMany({
           where: { organizationId: orgId, deletedAt: null },
-          select: { id: true, name: true, icon: true },
+          select: {
+            id: true,
+            name: true,
+            nameEn: true,
+            nameEs: true,
+            icon: true,
+            color: true,
+          },
         }),
       ]);
 
@@ -134,6 +192,7 @@ export const recurringRouter = router({
               Math.round(i.amount * MINOR_UNIT),
               i.frequency,
               i.interval,
+              i.daysOfMonth,
             ),
           0,
         ) / MINOR_UNIT;
@@ -172,8 +231,14 @@ export const recurringRouter = router({
         transferAccountId: z.number().int().positive().nullish(),
         categoryId: z.number().int().positive().nullish(),
         mode: z.enum(["AUTO", "MANUAL"]).default("MANUAL"),
-        frequency: z.enum(["WEEKLY", "MONTHLY", "YEARLY"]).default("MONTHLY"),
-        interval: z.number().int().min(1).max(12).default(1),
+        frequency: z
+          .enum(["DAILY", "WEEKLY", "MONTHLY", "YEARLY"])
+          .default("MONTHLY"),
+        interval: z.number().int().min(1).max(365).default(1),
+        daysOfMonth: z
+          .array(z.number().int().min(1).max(31))
+          .max(4)
+          .optional(),
         startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
         endDate: z
           .string()
@@ -196,6 +261,15 @@ export const recurringRouter = router({
 
       const start = new Date(`${input.startDate}T00:00:00.000Z`);
       const mode = input.isEstimate ? "MANUAL" : input.mode;
+      const daysOfMonth =
+        input.frequency === "MONTHLY"
+          ? normalizeDaysOfMonth(
+              input.daysOfMonth && input.daysOfMonth.length > 0
+                ? input.daysOfMonth
+                : [start.getUTCDate()],
+            )
+          : [];
+      const firstNext = firstOccurrenceDate(start, input.frequency, daysOfMonth);
 
       const created = await db.recurring.create({
         data: {
@@ -211,10 +285,9 @@ export const recurringRouter = router({
           mode,
           frequency: input.frequency,
           interval: input.interval,
-          daysOfMonth:
-            input.frequency === "MONTHLY" ? [start.getUTCDate()] : [],
+          daysOfMonth,
           startDate: start,
-          nextDate: start,
+          nextDate: firstNext,
           endDate: input.endDate
             ? new Date(`${input.endDate}T00:00:00.000Z`)
             : null,
