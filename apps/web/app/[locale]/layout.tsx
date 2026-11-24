@@ -3,7 +3,7 @@ import { getMessages, getTranslations } from "next-intl/server";
 import { locale } from "next/root-params";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { Merriweather, Fira_Code, Inter } from "next/font/google";
+import { Fira_Code, Inter } from "next/font/google";
 
 import { routing, type Locale } from "@/i18n/routing";
 import { isLocale } from "@/i18n/utils";
@@ -16,13 +16,7 @@ import "../globals.css";
 const inter = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
-});
-
-const merriweather = Merriweather({
-  variable: "--font-serif",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
+  axes: ["opsz"],
 });
 
 const firaCode = Fira_Code({
@@ -211,10 +205,10 @@ export default async function LocaleLayout({ children }: Props) {
   return (
     <html
       lang={localeValue}
-      className={cn(inter.variable, merriweather.variable, firaCode.variable)}
+      className={cn(inter.variable, firaCode.variable)}
       suppressHydrationWarning
     >
-      <body className="font-geist-sans antialiased">
+      <body className="font-sans antialiased">
         <meta property="og:logo" content={OG_LOGO_URL} />
         <script
           type="application/ld+json"

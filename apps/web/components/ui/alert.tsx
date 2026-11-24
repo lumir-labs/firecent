@@ -9,6 +9,11 @@ const alertVariants = cva(
     variants: {
       variant: {
         default: "bg-card text-card-foreground",
+        // Firecent N14 inline notices
+        notice:
+          "rounded-xl border-0 bg-muted px-3.5 text-[13px] leading-[19px] text-foreground *:data-[slot=alert-description]:text-[13px] *:data-[slot=alert-description]:text-foreground",
+        "notice-warning":
+          "rounded-xl border-0 bg-warning/12 px-3.5 text-[13px] leading-[19px] text-foreground *:[svg]:text-warning *:data-[slot=alert-description]:text-[13px] *:data-[slot=alert-description]:text-foreground",
         destructive:
           "bg-destructive/4 border-destructive/50 border-2 text-destructive *:data-[slot=alert-description]:text-destructive/90 *:[svg]:text-current",
       },

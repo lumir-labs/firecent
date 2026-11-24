@@ -17,6 +17,8 @@ single-source theme tokens.
 | Conventions (i18n, folders, client/server, `proxy.ts`) | `docs/CONVENTIONS.md` | — |
 | Human-facing product walkthrough | `docs/USER-GUIDE.md` | — |
 | Known temporal gaps | `docs/gaps/` | — |
+| **Firecent UI roadmap** (phases, decisions, agent protocol) | `docs/roadmap/README.md` | start here to build Firecent screens |
+| Firecent visual prototype (HTML + SPEC, mock data, schema gaps) | `docs/prototype/` | open `index.html` in a browser |
 
 ## Where to start (new dev)
 
@@ -24,8 +26,16 @@ single-source theme tokens.
    `GOOGLE_CLIENT_ID/SECRET`, `SMTP_*` (magic-link).
 2. `bun install` · `bun run db:push` (or `db:migrate`) · `bun run db:seed -- --email=you@email.com`
    (`apps/web/scripts/seed.ts`: creates the permission catalog + roles + the `root` user).
-3. `bun run dev:web` → `http://localhost:3000/en/landing` (public demo route).
-4. Sign in with Google or magic-link (`apps/web/app/[locale]/(auth)/auth/login/page.tsx`).
+3. Optional demo data: `bun run db:seed:demo` (`apps/web/scripts/seed-demo.ts`, data in `scripts/demo/data.ts`)
+   creates two Spaces, `Maya & Daniel (demo)` (`demo-maya-daniel`, full dataset of
+   `docs/prototype/mock-data.md`) and `Personal (demo)` (`demo-personal`, empty), plus users
+   `maya@demo.test` / `daniel@demo.test` (magic link is printed in the Next dev console). It only touches
+   those two Spaces and users. Flags: `--reset` (delete and recreate only the demo Spaces' rows),
+   `--fixed` (keep the mock dates; by default dates shift so the demo always looks current),
+   `--member=<email>` (add an existing user as `member` of the demo Spaces), `--help`. Without `--reset`
+   it is a no-op when the Spaces exist; refuses `NODE_ENV=production`.
+4. `bun run dev:web` → `http://localhost:3000/en/landing` (public demo route).
+5. Sign in with Google or magic-link (`apps/web/app/[locale]/(auth)/auth/login/page.tsx`).
    Sign-ups get the `user` role (`apps/web/lib/roles.ts` via `ensureRole("user")`).
 
 > Test note: `bun test` runs unit tests everywhere, but

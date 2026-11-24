@@ -40,6 +40,24 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
+  /* Firecent semantics */
+  --color-positive: var(--positive);
+  --color-warning: var(--warning);
+  --color-primary-text: var(--primary-text);
+  --color-nature-owe: var(--nature-owe);
+  --color-nature-need: var(--nature-need);
+  --color-nature-want: var(--nature-want);
+  --color-assistant: var(--assistant);
+  --color-assistant-border: var(--assistant-border);
+  --color-assistant-accent: var(--assistant-accent);
+  --color-hero: var(--hero);
+  --color-hero-foreground: var(--hero-foreground);
+  --color-hero-muted: var(--hero-muted);
+  --color-hero-border: var(--hero-border);
+  --color-hero-positive: var(--hero-positive);
+  --color-hero-accent: var(--hero-accent);
+  --color-hero-line: var(--hero-line);
+
   /* NOTE: do NOT re-map --font-* here (e.g. --font-sans: var(--font-sans)
    * would be a circular self-reference that Tailwind resolves to `unset`
    * and breaks font-sans/font-inter-* in native). Font families are defined
@@ -48,11 +66,13 @@
   /* STATIC rem-based radii (no `calc(var(--radius) ± Npx)`): the native
    * compiler silently discards calc with mixed units and the
    * rounded-sm/md/xl classes ended up square. Identical values with a
-   * 16px root: sm 4px, md 6px, lg 8px (= --radius), xl 12px. */
+   * 16px root: sm 4px, md 6px, lg 12px (= --radius), xl 12px, 2xl 16px, 3xl 24px. */
   --radius-sm: 0.25rem;
   --radius-md: 0.375rem;
   --radius-lg: var(--radius);
   --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
 
   --shadow-2xs: var(--shadow-2xs);
   --shadow-xs: var(--shadow-xs);

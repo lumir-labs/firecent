@@ -1,0 +1,1331 @@
+<!doctype html>
+<html lang="en" data-state="data">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Transactions · Firecent</title>
+    <link rel="icon" href="assets/brand/favicon.svg" />
+    <link rel="stylesheet" href="assets/app.css" />
+    <script src="assets/proto.js"></script>
+  </head>
+  <body class="min-h-dvh bg-background text-foreground">
+    <div data-shell data-tab="transactions" data-nav="transactions"></div>
+
+    <div class="lg:pl-60 lg:[html[data-sheet=detail]_&]:pr-[420px]">
+      <div class="relative mx-auto min-h-dvh max-w-[430px] pb-28 lg:max-w-[1160px] lg:px-8 lg:pb-12">
+        <!-- Mobile title -->
+        <header class="flex items-center justify-between px-5 pt-3 lg:hidden">
+          <div>
+            <h1 class="text-[28px] leading-[34px] font-semibold tracking-[-0.02em]">Transactions</h1>
+            <p id="tx-sub-mob" class="hidden text-[13px] text-muted-foreground [html[data-state=data]_&]:block">November 2026 · 44 records</p>
+          </div>
+          <button type="button" data-open="filters" class="relative hidden size-11 place-items-center rounded-xl border bg-card hover:bg-accent [html[data-state=data]_&]:grid" aria-label="Filters">
+            <i data-icon="sliders-horizontal" class="size-[20px]"></i>
+            <span data-filter-badge class="num absolute -top-1 -right-1 hidden size-5 place-items-center rounded-full bg-foreground text-[11px] font-semibold text-background"></span>
+          </button>
+        </header>
+
+        <!-- Desktop header -->
+        <header class="hidden items-center justify-between gap-3 pt-8 lg:flex">
+          <div>
+            <h1 class="text-[24px] leading-[32px] font-semibold tracking-[-0.02em]">Transactions</h1>
+            <p id="tx-sub-desk" class="hidden text-[13px] text-muted-foreground [html[data-state=data]_&]:block">November 2026 · 44 records</p>
+          </div>
+          <div class="flex items-center gap-2" data-desktop-tools>
+            <button type="button" id="tx-export-btn" class="hidden h-10 shrink-0 items-center gap-1.5 rounded-xl border bg-card px-3.5 text-[14px] font-medium hover:bg-accent [html[data-state=data]_&]:inline-flex">
+              <i data-icon="download" class="size-4 text-muted-foreground"></i>Export CSV
+            </button>
+            <button type="button" data-open="filters" class="relative hidden h-10 shrink-0 items-center gap-2 rounded-xl border bg-card px-3.5 text-[14px] font-semibold hover:bg-accent [html[data-state=data]_&]:inline-flex">
+              <i data-icon="sliders-horizontal" class="size-4"></i>Filters
+              <span data-filter-badge class="num hidden size-5 place-items-center rounded-full bg-foreground text-[11px] font-semibold text-background"></span>
+            </button>
+            <button type="button" data-open="add" class="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground hover:opacity-95">
+              <i data-icon="plus" class="size-4"></i>Add transaction
+            </button>
+          </div>
+        </header>
+
+        <!-- ═══════════════════════════ WITH DATA ═══════════════════════════ -->
+        <div data-view="data">
+          <!-- 1 · Monthly KPI Strip + Daily Spend Sparkline (Movimientos Propuesta A) -->
+          <section class="mt-4 px-5 lg:mt-6 lg:px-0" aria-label="Monthly summary">
+            <div class="grid grid-cols-2 divide-y rounded-2xl border bg-card lg:grid-cols-4 lg:divide-x lg:divide-y-0">
+              <div class="p-4">
+                <p class="flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground">
+                  <i data-icon="arrow-down-left" class="size-3.5 text-positive"></i>Money in
+                </p>
+                <p id="kpi-in" class="num mt-1 text-[20px] font-semibold tracking-[-0.02em] text-positive">+$6,125.00</p>
+                <p id="kpi-in-sub" class="mt-0.5 text-[12px] text-muted-foreground">2 deposits</p>
+              </div>
+              <div class="border-l p-4 lg:border-l-0">
+                <p class="flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground">
+                  <i data-icon="arrow-up-right" class="size-3.5"></i>Money out
+                </p>
+                <p id="kpi-out" class="num mt-1 text-[20px] font-semibold tracking-[-0.02em]">$4,812.14</p>
+                <p id="kpi-out-sub" class="mt-0.5 text-[12px] text-muted-foreground">40 expenses</p>
+              </div>
+              <div class="p-4">
+                <p class="flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground">
+                  <i data-icon="trending-up" class="size-3.5 text-primary-text"></i>Net flow
+                </p>
+                <p id="kpi-net" class="num mt-1 text-[20px] font-semibold tracking-[-0.02em] text-positive">+$1,312.86</p>
+                <p id="kpi-net-sub" class="num mt-0.5 text-[12px] text-muted-foreground">21.4% of income saved</p>
+              </div>
+              <div class="border-l p-4 lg:border-l-0">
+                <div class="flex items-center justify-between gap-2 text-[12px]">
+                  <span class="font-medium text-muted-foreground">Daily spend</span>
+                  <span id="kpi-avg" class="num text-muted-foreground">$401/day</span>
+                </div>
+                <div id="tx-daily-bars" class="mt-2 flex h-9 items-end gap-1" role="img" aria-label="Daily expense bars from Nov 1 to Nov 12"></div>
+                <div class="mt-1 flex justify-between text-[10px] text-muted-foreground">
+                  <span>Nov 1</span>
+                  <span>Today (12)</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 2 · Toolbar Row 1: Month Nav · Scope · Type Tabs · Search -->
+          <section class="mt-4 space-y-3 px-5 lg:px-0" aria-label="Filters and search">
+            <div class="flex flex-wrap items-center justify-between gap-2.5">
+              <div class="flex flex-wrap items-center gap-2">
+                <!-- Month nav -->
+                <div class="inline-flex h-10 items-center rounded-xl border bg-card px-1">
+                  <button type="button" class="grid size-8 place-items-center rounded-lg hover:bg-accent" aria-label="Previous month">
+                    <i data-icon="chevron-left" class="size-4"></i>
+                  </button>
+                  <span class="px-2 text-[13px] font-semibold">November 2026</span>
+                  <button type="button" disabled class="grid size-8 cursor-not-allowed place-items-center rounded-lg opacity-40" aria-label="Next month">
+                    <i data-icon="chevron-right" class="size-4"></i>
+                  </button>
+                </div>
+
+                <!-- Scope toggle (BankAccount.visibility) -->
+                <div id="tx-scope-tabs" class="inline-flex h-10 items-center rounded-xl bg-muted p-1" role="group" aria-label="Account visibility scope">
+                  <button type="button" data-scope="everything" aria-pressed="true" class="h-8 rounded-lg bg-card px-2.5 text-[13px] font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]">All</button>
+                  <button type="button" data-scope="shared" aria-pressed="false" class="h-8 rounded-lg px-2.5 text-[13px] font-medium text-muted-foreground">Shared</button>
+                  <button type="button" data-scope="only-you" aria-pressed="false" class="h-8 rounded-lg px-2.5 text-[13px] font-medium text-muted-foreground">Only you</button>
+                </div>
+              </div>
+
+              <!-- Search input -->
+              <div class="relative w-full lg:w-72">
+                <i data-icon="search" class="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground"></i>
+                <input
+                  type="search"
+                  data-search
+                  placeholder="Search payee, category or note"
+                  aria-label="Search payee, category or note"
+                  class="h-10 w-full rounded-xl border border-input bg-card pr-3.5 pl-10 text-[15px] placeholder:text-muted-foreground lg:text-[14px]"
+                />
+              </div>
+            </div>
+
+            <!-- Row 2: Type Tabs with live counts + Quick filter chips -->
+            <div class="flex flex-wrap items-center justify-between gap-2.5">
+              <div id="tx-type-tabs" class="flex gap-1.5 overflow-x-auto pb-0.5" role="group" aria-label="Record type">
+                <button type="button" data-type="all" aria-pressed="true" class="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-transparent bg-foreground px-3.5 text-[13px] font-medium text-background">
+                  All <span id="cnt-all" class="num opacity-75">44</span>
+                </button>
+                <button type="button" data-type="EXPENSE" aria-pressed="false" class="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border bg-card px-3.5 text-[13px] font-medium hover:bg-accent">
+                  Expenses <span id="cnt-exp" class="num text-muted-foreground">40</span>
+                </button>
+                <button type="button" data-type="INCOME" aria-pressed="false" class="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border bg-card px-3.5 text-[13px] font-medium hover:bg-accent">
+                  Income <span id="cnt-inc" class="num text-muted-foreground">2</span>
+                </button>
+                <button type="button" data-type="TRANSFER" aria-pressed="false" class="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border bg-card px-3.5 text-[13px] font-medium hover:bg-accent">
+                  Transfers <span id="cnt-txf" class="num text-muted-foreground">2</span>
+                </button>
+              </div>
+
+              <!-- Quick schema filter pills -->
+              <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5">
+                <button type="button" id="tx-cat-toggle" aria-expanded="false" class="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border bg-card px-3 text-[13px] font-medium hover:bg-accent">
+                  <i data-icon="tag" class="size-3.5 text-muted-foreground"></i>
+                  <span id="tx-cat-toggle-lbl">Category</span>
+                  <i data-icon="chevron-down" class="size-3.5 text-muted-foreground"></i>
+                </button>
+                <button type="button" id="tx-q-rec" aria-pressed="false" class="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border bg-card px-3 text-[13px] font-medium hover:bg-accent">
+                  <i data-icon="repeat" class="size-3.5 text-muted-foreground"></i>Recurring
+                </button>
+                <button type="button" id="tx-q-lbl" aria-pressed="false" class="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border bg-card px-3 text-[13px] font-medium hover:bg-accent">
+                  <i data-icon="bookmark" class="size-3.5 text-muted-foreground"></i>Labels
+                </button>
+              </div>
+            </div>
+
+            <!-- Collapsible Colored Category Quick-Picker Tray -->
+            <div id="tx-cat-tray" class="hidden rounded-2xl border bg-card p-3">
+              <div class="mb-2 flex items-center justify-between">
+                <span class="text-[12px] font-medium text-muted-foreground">Filter by category</span>
+                <button type="button" id="tx-cat-clear" class="text-[12px] font-medium text-primary-text hover:underline">All categories</button>
+              </div>
+              <div id="tx-cat-pills" class="flex flex-wrap gap-1.5"></div>
+            </div>
+          </section>
+
+          <!-- Active filter summary bar -->
+          <div id="tx-active-bar" class="mt-3 hidden px-5 lg:px-0">
+            <div class="flex flex-wrap items-center justify-between gap-2 rounded-xl border bg-card px-3.5 py-2.5">
+              <div id="tx-active-pills" class="flex flex-wrap gap-1.5"></div>
+              <p id="tx-active-summary" class="num text-[13px] font-medium text-muted-foreground"></p>
+            </div>
+          </div>
+
+          <!-- Desktop batch selection bar -->
+          <div id="tx-batch-bar" class="mt-4 hidden items-center justify-between rounded-2xl border bg-card px-4 py-2.5 text-[14px]">
+            <span id="tx-batch-count" class="num font-semibold">3 selected</span>
+            <div class="flex items-center gap-1">
+              <button type="button" data-toast-msg="Category updated for selected" class="flex h-9 items-center rounded-xl px-3 text-[13px] font-medium text-primary-text hover:bg-accent">Change category</button>
+              <button type="button" data-toast-msg="Label added to selected" class="flex h-9 items-center rounded-xl px-3 text-[13px] font-medium text-primary-text hover:bg-accent">Add label</button>
+              <button type="button" id="tx-batch-delete" class="flex h-9 items-center rounded-xl px-3 text-[13px] font-medium text-destructive hover:bg-accent">Delete</button>
+            </div>
+          </div>
+
+          <!-- Mobile list grouped by day -->
+          <div id="tx-mobile-list" class="px-5 lg:hidden"></div>
+
+          <!-- Desktop ledger table -->
+          <div id="tx-desktop-wrap" class="mt-4 hidden overflow-hidden rounded-2xl border bg-card lg:block">
+            <table class="w-full table-fixed text-[14px]">
+              <thead>
+                <tr class="h-10 border-b text-left text-[12px] font-medium text-muted-foreground">
+                  <th class="w-10 pl-4">
+                    <input type="checkbox" id="tx-check-all" aria-label="Select all transactions" class="size-4 rounded border-input accent-primary" />
+                  </th>
+                  <th>Payee &amp; details</th>
+                  <th class="w-36 lg:[html[data-sheet=detail]_&]:w-32">Category</th>
+                  <th class="w-40 lg:[html[data-sheet=detail]_&]:w-36">Account</th>
+                  <th class="w-12 lg:[html[data-sheet=detail]_&]:hidden">By</th>
+                  <th class="w-28 pr-4 text-right">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="tx-desktop-body"></tbody>
+            </table>
+          </div>
+
+          <!-- No results state -->
+          <div id="tx-no-results" class="hidden flex-col items-center px-8 py-12 text-center">
+            <span class="grid size-14 place-items-center rounded-2xl bg-muted"><i data-icon="search" class="size-6 text-muted-foreground"></i></span>
+            <h2 class="mt-4 text-[17px] font-semibold">Nothing matches</h2>
+            <p class="mt-1.5 max-w-[280px] text-[14px] leading-[20px] text-muted-foreground">Try a different keyword or clear active filters.</p>
+            <div class="mt-5">
+              <button type="button" id="tx-clear-all" class="flex h-11 items-center rounded-xl border bg-card px-4 text-[14px] font-medium text-primary-text hover:bg-accent">Clear filters</button>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div id="tx-footer" class="mt-7 flex flex-col items-center gap-3 px-5 pb-4 text-center">
+            <p class="text-[13px] text-muted-foreground">Showing November 1 – 12, 2026</p>
+            <button type="button" data-toast-msg="October archive loaded (mock)" class="flex h-10 items-center rounded-xl border bg-card px-4 text-[13px] font-semibold hover:bg-accent">Show October</button>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════ EMPTY ═══════════════════════════ -->
+        <div data-view="empty">
+          <div class="flex flex-col items-center px-8 py-12 text-center lg:py-24">
+            <span class="grid size-14 place-items-center rounded-2xl bg-muted">
+              <i data-icon="receipt" class="size-6 text-muted-foreground"></i>
+            </span>
+            <h2 class="mt-4 text-[17px] font-semibold">No transactions yet</h2>
+            <p class="mt-1.5 max-w-[280px] text-[14px] leading-[20px] text-muted-foreground">
+              Add your first one with the + button, or import a statement and approve what gets saved.
+            </p>
+            <div class="mt-5 flex flex-col items-center gap-2 sm:flex-row">
+              <button type="button" data-open="add" class="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground">
+                <i data-icon="plus" class="size-4"></i>Add transaction
+              </button>
+              <a href="assistant.html?view=new" class="flex h-11 items-center rounded-xl px-3 text-[14px] font-medium text-primary-text">Import a statement</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════ LOADING ═══════════════════════════ -->
+        <div data-view="loading" aria-busy="true">
+          <p class="sr-only" role="status">Loading transactions</p>
+          <div aria-hidden="true">
+            <div class="mt-4 px-5 lg:mt-6 lg:px-0">
+              <div class="grid grid-cols-2 gap-3 rounded-2xl border bg-card p-4 lg:grid-cols-4">
+                <div class="space-y-2"><div class="sk h-3 w-16"></div><div class="sk h-6 w-24"></div></div>
+                <div class="space-y-2"><div class="sk h-3 w-16"></div><div class="sk h-6 w-24"></div></div>
+                <div class="space-y-2"><div class="sk h-3 w-16"></div><div class="sk h-6 w-24"></div></div>
+                <div class="space-y-2"><div class="sk h-3 w-16"></div><div class="sk h-8 w-full"></div></div>
+              </div>
+            </div>
+            <div class="mt-4 flex gap-2 px-5 lg:px-0">
+              <div class="sk h-9 w-16 rounded-full"></div>
+              <div class="sk h-9 w-24 rounded-full"></div>
+              <div class="sk h-9 w-20 rounded-full"></div>
+              <div class="sk h-9 w-20 rounded-full"></div>
+            </div>
+            <div class="px-5 lg:px-0">
+              <div class="flex justify-between px-1 pt-6 pb-2">
+                <div class="sk h-3.5 w-16"></div>
+                <div class="sk h-3.5 w-16"></div>
+              </div>
+              <div class="divide-y rounded-2xl border bg-card">
+                <div class="flex min-h-16 items-center gap-3 px-4 py-3"><div class="sk size-10 rounded-xl"></div><div class="flex-1 space-y-2"><div class="sk h-4 w-28"></div><div class="sk h-3.5 w-40"></div></div><div class="sk h-4 w-16"></div></div>
+                <div class="flex min-h-16 items-center gap-3 px-4 py-3"><div class="sk size-10 rounded-xl"></div><div class="flex-1 space-y-2"><div class="sk h-4 w-36"></div><div class="sk h-3.5 w-32"></div></div><div class="sk h-4 w-14"></div></div>
+                <div class="flex min-h-16 items-center gap-3 px-4 py-3"><div class="sk size-10 rounded-xl"></div><div class="flex-1 space-y-2"><div class="sk h-4 w-32"></div><div class="sk h-3.5 w-28"></div></div><div class="sk h-4 w-16"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════ ERROR ═══════════════════════════ -->
+        <div data-view="error">
+          <div class="flex flex-col items-center px-8 py-12 text-center lg:py-24">
+            <span class="grid size-14 place-items-center rounded-2xl bg-muted">
+              <i data-icon="cloud-off" class="size-6 text-muted-foreground"></i>
+            </span>
+            <h2 class="mt-4 text-[17px] font-semibold">We couldn't load this</h2>
+            <p class="mt-1.5 max-w-[280px] text-[14px] leading-[20px] text-muted-foreground">
+              Check your connection and try again. Nothing was changed.
+            </p>
+            <div class="mt-5">
+              <button type="button" class="flex h-11 items-center rounded-xl border bg-card px-4 text-[14px] font-semibold">Try again</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════ SHEET: FILTERS (?sheet=filters) ═══════════════════════════ -->
+    <div data-sheet-id="filters">
+      <div data-veil data-close class="fixed inset-0 z-40 bg-[#0b1220]/50 lg:bg-transparent"></div>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="sh-filters-title"
+        class="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[92dvh] max-w-[430px] overflow-y-auto rounded-t-3xl bg-card pb-8 shadow-[0_-8px_30px_-12px_rgb(11_18_32/0.25)] lg:top-20 lg:right-8 lg:bottom-auto lg:left-auto lg:mx-0 lg:max-h-[84dvh] lg:w-[380px] lg:max-w-none lg:rounded-2xl lg:border lg:pb-5 lg:shadow-lg"
+      >
+        <div class="mx-auto mt-2.5 h-1 w-9 rounded-full bg-muted-foreground/30 lg:hidden"></div>
+        <div class="flex h-14 items-center justify-between px-5">
+          <h2 id="sh-filters-title" class="text-[17px] font-semibold tracking-[-0.01em]">Filters</h2>
+          <button type="button" data-close class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Close">
+            <i data-icon="x" class="size-[22px]"></i>
+          </button>
+        </div>
+
+        <div class="space-y-5 px-5">
+          <!-- Scope -->
+          <div>
+            <p class="mb-1.5 block text-[13px] font-medium">Visibility scope</p>
+            <div data-seg id="flt-scope" class="flex h-11 rounded-xl bg-muted p-1" role="group" aria-label="Visibility scope">
+              <button type="button" data-value="everything" aria-pressed="true" class="flex-1 rounded-lg bg-card text-[13px] font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]">All</button>
+              <button type="button" data-value="shared" aria-pressed="false" class="flex-1 rounded-lg text-[13px] font-medium text-muted-foreground">Shared</button>
+              <button type="button" data-value="only-you" aria-pressed="false" class="flex-1 rounded-lg text-[13px] font-medium text-muted-foreground">Only you</button>
+            </div>
+          </div>
+
+          <!-- Type -->
+          <div>
+            <p class="mb-1.5 block text-[13px] font-medium">Type</p>
+            <div data-seg id="flt-type" class="flex h-11 rounded-xl bg-muted p-1" role="group" aria-label="Type">
+              <button type="button" data-value="all" aria-pressed="true" class="flex-1 rounded-lg bg-card text-[13px] font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]">All</button>
+              <button type="button" data-value="EXPENSE" aria-pressed="false" class="flex-1 rounded-lg text-[13px] font-medium text-muted-foreground">Expenses</button>
+              <button type="button" data-value="INCOME" aria-pressed="false" class="flex-1 rounded-lg text-[13px] font-medium text-muted-foreground">Income</button>
+              <button type="button" data-value="TRANSFER" aria-pressed="false" class="flex-1 rounded-lg text-[13px] font-medium text-muted-foreground">Transfers</button>
+            </div>
+          </div>
+
+          <!-- Categories (colored multi-select chips, replaces Owe/Need/Want) -->
+          <div>
+            <p class="mb-1.5 block text-[13px] font-medium">Categories</p>
+            <div id="flt-cats" class="flex flex-wrap gap-1.5" role="group" aria-label="Categories"></div>
+          </div>
+
+          <!-- Account -->
+          <div>
+            <p class="mb-1.5 block text-[13px] font-medium">Account</p>
+            <ul id="flt-accounts" class="divide-y rounded-2xl border bg-card">
+              <li>
+                <button type="button" data-acc="JC" aria-pressed="false" class="flex min-h-11 w-full items-center justify-between gap-3 px-4 text-left text-[14px] hover:bg-accent/60">
+                  <span class="flex items-center gap-2.5 font-medium"><i data-icon="landmark" class="size-4 text-muted-foreground"></i>Joint Checking</span>
+                  <i data-icon="check" class="size-4 text-primary-text opacity-0"></i>
+                </button>
+              </li>
+              <li>
+                <button type="button" data-acc="SR" aria-pressed="false" class="flex min-h-11 w-full items-center justify-between gap-3 px-4 text-left text-[14px] hover:bg-accent/60">
+                  <span class="flex items-center gap-2.5 font-medium"><i data-icon="credit-card" class="size-4 text-muted-foreground"></i>Sapphire Reserve</span>
+                  <i data-icon="check" class="size-4 text-primary-text opacity-0"></i>
+                </button>
+              </li>
+              <li>
+                <button type="button" data-acc="MC" aria-pressed="false" class="flex min-h-11 w-full items-center justify-between gap-3 px-4 text-left text-[14px] hover:bg-accent/60">
+                  <span class="flex items-center gap-2.5 font-medium"><i data-icon="landmark" class="size-4 text-muted-foreground"></i>Maya's Checking <i data-icon="lock" class="size-3 text-muted-foreground"></i></span>
+                  <i data-icon="check" class="size-4 text-primary-text opacity-0"></i>
+                </button>
+              </li>
+              <li>
+                <button type="button" data-acc="CA" aria-pressed="false" class="flex min-h-11 w-full items-center justify-between gap-3 px-4 text-left text-[14px] hover:bg-accent/60">
+                  <span class="flex items-center gap-2.5 font-medium"><i data-icon="banknote" class="size-4 text-muted-foreground"></i>Cash <i data-icon="lock" class="size-3 text-muted-foreground"></i></span>
+                  <i data-icon="check" class="size-4 text-primary-text opacity-0"></i>
+                </button>
+              </li>
+              <li>
+                <button type="button" data-acc="BB" aria-pressed="false" class="flex min-h-11 w-full items-center justify-between gap-3 px-4 text-left text-[14px] hover:bg-accent/60">
+                  <span class="flex items-center gap-2.5 font-medium"><i data-icon="piggy-bank" class="size-4 text-muted-foreground"></i>BBVA México <i data-icon="lock" class="size-3 text-muted-foreground"></i></span>
+                  <i data-icon="check" class="size-4 text-primary-text opacity-0"></i>
+                </button>
+              </li>
+              <li>
+                <button type="button" data-acc="AG" aria-pressed="false" class="flex min-h-11 w-full items-center justify-between gap-3 px-4 text-left text-[14px] hover:bg-accent/60">
+                  <span class="flex items-center gap-2.5 font-medium"><i data-icon="credit-card" class="size-4 text-muted-foreground"></i>Amex Gold <i data-icon="lock" class="size-3 text-muted-foreground"></i></span>
+                  <i data-icon="check" class="size-4 text-primary-text opacity-0"></i>
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Added by -->
+          <div>
+            <p class="mb-1.5 block text-[13px] font-medium">Added by</p>
+            <div data-seg id="flt-by" class="flex h-11 rounded-xl bg-muted p-1" role="group" aria-label="Added by">
+              <button type="button" data-value="any" aria-pressed="true" class="flex-1 rounded-lg bg-card text-[13px] font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]">Anyone</button>
+              <button type="button" data-value="M" aria-pressed="false" class="flex-1 rounded-lg text-[13px] font-medium text-muted-foreground">Maya</button>
+              <button type="button" data-value="D" aria-pressed="false" class="flex-1 rounded-lg text-[13px] font-medium text-muted-foreground">Daniel</button>
+              <button type="button" data-value="R" aria-pressed="false" class="flex-1 rounded-lg text-[13px] font-medium text-muted-foreground">Auto</button>
+            </div>
+          </div>
+
+          <!-- Amount range -->
+          <div>
+            <p class="mb-1.5 block text-[13px] font-medium">Amount (USD)</p>
+            <div class="grid grid-cols-2 gap-2.5">
+              <input type="text" inputmode="decimal" id="flt-min" placeholder="Min" aria-label="Minimum amount" class="num h-11 w-full rounded-xl border border-input bg-card px-3.5 text-[15px] placeholder:text-muted-foreground" />
+              <input type="text" inputmode="decimal" id="flt-max" placeholder="Max" aria-label="Maximum amount" class="num h-11 w-full rounded-xl border border-input bg-card px-3.5 text-[15px] placeholder:text-muted-foreground" />
+            </div>
+          </div>
+
+          <!-- Labels -->
+          <div>
+            <p class="mb-1.5 block text-[13px] font-medium">Label</p>
+            <div data-chips="multi" id="flt-label" class="flex flex-wrap gap-2" role="group" aria-label="Label">
+              <button type="button" data-value="Reimbursable" aria-pressed="false" class="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border bg-card px-3 text-[13px] font-medium">Reimbursable</button>
+              <button type="button" data-value="Trip: Lisbon" aria-pressed="false" class="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border bg-card px-3 text-[13px] font-medium">Trip: Lisbon</button>
+              <button type="button" data-value="Tax" aria-pressed="false" class="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border bg-card px-3 text-[13px] font-medium">Tax</button>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="flex items-center gap-3 border-t pt-4">
+            <button type="button" id="flt-reset" class="flex h-11 items-center rounded-xl px-3 text-[14px] font-medium text-primary-text">Clear all</button>
+            <button type="button" id="flt-apply" data-close class="num inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground disabled:bg-muted disabled:text-muted-foreground">
+              Show 44 transactions
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════ SHEET / RIGHT INSPECTOR: DETAIL (?sheet=detail) ═══════════════════════════ -->
+    <div data-sheet-id="detail">
+      <div data-veil data-close class="fixed inset-0 z-40 bg-[#0b1220]/50 lg:hidden"></div>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="sh-detail-title"
+        class="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[92dvh] max-w-[430px] overflow-y-auto rounded-t-3xl bg-card pb-8 shadow-[0_-8px_30px_-12px_rgb(11_18_32/0.25)] lg:inset-y-0 lg:right-0 lg:left-auto lg:mx-0 lg:max-h-none lg:w-[420px] lg:max-w-none lg:rounded-none lg:border-l lg:pb-8"
+      >
+        <div class="mx-auto mt-2.5 h-1 w-9 rounded-full bg-muted-foreground/30 lg:hidden"></div>
+        <div class="flex h-14 items-center justify-between px-4">
+          <span class="text-[14px] font-semibold text-muted-foreground">Transaction details</span>
+          <button type="button" data-close class="grid size-10 place-items-center rounded-full hover:bg-accent" aria-label="Close">
+            <i data-icon="x" class="size-[20px]"></i>
+          </button>
+        </div>
+
+        <!-- Center Hero -->
+        <div class="flex flex-col items-center px-5 pt-1 text-center">
+          <span id="dt-hero-tile" class="grid size-14 place-items-center rounded-2xl bg-brand-pink text-brand-pink-foreground">
+            <i id="dt-icon" data-icon="ticket" class="size-6"></i>
+          </span>
+          <h2 id="sh-detail-title" class="mt-3 text-[20px] font-semibold tracking-[-0.02em]">Ticketmaster</h2>
+          <p id="dt-amount" class="num mt-1 text-[34px] leading-[40px] font-semibold tracking-[-0.03em]">−$142.60</p>
+          <p id="dt-fx" class="num mt-0.5 hidden text-[13px] text-muted-foreground">≈ −$56.85 USD · 18.47 MXN/USD</p>
+          <p id="dt-date" class="mt-1 text-[13px] text-muted-foreground">Wed, Nov 11, 2026 · 7:18 PM</p>
+          <span id="dt-source-badge" class="mt-2 inline-flex items-center gap-1 rounded-full border bg-muted/50 px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">
+            Manual entry
+          </span>
+        </div>
+
+        <div class="mt-5 space-y-4 px-5">
+          <!-- Schema Fields Card -->
+          <div class="divide-y rounded-2xl border bg-card">
+            <!-- Category Picker -->
+            <div class="flex min-h-13 items-center justify-between gap-3 px-4">
+              <label for="dt-cat-select" class="text-[13px] text-muted-foreground">Category</label>
+              <div class="flex items-center gap-2">
+                <span id="dt-cat-dot" class="size-2.5 rounded-full bg-brand-pink-500"></span>
+                <select id="dt-cat-select" class="bg-transparent text-right text-[14px] font-medium focus:outline-none"></select>
+              </div>
+            </div>
+
+            <!-- Account + Visibility -->
+            <div class="flex min-h-13 items-center justify-between gap-3 px-4">
+              <span class="text-[13px] text-muted-foreground">Account</span>
+              <span class="flex items-center gap-2 text-[14px] font-medium">
+                <span id="dt-account">Joint Checking</span>
+                <span id="dt-vis-pill" class="inline-flex h-6 items-center gap-1 rounded-full bg-primary/10 px-2 text-[11px] font-medium text-primary-text">
+                  <i data-icon="users" class="size-3"></i>Shared
+                </span>
+              </span>
+            </div>
+
+            <!-- Added by -->
+            <div class="flex min-h-13 items-center justify-between gap-3 px-4">
+              <span class="text-[13px] text-muted-foreground">Added by</span>
+              <span class="flex items-center gap-2 text-[14px] font-medium">
+                <span id="dt-by-avatar" class="grid size-6 place-items-center rounded-full bg-brand-purple text-[11px] font-semibold text-brand-purple-foreground">M</span>
+                <span id="dt-by-name">Maya Torres</span>
+              </span>
+            </div>
+
+            <!-- Editable Note -->
+            <div class="px-4 py-3">
+              <label for="dt-note-input" class="block text-[12px] font-medium text-muted-foreground">Note</label>
+              <input id="dt-note-input" type="text" placeholder="Add a note..." class="mt-1 w-full bg-transparent text-[14px] font-medium placeholder:text-muted-foreground/60 focus:outline-none" />
+            </div>
+
+            <!-- Interactive Labels -->
+            <div class="px-4 py-3">
+              <p class="text-[12px] font-medium text-muted-foreground">Labels</p>
+              <div id="dt-labels-row" class="mt-2 flex flex-wrap gap-1.5"></div>
+            </div>
+
+            <!-- Exclude from stats toggle -->
+            <div class="flex items-center justify-between gap-3 px-4 py-3">
+              <div>
+                <p class="text-[14px] font-medium">Count in monthly budget</p>
+                <p class="text-[12px] text-muted-foreground">Include in Money out &amp; category caps</p>
+              </div>
+              <button type="button" id="dt-stats-switch" role="switch" aria-checked="true" aria-label="Count in monthly budget" class="relative h-7 w-12 shrink-0 rounded-full bg-primary transition-colors">
+                <span data-knob class="absolute top-0.5 left-0.5 size-6 translate-x-5 rounded-full bg-white transition-transform"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Monthly Category Spend Insight Card (Movimientos Propuesta A!) -->
+          <div id="dt-cat-insight" class="rounded-2xl border bg-muted/40 p-4">
+            <div class="flex items-center justify-between gap-2 text-[13px]">
+              <span id="dt-insight-title" class="font-semibold">$212.09 in Entertainment this month</span>
+              <span id="dt-insight-count" class="num text-[12px] text-muted-foreground">4 tx</span>
+            </div>
+            <p id="dt-insight-cap" class="num mt-0.5 text-[12px] text-muted-foreground">$37.91 left of $250.00 monthly limit</p>
+            <div id="dt-insight-bar-wrap" class="relative mt-2.5 h-1.5 rounded-full bg-muted">
+              <div id="dt-insight-bar" class="h-full rounded-full bg-brand-pink-500" style="width: 84.8%"></div>
+              <span class="absolute -top-1 -bottom-1 w-0.5 -translate-x-1/2 rounded-full bg-foreground/45" style="left: 40%" aria-hidden="true"></span>
+            </div>
+            <button type="button" id="dt-filter-cat" class="mt-3 text-[12px] font-medium text-primary-text hover:underline">
+              Filter all in this category →
+            </button>
+          </div>
+
+          <!-- Related Debt / Recurring Object -->
+          <div id="dt-relation" class="rounded-2xl border bg-card">
+            <a id="dt-relation-link" href="debts.html?sheet=detail" class="flex min-h-14 items-center gap-3 px-4 hover:bg-accent/60">
+              <span class="grid size-9 shrink-0 place-items-center rounded-xl bg-brand-green text-brand-green-foreground">
+                <i id="dt-relation-icon" data-icon="hand-coins" class="size-[18px]"></i>
+              </span>
+              <span id="dt-relation-text" class="num flex-1 text-[14px] font-medium">Sofía Torres owes you $71.30 for this</span>
+              <i data-icon="chevron-right" class="size-4 text-muted-foreground"></i>
+            </a>
+          </div>
+
+          <!-- Actions -->
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" data-close data-toast-msg="Transaction duplicated" data-toast-action="Undo" class="inline-flex h-11 items-center justify-center gap-2 rounded-xl border bg-card text-[14px] font-medium hover:bg-accent">
+              <i data-icon="copy" class="size-4"></i>Duplicate
+            </button>
+            <button type="button" id="dt-delete" class="inline-flex h-11 items-center justify-center gap-2 rounded-xl border bg-card text-[14px] font-medium text-destructive hover:bg-accent">
+              <i data-icon="trash-2" class="size-4"></i>Delete
+            </button>
+          </div>
+          <a href="recurring.html" class="flex h-11 w-full items-center justify-center gap-2 rounded-xl border bg-card text-[14px] font-medium hover:bg-accent">
+            <i data-icon="repeat" class="size-4 text-muted-foreground"></i>Make recurring
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/icons.js"></script>
+    <script>
+      (function () {
+        var COLOR_TILE = {
+          green: "bg-brand-green text-brand-green-foreground",
+          orange: "bg-brand-orange text-brand-orange-foreground",
+          blue: "bg-brand-blue text-brand-blue-foreground",
+          purple: "bg-brand-purple text-brand-purple-foreground",
+          pink: "bg-brand-pink text-brand-pink-foreground",
+          red: "bg-brand-red text-brand-red-foreground",
+          yellow: "bg-brand-yellow text-brand-yellow-foreground",
+          brown: "bg-brand-brown text-brand-brown-foreground",
+          gray: "bg-brand-gray text-brand-gray-foreground",
+        };
+        var COLOR_DOT = {
+          green: "bg-brand-green-500 dark:bg-brand-green-400",
+          orange: "bg-brand-orange-500 dark:bg-brand-orange-400",
+          blue: "bg-brand-blue-500 dark:bg-brand-blue-400",
+          purple: "bg-brand-purple-500 dark:bg-brand-purple-400",
+          pink: "bg-brand-pink-500 dark:bg-brand-pink-400",
+          red: "bg-brand-red-500 dark:bg-brand-red-400",
+          yellow: "bg-brand-yellow-500 dark:bg-brand-yellow-400",
+          brown: "bg-brand-brown-500 dark:bg-brand-brown-400",
+          gray: "bg-brand-gray-500 dark:bg-brand-gray-400",
+        };
+        var COLOR_PILL = {
+          green: "bg-brand-green text-brand-green-foreground",
+          orange: "bg-brand-orange text-brand-orange-foreground",
+          blue: "bg-brand-blue text-brand-blue-foreground",
+          purple: "bg-brand-purple text-brand-purple-foreground",
+          pink: "bg-brand-pink text-brand-pink-foreground",
+          red: "bg-brand-red text-brand-red-foreground",
+          yellow: "bg-brand-yellow text-brand-yellow-foreground",
+          brown: "bg-brand-brown text-brand-brown-foreground",
+          gray: "bg-brand-gray text-brand-gray-foreground",
+        };
+        var LABEL_PILL = {
+          Reimbursable: "bg-brand-green text-brand-green-foreground",
+          "Trip: Lisbon": "bg-brand-blue text-brand-blue-foreground",
+          Tax: "bg-brand-gray text-brand-gray-foreground",
+        };
+
+        var ACCOUNTS = {
+          JC: { name: "Joint Checking", shared: true, icon: "landmark" },
+          EF: { name: "Emergency Fund", shared: true, icon: "piggy-bank" },
+          SR: { name: "Sapphire Reserve", shared: true, icon: "credit-card" },
+          MC: { name: "Maya's Checking", shared: false, icon: "landmark" },
+          CA: { name: "Cash", shared: false, icon: "banknote" },
+          BB: { name: "BBVA México", shared: false, currency: "MXN", icon: "piggy-bank" },
+          AG: { name: "Amex Gold", shared: false, icon: "credit-card" },
+        };
+
+        var CATS = {
+          Groceries: { icon: "shopping-cart", color: "green", cap: 90000, type: "EXPENSE" },
+          "Dining out": { icon: "utensils", color: "orange", cap: 45000, type: "EXPENSE" },
+          Transport: { icon: "bus", color: "blue", cap: 30000, type: "EXPENSE" },
+          Entertainment: { icon: "ticket", color: "pink", cap: 25000, type: "EXPENSE" },
+          Subscriptions: { icon: "tv", color: "purple", cap: 8000, type: "EXPENSE" },
+          Rent: { icon: "building-2", color: "purple", cap: 215000, type: "EXPENSE" },
+          "Car loan": { icon: "car", color: "red", cap: 32000, type: "EXPENSE" },
+          "Phone & internet": { icon: "wifi", color: "blue", cap: 18000, type: "EXPENSE" },
+          Utilities: { icon: "zap", color: "yellow", cap: 22000, type: "EXPENSE" },
+          Health: { icon: "heart-pulse", color: "green", cap: 15000, type: "EXPENSE" },
+          Household: { icon: "lamp", color: "yellow", cap: 0, type: "EXPENSE" },
+          Pets: { icon: "paw-print", color: "brown", cap: 0, type: "EXPENSE" },
+          Shopping: { icon: "shopping-bag", color: "purple", cap: 0, type: "EXPENSE" },
+          Fitness: { icon: "dumbbell", color: "green", cap: 0, type: "EXPENSE" },
+          Gifts: { icon: "gift", color: "orange", cap: 0, type: "EXPENSE" },
+          Paycheck: { icon: "briefcase", color: "green", cap: 0, type: "INCOME" },
+          Transfer: { icon: "arrow-left-right", color: "gray", cap: 0, type: "TRANSFER" },
+        };
+
+        var DAYS = {
+          12: { label: "Today", short: "Nov 12" },
+          11: { label: "Yesterday", short: "Nov 11" },
+          10: { label: "Tue, Nov 10", short: "Nov 10" },
+          9: { label: "Mon, Nov 9", short: "Nov 9" },
+          8: { label: "Sun, Nov 8", short: "Nov 8" },
+          7: { label: "Sat, Nov 7", short: "Nov 7" },
+          6: { label: "Fri, Nov 6", short: "Nov 6" },
+          5: { label: "Thu, Nov 5", short: "Nov 5" },
+          4: { label: "Wed, Nov 4", short: "Nov 4" },
+          3: { label: "Tue, Nov 3", short: "Nov 3" },
+          2: { label: "Mon, Nov 2", short: "Nov 2" },
+          1: { label: "Sun, Nov 1", short: "Nov 1" },
+        };
+
+        // All 44 November records aligned with mock-data.md §5 and schema.prisma Record
+        var RECORDS = [
+          { id: 1044, day: 12, time: "1:18 PM", payee: "DoorDash", cat: "Dining out", type: "EXPENSE", cents: 4124, acc: "JC", by: "M", src: "MANUAL" },
+          { id: 1043, day: 12, time: "11:40 AM", payee: "McNally Jackson", cat: "Shopping", type: "EXPENSE", cents: 2531, acc: "AG", by: "M", src: "MANUAL" },
+          { id: 1042, day: 12, time: "9:05 AM", payee: "Union Sq Greenmarket", cat: "Groceries", type: "EXPENSE", cents: 3800, acc: "CA", by: "M", src: "MANUAL" },
+          { id: 1041, day: 11, time: "8:14 PM", payee: "Ticketmaster", cat: "Entertainment", type: "EXPENSE", cents: 14260, acc: "JC", by: "M", src: "MANUAL", note: "Bleachers, 2 tickets", rel: "Sofía Torres owes you $71.30 for this", relHref: "debts.html?sheet=detail", relIcon: "hand-coins" },
+          { id: 1040, day: 11, time: "2:42 PM", payee: "Blue Bottle", cat: "Dining out", type: "EXPENSE", cents: 675, acc: "AG", by: "M", src: "MANUAL" },
+          { id: 1039, day: 11, time: "12:15 PM", payee: "Costco", cat: "Groceries", type: "EXPENSE", cents: 21136, acc: "JC", by: "D", src: "MANUAL" },
+          { id: 1038, day: 11, time: "10:30 AM", payee: "Target", cat: "Household", type: "EXPENSE", cents: 6490, acc: "JC", by: "D", src: "MANUAL", labels: ["Reimbursable"] },
+          { id: 1037, day: 10, time: "6:20 PM", payee: "Paper Source", cat: "Gifts", type: "EXPENSE", cents: 6000, acc: "MC", by: "M", src: "MANUAL" },
+          { id: 1036, day: 10, time: "4:12 PM", payee: "Kindle", cat: "Entertainment", type: "EXPENSE", cents: 1299, acc: "AG", by: "M", src: "IMPORT" },
+          { id: 1035, day: 10, time: "9:00 AM", payee: "iCloud+", cat: "Subscriptions", type: "EXPENSE", cents: 299, acc: "SR", by: "R", src: "RECURRING" },
+          { id: 1034, day: 10, time: "8:15 AM", payee: "National Grid", cat: "Utilities", type: "EXPENSE", cents: 5875, acc: "JC", by: "R", src: "RECURRING", note: "Confirmed (est. ~$58.00)" },
+          { id: 1033, day: 10, time: "7:30 AM", payee: "Trader Joe's", cat: "Groceries", type: "EXPENSE", cents: 9362, acc: "JC", by: "M", src: "MANUAL" },
+          { id: 1032, day: 9, time: "5:45 PM", payee: "Liverpool", cat: "Gifts", type: "EXPENSE", cents: 5685, mxn: 105000, acc: "BB", by: "M", src: "IMPORT", note: "CDMX · 18.47 MXN/USD" },
+          { id: 1031, day: 9, time: "1:10 PM", payee: "Joe's Pizza", cat: "Dining out", type: "EXPENSE", cents: 2875, acc: "JC", by: "D", src: "MANUAL" },
+          { id: 1030, day: 9, time: "12:25 PM", payee: "Sweetgreen", cat: "Dining out", type: "EXPENSE", cents: 1645, acc: "AG", by: "M", src: "MANUAL" },
+          { id: 1029, day: 9, time: "10:15 AM", payee: "Chewy", cat: "Pets", type: "EXPENSE", cents: 6124, acc: "JC", by: "M", src: "MANUAL" },
+          { id: 1028, day: 9, time: "9:30 AM", payee: "Dr. Patel", cat: "Health", type: "EXPENSE", cents: 4000, acc: "JC", by: "M", src: "MANUAL", note: "Copay" },
+          { id: 1027, day: 8, time: "7:02 PM", payee: "Amazon", cat: "Shopping", type: "EXPENSE", cents: 6784, acc: "JC", by: "D", src: "IMPORT" },
+          { id: 1026, day: 8, time: "9:00 AM", payee: "Max", cat: "Subscriptions", type: "EXPENSE", cents: 1849, acc: "SR", by: "R", src: "RECURRING" },
+          { id: 1025, day: 8, time: "8:20 AM", payee: "Shell", cat: "Transport", type: "EXPENSE", cents: 4820, acc: "JC", by: "D", src: "MANUAL" },
+          { id: 1024, day: 7, time: "4:15 PM", payee: "Street fair", cat: "Entertainment", type: "EXPENSE", cents: 2200, acc: "CA", by: "M", src: "MANUAL" },
+          { id: 1023, day: 7, time: "8:50 PM", payee: "Via Carota", cat: "Dining out", type: "EXPENSE", cents: 8460, acc: "SR", by: "M", src: "MANUAL" },
+          { id: 1022, day: 7, time: "11:45 AM", payee: "Whole Foods", cat: "Groceries", type: "EXPENSE", cents: 15288, acc: "JC", by: "M", src: "MANUAL" },
+          { id: 1021, day: 6, time: "9:30 PM", payee: "AMC Theatres", cat: "Entertainment", type: "EXPENSE", cents: 3450, acc: "JC", by: "M", src: "MANUAL" },
+          { id: 1020, day: 6, time: "6:15 PM", payee: "Barry's", cat: "Fitness", type: "EXPENSE", cents: 3200, acc: "AG", by: "M", src: "MANUAL" },
+          { id: 1019, day: 6, time: "1:05 PM", payee: "CVS Pharmacy", cat: "Health", type: "EXPENSE", cents: 4235, acc: "MC", by: "M", src: "MANUAL" },
+          { id: 1018, day: 6, time: "9:05 AM", payee: "Maya's Checking → Joint Checking", cat: "Transfer", type: "TRANSFER", cents: 180000, acc: "MC", toAcc: "JC", by: "R", src: "RECURRING", note: "Maya's share" },
+          { id: 1017, day: 6, time: "8:00 AM", payee: "Lumen Labs", cat: "Paycheck", type: "INCOME", cents: 297500, acc: "MC", by: "R", src: "RECURRING", note: "Maya's paycheck" },
+          { id: 1016, day: 5, time: "8:40 PM", payee: "The Dead Rabbit", cat: "Dining out", type: "EXPENSE", cents: 3000, acc: "CA", by: "M", src: "MANUAL" },
+          { id: 1015, day: 5, time: "9:00 AM", payee: "Spotify", cat: "Subscriptions", type: "EXPENSE", cents: 1899, acc: "SR", by: "R", src: "RECURRING", note: "Up from $16.99", rel: "Part of Spotify Duo · Monthly on the 5th", relHref: "recurring.html", relIcon: "repeat" },
+          { id: 1014, day: 5, time: "9:00 AM", payee: "Spectrum", cat: "Phone & internet", type: "EXPENSE", cents: 6999, acc: "JC", by: "R", src: "RECURRING" },
+          { id: 1013, day: 5, time: "9:00 AM", payee: "Toyota Financial", cat: "Car loan", type: "EXPENSE", cents: 32000, acc: "JC", by: "R", src: "RECURRING", rel: "Car loan debt · $11,200 remaining", relHref: "debts.html", relIcon: "hand-coins" },
+          { id: 1012, day: 4, time: "5:10 PM", payee: "Maya's Checking → Cash", cat: "Transfer", type: "TRANSFER", cents: 10000, acc: "MC", toAcc: "CA", by: "M", src: "MANUAL", note: "ATM" },
+          { id: 1011, day: 4, time: "9:00 AM", payee: "Chelsea Piers Fitness", cat: "Fitness", type: "EXPENSE", cents: 8900, acc: "JC", by: "R", src: "RECURRING" },
+          { id: 1010, day: 4, time: "6:12 PM", payee: "Trader Joe's", cat: "Groceries", type: "EXPENSE", cents: 8617, acc: "JC", by: "M", src: "MANUAL" },
+          { id: 1009, day: 3, time: "3:40 PM", payee: "Glossier", cat: "Shopping", type: "EXPENSE", cents: 3800, acc: "AG", by: "M", src: "MANUAL" },
+          { id: 1008, day: 3, time: "8:10 AM", payee: "Metro-North", cat: "Transport", type: "EXPENSE", cents: 16800, acc: "MC", by: "M", src: "MANUAL", note: "Monthly pass" },
+          { id: 1007, day: 3, time: "7:50 AM", payee: "MTA OMNY", cat: "Transport", type: "EXPENSE", cents: 3400, acc: "MC", by: "M", src: "MANUAL" },
+          { id: 1006, day: 2, time: "7:55 PM", payee: "Lucali", cat: "Dining out", type: "EXPENSE", cents: 9640, acc: "JC", by: "D", src: "MANUAL" },
+          { id: 1005, day: 2, time: "9:00 AM", payee: "Verizon", cat: "Phone & internet", type: "EXPENSE", cents: 11000, acc: "JC", by: "R", src: "RECURRING" },
+          { id: 1004, day: 2, time: "8:00 AM", payee: "Northwind Design", cat: "Paycheck", type: "INCOME", cents: 315000, acc: "JC", by: "R", src: "RECURRING", note: "Daniel's paycheck" },
+          { id: 1003, day: 1, time: "10:15 AM", payee: "Blue Bottle", cat: "Dining out", type: "EXPENSE", cents: 950, acc: "AG", by: "M", src: "MANUAL" },
+          { id: 1002, day: 1, time: "3:20 PM", payee: "Whole Foods", cat: "Groceries", type: "EXPENSE", cents: 12743, acc: "JC", by: "M", src: "MANUAL" },
+          { id: 1001, day: 1, time: "8:00 AM", payee: "Parkside Apartments", cat: "Rent", type: "EXPENSE", cents: 215000, acc: "JC", by: "R", src: "RECURRING" },
+        ];
+
+        var state = {
+          q: "",
+          scope: window.fableScope ? window.fableScope() : "everything",
+          type: "all",
+          categories: [],
+          accounts: [],
+          by: "any",
+          min: "",
+          max: "",
+          labels: [],
+          hasLabelOnly: false,
+          selectedId: 1041,
+        };
+
+        var p = new URLSearchParams(location.search);
+        if (p.get("cat")) state.categories = [p.get("cat")];
+        if (p.get("category")) state.categories = [p.get("category")];
+        if (p.get("account")) state.accounts = [p.get("account")];
+        if (p.get("scope")) state.scope = p.get("scope");
+        if (p.get("type")) state.type = p.get("type");
+        if (p.get("id")) state.selectedId = Number(p.get("id"));
+        if (!["everything", "shared", "only-you"].includes(state.scope)) state.scope = "everything";
+
+        function fmtUSD(cents) {
+          var abs = Math.abs(cents);
+          return "$" + (abs / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function amountHtml(r, showTime) {
+          if (r.mxn) {
+            return (
+              '<div class="shrink-0 text-right">' +
+              '<span class="num block font-semibold">−MX$1,050.00</span>' +
+              '<span class="num block text-[11px] text-muted-foreground">≈ −$56.85</span>' +
+              "</div>"
+            );
+          }
+          var cls = r.type === "INCOME" ? "num block font-semibold text-positive" : r.type === "TRANSFER" ? "num block font-medium text-muted-foreground" : "num block font-semibold";
+          var val = (r.type === "INCOME" ? "+" : r.type === "EXPENSE" ? "−" : "") + fmtUSD(r.cents);
+          if (showTime) {
+            return (
+              '<div class="shrink-0 text-right">' +
+              '<span class="' + cls + '">' + val + "</span>" +
+              '<span class="block text-[11px] text-muted-foreground">' + r.time + "</span>" +
+              "</div>"
+            );
+          }
+          return '<span class="' + cls + '">' + val + "</span>";
+        }
+
+        function matchesBase(r, ignoreType) {
+          var acc = ACCOUNTS[r.acc];
+          if (state.scope === "shared" && !acc.shared && !(r.toAcc && ACCOUNTS[r.toAcc].shared)) return false;
+          if (state.scope === "only-you" && acc.shared) return false;
+          if (!ignoreType && state.type !== "all" && r.type !== state.type) return false;
+          if (state.categories.length && state.categories.indexOf(r.cat) < 0) return false;
+          if (state.accounts.length && state.accounts.indexOf(r.acc) < 0) return false;
+          if (state.by !== "any" && r.by !== state.by) return false;
+          if (state.hasLabelOnly && (!r.labels || !r.labels.length)) return false;
+          if (state.labels.length && (!r.labels || !state.labels.some(function (l) { return r.labels.indexOf(l) >= 0; }))) return false;
+          if (state.min && r.cents < parseFloat(state.min) * 100) return false;
+          if (state.max && r.cents > parseFloat(state.max) * 100) return false;
+          if (state.q) {
+            var q = state.q.toLowerCase();
+            var hay = [r.payee, r.cat, acc.name, r.note || "", (r.labels || []).join(" "), (r.cents / 100).toFixed(2)].join(" ").toLowerCase();
+            if (hay.indexOf(q) < 0) return false;
+          }
+          return true;
+        }
+
+        function syncScopeAndTypeUi() {
+          document.querySelectorAll("#tx-scope-tabs [data-scope]").forEach(function (b) {
+            var on = b.dataset.scope === state.scope;
+            b.setAttribute("aria-pressed", String(on));
+            b.className = on
+              ? "h-8 rounded-lg bg-card px-2.5 text-[13px] font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]"
+              : "h-8 rounded-lg px-2.5 text-[13px] font-medium text-muted-foreground";
+          });
+          document.querySelectorAll("#tx-type-tabs [data-type]").forEach(function (b) {
+            var on = b.dataset.type === state.type;
+            b.setAttribute("aria-pressed", String(on));
+            b.className = on
+              ? "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-transparent bg-foreground px-3.5 text-[13px] font-medium text-background"
+              : "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border bg-card px-3.5 text-[13px] font-medium hover:bg-accent";
+          });
+          document.getElementById("tx-q-rec").setAttribute("aria-pressed", String(state.by === "R"));
+          document.getElementById("tx-q-rec").classList.toggle("border-transparent", state.by === "R");
+          document.getElementById("tx-q-rec").classList.toggle("bg-foreground", state.by === "R");
+          document.getElementById("tx-q-rec").classList.toggle("text-background", state.by === "R");
+
+          document.getElementById("tx-q-lbl").setAttribute("aria-pressed", String(state.hasLabelOnly));
+          document.getElementById("tx-q-lbl").classList.toggle("border-transparent", state.hasLabelOnly);
+          document.getElementById("tx-q-lbl").classList.toggle("bg-foreground", state.hasLabelOnly);
+          document.getElementById("tx-q-lbl").classList.toggle("text-background", state.hasLabelOnly);
+
+          var catLbl = document.getElementById("tx-cat-toggle-lbl");
+          catLbl.textContent = state.categories.length === 1 ? state.categories[0] : state.categories.length > 1 ? state.categories.length + " categories" : "Category";
+        }
+
+        function renderCategoryPickers() {
+          var names = Object.keys(CATS).filter(function (c) { return c !== "Transfer"; });
+          function makeChips(containerId) {
+            var el = document.getElementById(containerId);
+            el.innerHTML = names.map(function (name) {
+              var c = CATS[name];
+              var on = state.categories.indexOf(name) >= 0;
+              return (
+                '<button type="button" data-cat-pick="' + name + '" aria-pressed="' + on + '" class="inline-flex h-8 items-center gap-1.5 rounded-full border px-2.5 text-[12px] font-medium ' +
+                (on ? "border-transparent bg-foreground text-background" : "bg-background hover:bg-accent") + '">' +
+                '<span class="size-2 rounded-full ' + COLOR_DOT[c.color] + '"></span>' + name + "</button>"
+              );
+            }).join("");
+          }
+          makeChips("tx-cat-pills");
+          makeChips("flt-cats");
+        }
+
+        function renderKpis(baseNoType, list) {
+          var incList = baseNoType.filter(function (r) { return r.type === "INCOME" && !r.excluded; });
+          var expList = baseNoType.filter(function (r) { return r.type === "EXPENSE" && !r.excluded; });
+          var inCents = incList.reduce(function (s, r) { return s + r.cents; }, 0);
+          var outCents = expList.reduce(function (s, r) { return s + r.cents; }, 0);
+          var net = inCents - outCents;
+          var pct = inCents > 0 ? Math.round((net / inCents) * 1000) / 10 : 0;
+
+          document.getElementById("kpi-in").textContent = "+" + fmtUSD(inCents);
+          document.getElementById("kpi-in-sub").textContent = incList.length + " deposit" + (incList.length === 1 ? "" : "s");
+          document.getElementById("kpi-out").textContent = fmtUSD(outCents);
+          document.getElementById("kpi-out-sub").textContent = expList.length + " expense" + (expList.length === 1 ? "" : "s");
+
+          var netEl = document.getElementById("kpi-net");
+          netEl.textContent = (net >= 0 ? "+" : "−") + fmtUSD(net);
+          netEl.className = "num mt-1 text-[20px] font-semibold tracking-[-0.02em] " + (net >= 0 ? "text-positive" : "text-destructive");
+          document.getElementById("kpi-net-sub").textContent = inCents > 0
+            ? (net >= 0 ? pct + "% of income saved" : "Expenses exceed income")
+            : "No income in filter";
+
+          // Daily spend bars (Nov 1..12) from active expenses
+          var dayTotals = {};
+          for (var d = 1; d <= 12; d++) dayTotals[d] = 0;
+          expList.forEach(function (r) { dayTotals[r.day] += r.cents; });
+          var maxDay = 1;
+          for (var d2 = 1; d2 <= 12; d2++) if (dayTotals[d2] > maxDay) maxDay = dayTotals[d2];
+          var avgDay = Math.round(outCents / 12);
+          document.getElementById("kpi-avg").textContent = fmtUSD(avgDay) + "/day";
+
+          var barsEl = document.getElementById("tx-daily-bars");
+          var barsHtml = "";
+          for (var d3 = 1; d3 <= 12; d3++) {
+            var hPct = dayTotals[d3] > 0 ? Math.max(12, Math.round((dayTotals[d3] / maxDay) * 100)) : 6;
+            var isToday = d3 === 12;
+            barsHtml += '<span title="Nov ' + d3 + ': ' + fmtUSD(dayTotals[d3]) + '" class="flex-1 rounded-t-sm ' +
+              (dayTotals[d3] === 0 ? "bg-muted" : isToday ? "bg-brand-orange-500" : "bg-primary/70") +
+              '" style="height:' + hPct + '%"></span>';
+          }
+          barsEl.innerHTML = barsHtml;
+
+          // Live tab counts (independent of Type selection)
+          document.getElementById("cnt-all").textContent = String(baseNoType.length);
+          document.getElementById("cnt-exp").textContent = String(baseNoType.filter(function (r) { return r.type === "EXPENSE"; }).length);
+          document.getElementById("cnt-inc").textContent = String(baseNoType.filter(function (r) { return r.type === "INCOME"; }).length);
+          document.getElementById("cnt-txf").textContent = String(baseNoType.filter(function (r) { return r.type === "TRANSFER"; }).length);
+          var subTxt = "November 2026 · " + list.length + " record" + (list.length === 1 ? "" : "s");
+          document.getElementById("tx-sub-mob").textContent = subTxt;
+          document.getElementById("tx-sub-desk").textContent = subTxt;
+        }
+
+        function renderList() {
+          syncScopeAndTypeUi();
+          renderCategoryPickers();
+
+          var baseNoType = RECORDS.filter(function (r) { return matchesBase(r, true); });
+          var list = baseNoType.filter(function (r) { return state.type === "all" || r.type === state.type; });
+          renderKpis(baseNoType, list);
+
+          var mobileEl = document.getElementById("tx-mobile-list");
+          var deskBody = document.getElementById("tx-desktop-body");
+          var deskWrap = document.getElementById("tx-desktop-wrap");
+          var noRes = document.getElementById("tx-no-results");
+          var footer = document.getElementById("tx-footer");
+
+          var applyBtn = document.getElementById("flt-apply");
+          if (applyBtn) {
+            applyBtn.disabled = list.length === 0;
+            applyBtn.textContent = list.length ? "Show " + list.length + " transaction" + (list.length === 1 ? "" : "s") : "No transactions match";
+          }
+
+          var activePills = [];
+          if (state.scope !== "everything") activePills.push({ label: state.scope === "shared" ? "Shared" : "Only you", clear: function () { state.scope = "everything"; renderList(); } });
+          if (state.type !== "all") activePills.push({ label: state.type.charAt(0) + state.type.slice(1).toLowerCase(), clear: function () { state.type = "all"; renderList(); } });
+          state.categories.forEach(function (c) {
+            activePills.push({ label: c, clear: function () { state.categories = state.categories.filter(function (x) { return x !== c; }); renderList(); } });
+          });
+          state.accounts.forEach(function (a) {
+            activePills.push({ label: ACCOUNTS[a].name, clear: function () { state.accounts = state.accounts.filter(function (x) { return x !== a; }); syncAccountChecks(); renderList(); } });
+          });
+          if (state.by !== "any") activePills.push({ label: state.by === "D" ? "Added by Daniel" : state.by === "M" ? "Added by Maya" : "Recurring", clear: function () { state.by = "any"; renderList(); } });
+          if (state.hasLabelOnly) activePills.push({ label: "Has label", clear: function () { state.hasLabelOnly = false; renderList(); } });
+          state.labels.forEach(function (l) {
+            activePills.push({ label: l, clear: function () { state.labels = state.labels.filter(function (x) { return x !== l; }); renderList(); } });
+          });
+
+          var activeCount = (state.scope !== "everything" ? 1 : 0) + (state.type !== "all" ? 1 : 0) + state.categories.length + state.accounts.length + (state.by !== "any" ? 1 : 0) + (state.hasLabelOnly ? 1 : 0) + state.labels.length + (state.min || state.max ? 1 : 0);
+          document.querySelectorAll("[data-filter-badge]").forEach(function (b) {
+            b.textContent = String(activeCount);
+            b.classList.toggle("hidden", activeCount === 0);
+            b.classList.toggle("grid", activeCount > 0);
+          });
+
+          var bar = document.getElementById("tx-active-bar");
+          var sumCents = list.reduce(function (s, r) { return s + (r.type === "TRANSFER" || r.excluded ? 0 : r.type === "INCOME" ? r.cents : -r.cents); }, 0);
+          if (activePills.length || state.q) {
+            bar.classList.remove("hidden");
+            var pillsEl = document.getElementById("tx-active-pills");
+            pillsEl.innerHTML = activePills.map(function (pill, idx) {
+              return '<button type="button" data-rm-pill="' + idx + '" class="inline-flex h-8 items-center gap-1.5 rounded-full bg-foreground px-3 text-[12px] font-medium text-background">' + pill.label + ' <i data-icon="x" class="size-3"></i></button>';
+            }).join("");
+            pillsEl.querySelectorAll("[data-rm-pill]").forEach(function (btn) {
+              btn.onclick = function () { activePills[Number(btn.dataset.rmPill)].clear(); };
+            });
+            document.getElementById("tx-active-summary").textContent =
+              list.length + " tx · Net " + (sumCents >= 0 ? "+" : "−") + fmtUSD(sumCents);
+            if (window.fableIcons) window.fableIcons(pillsEl);
+          } else {
+            bar.classList.add("hidden");
+          }
+
+          if (!list.length) {
+            mobileEl.innerHTML = "";
+            deskBody.innerHTML = "";
+            deskWrap.classList.add("lg:hidden");
+            noRes.classList.remove("hidden");
+            noRes.classList.add("flex");
+            footer.classList.add("hidden");
+            return;
+          }
+          deskWrap.classList.remove("lg:hidden");
+          noRes.classList.add("hidden");
+          noRes.classList.remove("flex");
+          footer.classList.remove("hidden");
+
+          var byDay = {};
+          list.forEach(function (r) {
+            if (!byDay[r.day]) byDay[r.day] = [];
+            byDay[r.day].push(r);
+          });
+          var days = Object.keys(byDay).map(Number).sort(function (a, b) { return b - a; });
+
+          var mHtml = "";
+          var dHtml = "";
+          days.forEach(function (day) {
+            var rows = byDay[day];
+            var net = rows.reduce(function (s, r) {
+              if (r.type === "TRANSFER" || r.excluded) return s;
+              return s + (r.type === "INCOME" ? r.cents : -r.cents);
+            }, 0);
+            var netStr = (net > 0 ? "+" : net < 0 ? "−" : "") + fmtUSD(net);
+            var netCls = net > 0 ? "num text-positive" : "num";
+
+            mHtml +=
+              '<div class="flex items-baseline justify-between px-1 pt-5 pb-2 text-[12px] font-medium text-muted-foreground">' +
+              "<span>" + DAYS[day].label + "</span>" +
+              '<span class="' + netCls + '">' + netStr + "</span>" +
+              "</div>" +
+              '<ul class="divide-y rounded-2xl border bg-card">' +
+              rows.map(function (r) {
+                var catObj = CATS[r.cat] || CATS.Transfer;
+                var acc = ACCOUNTS[r.acc];
+                var labelsHtml = (r.labels || []).map(function (lbl) {
+                  return '<span class="inline-flex h-5 items-center rounded-full px-2 text-[11px] font-medium ' + (LABEL_PILL[lbl] || LABEL_PILL.Tax) + '">' + lbl + "</span>";
+                }).join("");
+                var exclBadge = r.excluded ? '<span class="inline-flex h-5 items-center rounded-full bg-muted px-2 text-[11px] text-muted-foreground">Excluded</span>' : "";
+                return (
+                  "<li>" +
+                  '<button type="button" data-tx-id="' + r.id + '" class="flex min-h-16 w-full items-center gap-3 px-4 py-3 text-left hover:bg-accent/60">' +
+                  '<span class="grid size-10 shrink-0 place-items-center rounded-xl ' + COLOR_TILE[catObj.color] + '"><i data-icon="' + catObj.icon + '" class="size-5"></i></span>' +
+                  '<span class="min-w-0 flex-1">' +
+                  '<span class="block truncate font-medium' + (r.excluded ? " line-through text-muted-foreground" : "") + '">' + r.payee + "</span>" +
+                  '<span class="mt-0.5 flex items-center gap-1.5 truncate text-[12px] text-muted-foreground">' +
+                  '<span class="inline-flex shrink-0 items-center gap-1"><span class="size-1.5 rounded-full ' + COLOR_DOT[catObj.color] + '"></span>' + r.cat + "</span>" +
+                  "<span>·</span>" +
+                  (!acc.shared ? '<i data-icon="lock" class="size-3 shrink-0"></i>' : "") +
+                  '<span class="truncate">' + acc.name + "</span>" +
+                  "</span>" +
+                  ((labelsHtml || exclBadge || r.rel) ? '<span class="mt-1 flex flex-wrap items-center gap-1">' + labelsHtml + exclBadge + (r.rel ? '<span class="inline-flex h-5 items-center rounded-full bg-primary/10 px-2 text-[11px] font-medium text-primary-text">Linked</span>' : "") + "</span>" : "") +
+                  "</span>" +
+                  amountHtml(r, true) +
+                  "</button></li>"
+                );
+              }).join("") +
+              "</ul>";
+
+            dHtml +=
+              '<tr class="h-8 border-b bg-muted/50 text-[12px] font-medium text-muted-foreground">' +
+              '<td colspan="4" class="pl-4">' + DAYS[day].label + "</td>" +
+              '<td class="lg:[html[data-sheet=detail]_&]:hidden"></td>' +
+              '<td class="pr-4 text-right ' + netCls + '">' + netStr + "</td>" +
+              "</tr>" +
+              rows.map(function (r) {
+                var catObj = CATS[r.cat] || CATS.Transfer;
+                var acc = ACCOUNTS[r.acc];
+                var byCell = r.by === "D"
+                  ? '<span class="inline-grid size-6 place-items-center rounded-full bg-brand-orange text-[11px] font-semibold text-brand-orange-foreground" aria-label="Added by Daniel" title="Daniel">D</span>'
+                  : r.by === "R"
+                    ? '<span class="inline-grid size-6 place-items-center rounded-full bg-muted text-muted-foreground" aria-label="Recurring" title="Recurring"><i data-icon="repeat" class="size-3.5"></i></span>'
+                    : '<span class="inline-grid size-6 place-items-center rounded-full bg-brand-purple text-[11px] font-semibold text-brand-purple-foreground" aria-label="Added by Maya" title="Maya">M</span>';
+                var subBits = [r.time];
+                if (r.note) subBits.push(r.note);
+                if (r.rel) subBits.push(r.rel);
+                var labelBadges = (r.labels || []).map(function (lbl) {
+                  return ' <span class="ml-1 inline-flex h-5 shrink-0 items-center rounded-full px-2 text-[11px] font-medium ' + (LABEL_PILL[lbl] || LABEL_PILL.Tax) + '">' + lbl + "</span>";
+                }).join("") + (r.excluded ? ' <span class="ml-1 inline-flex h-5 shrink-0 items-center rounded-full bg-muted px-2 text-[11px] text-muted-foreground">Excluded</span>' : "");
+                var isSelected = document.documentElement.dataset.sheet === "detail" && state.selectedId === r.id;
+                return (
+                  '<tr data-tx-id="' + r.id + '" class="cursor-pointer border-b hover:bg-accent/60 ' + (isSelected ? "bg-primary/5" : "") + '">' +
+                  '<td class="pl-4 py-3" data-no-open><input type="checkbox" data-tx-check="' + r.id + '" aria-label="Select ' + r.payee + '" class="size-4 rounded border-input accent-primary" /></td>' +
+                  '<td class="pr-3 py-2.5">' +
+                  '<div class="flex items-center gap-3 min-w-0">' +
+                  '<span class="grid size-9 shrink-0 place-items-center rounded-xl ' + COLOR_TILE[catObj.color] + '"><i data-icon="' + catObj.icon + '" class="size-4"></i></span>' +
+                  '<div class="min-w-0 flex-1">' +
+                  '<div class="flex items-center gap-1 min-w-0"><span class="truncate font-medium' + (r.excluded ? " line-through text-muted-foreground" : "") + '">' + r.payee + "</span>" + labelBadges + "</div>" +
+                  '<p class="truncate text-[12px] text-muted-foreground">' + subBits.join(" · ") + "</p>" +
+                  "</div></div></td>" +
+                  '<td class="pr-2 py-2.5">' +
+                  '<span class="inline-flex max-w-full h-7 items-center gap-1.5 truncate rounded-full px-2.5 text-[12px] font-medium ' + COLOR_PILL[catObj.color] + '">' +
+                  '<span class="size-1.5 shrink-0 rounded-full ' + COLOR_DOT[catObj.color] + '"></span><span class="truncate">' + r.cat + "</span></span></td>" +
+                  '<td class="pr-2 py-2.5 text-[13px] text-muted-foreground"><span class="flex items-center gap-1.5 min-w-0">' +
+                  '<i data-icon="' + acc.icon + '" class="size-3.5 shrink-0"></i>' +
+                  (!acc.shared ? '<i data-icon="lock" class="size-3 shrink-0"></i>' : "") +
+                  '<span class="truncate">' + acc.name + "</span></span></td>" +
+                  '<td class="py-2.5 lg:[html[data-sheet=detail]_&]:hidden">' + byCell + "</td>" +
+                  '<td class="pr-4 py-2.5 text-right">' + amountHtml(r, false) + "</td>" +
+                  "</tr>"
+                );
+              }).join("");
+          });
+
+          mobileEl.innerHTML = mHtml;
+          deskBody.innerHTML = dHtml;
+          if (window.fableIcons) {
+            window.fableIcons(mobileEl);
+            window.fableIcons(deskBody);
+          }
+        }
+
+        function openDetail(id) {
+          state.selectedId = Number(id);
+          var r = RECORDS.find(function (x) { return x.id === state.selectedId; }) || RECORDS[3];
+          state.selectedId = r.id;
+          var acc = ACCOUNTS[r.acc];
+          var catObj = CATS[r.cat] || CATS.Transfer;
+
+          // Hero
+          var tile = document.getElementById("dt-hero-tile");
+          tile.className = "grid size-14 place-items-center rounded-2xl " + COLOR_TILE[catObj.color];
+          tile.innerHTML = '<i id="dt-icon" data-icon="' + catObj.icon + '" class="size-6"></i>';
+          if (window.fableIcons) window.fableIcons(tile);
+
+          document.getElementById("sh-detail-title").textContent = r.payee;
+          document.getElementById("dt-amount").textContent = r.mxn ? "−MX$1,050.00" : (r.type === "INCOME" ? "+" : r.type === "EXPENSE" ? "−" : "") + fmtUSD(r.cents);
+          document.getElementById("dt-fx").classList.toggle("hidden", !r.mxn);
+          document.getElementById("dt-date").textContent = (DAYS[r.day].label.indexOf(",") >= 0 ? DAYS[r.day].label + ", 2026" : (r.day === 12 ? "Thu, Nov 12, 2026" : "Wed, Nov 11, 2026")) + " · " + r.time;
+          document.getElementById("dt-source-badge").textContent =
+            r.src === "RECURRING" ? "Auto · Recurring rule" : r.src === "IMPORT" ? "Imported from statement" : "Manual entry";
+
+          // Category selector populated with all categories
+          var sel = document.getElementById("dt-cat-select");
+          sel.innerHTML = Object.keys(CATS).map(function (c) {
+            return '<option value="' + c + '"' + (c === r.cat ? " selected" : "") + ">" + c + "</option>";
+          }).join("");
+          document.getElementById("dt-cat-dot").className = "size-2.5 rounded-full " + COLOR_DOT[catObj.color];
+
+          // Account + Visibility
+          document.getElementById("dt-account").textContent = r.toAcc ? (acc.name + " → " + ACCOUNTS[r.toAcc].name) : acc.name;
+          var pill = document.getElementById("dt-vis-pill");
+          if (acc.shared) {
+            pill.className = "inline-flex h-6 items-center gap-1 rounded-full bg-primary/10 px-2 text-[11px] font-medium text-primary-text";
+            pill.innerHTML = '<i data-icon="users" class="size-3"></i>Shared';
+          } else {
+            pill.className = "inline-flex h-6 items-center gap-1 rounded-full bg-muted px-2 text-[11px] font-medium text-muted-foreground";
+            pill.innerHTML = '<i data-icon="lock" class="size-3"></i>Only you';
+          }
+          if (window.fableIcons) window.fableIcons(pill);
+
+          // Added by
+          var byAv = document.getElementById("dt-by-avatar");
+          var byNm = document.getElementById("dt-by-name");
+          if (r.by === "D") {
+            byAv.className = "grid size-6 place-items-center rounded-full bg-brand-orange text-[11px] font-semibold text-brand-orange-foreground";
+            byAv.textContent = "D";
+            byNm.textContent = "Daniel Reyes";
+          } else if (r.by === "R") {
+            byAv.className = "grid size-6 place-items-center rounded-full bg-muted text-muted-foreground";
+            byAv.innerHTML = '<i data-icon="repeat" class="size-3.5"></i>';
+            byNm.textContent = "Auto · Recurring";
+          } else {
+            byAv.className = "grid size-6 place-items-center rounded-full bg-brand-purple text-[11px] font-semibold text-brand-purple-foreground";
+            byAv.textContent = "M";
+            byNm.textContent = "Maya Torres";
+          }
+          if (window.fableIcons) window.fableIcons(byAv);
+
+          // Note input
+          document.getElementById("dt-note-input").value = r.note || "";
+
+          // Interactive Labels
+          var ALL_LABELS = ["Reimbursable", "Trip: Lisbon", "Tax"];
+          var lblEl = document.getElementById("dt-labels-row");
+          lblEl.innerHTML = ALL_LABELS.map(function (lbl) {
+            var active = r.labels && r.labels.indexOf(lbl) >= 0;
+            return '<button type="button" data-dt-lbl="' + lbl + '" class="inline-flex h-7 items-center gap-1 rounded-full border px-2.5 text-[12px] font-medium ' +
+              (active ? (LABEL_PILL[lbl] + " border-transparent") : "bg-background text-muted-foreground hover:bg-accent") + '">' +
+              (active ? '<i data-icon="check" class="size-3"></i>' : "") + lbl + "</button>";
+          }).join("");
+          if (window.fableIcons) window.fableIcons(lblEl);
+
+          // Exclude from stats switch
+          var sw = document.getElementById("dt-stats-switch");
+          var counted = !r.excluded;
+          sw.setAttribute("aria-checked", String(counted));
+          sw.classList.toggle("bg-primary", counted);
+          sw.classList.toggle("bg-input", !counted);
+          sw.querySelector("[data-knob]").classList.toggle("translate-x-5", counted);
+
+          // Monthly Category Spend Insight
+          var catRecs = RECORDS.filter(function (x) { return x.cat === r.cat && !x.excluded; });
+          var catTotal = catRecs.reduce(function (s, x) { return s + x.cents; }, 0);
+          document.getElementById("dt-insight-title").textContent = fmtUSD(catTotal) + " in " + r.cat + " this month";
+          document.getElementById("dt-insight-count").textContent = catRecs.length + " tx";
+          var insCapEl = document.getElementById("dt-insight-cap");
+          var insBarWrap = document.getElementById("dt-insight-bar-wrap");
+          if (catObj.cap > 0) {
+            var left = catObj.cap - catTotal;
+            var pct = Math.min(100, Math.round((catTotal / catObj.cap) * 1000) / 10);
+            insCapEl.textContent = left >= 0
+              ? fmtUSD(left) + " left of " + fmtUSD(catObj.cap) + " monthly limit (" + pct + "%)"
+              : fmtUSD(-left) + " over " + fmtUSD(catObj.cap) + " limit";
+            insBarWrap.classList.remove("hidden");
+            var bar = document.getElementById("dt-insight-bar");
+            bar.className = "h-full rounded-full " + COLOR_DOT[catObj.color];
+            bar.style.width = pct + "%";
+          } else {
+            insCapEl.textContent = r.type === "TRANSFER" ? "Internal transfer · Excluded from spending" : "No monthly cap set for " + r.cat;
+            insBarWrap.classList.add("hidden");
+          }
+
+          // Related Object Card
+          var rel = document.getElementById("dt-relation");
+          if (r.rel) {
+            rel.classList.remove("hidden");
+            document.getElementById("dt-relation-text").textContent = r.rel;
+            document.getElementById("dt-relation-link").setAttribute("href", r.relHref || "debts.html");
+          } else {
+            rel.classList.add("hidden");
+          }
+
+          window.fableOpen("detail");
+          renderList();
+        }
+
+        // Event wiring
+        document.getElementById("tx-scope-tabs").addEventListener("click", function (e) {
+          var b = e.target.closest("[data-scope]");
+          if (!b) return;
+          state.scope = b.dataset.scope;
+          if (window.fableScope) window.fableScope(state.scope);
+          renderList();
+        });
+        document.getElementById("tx-type-tabs").addEventListener("click", function (e) {
+          var b = e.target.closest("[data-type]");
+          if (!b) return;
+          state.type = b.dataset.type;
+          renderList();
+        });
+        document.getElementById("tx-cat-toggle").addEventListener("click", function () {
+          var tray = document.getElementById("tx-cat-tray");
+          var open = tray.classList.toggle("hidden") === false;
+          this.setAttribute("aria-expanded", String(open));
+        });
+        document.getElementById("tx-cat-clear").addEventListener("click", function () {
+          state.categories = [];
+          renderList();
+        });
+        document.getElementById("tx-q-rec").addEventListener("click", function () {
+          state.by = state.by === "R" ? "any" : "R";
+          renderList();
+        });
+        document.getElementById("tx-q-lbl").addEventListener("click", function () {
+          state.hasLabelOnly = !state.hasLabelOnly;
+          renderList();
+        });
+
+        document.addEventListener("click", function (e) {
+          var cp = e.target.closest("[data-cat-pick]");
+          if (cp) {
+            var name = cp.dataset.catPick;
+            var idx = state.categories.indexOf(name);
+            if (idx >= 0) state.categories.splice(idx, 1); else state.categories.push(name);
+            renderList();
+            return;
+          }
+          var dl = e.target.closest("[data-dt-lbl]");
+          if (dl) {
+            var rec = RECORDS.find(function (x) { return x.id === state.selectedId; });
+            if (rec) {
+              rec.labels = rec.labels || [];
+              var li = rec.labels.indexOf(dl.dataset.dtLbl);
+              if (li >= 0) rec.labels.splice(li, 1); else rec.labels.push(dl.dataset.dtLbl);
+              openDetail(rec.id);
+            }
+            return;
+          }
+          if (e.target.closest("[data-no-open]")) return;
+          var row = e.target.closest("[data-tx-id]");
+          if (row) openDetail(row.dataset.txId);
+        });
+
+        // Search input (200 ms debounce)
+        var searchTimer;
+        document.querySelectorAll("[data-search]").forEach(function (inp) {
+          inp.value = state.q;
+          inp.addEventListener("input", function () {
+            var v = inp.value;
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(function () { state.q = v.trim(); renderList(); }, 200);
+          });
+        });
+
+        // Filter sheet bindings
+        document.getElementById("flt-scope").addEventListener("fable:change", function (e) { state.scope = e.detail; renderList(); });
+        document.getElementById("flt-type").addEventListener("fable:change", function (e) { state.type = e.detail; renderList(); });
+        document.getElementById("flt-by").addEventListener("fable:change", function (e) { state.by = e.detail; renderList(); });
+        document.getElementById("flt-label").addEventListener("fable:change", function () {
+          state.labels = Array.prototype.map.call(document.querySelectorAll('#flt-label button[aria-pressed="true"]'), function (b) { return b.dataset.value; });
+          renderList();
+        });
+        function syncAccountChecks() {
+          document.querySelectorAll("#flt-accounts [data-acc]").forEach(function (btn) {
+            var on = state.accounts.indexOf(btn.dataset.acc) >= 0;
+            btn.setAttribute("aria-pressed", String(on));
+            btn.querySelectorAll("svg, i")[btn.querySelectorAll("svg, i").length - 1].classList.toggle("opacity-0", !on);
+          });
+        }
+        document.getElementById("flt-accounts").addEventListener("click", function (e) {
+          var btn = e.target.closest("[data-acc]");
+          if (!btn) return;
+          var code = btn.dataset.acc;
+          var idx = state.accounts.indexOf(code);
+          if (idx >= 0) state.accounts.splice(idx, 1); else state.accounts.push(code);
+          syncAccountChecks();
+          renderList();
+        });
+        ["flt-min", "flt-max"].forEach(function (id) {
+          document.getElementById(id).addEventListener("input", function () {
+            state.min = document.getElementById("flt-min").value.trim();
+            state.max = document.getElementById("flt-max").value.trim();
+            renderList();
+          });
+        });
+
+        function clearAll() {
+          state.q = "";
+          state.scope = "everything";
+          state.type = "all";
+          state.categories = [];
+          state.accounts = [];
+          state.by = "any";
+          state.min = "";
+          state.max = "";
+          state.labels = [];
+          state.hasLabelOnly = false;
+          document.querySelectorAll("[data-search]").forEach(function (i) { i.value = ""; });
+          document.getElementById("flt-min").value = "";
+          document.getElementById("flt-max").value = "";
+          syncAccountChecks();
+          renderList();
+        }
+        document.getElementById("tx-clear-all").addEventListener("click", clearAll);
+        document.getElementById("flt-reset").addEventListener("click", clearAll);
+
+        // Detail Inspector live edits
+        document.getElementById("dt-cat-select").addEventListener("change", function () {
+          var r = RECORDS.find(function (x) { return x.id === state.selectedId; });
+          if (r) {
+            r.cat = this.value;
+            openDetail(r.id);
+            window.fableToast("Category changed to " + r.cat);
+          }
+        });
+        document.getElementById("dt-note-input").addEventListener("input", function () {
+          var r = RECORDS.find(function (x) { return x.id === state.selectedId; });
+          if (r) { r.note = this.value; renderList(); }
+        });
+        document.getElementById("dt-stats-switch").addEventListener("click", function () {
+          var r = RECORDS.find(function (x) { return x.id === state.selectedId; });
+          if (r) {
+            r.excluded = !r.excluded;
+            openDetail(r.id);
+            window.fableToast(r.excluded ? "Excluded from monthly spending" : "Included in monthly spending");
+          }
+        });
+        document.getElementById("dt-filter-cat").addEventListener("click", function () {
+          var r = RECORDS.find(function (x) { return x.id === state.selectedId; });
+          if (r) { state.categories = [r.cat]; renderList(); }
+        });
+        document.getElementById("dt-delete").addEventListener("click", function () {
+          window.fableClose();
+          window.fableToast("Transaction deleted", "Undo");
+        });
+        document.getElementById("tx-export-btn").addEventListener("click", function () {
+          window.fableToast("Exported " + RECORDS.filter(function (r) { return matchesBase(r, false); }).length + " records to CSV");
+        });
+
+        // Desktop checkboxes
+        function syncBatchBar() {
+          var checked = document.querySelectorAll("[data-tx-check]:checked").length;
+          var bar = document.getElementById("tx-batch-bar");
+          bar.classList.toggle("hidden", checked === 0);
+          bar.classList.toggle("lg:flex", checked > 0);
+          document.getElementById("tx-batch-count").textContent = checked + " selected";
+        }
+        document.addEventListener("change", function (e) {
+          if (e.target.id === "tx-check-all") {
+            var on = e.target.checked;
+            document.querySelectorAll("[data-tx-check]").forEach(function (c) { c.checked = on; });
+            syncBatchBar();
+          } else if (e.target.matches("[data-tx-check]")) {
+            syncBatchBar();
+          }
+        });
+        document.getElementById("tx-batch-delete").addEventListener("click", function () {
+          document.querySelectorAll("[data-tx-check]:checked").forEach(function (c) { c.checked = false; });
+          document.getElementById("tx-check-all").checked = false;
+          syncBatchBar();
+          window.fableToast("Transactions deleted", "Undo");
+        });
+
+        renderList();
+        if (document.documentElement.dataset.sheet === "detail") {
+          openDetail(state.selectedId);
+        }
+      })();
+    </script>
+  </body>
+</html>

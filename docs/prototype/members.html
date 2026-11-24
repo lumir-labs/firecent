@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en" data-state="data">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Members & sharing · Firecent</title>
+    <link rel="icon" href="assets/brand/favicon.svg" />
+    <link rel="stylesheet" href="assets/app.css" />
+    <script src="assets/proto.js"></script>
+  </head>
+  <body class="min-h-dvh bg-background text-foreground">
+    <div data-shell data-tab="more" data-nav="settings"></div>
+
+    <main class="lg:pl-60">
+      <div class="mx-auto max-w-[430px] px-5 pt-4 pb-28 lg:max-w-[1040px] lg:px-10 lg:py-8">
+        <!-- Mobile header -->
+        <header class="flex items-center justify-between gap-2 lg:hidden">
+          <a href="more.html" class="inline-flex h-11 items-center gap-1 -ml-2 px-2 text-[14px] font-medium text-muted-foreground hover:text-foreground">
+            <i data-icon="chevron-left" class="size-4"></i>More
+          </a>
+          <button type="button" data-open="invite" class="inline-flex h-10 items-center gap-1.5 rounded-xl bg-primary px-3.5 text-[14px] font-semibold text-primary-foreground">
+            <i data-icon="user-plus" class="size-4"></i>Invite
+          </button>
+        </header>
+
+        <!-- Desktop header -->
+        <header class="hidden lg:flex lg:items-center lg:justify-between">
+          <div>
+            <div class="flex items-center gap-2 text-[13px] text-muted-foreground">
+              <a href="more.html" class="hover:text-foreground">Settings</a>
+              <span>/</span>
+              <span>Members &amp; sharing</span>
+            </div>
+            <h1 class="mt-0.5 text-[28px] leading-[34px] font-bold tracking-[-0.025em]">Members &amp; sharing</h1>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" data-open="invite" class="inline-flex h-9 items-center gap-1.5 rounded-full bg-primary px-4 text-[13px] font-semibold text-primary-foreground">
+              <i data-icon="user-plus" class="size-4"></i>Invite member
+            </button>
+            <button type="button" data-open="ask" class="inline-flex h-9 items-center gap-2 rounded-full border bg-card px-3.5 text-[13px] font-medium hover:bg-accent">
+              <i data-icon="firecent-mono" class="h-3.5 w-auto text-primary-text"></i>Ask
+            </button>
+            <a href="notifications.html" class="relative grid size-9 place-items-center rounded-full border bg-card hover:bg-accent" aria-label="Notifications">
+              <i data-icon="bell" class="size-4"></i>
+              <span class="absolute top-1.5 right-2 size-2 rounded-full bg-primary ring-2 ring-card"></span>
+            </a>
+          </div>
+        </header>
+
+        <h1 class="mt-2 text-[26px] leading-[32px] font-bold tracking-[-0.025em] lg:hidden">Members &amp; sharing</h1>
+
+        <!-- DATA -->
+        <div data-view="data" class="mt-4">
+          <div class="grid gap-6 lg:grid-cols-12 lg:items-start">
+            <!-- Left column -->
+            <div class="space-y-6 lg:col-span-7">
+              <section class="flex flex-wrap items-center justify-between gap-3 rounded-[26px] border bg-card p-5">
+                <div class="flex items-center gap-3.5">
+                  <div class="inline-flex shrink-0 -space-x-2" aria-hidden="true">
+                    <span class="grid size-11 place-items-center rounded-full bg-brand-purple text-[15px] font-semibold text-brand-purple-foreground ring-2 ring-card">M</span>
+                    <span class="grid size-11 place-items-center rounded-full bg-brand-orange text-[15px] font-semibold text-brand-orange-foreground ring-2 ring-card">D</span>
+                  </div>
+                  <div>
+                    <h2 class="text-[17px] font-semibold" data-space-name>Maya &amp; Daniel</h2>
+                    <p class="text-[13px] text-muted-foreground">Active space · 2 members · Shared books</p>
+                  </div>
+                </div>
+                <button type="button" data-open="space" class="inline-flex h-9 items-center gap-1.5 rounded-full border bg-muted/50 px-3.5 text-[13px] font-medium hover:bg-accent">
+                  Switch space<i data-icon="chevrons-up-down" class="size-3.5 text-muted-foreground"></i>
+                </button>
+              </section>
+
+              <section aria-labelledby="members-list-h">
+                <h2 id="members-list-h" class="mb-2.5 px-1 text-[13px] font-medium text-muted-foreground">Members (2)</h2>
+                <div class="divide-y rounded-3xl border bg-card">
+                  <div class="flex items-center justify-between gap-3 px-4 py-3.5">
+                    <div class="flex min-w-0 items-center gap-3">
+                      <span class="grid size-10 shrink-0 place-items-center rounded-full bg-brand-purple text-[14px] font-semibold text-brand-purple-foreground">M</span>
+                      <div class="min-w-0">
+                        <p class="truncate font-semibold">Maya Torres <span class="font-normal text-muted-foreground">(You)</span></p>
+                        <p class="truncate text-[13px] text-muted-foreground">mayatorres@gmail.com</p>
+                      </div>
+                    </div>
+                    <span class="shrink-0 rounded-full bg-muted px-2.5 py-0.5 text-[12px] font-medium">Owner</span>
+                  </div>
+                  <div class="flex items-center justify-between gap-3 px-4 py-3.5">
+                    <div class="flex min-w-0 items-center gap-3">
+                      <span class="grid size-10 shrink-0 place-items-center rounded-full bg-brand-orange text-[14px] font-semibold text-brand-orange-foreground">D</span>
+                      <div class="min-w-0">
+                        <p class="truncate font-semibold">Daniel Reyes</p>
+                        <p class="truncate text-[13px] text-muted-foreground">daniel.reyes@gmail.com</p>
+                      </div>
+                    </div>
+                    <span class="shrink-0 rounded-full bg-muted px-2.5 py-0.5 text-[12px] font-medium text-muted-foreground">Member</span>
+                  </div>
+                </div>
+              </section>
+
+              <section aria-labelledby="invites-h">
+                <div class="mb-2.5 flex items-center justify-between px-1">
+                  <h2 id="invites-h" class="text-[13px] font-medium text-muted-foreground">Pending invites</h2>
+                  <button type="button" data-open="invite" class="text-[13px] font-medium text-primary-text hover:underline">+ Invite someone</button>
+                </div>
+                <div id="invites-list" class="rounded-3xl border bg-card p-5 text-[14px] text-muted-foreground">
+                  No pending invites. Anyone you invite only sees accounts marked Shared with space.
+                </div>
+              </section>
+            </div>
+
+            <!-- Right column: Visibility matrix -->
+            <div class="space-y-6 lg:col-span-5">
+              <section class="rounded-3xl border bg-card p-5">
+                <h2 class="text-[16px] font-semibold">What Daniel can see</h2>
+                <p class="mt-0.5 text-[13px] text-muted-foreground">Controlled per account under Account settings.</p>
+
+                <div class="mt-4 space-y-4">
+                  <div>
+                    <p class="mb-2 flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-wide text-primary-text">
+                      <i data-icon="eye" class="size-3.5"></i>Shared with space (3)
+                    </p>
+                    <div class="divide-y rounded-2xl border bg-muted/35">
+                      <a href="account.html?id=1" class="flex items-center justify-between px-3.5 py-2.5 text-[14px] hover:bg-accent/50">
+                        <span>Joint Checking</span>
+                        <span class="num font-medium">$8,420.55</span>
+                      </a>
+                      <a href="account.html?id=2" class="flex items-center justify-between px-3.5 py-2.5 text-[14px] hover:bg-accent/50">
+                        <span>Emergency Fund</span>
+                        <span class="num font-medium">$24,300.00</span>
+                      </a>
+                      <a href="account.html?id=3" class="flex items-center justify-between px-3.5 py-2.5 text-[14px] hover:bg-accent/50">
+                        <span>Sapphire Reserve</span>
+                        <span class="num font-medium">−$1,846.32</span>
+                      </a>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p class="mb-2 flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">
+                      <i data-icon="eye-off" class="size-3.5"></i>Only you · hidden from Daniel (4)
+                    </p>
+                    <div class="divide-y rounded-2xl border bg-muted/20 text-muted-foreground">
+                      <a href="account.html?id=1&private=1" class="flex items-center justify-between px-3.5 py-2.5 text-[14px] hover:bg-accent/40 hover:text-foreground">
+                        <span>Maya's Checking</span>
+                        <span class="num">$3,912.18</span>
+                      </a>
+                      <a href="accounts.html" class="flex items-center justify-between px-3.5 py-2.5 text-[14px] hover:bg-accent/40 hover:text-foreground">
+                        <span>Cash</span>
+                        <span class="num">$140.00</span>
+                      </a>
+                      <a href="accounts.html?scope=only-you" class="flex items-center justify-between px-3.5 py-2.5 text-[14px] hover:bg-accent/40 hover:text-foreground">
+                        <span>BBVA México</span>
+                        <span class="num">MX$38,500.00</span>
+                      </a>
+                      <a href="accounts.html?scope=only-you" class="flex items-center justify-between px-3.5 py-2.5 text-[14px] hover:bg-accent/40 hover:text-foreground">
+                        <span>Amex Gold</span>
+                        <span class="num">−$612.40</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <a href="accounts.html" class="mt-4 inline-flex items-center gap-1 text-[13px] font-medium text-primary-text hover:underline">
+                  Manage account visibility<i data-icon="chevron-right" class="size-4"></i>
+                </a>
+              </section>
+
+              <section class="rounded-3xl border bg-card p-5">
+                <h2 class="text-[15px] font-semibold">Space access</h2>
+                <p class="mt-1 text-[13px] text-muted-foreground">Your personal accounts always stay with you if you leave or archive a space.</p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                  <button type="button" data-toast-msg="Leave space is disabled while you're the space owner" class="inline-flex h-10 items-center rounded-xl border border-danger/30 px-3.5 text-[13px] font-medium text-danger-text hover:bg-danger/8">Leave space</button>
+                  <button type="button" data-open="space" class="inline-flex h-10 items-center rounded-xl border bg-card px-3.5 text-[13px] font-medium hover:bg-accent">Switch space</button>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+
+        <!-- EMPTY -->
+        <div data-view="empty" class="mt-6 rounded-3xl border bg-card p-8 text-center">
+          <p class="text-[18px] font-semibold">Just you right now</p>
+          <p class="mx-auto mt-1 max-w-sm text-[14px] text-muted-foreground">Invite a partner or family member to share specific accounts and category caps.</p>
+          <button type="button" data-open="invite" class="mt-4 inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 text-[14px] font-semibold text-primary-foreground">Invite member</button>
+        </div>
+
+        <!-- LOADING -->
+        <div data-view="loading" class="mt-5 grid gap-5 lg:grid-cols-2">
+          <div class="h-64 animate-pulse rounded-3xl bg-muted"></div>
+          <div class="h-64 animate-pulse rounded-3xl bg-muted"></div>
+        </div>
+
+        <!-- ERROR -->
+        <div data-view="error" class="mt-5 rounded-3xl border bg-card p-6 text-center">
+          <p class="text-[16px] font-semibold">Couldn't load space members</p>
+          <button type="button" onclick="location.reload()" class="mt-4 inline-flex h-10 items-center rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground">Try again</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Invite sheet -->
+    <div data-sheet-id="invite">
+      <div data-veil data-close class="fixed inset-0 z-40 bg-[#0b1220]/50"></div>
+      <div role="dialog" aria-modal="true" aria-label="Invite member" class="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[88dvh] max-w-[430px] overflow-y-auto rounded-t-3xl bg-card pb-6 shadow-[0_-8px_30px_-12px_rgb(11_18_32/0.25)] lg:top-1/2 lg:right-auto lg:bottom-auto lg:left-1/2 lg:w-[460px] lg:max-w-none lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-3xl lg:border">
+        <div class="mx-auto mt-2.5 h-1 w-9 rounded-full bg-muted-foreground/30 lg:hidden"></div>
+        <div class="flex items-center justify-between px-5 pt-4">
+          <h2 class="text-[18px] font-semibold">Invite to <span data-space-name>Maya &amp; Daniel</span></h2>
+          <button type="button" data-close class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Close"><i data-icon="x" class="size-[22px]"></i></button>
+        </div>
+        <form id="inv-form" class="mt-4 space-y-4 px-5">
+          <div>
+            <label for="inv-email" class="mb-1.5 block text-[13px] font-medium">Email address</label>
+            <input id="inv-email" type="email" placeholder="partner@example.com" class="h-11 w-full rounded-xl border border-input bg-card px-3.5 text-[15px]" />
+          </div>
+          <p class="rounded-2xl bg-muted/50 p-3.5 text-[13px] leading-[19px] text-muted-foreground">
+            New members automatically see accounts marked <strong class="font-medium text-foreground">Shared with space</strong>. Accounts marked <strong class="font-medium text-foreground">Only you</strong> stay hidden.
+          </p>
+          <div class="flex flex-col gap-2">
+            <button type="submit" class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground">
+              <i data-icon="mail" class="size-4"></i>Send invite
+            </button>
+            <button type="button" id="inv-copy" class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border bg-card px-4 text-[14px] font-medium hover:bg-accent">
+              <i data-icon="copy" class="size-4"></i>Copy invite link
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="assets/icons.js"></script>
+    <script>
+      (function () {
+        var pending = [];
+        function renderInvites() {
+          var host = document.getElementById("invites-list");
+          if (!pending.length) {
+            host.className = "rounded-3xl border bg-card p-5 text-[14px] text-muted-foreground";
+            host.textContent = "No pending invites. Anyone you invite only sees accounts marked Shared with space.";
+            return;
+          }
+          host.className = "divide-y rounded-3xl border bg-card";
+          host.innerHTML = pending.map(function (em) {
+            return '<div class="flex items-center justify-between gap-3 px-4 py-3.5"><div><p class="font-medium">' + em + '</p><p class="text-[12px] text-muted-foreground">Invite sent · Waiting for accept</p></div><span class="rounded-full bg-brand-yellow px-2.5 py-0.5 text-[12px] font-medium text-brand-yellow-foreground">Pending</span></div>';
+          }).join("");
+        }
+        document.getElementById("inv-form").addEventListener("submit", function (e) {
+          e.preventDefault();
+          var em = document.getElementById("inv-email").value.trim() || "guest@example.com";
+          pending.push(em);
+          renderInvites();
+          document.getElementById("inv-email").value = "";
+          window.fableClose();
+          window.fableToast("Invite sent to " + em);
+        });
+        document.getElementById("inv-copy").addEventListener("click", function () {
+          window.fableClose();
+          window.fableToast("Copied invite link");
+        });
+        if (window.fableIcons) window.fableIcons(document);
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="en" data-state="data">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Accounts · Firecent</title>
+    <link rel="icon" href="assets/brand/favicon.svg" />
+    <link rel="stylesheet" href="assets/app.css" />
+    <script src="assets/proto.js"></script>
+  </head>
+  <body class="min-h-dvh bg-background text-foreground">
+    <div data-shell data-tab="more" data-nav="accounts"></div>
+
+    <div class="lg:pl-60">
+      <div class="relative mx-auto min-h-dvh max-w-[430px] pb-28 lg:max-w-[1160px] lg:px-8 lg:pb-12">
+        <!-- Mobile top bar -->
+        <header class="flex h-14 items-center gap-1 px-2 lg:hidden">
+          <a href="more.html" class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Back">
+            <i data-icon="chevron-left" class="size-[22px]"></i>
+          </a>
+          <h1 class="flex-1 truncate text-[17px] font-semibold tracking-[-0.01em]">Accounts</h1>
+          <button type="button" data-open="add-account" class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Add account">
+            <i data-icon="plus" class="size-[22px]"></i>
+          </button>
+        </header>
+
+        <!-- Desktop header -->
+        <header class="hidden items-center justify-between gap-3 pt-8 lg:flex">
+          <div>
+            <h1 class="text-[24px] leading-[32px] font-semibold tracking-[-0.02em]">Accounts</h1>
+            <p class="mt-0.5 text-[14px] text-muted-foreground">7 active · USD &amp; MXN · Maya &amp; Daniel</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" id="acc-credit-mode-desk" class="flex h-10 items-center gap-2 rounded-xl border bg-card px-3.5 text-[13px] font-medium text-muted-foreground hover:bg-accent hover:text-foreground" title="Switch credit card right-hand metric (BankAccount.displayCreditMode)">
+              <i data-icon="credit-card" class="size-4"></i>
+              <span id="acc-credit-mode-lbl">Show: Balance owed</span>
+            </button>
+            <button type="button" data-open="add-account" class="flex h-10 items-center gap-2 rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground">
+              <i data-icon="plus" class="size-4"></i>Add account
+            </button>
+            <button type="button" data-open="ask" class="flex h-10 items-center gap-2 rounded-xl border bg-card px-4 text-[14px] font-semibold hover:bg-accent">
+              <i data-icon="firecent-mono" class="h-4 w-auto"></i>Ask
+            </button>
+            <a href="notifications.html" class="relative grid size-10 place-items-center rounded-full hover:bg-accent" aria-label="Notifications, 2 unread">
+              <i data-icon="bell" class="size-[22px]"></i>
+              <span class="absolute top-2 right-2 size-2 rounded-full bg-primary ring-2 ring-background [html[data-state=empty]_&]:hidden" aria-hidden="true"></span>
+            </a>
+          </div>
+        </header>
+
+        <!-- ═══════════════════════════ WITH DATA ═══════════════════════════ -->
+        <div data-view="data">
+          <!-- Balance & Allocation Summary Card -->
+          <div class="px-5 pt-2 lg:px-0 lg:pt-6">
+            <section class="rounded-[26px] border bg-card p-5 lg:p-6" aria-labelledby="h-acc-balance">
+              <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                <div class="min-w-0">
+                  <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <h2 id="h-acc-balance" class="text-[13px] font-medium text-muted-foreground">Net balance</h2>
+                      <p id="acc-vis-note" class="mt-0.5 text-[12px] text-muted-foreground">7 accounts · Maya &amp; Daniel</p>
+                    </div>
+                    <!-- Scope segmented switcher (synced via fableScope) -->
+                    <div id="acc-scope" class="inline-flex h-9 rounded-xl bg-muted p-1 text-[13px] lg:hidden" role="group" aria-label="Scope">
+                      <button type="button" data-value="all" aria-pressed="true" class="rounded-lg bg-card px-3 font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]">All</button>
+                      <button type="button" data-value="shared" aria-pressed="false" class="rounded-lg px-3 font-medium text-muted-foreground hover:text-foreground">Shared</button>
+                      <button type="button" data-value="only-you" aria-pressed="false" class="rounded-lg px-3 font-medium text-muted-foreground hover:text-foreground">Only you</button>
+                    </div>
+                  </div>
+
+                  <p id="acc-hero" class="num mt-3 text-[40px] leading-[44px] font-semibold tracking-[-0.035em] lg:text-[46px] lg:leading-[50px]">
+                    <span class="mr-0.5 text-[24px] font-medium tracking-normal text-muted-foreground lg:text-[28px]">$</span>36,398<span class="text-[24px] font-medium tracking-[-0.01em] text-muted-foreground lg:text-[28px]">.47</span>
+                  </p>
+                  <p id="acc-sub" class="num mt-2 text-[13px] text-muted-foreground">
+                    <span class="font-medium text-positive">+$1,312.86 this month</span> · Assets $38,857.19 · Cards −$2,458.72
+                  </p>
+                </div>
+
+                <!-- Desktop scope + 3 KPI tiles -->
+                <div class="flex flex-col items-stretch gap-3 lg:items-end">
+                  <div id="acc-scope-desk" class="hidden h-9 rounded-xl bg-muted p-1 text-[13px] lg:inline-flex" role="group" aria-label="Scope">
+                    <button type="button" data-value="all" aria-pressed="true" class="rounded-lg bg-card px-3.5 font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]">All</button>
+                    <button type="button" data-value="shared" aria-pressed="false" class="rounded-lg px-3.5 font-medium text-muted-foreground hover:text-foreground">Shared</button>
+                    <button type="button" data-value="only-you" aria-pressed="false" class="rounded-lg px-3.5 font-medium text-muted-foreground hover:text-foreground">Only you</button>
+                  </div>
+
+                  <div class="grid grid-cols-3 gap-2 lg:w-[460px] lg:gap-2.5">
+                    <div class="rounded-2xl border bg-muted/40 p-2.5 lg:p-3">
+                      <p class="truncate text-[11px] font-medium text-muted-foreground">Checking</p>
+                      <p id="kpi-cash" class="num mt-1 whitespace-nowrap text-[13px] font-semibold lg:text-[17px]">$12,472.73</p>
+                      <p id="kpi-cash-sub" class="mt-0.5 truncate text-[11px] text-muted-foreground">3 accounts</p>
+                    </div>
+                    <div class="rounded-2xl border bg-muted/40 p-2.5 lg:p-3">
+                      <p class="truncate text-[11px] font-medium text-muted-foreground">Savings</p>
+                      <p id="kpi-savings" class="num mt-1 whitespace-nowrap text-[13px] font-semibold lg:text-[17px]">$26,384.46</p>
+                      <p id="kpi-savings-sub" class="mt-0.5 truncate text-[11px] text-muted-foreground">USD + MXN</p>
+                    </div>
+                    <div class="rounded-2xl border bg-muted/40 p-2.5 lg:p-3">
+                      <p class="truncate text-[11px] font-medium text-muted-foreground">Credit used</p>
+                      <p id="kpi-cards" class="num mt-1 whitespace-nowrap text-[13px] font-semibold text-warning lg:text-[17px]">−$2,458.72</p>
+                      <p id="kpi-cards-sub" class="num mt-0.5 truncate text-[11px] text-muted-foreground">12% of $20k</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Asset allocation mix bar -->
+              <div class="mt-5 border-t pt-3.5">
+                <div class="flex h-2 overflow-hidden rounded-full bg-muted">
+                  <div id="mix-cash" class="h-full bg-indigo-500" style="width: 30.2%"></div>
+                  <div id="mix-savings" class="h-full bg-emerald-500" style="width: 63.8%"></div>
+                  <div id="mix-cards" class="h-full bg-amber-500" style="width: 6.0%"></div>
+                </div>
+                <div class="mt-2 flex flex-wrap items-center justify-between gap-2 text-[12px] text-muted-foreground">
+                  <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+                    <span class="inline-flex items-center gap-1.5"><span class="size-2 rounded-full bg-indigo-500"></span>Checking <span id="mix-cash-pct" class="num font-medium text-foreground">30%</span></span>
+                    <span class="inline-flex items-center gap-1.5"><span class="size-2 rounded-full bg-emerald-500"></span>Savings <span id="mix-savings-pct" class="num font-medium text-foreground">64%</span></span>
+                    <span class="inline-flex items-center gap-1.5"><span class="size-2 rounded-full bg-amber-500"></span>Cards <span id="mix-cards-pct" class="num font-medium text-foreground">6%</span></span>
+                  </div>
+                  <span class="num text-[11px]">FX rate 18.47 MXN/USD</span>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Mobile credit display toggle bar -->
+          <div class="mt-3 flex items-center justify-between px-5 lg:hidden">
+            <span class="text-[12px] text-muted-foreground">Tap any account for details</span>
+            <button type="button" id="acc-credit-mode-mob" class="inline-flex h-8 items-center gap-1.5 rounded-full border bg-card px-3 text-[12px] font-medium text-muted-foreground hover:text-foreground">
+              <i data-icon="credit-card" class="size-3.5"></i><span id="acc-credit-mode-mob-lbl">Balance owed</span>
+            </button>
+          </div>
+
+          <!-- Three account groups (rendered cleanly with brand colors, owner badges, credit util bars) -->
+          <div id="acc-groups" class="px-5 lg:mt-6 lg:grid lg:grid-cols-3 lg:items-start lg:gap-6 lg:px-0"></div>
+
+          <!-- Debts summary strip -->
+          <div class="mt-7 px-5 lg:px-0">
+            <div class="rounded-2xl border bg-card">
+              <a href="debts.html" class="flex min-h-16 flex-wrap items-center justify-between gap-3 px-4 py-3 hover:bg-accent/60">
+                <div class="flex items-center gap-3">
+                  <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-red text-brand-red-foreground">
+                    <i data-icon="hand-coins" class="size-[18px]"></i>
+                  </span>
+                  <div>
+                    <p class="font-medium">Debts</p>
+                    <p class="text-[12px] text-muted-foreground">Debts are tracked apart and excluded from Net balance</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="text-right">
+                    <p class="num text-[14px] font-semibold">You owe $19,885.00</p>
+                    <p class="num text-[12px] font-medium text-positive">+$421.30 owed to you</p>
+                  </div>
+                  <i data-icon="chevron-right" class="size-4 text-muted-foreground"></i>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════ EMPTY ═══════════════════════════ -->
+        <div data-view="empty">
+          <div class="px-5 pt-2 lg:px-0 lg:pt-6">
+            <section class="rounded-[26px] border bg-card p-5 lg:p-6" aria-labelledby="h-acc-empty">
+              <h2 id="h-acc-empty" class="text-[13px] font-medium text-muted-foreground">Net balance</h2>
+              <p class="num mt-2 text-[42px] leading-[46px] font-semibold tracking-[-0.035em] text-muted-foreground">
+                <span class="mr-0.5 text-[24px] font-medium tracking-normal">$</span>0<span class="text-[24px] font-medium tracking-[-0.01em]">.00</span>
+              </p>
+            </section>
+          </div>
+          <div class="flex flex-col items-center px-8 py-12 text-center lg:py-20">
+            <span class="grid size-14 place-items-center rounded-2xl bg-muted">
+              <i data-icon="wallet" class="size-6 text-muted-foreground"></i>
+            </span>
+            <h2 class="mt-4 text-[17px] font-semibold">No accounts yet</h2>
+            <p class="mt-1.5 max-w-[300px] text-[14px] leading-[20px] text-muted-foreground">
+              Add your checking, savings, cash or credit cards. Each account keeps its own currency and visibility.
+            </p>
+            <div class="mt-5">
+              <button type="button" data-open="add-account" class="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground">
+                <i data-icon="plus" class="size-4"></i>Add account
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════ LOADING ═══════════════════════════ -->
+        <div data-view="loading" aria-busy="true">
+          <p class="sr-only" role="status">Loading accounts</p>
+          <div aria-hidden="true" class="px-5 pt-2 lg:px-0 lg:pt-6">
+            <div class="rounded-[26px] border bg-card p-5 lg:p-6">
+              <div class="sk h-3.5 w-24"></div>
+              <div class="sk mt-3 h-11 w-56 rounded-xl"></div>
+              <div class="sk mt-3 h-3.5 w-64"></div>
+              <div class="mt-5 grid grid-cols-3 gap-2.5"><div class="sk h-16 rounded-2xl"></div><div class="sk h-16 rounded-2xl"></div><div class="sk h-16 rounded-2xl"></div></div>
+            </div>
+            <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+              <div class="divide-y rounded-2xl border bg-card">
+                <div class="flex min-h-16 items-center gap-3 px-4 py-3"><div class="sk size-11 rounded-xl"></div><div class="flex-1 space-y-2"><div class="sk h-4 w-32"></div><div class="sk h-3.5 w-24"></div></div><div class="sk h-4 w-20"></div></div>
+                <div class="flex min-h-16 items-center gap-3 px-4 py-3"><div class="sk size-11 rounded-xl"></div><div class="flex-1 space-y-2"><div class="sk h-4 w-36"></div><div class="sk h-3.5 w-28"></div></div><div class="sk h-4 w-16"></div></div>
+              </div>
+              <div class="divide-y rounded-2xl border bg-card">
+                <div class="flex min-h-16 items-center gap-3 px-4 py-3"><div class="sk size-11 rounded-xl"></div><div class="flex-1 space-y-2"><div class="sk h-4 w-32"></div><div class="sk h-3.5 w-24"></div></div><div class="sk h-4 w-20"></div></div>
+                <div class="flex min-h-16 items-center gap-3 px-4 py-3"><div class="sk size-11 rounded-xl"></div><div class="flex-1 space-y-2"><div class="sk h-4 w-28"></div><div class="sk h-3.5 w-24"></div></div><div class="sk h-4 w-20"></div></div>
+              </div>
+              <div class="divide-y rounded-2xl border bg-card">
+                <div class="flex min-h-16 items-center gap-3 px-4 py-3"><div class="sk size-11 rounded-xl"></div><div class="flex-1 space-y-2"><div class="sk h-4 w-32"></div><div class="sk h-3.5 w-24"></div></div><div class="sk h-4 w-20"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════ ERROR ═══════════════════════════ -->
+        <div data-view="error">
+          <div class="flex flex-col items-center px-8 py-12 text-center lg:py-24">
+            <span class="grid size-14 place-items-center rounded-2xl bg-muted">
+              <i data-icon="cloud-off" class="size-6 text-muted-foreground"></i>
+            </span>
+            <h2 class="mt-4 text-[17px] font-semibold">We couldn't load this</h2>
+            <p class="mt-1.5 max-w-[280px] text-[14px] leading-[20px] text-muted-foreground">
+              Check your connection and try again. Nothing was changed.
+            </p>
+            <div class="mt-5">
+              <button type="button" class="flex h-11 items-center rounded-xl border bg-card px-4 text-[14px] font-semibold">Try again</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════ SHEET: ADD ACCOUNT (?sheet=add-account) ═══════════════════════════ -->
+    <div data-sheet-id="add-account">
+      <div data-veil data-close class="fixed inset-0 z-40 bg-[#0b1220]/50"></div>
+      <div role="dialog" aria-modal="true" aria-labelledby="sh-aa-title" class="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[90dvh] w-full max-w-[430px] overflow-y-auto rounded-t-3xl bg-card px-5 pt-3 pb-8 shadow-[0_24px_48px_-12px_rgb(11_18_32/0.28)] lg:inset-y-auto lg:top-1/2 lg:left-1/2 lg:w-[460px] lg:max-w-[92vw] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-3xl lg:border lg:pt-5">
+        <div class="mx-auto mb-2 h-1 w-9 rounded-full bg-muted-foreground/25 lg:hidden" aria-hidden="true"></div>
+        <div class="flex h-12 items-center justify-between">
+          <h2 id="sh-aa-title" class="text-[17px] font-semibold tracking-[-0.01em]">Add account</h2>
+          <button type="button" data-close class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Close">
+            <i data-icon="x" class="size-[22px]"></i>
+          </button>
+        </div>
+
+        <div class="mt-3 space-y-5">
+          <div>
+            <p class="mb-2 text-[13px] font-medium">Type</p>
+            <div id="aa-types" class="grid grid-cols-4 gap-2" role="group" aria-label="Account type">
+              <button type="button" data-acc-type="CHECKING" aria-pressed="true" class="flex h-[74px] flex-col items-center justify-center gap-1.5 rounded-xl border border-transparent bg-foreground px-1 text-[12px] font-medium text-background">
+                <i data-icon="landmark" class="size-5"></i>Checking
+              </button>
+              <button type="button" data-acc-type="SAVINGS" aria-pressed="false" class="flex h-[74px] flex-col items-center justify-center gap-1.5 rounded-xl border bg-card px-1 text-[12px] font-medium hover:bg-accent">
+                <i data-icon="piggy-bank" class="size-5"></i>Savings
+              </button>
+              <button type="button" data-acc-type="CASH" aria-pressed="false" class="flex h-[74px] flex-col items-center justify-center gap-1.5 rounded-xl border bg-card px-1 text-[12px] font-medium hover:bg-accent">
+                <i data-icon="banknote" class="size-5"></i>Cash
+              </button>
+              <button type="button" data-acc-type="CREDIT" aria-pressed="false" class="flex h-[74px] flex-col items-center justify-center gap-1.5 rounded-xl border bg-card px-1 text-[11px] font-medium sm:text-[12px] hover:bg-accent">
+                <i data-icon="credit-card" class="size-5"></i>Credit card
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label for="aa-name" class="mb-1.5 block text-[13px] font-medium">Name</label>
+            <input id="aa-name" type="text" placeholder="e.g. Joint Checking" class="h-12 w-full rounded-xl border border-input bg-card px-3.5 text-[16px] placeholder:text-muted-foreground" />
+            <p id="aa-name-err" class="mt-1.5 hidden items-center gap-1.5 text-[13px] text-destructive" role="alert">
+              <i data-icon="circle-alert" class="size-3.5 shrink-0"></i><span>That name is taken in this space.</span>
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="aa-currency" class="mb-1.5 block text-[13px] font-medium">Currency</label>
+              <select id="aa-currency" class="h-12 w-full rounded-xl border border-input bg-card px-3 text-[15px] font-medium">
+                <option value="USD">US dollar (USD)</option>
+                <option value="MXN">Mexican peso (MXN)</option>
+                <option value="EUR">Euro (EUR)</option>
+              </select>
+            </div>
+            <div>
+              <label for="aa-last4" class="mb-1.5 block text-[13px] font-medium">Last 4 digits <span class="font-normal text-muted-foreground">(opt.)</span></label>
+              <input id="aa-last4" type="text" maxlength="4" inputmode="numeric" placeholder="4821" class="num h-12 w-full rounded-xl border border-input bg-card px-3.5 text-[16px] placeholder:text-muted-foreground" />
+            </div>
+          </div>
+
+          <div>
+            <label id="aa-balance-label" for="aa-balance" class="mb-1.5 block text-[13px] font-medium">Current balance</label>
+            <input id="aa-balance" type="text" inputmode="decimal" placeholder="$0.00" class="num h-12 w-full rounded-xl border border-input bg-card px-3.5 text-[16px] placeholder:text-muted-foreground" />
+          </div>
+
+          <div id="aa-card-fields" class="hidden space-y-4 border-t pt-4">
+            <div>
+              <label for="aa-limit" class="mb-1.5 block text-[13px] font-medium">Credit limit</label>
+              <input id="aa-limit" type="text" inputmode="decimal" placeholder="$12,000" class="num h-12 w-full rounded-xl border border-input bg-card px-3.5 text-[16px] placeholder:text-muted-foreground" />
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="aa-stmt-day" class="mb-1.5 block text-[13px] font-medium">Statement closes on</label>
+                <input id="aa-stmt-day" type="number" min="1" max="31" placeholder="Day 21" class="num h-12 w-full rounded-xl border border-input bg-card px-3.5 text-[16px]" />
+              </div>
+              <div>
+                <label for="aa-due-day" class="mb-1.5 block text-[13px] font-medium">Payment is due on</label>
+                <input id="aa-due-day" type="number" min="1" max="31" placeholder="Day 15" class="num h-12 w-full rounded-xl border border-input bg-card px-3.5 text-[16px]" />
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="aa-pay-from" class="mb-1.5 block text-[13px] font-medium">Pay it from</label>
+                <select id="aa-pay-from" class="h-12 w-full rounded-xl border border-input bg-card px-3 text-[14px]">
+                  <option>Joint Checking</option>
+                  <option>Maya's Checking</option>
+                </select>
+              </div>
+              <div>
+                <label for="aa-apr" class="mb-1.5 block text-[13px] font-medium">APR <span class="font-normal text-muted-foreground">(opt.)</span></label>
+                <input id="aa-apr" type="text" inputmode="decimal" placeholder="24.99%" class="num h-12 w-full rounded-xl border border-input bg-card px-3.5 text-[16px]" />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <p class="mb-1.5 block text-[13px] font-medium">Who can see it</p>
+            <div data-seg id="aa-vis-seg" class="flex h-11 rounded-xl bg-muted p-1" role="group" aria-label="Who can see it">
+              <button type="button" data-value="shared" aria-pressed="true" class="flex-1 rounded-lg bg-card text-[14px] font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]">Maya &amp; Daniel</button>
+              <button type="button" data-value="private" aria-pressed="false" class="flex-1 rounded-lg text-[14px] font-medium text-muted-foreground">Only you</button>
+            </div>
+            <p class="mt-1.5 text-[12px] text-muted-foreground">You can change this later. Sharing shows the full history.</p>
+          </div>
+
+          <div class="pt-1">
+            <button type="button" id="aa-submit" class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground">
+              Add account
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/icons.js"></script>
+    <script>
+      (function () {
+        var COLOR_TILE = {
+          purple: "bg-brand-purple text-brand-purple-foreground",
+          green: "bg-brand-green text-brand-green-foreground",
+          blue: "bg-brand-blue text-brand-blue-foreground",
+          orange: "bg-brand-orange text-brand-orange-foreground",
+          yellow: "bg-brand-yellow text-brand-yellow-foreground",
+          brown: "bg-brand-brown text-brand-brown-foreground",
+          gray: "bg-brand-gray text-brand-gray-foreground",
+        };
+        var BAR_COLOR = {
+          purple: "bg-primary",
+          green: "bg-emerald-500",
+          blue: "bg-sky-500",
+          yellow: "bg-amber-500",
+          brown: "bg-amber-700 dark:bg-amber-500",
+          gray: "bg-foreground/60",
+        };
+
+        var ACCOUNTS = [
+          {
+            id: 1, group: "cash", name: "Joint Checking", typeLabel: "Checking ·· 4821",
+            icon: "landmark", color: "purple", shared: true, owners: ["M", "D"],
+            balanceCents: 842055, balanceStr: "$8,420.55",
+            sub: "+$855.13 this month", subCls: "text-positive",
+            href: "account.html?id=1",
+          },
+          {
+            id: 4, group: "cash", name: "Maya's Checking", typeLabel: "Checking ·· 2260",
+            icon: "landmark", color: "brown", shared: false, owners: ["M"],
+            balanceCents: 391218, balanceStr: "$3,912.18",
+            sub: "+$770.65 this month", subCls: "text-positive",
+            href: "account.html?id=4",
+          },
+          {
+            id: 5, group: "cash", name: "Cash", typeLabel: "Cash wallet · USD",
+            icon: "banknote", color: "yellow", shared: false, owners: ["M"],
+            balanceCents: 14000, balanceStr: "$140.00",
+            sub: "1 expense today", subCls: "text-muted-foreground",
+            href: "account.html?id=5",
+          },
+          {
+            id: 2, group: "savings", name: "Emergency Fund", typeLabel: "Savings ·· 9034",
+            icon: "piggy-bank", color: "green", shared: true, owners: ["M", "D"],
+            balanceCents: 2430000, balanceStr: "$24,300.00",
+            sub: "Shared reserve · ≈3 mo", subCls: "text-muted-foreground",
+            href: "account.html?id=2",
+          },
+          {
+            id: 6, group: "savings", name: "BBVA México", typeLabel: "Savings ·· 5512",
+            icon: "piggy-bank", color: "blue", shared: false, owners: ["M"],
+            balanceCents: 208446, balanceStr: "MX$38,500.00",
+            sub: "≈ $2,084.46 USD", subCls: "text-muted-foreground",
+            href: "account.html?id=6",
+          },
+          {
+            id: 3, group: "cards", name: "Sapphire Reserve", typeLabel: "Credit ·· 7719",
+            icon: "credit-card", color: "blue", shared: true, owners: ["D", "M"],
+            balanceCents: -184632, balanceStr: "−$1,846.32",
+            availStr: "$10,153.68", limitStr: "$12k", utilPct: 15.4,
+            dueIcon: "clock", dueStr: "Due Nov 15 · $1,512.80", dueUrgent: true,
+            href: "account.html?id=3",
+          },
+          {
+            id: 7, group: "cards", name: "Amex Gold", typeLabel: "Credit ·· 1008",
+            icon: "credit-card", color: "gray", shared: false, owners: ["M"],
+            balanceCents: -61240, balanceStr: "−$612.40",
+            availStr: "$7,387.60", limitStr: "$8k", utilPct: 7.7,
+            dueStr: "Due Nov 28 · $268.90", dueUrgent: false,
+            href: "account.html?id=7",
+          },
+        ];
+
+        var GROUPS = [
+          { key: "cash", label: "Cash and checking" },
+          { key: "savings", label: "Savings" },
+          { key: "cards", label: "Credit cards" },
+        ];
+
+        function fmtUSD(cents, signed) {
+          var neg = cents < 0;
+          var abs = Math.abs(cents);
+          var whole = Math.floor(abs / 100).toLocaleString("en-US");
+          var dec = String(abs % 100).padStart(2, "0");
+          var sign = neg ? "−" : signed && cents > 0 ? "+" : "";
+          return sign + "$" + whole + "." + dec;
+        }
+
+        function normalizeScope(s) {
+          if (!s || s === "everything") return "all";
+          return s;
+        }
+
+        var params = new URLSearchParams(location.search);
+        var curScope = normalizeScope(params.get("scope") || (window.fableScope ? window.fableScope() : "all"));
+        var creditMode = "CREDIT_BALANCE"; // or "AVAILABLE_CREDIT"
+
+        function render() {
+          if (window.fableScope) window.fableScope(curScope === "all" ? "everything" : curScope);
+
+          var visible = ACCOUNTS.filter(function (a) {
+            if (curScope === "shared") return a.shared;
+            if (curScope === "only-you") return !a.shared;
+            return true;
+          });
+
+          var cashC = 0, savC = 0, cardC = 0, cashN = 0, savN = 0, limitTotal = 0;
+          visible.forEach(function (a) {
+            if (a.group === "cash") { cashC += a.balanceCents; cashN++; }
+            if (a.group === "savings") { savC += a.balanceCents; savN++; }
+            if (a.group === "cards") { cardC += a.balanceCents; limitTotal += a.id === 3 ? 1200000 : 800000; }
+          });
+          var assets = cashC + savC;
+          var net = assets + cardC;
+          var absNet = Math.abs(net);
+          var whole = Math.floor(absNet / 100).toLocaleString("en-US");
+          var dec = "." + String(absNet % 100).padStart(2, "0");
+
+          document.getElementById("acc-vis-note").textContent =
+            curScope === "shared" ? visible.length + " shared accounts · Maya & Daniel"
+              : curScope === "only-you" ? visible.length + " private accounts · Only Maya"
+                : visible.length + " accounts · Maya & Daniel";
+
+          document.getElementById("acc-hero").innerHTML =
+            '<span class="mr-0.5 text-[24px] font-medium tracking-normal text-muted-foreground lg:text-[28px]">$</span>' +
+            whole + '<span class="text-[24px] font-medium tracking-[-0.01em] text-muted-foreground lg:text-[28px]">' + dec + "</span>";
+
+          var moChg = curScope === "shared" ? "+$730.06 this month" : curScope === "only-you" ? "+$582.80 this month" : "+$1,312.86 this month";
+          document.getElementById("acc-sub").innerHTML =
+            '<span class="font-medium text-positive">' + moChg + '</span> · Assets ' + fmtUSD(assets) + ' · Cards ' + fmtUSD(cardC);
+
+          document.getElementById("kpi-cash").textContent = fmtUSD(cashC);
+          document.getElementById("kpi-cash-sub").textContent = cashN + (cashN === 1 ? " account" : " accounts");
+          document.getElementById("kpi-savings").textContent = fmtUSD(savC);
+          document.getElementById("kpi-savings-sub").textContent = savN === 2 ? "USD + MXN" : (visible.find(function (a) { return a.group === "savings" && a.id === 6; }) ? "MXN (18.47/USD)" : "USD shared");
+          document.getElementById("kpi-cards").textContent = fmtUSD(cardC);
+          var utilAll = limitTotal ? Math.round((Math.abs(cardC) / limitTotal) * 100) : 0;
+          document.getElementById("kpi-cards-sub").textContent = utilAll + "% of $" + Math.round(limitTotal / 100000) + "k";
+
+          var absTotal = cashC + savC + Math.abs(cardC) || 1;
+          var pCash = Math.round((cashC / absTotal) * 100);
+          var pSav = Math.round((savC / absTotal) * 100);
+          var pCard = Math.max(0, 100 - pCash - pSav);
+          document.getElementById("mix-cash").style.width = ((cashC / absTotal) * 100).toFixed(1) + "%";
+          document.getElementById("mix-savings").style.width = ((savC / absTotal) * 100).toFixed(1) + "%";
+          document.getElementById("mix-cards").style.width = ((Math.abs(cardC) / absTotal) * 100).toFixed(1) + "%";
+          document.getElementById("mix-cash-pct").textContent = pCash + "%";
+          document.getElementById("mix-savings-pct").textContent = pSav + "%";
+          document.getElementById("mix-cards-pct").textContent = pCard + "%";
+
+          ["acc-scope", "acc-scope-desk"].forEach(function (cid) {
+            document.querySelectorAll("#" + cid + " > button").forEach(function (b) {
+              var on = b.dataset.value === curScope;
+              b.setAttribute("aria-pressed", String(on));
+              b.classList.toggle("bg-card", on);
+              b.classList.toggle("text-foreground", on);
+              b.classList.toggle("shadow-[0_1px_2px_rgb(11_18_32/0.12)]", on);
+              b.classList.toggle("text-muted-foreground", !on);
+            });
+          });
+
+          var grpHtml = GROUPS.map(function (g) {
+            var rows = visible.filter(function (a) { return a.group === g.key; });
+            var subC = rows.reduce(function (s, a) { return s + a.balanceCents; }, 0);
+            var rowsHtml = rows.map(function (a) {
+              var badge = a.shared
+                ? '<span class="inline-flex shrink-0 items-center -space-x-1">' + a.owners.map(function (o) {
+                    return '<span class="grid size-4 place-items-center rounded-full ring-2 ring-card text-[8px] font-semibold ' +
+                      (o === "D" ? "bg-brand-orange text-brand-orange-foreground" : "bg-brand-purple text-brand-purple-foreground") + '">' + o + "</span>";
+                  }).join("") + "</span>"
+                : '<span class="inline-flex size-4 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground" aria-label="Only you" title="Only you"><i data-icon="lock" class="size-2.5"></i></span>';
+
+              if (a.group === "cards") {
+                var mainRight = creditMode === "AVAILABLE_CREDIT" ? a.availStr : a.balanceStr;
+                var subRight = creditMode === "AVAILABLE_CREDIT" ? a.balanceStr + " owed" : a.availStr + " avail";
+                return (
+                  '<li><a href="' + a.href + '" class="block px-4 py-3.5 hover:bg-accent/60">' +
+                  '<div class="flex items-center gap-3">' +
+                  '<span class="grid size-10 shrink-0 place-items-center rounded-xl sm:size-11 ' + COLOR_TILE[a.color] + '"><i data-icon="' + a.icon + '" class="size-5"></i></span>' +
+                  '<div class="min-w-0 flex-1">' +
+                  '<div class="flex items-center justify-between gap-2">' +
+                  '<span class="truncate font-medium">' + a.name + "</span>" +
+                  '<span class="num shrink-0 font-semibold">' + mainRight + "</span></div>" +
+                  '<div class="mt-0.5 flex items-baseline justify-between gap-2 text-[12px]">' +
+                  '<span class="inline-flex min-w-0 items-center gap-1 ' + (a.dueUrgent ? "font-medium text-warning" : "text-muted-foreground") + '">' +
+                  (a.dueIcon ? '<i data-icon="' + a.dueIcon + '" class="size-3 shrink-0"></i>' : "") +
+                  '<span class="truncate">' + a.dueStr + "</span></span>" +
+                  '<span class="num shrink-0 text-muted-foreground">' + subRight + "</span></div>" +
+                  '<div class="mt-2 flex items-center gap-2">' + badge +
+                  '<div class="h-1 flex-1 overflow-hidden rounded-full bg-muted"><div class="h-full rounded-full ' + BAR_COLOR[a.color] + '" style="width:' + a.utilPct + '%"></div></div>' +
+                  '<span class="num text-[11px] text-muted-foreground">' + Math.round(a.utilPct) + "% of " + a.limitStr + "</span></div>" +
+                  "</div></div></a></li>"
+                );
+              }
+
+              return (
+                '<li><a href="' + a.href + '" class="flex min-h-16 items-center gap-3 px-4 py-3 hover:bg-accent/60">' +
+                '<span class="grid size-10 shrink-0 place-items-center rounded-xl sm:size-11 ' + COLOR_TILE[a.color] + '"><i data-icon="' + a.icon + '" class="size-5"></i></span>' +
+                '<div class="min-w-0 flex-1">' +
+                '<div class="flex items-center justify-between gap-2">' +
+                '<span class="truncate font-medium">' + a.name + "</span>" +
+                '<span class="num shrink-0 font-semibold">' + a.balanceStr + "</span></div>" +
+                '<div class="mt-0.5 flex items-center justify-between gap-2 text-[12px]">' +
+                '<span class="inline-flex min-w-0 items-center gap-1.5 text-muted-foreground"><span class="num truncate">' + a.typeLabel + "</span>" + badge + "</span>" +
+                '<span class="num shrink-0 font-medium ' + a.subCls + '">' + a.sub + "</span></div>" +
+                "</div></a></li>"
+              );
+            }).join("");
+
+            return (
+              '<section>' +
+              '<div class="flex items-baseline justify-between px-1 pt-5 pb-2 text-[13px] font-medium text-muted-foreground lg:pt-0">' +
+              "<h2>" + g.label + '</h2><span class="num">' + fmtUSD(subC) + "</span></div>" +
+              '<ul class="divide-y rounded-2xl border bg-card">' + rowsHtml + "</ul></section>"
+            );
+          }).join("");
+
+          var container = document.getElementById("acc-groups");
+          container.innerHTML = grpHtml;
+          if (window.fableIcons) window.fableIcons(container);
+        }
+
+        function setScope(s) {
+          curScope = normalizeScope(s);
+          render();
+        }
+        document.getElementById("acc-scope").addEventListener("click", function (e) {
+          var b = e.target.closest("button[data-value]");
+          if (b) setScope(b.dataset.value);
+        });
+        document.getElementById("acc-scope-desk").addEventListener("click", function (e) {
+          var b = e.target.closest("button[data-value]");
+          if (b) setScope(b.dataset.value);
+        });
+
+        function toggleCreditMode() {
+          creditMode = creditMode === "CREDIT_BALANCE" ? "AVAILABLE_CREDIT" : "CREDIT_BALANCE";
+          var isAvail = creditMode === "AVAILABLE_CREDIT";
+          document.getElementById("acc-credit-mode-lbl").textContent = isAvail ? "Show: Available credit" : "Show: Balance owed";
+          document.getElementById("acc-credit-mode-mob-lbl").textContent = isAvail ? "Available credit" : "Balance owed";
+          render();
+        }
+        document.getElementById("acc-credit-mode-desk").addEventListener("click", toggleCreditMode);
+        document.getElementById("acc-credit-mode-mob").addEventListener("click", toggleCreditMode);
+
+        // Add account sheet type selector
+        document.getElementById("aa-types").addEventListener("click", function (e) {
+          var btn = e.target.closest("[data-acc-type]");
+          if (!btn) return;
+          var t = btn.dataset.accType;
+          document.querySelectorAll("#aa-types [data-acc-type]").forEach(function (b) {
+            var on = b === btn;
+            b.setAttribute("aria-pressed", String(on));
+            b.classList.toggle("border-transparent", on);
+            b.classList.toggle("bg-foreground", on);
+            b.classList.toggle("text-background", on);
+            b.classList.toggle("bg-card", !on);
+          });
+          var isCard = t === "CREDIT";
+          document.getElementById("aa-balance-label").textContent = isCard ? "What you owe today" : "Current balance";
+          document.getElementById("aa-card-fields").classList.toggle("hidden", !isCard);
+        });
+
+        var TAKEN = ["joint checking", "emergency fund", "sapphire reserve", "maya's checking", "cash", "bbva méxico", "amex gold"];
+        document.getElementById("aa-submit").addEventListener("click", function () {
+          var inp = document.getElementById("aa-name");
+          var err = document.getElementById("aa-name-err");
+          if (TAKEN.indexOf(inp.value.trim().toLowerCase()) >= 0) {
+            inp.classList.add("border-destructive");
+            err.classList.remove("hidden");
+            err.classList.add("flex");
+            return;
+          }
+          inp.classList.remove("border-destructive");
+          err.classList.add("hidden");
+          err.classList.remove("flex");
+          window.fableClose();
+          window.fableToast("Account added");
+        });
+
+        render();
+      })();
+    </script>
+  </body>
+</html>

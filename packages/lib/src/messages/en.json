@@ -953,5 +953,73 @@
     "description": "firecent helps you see your money clearly, share expenses with friends and reach your savings goals. Join the waitlist and get early access.",
     "ogImageAlt": "firecent: orange and violet flame logo on a dark background, with the tagline “Your money, clear. Your goals, on fire.”",
     "slogan": "Your money, clear. Your goals, on fire."
+  },
+  "Finance": {
+    "nature": {
+      "owe": "Owe",
+      "need": "Need",
+      "want": "Want"
+    },
+    "natureBar": {
+      "of": "of {amount}",
+      "progress": "{nature}, {percent}% of plan spent",
+      "over": "{nature}, {percent}% of plan spent, over plan"
+    },
+    "pace": {
+      "today": "Today · {percent}% pace"
+    },
+    "upcoming": {
+      "auto": "Auto",
+      "manual": "Manual",
+      "expected": "Expected",
+      "due": "{days, plural, =0 {Due today} one {Due tomorrow} other {Due in # days}}",
+      "overdue": "{days, plural, one {# day overdue} other {# days overdue}}"
+    },
+    "scope": {
+      "label": "Account visibility",
+      "everything": "Everything",
+      "everythingShort": "All",
+      "shared": "Shared",
+      "onlyYou": "Only you"
+    },
+    "accountType": {
+      "GENERAL": "Account",
+      "BANK": "Bank",
+      "SAVINGS_ACCOUNT": "Savings",
+      "CHECKING_ACCOUNT": "Checking",
+      "CASH": "Cash",
+      "CREDIT_CARD": "Credit card"
+    },
+    "row": {
+      "addedBy": "Added by {name}",
+      "privateAccount": "Private account",
+      "excluded": "Excluded"
+    },
+    "day": {
+      "today": "Today",
+      "yesterday": "Yesterday"
+    },
+    "header": {
+      "back": "Back"
+    },
+    "assistant": {
+      "dismiss": "Dismiss"
+    },
+    "steps": {
+      "done": "Done",
+      "step": "Step {number}"
+    },
+    "state": {
+      "loading": "Loading…",
+      "errorTitle": "We couldn't load this",
+      "errorBody": "Check your connection and try again. Nothing was changed.",
+      "errorAction": "Try again",
+      "noResultsTitle": "Nothing matches",
+      "noResultsBody": "Try a different word or remove a filter.",
+      "noResultsAction": "Clear filters"
+    },
+    "mark": {
+      "name": "Firecent"
+    }
   }
 }

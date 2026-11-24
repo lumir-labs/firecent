@@ -38,6 +38,50 @@ by `validatePermission`), `theme-switcher.tsx`, `language-switcher.tsx`,
 `data-table-pagination.tsx`, `unauthorized.tsx`, `org-switcher.tsx` (header
 organization switcher).
 
+## Web: `apps/web/components/finance/*` (Firecent domain, Phase 1C)
+
+Presentation components built on `components/ui` (1B variants). They receive
+computed data in **major units** (D8, signed per D1) and never call tRPC.
+Import from `@/components/finance`. Copy lives in the `Finance` i18n namespace.
+Server-compatible unless marked *client*. Every list/figure component has a
+`*Skeleton` (wrap a loading screen in `LoadingRegion`). Live catalog: `/en/kit`
+→ "Firecent · componentes".
+
+| Component | Key props | Use (SPEC) |
+|---|---|---|
+| `Money` | `value`, `currency`, `size` hero·sheet·card·row-strong·row·inline, `tone` movement·upcoming·plain, `kind`, `approx`, `dimCents`, `trimZeroCents`, `muted`, `weight`, `converted`, `surface` | **Only** place that decides sign/color/format (§4.2). Also `formatMoneyText()` for aria-labels |
+| `ChangeLine` | `value`, `currency`, `context`, `surface` | Change under a hero figure (E4) |
+| `Sparkline` | `points`, `ariaLabel`, `surface`, `showDot`, `className` (height) | Trend line, `role="img"` (E5) |
+| `SplitBar` | `shared`, `onlyYou`, `currency`, `hrefShared`, `hrefOnlyYou`, `surface` | Shared / Only you split (E6) |
+| `SectionHeader` | `title`, `action {label, href}`, `count`, `description`, `id`, `as` | Section `h2` + link (E7) |
+| `StatPair` | `items [{icon, iconClassName, label, value, currency, tone, sub, href}]`, `surface` | Two figures in a card; hero = glass tiles (E9) |
+| `NatureSwatch` | `nature` | Owe/Need/Want square (§3.3) |
+| `NatureBar` | `nature`, `spent`, `planned`, `currency`, `pace` 0–1, `label`, `href` | Bucket bar with pace marker, `role="progressbar"` (E10) |
+| `PaceLegend` | `label` | Legend of the pace marker (E20) |
+| `UpcomingRow` | `date`, `title`, `amount`, `currency`, `kind`, `approx`, `subtitle`, `mode` auto·manual·expected·due, `dueInDays`, `href` | Coming up / Recurring row with date chip (E11) |
+| `CardTotalFooter` | `label`, `value`, `currency`, `tone`, `approx`, `action` | Card total (E12) |
+| `AssistantCard` *client* | `eyebrow`, `title`, `body`, `actions [{label, href/onClick, variant}]`, `dismissible`, `onDismiss` | Assistant insight on sand (E13) |
+| `FirecentMark` | `variant` color·mono·logo, `title` | Flame / lockup, inline SVG |
+| `StepList` | `steps [{title, body, done, active, href}]` | Numbered next steps (E19) |
+| `PageHeader` | `title`, `subtitle`, `back`, `backLabel`, `actions`, `desktopActions` | Mobile N1 / root 28 px; desktop 24 px, one `h1` |
+| `TransactionRow` | `title`, `category {icon, name, color}`, `account`, `amount`, `currency`, `kind`, `private`, `addedBy`, `date`, `tags`, `converted`, `secondary`, `excluded`, `href`/`onClick` | Transaction row (N2, §4.3) |
+| `DayHeader` | `date`, `net`, `currency`, `today`, `label` | Day group header (N3) |
+| `ScopeControl` *client* | `value`, `onChange`, `memberCount`, `surface` | Everything · Shared · Only you (N5); renders nothing with 1 member |
+| `FieldRow` | `label`, `value`, `href`/`onClick` | Label/value row (N7) |
+| `NavRow` | `icon`, `label`, `preview`, `badge`, `href` | Navigation row (N15) |
+| `AccountRow` | `name`, `type`, `last4`, `balance`, `currency`, `private`, `secondary`, `secondaryTone`, `converted`, `color`, `href` | Account row (N16) |
+| `StateBlock` | `kind` empty·error·no-results, `icon`, `title`, `body`, `action` (node or `{label, href/onClick}`), `secondaryAction` | Empty/error/no results with §4.1 copy (N13) |
+| `CategoryIcon` | `icon` (Lucide name, kebab or Pascal, or component), `size` sm·md·lg, `color` (opt-in) | Neutral icon tile (§3.1) |
+
+Rules:
+
+- Never format an amount by hand: `<Money>` or `formatMoneyText()`.
+- `surface="hero"` switches to the `hero-*` tokens (always-dark Home balance card).
+- `onClick` props only work from client parents (functions do not cross the
+  server boundary); prefer `href`.
+- `CategoryIcon` resolves names from a curated map (small bundle). Unknown
+  names fall back to `tag`; add new icons to the map in `category-icon.tsx`.
+
 ## Web: the copyable admin pattern (DataTable)
 
 Every admin CRUD screen follows the same mold (`users/_components/`,

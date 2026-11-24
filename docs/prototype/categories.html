@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en" data-state="data">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Categories & labels · Firecent</title>
+    <link rel="icon" href="assets/brand/favicon.svg" />
+    <link rel="stylesheet" href="assets/app.css" />
+    <script src="assets/proto.js"></script>
+  </head>
+  <body class="min-h-dvh bg-background text-foreground">
+    <div data-shell data-tab="more" data-nav="settings"></div>
+
+    <main class="lg:pl-60">
+      <div class="mx-auto max-w-[430px] px-5 pt-4 pb-28 lg:max-w-[1040px] lg:px-10 lg:py-8">
+        <!-- Mobile header -->
+        <header class="flex items-center justify-between gap-2 lg:hidden">
+          <a href="more.html" class="inline-flex h-11 items-center gap-1 -ml-2 px-2 text-[14px] font-medium text-muted-foreground hover:text-foreground">
+            <i data-icon="chevron-left" class="size-4"></i>More
+          </a>
+          <button type="button" data-open="add-category" class="inline-flex h-10 items-center gap-1.5 rounded-xl bg-primary px-3.5 text-[14px] font-semibold text-primary-foreground">
+            <i data-icon="plus" class="size-4"></i>New
+          </button>
+        </header>
+
+        <!-- Desktop header -->
+        <header class="hidden lg:flex lg:items-center lg:justify-between">
+          <div>
+            <div class="flex items-center gap-2 text-[13px] text-muted-foreground">
+              <a href="more.html" class="hover:text-foreground">Settings</a>
+              <span>/</span>
+              <span>Categories &amp; labels</span>
+            </div>
+            <h1 class="mt-0.5 text-[28px] leading-[34px] font-bold tracking-[-0.025em]">Categories &amp; labels</h1>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" data-open="add-category" class="inline-flex h-9 items-center gap-1.5 rounded-full bg-primary px-4 text-[13px] font-semibold text-primary-foreground">
+              <i data-icon="plus" class="size-4"></i>Add category
+            </button>
+            <button type="button" data-open="ask" class="inline-flex h-9 items-center gap-2 rounded-full border bg-card px-3.5 text-[13px] font-medium hover:bg-accent">
+              <i data-icon="firecent-mono" class="h-3.5 w-auto text-primary-text"></i>Ask
+            </button>
+            <a href="notifications.html" class="relative grid size-9 place-items-center rounded-full border bg-card hover:bg-accent" aria-label="Notifications">
+              <i data-icon="bell" class="size-4"></i>
+              <span class="absolute top-1.5 right-2 size-2 rounded-full bg-primary ring-2 ring-card"></span>
+            </a>
+          </div>
+        </header>
+
+        <h1 class="mt-2 text-[26px] leading-[32px] font-bold tracking-[-0.025em] lg:hidden">Categories &amp; labels</h1>
+
+        <!-- DATA -->
+        <div data-view="data" class="mt-4 space-y-5">
+          <!-- Segmented tabs + light summary bar (no dark card outside Home) -->
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div data-seg id="cat-tab" class="flex h-10 w-full rounded-xl bg-muted p-1 sm:w-auto sm:min-w-[300px]" role="group" aria-label="Category view">
+              <button type="button" data-value="categories" aria-pressed="true" class="flex-1 whitespace-nowrap rounded-lg bg-card px-4 text-[13px] font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]">Categories (19)</button>
+              <button type="button" data-value="labels" aria-pressed="false" class="flex-1 whitespace-nowrap rounded-lg px-4 text-[13px] font-medium text-muted-foreground">Labels (3)</button>
+            </div>
+            <div class="flex items-center gap-2 text-[13px] text-muted-foreground">
+              <span class="num whitespace-nowrap rounded-full border bg-card px-3 py-1 font-medium text-foreground">12 monthly caps</span>
+              <span class="num whitespace-nowrap">$5,580.00 total cap</span>
+            </div>
+          </div>
+
+          <!-- Categories panel -->
+          <section id="panel-categories" class="space-y-6">
+            <div id="cat-groups" class="grid gap-6 lg:grid-cols-2"></div>
+          </section>
+
+          <!-- Labels panel -->
+          <section id="panel-labels" class="hidden space-y-4">
+            <div class="rounded-3xl border bg-card">
+              <div class="flex items-center justify-between gap-3 border-b px-5 py-4">
+                <div class="min-w-0">
+                  <h2 class="text-[16px] font-semibold">Labels</h2>
+                  <p class="text-[13px] text-muted-foreground">Cross-category tags for trips, reimbursements, and tax items</p>
+                </div>
+                <button type="button" id="lbl-add-toggle" class="inline-flex h-9 shrink-0 whitespace-nowrap items-center gap-1.5 rounded-xl border bg-card px-3 text-[13px] font-medium hover:bg-accent">
+                  <i data-icon="plus" class="size-4"></i>New label
+                </button>
+              </div>
+              <div id="lbl-new-row" class="hidden border-b bg-muted/35 px-5 py-3.5">
+                <form id="lbl-new-form" class="flex flex-wrap items-center gap-2">
+                  <input id="lbl-new-name" type="text" placeholder="Label name (e.g. Home Reno)" aria-label="Label name" class="h-10 min-w-[180px] flex-1 rounded-xl border border-input bg-card px-3 text-[14px] placeholder:text-muted-foreground" />
+                  <button type="submit" class="inline-flex h-10 items-center rounded-xl bg-primary px-4 text-[13px] font-semibold text-primary-foreground">Add label</button>
+                  <button type="button" id="lbl-new-cancel" class="inline-flex h-10 items-center rounded-xl border bg-card px-3 text-[13px] font-medium hover:bg-accent">Cancel</button>
+                </form>
+              </div>
+              <div id="lbl-list" class="divide-y"></div>
+            </div>
+          </section>
+        </div>
+
+        <!-- EMPTY -->
+        <div data-view="empty" class="mt-6 rounded-3xl border bg-card p-8 text-center">
+          <p class="text-[18px] font-semibold">No custom categories yet</p>
+          <p class="mx-auto mt-1 max-w-sm text-[14px] text-muted-foreground">Create categories with brand colors and optional monthly caps.</p>
+          <button type="button" data-open="add-category" class="mt-4 inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-5 text-[14px] font-semibold text-primary-foreground">Add category</button>
+        </div>
+
+        <!-- LOADING -->
+        <div data-view="loading" class="mt-5 grid gap-5 lg:grid-cols-2">
+          <div class="h-72 animate-pulse rounded-3xl bg-muted"></div>
+          <div class="h-72 animate-pulse rounded-3xl bg-muted"></div>
+        </div>
+
+        <!-- ERROR -->
+        <div data-view="error" class="mt-5 rounded-3xl border bg-card p-6 text-center">
+          <p class="text-[16px] font-semibold">Couldn't load categories</p>
+          <p class="mt-1 text-[14px] text-muted-foreground">Check your connection and retry.</p>
+          <button type="button" onclick="location.reload()" class="mt-4 inline-flex h-10 items-center rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground">Try again</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Edit / Add Category Sheet -->
+    <div data-sheet-id="edit-category">
+      <div data-veil data-close class="fixed inset-0 z-40 bg-[#0b1220]/50"></div>
+      <div role="dialog" aria-modal="true" aria-label="Edit category" class="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[90dvh] max-w-[430px] overflow-y-auto rounded-t-3xl bg-card pb-6 shadow-[0_-8px_30px_-12px_rgb(11_18_32/0.25)] lg:top-1/2 lg:right-auto lg:bottom-auto lg:left-1/2 lg:w-[460px] lg:max-w-none lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-3xl lg:border">
+        <div class="mx-auto mt-2.5 h-1 w-9 rounded-full bg-muted-foreground/30 lg:hidden"></div>
+        <div class="flex items-center justify-between px-5 pt-4">
+          <h2 class="text-[18px] font-semibold">Edit category</h2>
+          <button type="button" data-close class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Close"><i data-icon="x" class="size-[22px]"></i></button>
+        </div>
+        <form id="ec-form" class="mt-4 space-y-4 px-5">
+          <div>
+            <label for="ec-name" class="mb-1.5 block text-[13px] font-medium">Name</label>
+            <input id="ec-name" type="text" value="Groceries" class="h-11 w-full rounded-xl border border-input bg-card px-3.5 text-[15px]" />
+          </div>
+          <div>
+            <p class="mb-1.5 text-[13px] font-medium">Color swatch</p>
+            <div id="ec-colors" class="flex flex-wrap gap-2"></div>
+          </div>
+          <div>
+            <label for="ec-cap" class="mb-1.5 block text-[13px] font-medium">Monthly cap (leave blank for No cap)</label>
+            <input id="ec-cap" type="text" inputmode="decimal" placeholder="e.g. 900.00" class="num h-11 w-full rounded-xl border border-input bg-card px-3.5 text-[15px]" />
+          </div>
+          <div class="flex gap-2 pt-1">
+            <button type="submit" class="inline-flex h-11 flex-1 items-center justify-center rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground">Save changes</button>
+            <button type="button" data-close class="inline-flex h-11 items-center justify-center rounded-xl border bg-card px-4 text-[14px] font-medium hover:bg-accent">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div data-sheet-id="add-category">
+      <div data-veil data-close class="fixed inset-0 z-40 bg-[#0b1220]/50"></div>
+      <div role="dialog" aria-modal="true" aria-label="Add category" class="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[90dvh] max-w-[430px] overflow-y-auto rounded-t-3xl bg-card pb-6 shadow-[0_-8px_30px_-12px_rgb(11_18_32/0.25)] lg:top-1/2 lg:right-auto lg:bottom-auto lg:left-1/2 lg:w-[460px] lg:max-w-none lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-3xl lg:border">
+        <div class="mx-auto mt-2.5 h-1 w-9 rounded-full bg-muted-foreground/30 lg:hidden"></div>
+        <div class="flex items-center justify-between px-5 pt-4">
+          <h2 class="text-[18px] font-semibold">New category</h2>
+          <button type="button" data-close class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Close"><i data-icon="x" class="size-[22px]"></i></button>
+        </div>
+        <form id="ac-form" class="mt-4 space-y-4 px-5">
+          <div>
+            <label for="ac-name" class="mb-1.5 block text-[13px] font-medium">Category name</label>
+            <input id="ac-name" type="text" placeholder="e.g. Travel" class="h-11 w-full rounded-xl border border-input bg-card px-3.5 text-[15px]" />
+          </div>
+          <div>
+            <label for="ac-group" class="mb-1.5 block text-[13px] font-medium">Group</label>
+            <select id="ac-group" class="h-11 w-full rounded-xl border border-input bg-card px-3.5 text-[15px]">
+              <option value="Everyday">Everyday</option>
+              <option value="Housing, Bills &amp; Loans">Housing, Bills &amp; Loans</option>
+              <option value="Lifestyle &amp; Health">Lifestyle &amp; Health</option>
+              <option value="Income">Income</option>
+            </select>
+          </div>
+          <div>
+            <label for="ac-cap" class="mb-1.5 block text-[13px] font-medium">Optional monthly cap (USD)</label>
+            <input id="ac-cap" type="text" inputmode="decimal" placeholder="No cap" class="num h-11 w-full rounded-xl border border-input bg-card px-3.5 text-[15px]" />
+          </div>
+          <button type="submit" class="inline-flex h-11 w-full items-center justify-center rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground">Create category</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="assets/icons.js"></script>
+    <script>
+      (function () {
+        var COLOR_CLS = {
+          green: "bg-brand-green text-brand-green-foreground",
+          orange: "bg-brand-orange text-brand-orange-foreground",
+          blue: "bg-brand-blue text-brand-blue-foreground",
+          purple: "bg-brand-purple text-brand-purple-foreground",
+          pink: "bg-brand-pink text-brand-pink-foreground",
+          red: "bg-brand-red text-brand-red-foreground",
+          yellow: "bg-brand-yellow text-brand-yellow-foreground",
+          gray: "bg-brand-gray text-brand-gray-foreground",
+        };
+        var GROUPS = [
+          {
+            title: "Everyday",
+            sub: "Daily purchases & family spending",
+            items: [
+              { id: "Groceries", icon: "shopping-cart", color: "green", spent: "$709.46", cap: 900 },
+              { id: "Dining out", icon: "utensils", color: "orange", spent: "$313.69", cap: 450 },
+              { id: "Transport", icon: "bus", color: "blue", spent: "$250.20", cap: 300 },
+              { id: "Household", icon: "lamp", color: "yellow", spent: "$64.90", cap: null },
+              { id: "Pets", icon: "paw-print", color: "gray", spent: "$61.24", cap: null },
+            ],
+          },
+          {
+            title: "Housing, Bills & Loans",
+            sub: "Fixed commitments & utilities",
+            items: [
+              { id: "Rent", icon: "building-2", color: "purple", spent: "$2,150.00", cap: 2150 },
+              { id: "Utilities", icon: "zap", color: "yellow", spent: "$58.75", cap: 220 },
+              { id: "Phone & internet", icon: "wifi", color: "blue", spent: "$179.99", cap: 180 },
+              { id: "Insurance", icon: "shield", color: "orange", spent: "$0.00", cap: 195 },
+              { id: "Car loan", icon: "car", color: "red", spent: "$320.00", cap: 320 },
+              { id: "Student loan", icon: "graduation-cap", color: "purple", spent: "$0.00", cap: 385 },
+            ],
+          },
+          {
+            title: "Lifestyle & Health",
+            sub: "Discretionary, care & subscriptions",
+            items: [
+              { id: "Shopping", icon: "shopping-bag", color: "purple", spent: "$131.15", cap: null },
+              { id: "Entertainment", icon: "ticket", color: "pink", spent: "$212.09", cap: 250 },
+              { id: "Subscriptions", icon: "tv", color: "purple", spent: "$40.47", cap: 80 },
+              { id: "Health", icon: "heart-pulse", color: "green", spent: "$82.35", cap: 150 },
+              { id: "Fitness", icon: "dumbbell", color: "green", spent: "$121.00", cap: null },
+              { id: "Gifts", icon: "gift", color: "orange", spent: "$116.85", cap: null },
+            ],
+          },
+          {
+            title: "Income",
+            sub: "Incoming paychecks & deposits",
+            items: [
+              { id: "Paycheck", icon: "briefcase", color: "green", spent: "+$6,125.00", cap: null, income: true },
+              { id: "Other income", icon: "coins", color: "green", spent: "$0.00", cap: null, income: true },
+            ],
+          },
+        ];
+
+        var LABELS = [
+          { name: "Trip: Lisbon", color: "blue", count: "2 transactions · $312.40" },
+          { name: "Reimbursable", color: "green", count: "1 transaction · $64.90" },
+          { name: "Tax", color: "gray", count: "0 transactions" },
+        ];
+
+        var editingItem = null;
+        var editingColor = "green";
+
+        function renderGroups() {
+          var host = document.getElementById("cat-groups");
+          host.innerHTML = GROUPS.map(function (g, gi) {
+            var rows = g.items.map(function (c, ii) {
+              var badge = c.income
+                ? '<span class="rounded-full bg-brand-green/60 px-2.5 py-0.5 text-[12px] font-medium text-brand-green-foreground">Income</span>'
+                : c.cap
+                  ? '<span class="num rounded-full px-2.5 py-0.5 text-[12px] font-medium ' + (c.over ? "bg-danger/12 text-danger-text" : "bg-muted text-foreground") + '">$' + c.cap.toLocaleString("en-US") + " cap</span>"
+                  : '<span class="text-[12px] text-muted-foreground">No cap</span>';
+              return (
+                '<button type="button" data-edit-cat="' + gi + ":" + ii + '" class="flex min-h-14 w-full items-center justify-between gap-3 px-4 py-3 text-left hover:bg-accent/50">' +
+                '<span class="flex min-w-0 items-center gap-3">' +
+                '<span class="grid size-9 shrink-0 place-items-center rounded-xl ' + (COLOR_CLS[c.color] || COLOR_CLS.gray) + '"><i data-icon="' + c.icon + '" class="size-4"></i></span>' +
+                '<span class="min-w-0"><span class="block truncate font-medium">' + c.id + '</span><span class="num block text-[12px] text-muted-foreground">Nov: ' + c.spent + "</span></span>" +
+                "</span>" +
+                '<span class="flex shrink-0 items-center gap-2">' + badge + '<i data-icon="chevron-right" class="size-4 text-muted-foreground"></i></span>' +
+                "</button>"
+              );
+            }).join("");
+            return (
+              '<section class="overflow-hidden rounded-3xl border bg-card">' +
+              '<div class="border-b px-4 py-3.5"><h2 class="text-[16px] font-semibold">' + g.title + '</h2><p class="text-[12px] text-muted-foreground">' + g.sub + "</p></div>" +
+              '<div class="divide-y">' + rows + "</div></section>"
+            );
+          }).join("");
+          if (window.fableIcons) window.fableIcons(host);
+        }
+
+        function renderLabels() {
+          var host = document.getElementById("lbl-list");
+          host.innerHTML = LABELS.map(function (l) {
+            return (
+              '<a href="transactions.html" class="flex min-h-14 items-center justify-between gap-3 px-5 py-3.5 hover:bg-accent/50">' +
+              '<span class="flex items-center gap-3">' +
+              '<span class="grid size-8 place-items-center rounded-xl ' + (COLOR_CLS[l.color] || COLOR_CLS.gray) + '"><i data-icon="tag" class="size-4"></i></span>' +
+              '<span><span class="block font-medium">' + l.name + '</span><span class="num block text-[12px] text-muted-foreground">' + l.count + "</span></span>" +
+              "</span>" +
+              '<i data-icon="chevron-right" class="size-4 text-muted-foreground"></i></a>'
+            );
+          }).join("");
+          if (window.fableIcons) window.fableIcons(host);
+        }
+
+        function renderColorSwatches() {
+          var host = document.getElementById("ec-colors");
+          host.innerHTML = Object.keys(COLOR_CLS).map(function (c) {
+            var on = c === editingColor;
+            return '<button type="button" data-pick-color="' + c + '" aria-label="' + c + '" class="grid size-9 place-items-center rounded-xl ' + COLOR_CLS[c] + (on ? " ring-2 ring-primary ring-offset-2 ring-offset-card" : "") + '">' + (on ? '<i data-icon="check" class="size-4"></i>' : "") + "</button>";
+          }).join("");
+          if (window.fableIcons) window.fableIcons(host);
+        }
+
+        document.getElementById("cat-groups").addEventListener("click", function (e) {
+          var btn = e.target.closest("[data-edit-cat]");
+          if (!btn) return;
+          var parts = btn.dataset.editCat.split(":");
+          editingItem = GROUPS[Number(parts[0])].items[Number(parts[1])];
+          editingColor = editingItem.color;
+          document.getElementById("ec-name").value = editingItem.id;
+          document.getElementById("ec-cap").value = editingItem.cap ? String(editingItem.cap) : "";
+          renderColorSwatches();
+          window.fableOpen("edit-category", btn);
+        });
+
+        document.getElementById("ec-colors").addEventListener("click", function (e) {
+          var btn = e.target.closest("[data-pick-color]");
+          if (!btn) return;
+          editingColor = btn.dataset.pickColor;
+          renderColorSwatches();
+        });
+
+        document.getElementById("ec-form").addEventListener("submit", function (e) {
+          e.preventDefault();
+          if (editingItem) {
+            editingItem.id = document.getElementById("ec-name").value.trim() || editingItem.id;
+            editingItem.color = editingColor;
+            var raw = parseFloat(document.getElementById("ec-cap").value);
+            editingItem.cap = !isNaN(raw) && raw > 0 ? raw : null;
+            renderGroups();
+            window.fableClose();
+            window.fableToast("Updated · " + editingItem.id);
+          }
+        });
+
+        document.getElementById("ac-form").addEventListener("submit", function (e) {
+          e.preventDefault();
+          var name = document.getElementById("ac-name").value.trim() || "New category";
+          var grp = document.getElementById("ac-group").value;
+          var capVal = parseFloat(document.getElementById("ac-cap").value);
+          var target = GROUPS.find(function (g) { return g.title.replace("&amp;", "&") === grp || g.title === grp; }) || GROUPS[0];
+          target.items.push({ id: name, icon: "tag", color: "blue", spent: "$0.00", cap: !isNaN(capVal) && capVal > 0 ? capVal : null });
+          renderGroups();
+          document.getElementById("ac-name").value = "";
+          document.getElementById("ac-cap").value = "";
+          window.fableClose();
+          window.fableToast("Added category · " + name);
+        });
+
+        var catTab = document.getElementById("cat-tab");
+        function setTab(val) {
+          var isLabels = val === "labels";
+          document.getElementById("panel-categories").classList.toggle("hidden", isLabels);
+          document.getElementById("panel-labels").classList.toggle("hidden", !isLabels);
+          catTab.querySelectorAll("button").forEach(function (b) {
+            var on = b.dataset.value === val;
+            b.setAttribute("aria-pressed", String(on));
+            b.className = "flex-1 whitespace-nowrap rounded-lg px-4 text-[13px] font-medium " + (on ? "bg-card text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]" : "text-muted-foreground");
+          });
+        }
+        catTab.addEventListener("fable:change", function (e) { setTab(e.detail); });
+        if (new URLSearchParams(location.search).get("tab") === "labels") setTab("labels");
+
+        document.getElementById("lbl-add-toggle").addEventListener("click", function () {
+          document.getElementById("lbl-new-row").classList.remove("hidden");
+          document.getElementById("lbl-new-name").focus();
+        });
+        document.getElementById("lbl-new-cancel").addEventListener("click", function () {
+          document.getElementById("lbl-new-row").classList.add("hidden");
+        });
+        document.getElementById("lbl-new-form").addEventListener("submit", function (e) {
+          e.preventDefault();
+          var v = document.getElementById("lbl-new-name").value.trim();
+          if (!v) return;
+          LABELS.push({ name: v, color: "purple", count: "0 transactions" });
+          renderLabels();
+          document.getElementById("lbl-new-name").value = "";
+          document.getElementById("lbl-new-row").classList.add("hidden");
+          window.fableToast("Added label · " + v);
+        });
+
+        editingItem = GROUPS[0].items[0];
+        document.getElementById("ec-cap").value = String(editingItem.cap || "");
+        renderColorSwatches();
+        renderGroups();
+        renderLabels();
+        if (window.fableIcons) window.fableIcons(document);
+      })();
+    </script>
+  </body>
+</html>

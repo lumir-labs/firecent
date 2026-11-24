@@ -953,5 +953,73 @@
     "description": "firecent te ayuda a ver tu dinero con claridad, compartir gastos con amigos y alcanzar tus metas de ahorro. Únete a la lista de espera y obtén acceso anticipado.",
     "ogImageAlt": "firecent: logo con llama naranja y violeta sobre fondo oscuro, con el lema «Tu dinero, claro. Tus metas, en llamas.»",
     "slogan": "Tu dinero, claro. Tus metas, en llamas."
+  },
+  "Finance": {
+    "nature": {
+      "owe": "Debo",
+      "need": "Necesito",
+      "want": "Quiero"
+    },
+    "natureBar": {
+      "of": "de {amount}",
+      "progress": "{nature}, {percent}% del plan gastado",
+      "over": "{nature}, {percent}% del plan gastado, sobre el plan"
+    },
+    "pace": {
+      "today": "Hoy · ritmo {percent}%"
+    },
+    "upcoming": {
+      "auto": "Auto",
+      "manual": "Manual",
+      "expected": "Esperado",
+      "due": "{days, plural, =0 {Vence hoy} one {Vence mañana} other {Vence en # días}}",
+      "overdue": "{days, plural, one {# día de atraso} other {# días de atraso}}"
+    },
+    "scope": {
+      "label": "Visibilidad de cuentas",
+      "everything": "Todo",
+      "everythingShort": "Todo",
+      "shared": "Compartido",
+      "onlyYou": "Solo tú"
+    },
+    "accountType": {
+      "GENERAL": "Cuenta",
+      "BANK": "Banco",
+      "SAVINGS_ACCOUNT": "Ahorro",
+      "CHECKING_ACCOUNT": "Débito",
+      "CASH": "Efectivo",
+      "CREDIT_CARD": "Tarjeta de crédito"
+    },
+    "row": {
+      "addedBy": "Agregado por {name}",
+      "privateAccount": "Cuenta privada",
+      "excluded": "Excluido"
+    },
+    "day": {
+      "today": "Hoy",
+      "yesterday": "Ayer"
+    },
+    "header": {
+      "back": "Atrás"
+    },
+    "assistant": {
+      "dismiss": "Descartar"
+    },
+    "steps": {
+      "done": "Hecho",
+      "step": "Paso {number}"
+    },
+    "state": {
+      "loading": "Cargando…",
+      "errorTitle": "No pudimos cargar esto",
+      "errorBody": "Revisa tu conexión e intenta de nuevo. No se cambió nada.",
+      "errorAction": "Intentar de nuevo",
+      "noResultsTitle": "Nada coincide",
+      "noResultsBody": "Prueba otra palabra o quita un filtro.",
+      "noResultsAction": "Quitar filtros"
+    },
+    "mark": {
+      "name": "Firecent"
+    }
   }
 }

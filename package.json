@@ -19,6 +19,7 @@
     "db:generate": "turbo run db:generate --filter=@app/db",
     "db:push": "turbo run db:push --filter=@app/db",
     "db:seed": "bun apps/web/scripts/seed.ts",
+    "db:seed:demo": "bun apps/web/scripts/seed-demo.ts",
     "env:check": "node scripts/check-env.mjs",
     "db:migrate": "turbo run db:migrate --filter=@app/db",
     "db:studio": "turbo run db:studio --filter=@app/db",

@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="en" data-state="data">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Analytics · Firecent</title>
+    <link rel="icon" href="assets/brand/favicon.svg" />
+    <link rel="stylesheet" href="assets/app.css" />
+    <script src="assets/proto.js"></script>
+  </head>
+  <body class="min-h-dvh bg-background text-foreground">
+    <div data-shell data-tab="more" data-nav="analytics"></div>
+
+    <div class="lg:pl-60">
+      <div class="relative mx-auto min-h-dvh max-w-[430px] pb-28 lg:max-w-[1160px] lg:px-8 lg:pb-12">
+        <!-- Mobile top bar -->
+        <header class="flex h-14 items-center gap-1 px-2 lg:hidden">
+          <a href="more.html" class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Back">
+            <i data-icon="chevron-left" class="size-[22px]"></i>
+          </a>
+          <h1 class="flex-1 truncate text-[17px] font-semibold tracking-[-0.01em]">Analytics</h1>
+          <a href="assistant.html?view=new" class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Ask Assistant">
+            <i data-icon="firecent-mono" class="h-5 w-auto"></i>
+          </a>
+        </header>
+
+        <!-- Desktop header -->
+        <header class="hidden items-center justify-between gap-4 pt-8 lg:flex">
+          <div>
+            <h1 class="text-[24px] leading-[32px] font-semibold tracking-[-0.02em]">Analytics</h1>
+            <p class="mt-0.5 text-[14px] text-muted-foreground">Category breakdown, cashflow &amp; balance trends · Through Nov 12, 2026</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <div data-seg id="ana-period-desk" class="inline-flex h-10 rounded-xl border bg-card p-1" role="group" aria-label="Period">
+              <button type="button" data-value="1m" aria-pressed="false" class="whitespace-nowrap rounded-lg px-3 text-[13px] font-medium text-muted-foreground">Month</button>
+              <button type="button" data-value="3m" aria-pressed="false" class="whitespace-nowrap rounded-lg px-3 text-[13px] font-medium text-muted-foreground">3 months</button>
+              <button type="button" data-value="6m" aria-pressed="true" class="whitespace-nowrap rounded-lg bg-foreground px-3 text-[13px] font-medium text-background">6 months</button>
+              <button type="button" data-value="1y" aria-pressed="false" class="whitespace-nowrap rounded-lg px-3 text-[13px] font-medium text-muted-foreground">Year</button>
+            </div>
+            <div id="ana-scope-desk" class="inline-flex h-10 rounded-xl border bg-card p-1" role="group" aria-label="Visibility scope">
+              <button type="button" data-value="all" aria-pressed="true" class="whitespace-nowrap rounded-lg bg-foreground px-3 text-[13px] font-medium text-background">All</button>
+              <button type="button" data-value="shared" aria-pressed="false" class="whitespace-nowrap rounded-lg px-3 text-[13px] font-medium text-muted-foreground">Shared</button>
+              <button type="button" data-value="only-you" aria-pressed="false" class="whitespace-nowrap rounded-lg px-3 text-[13px] font-medium text-muted-foreground">Only you</button>
+            </div>
+            <button type="button" data-open="ask" class="flex h-10 items-center gap-2 rounded-xl border bg-card px-4 text-[14px] font-semibold hover:bg-accent">
+              <i data-icon="firecent-mono" class="h-4 w-auto"></i>Ask
+            </button>
+            <a href="notifications.html" class="relative grid size-10 place-items-center rounded-full hover:bg-accent" aria-label="Notifications, 2 unread">
+              <i data-icon="bell" class="size-[22px]"></i>
+              <span class="absolute top-2 right-2 size-2 rounded-full bg-primary ring-2 ring-background [html[data-state=empty]_&]:hidden" aria-hidden="true"></span>
+            </a>
+          </div>
+        </header>
+
+        <!-- ═══════════════════════════ WITH DATA ═══════════════════════════ -->
+        <div data-view="data">
+          <!-- Mobile Period & Scope -->
+          <div class="space-y-2.5 px-5 pt-2 lg:hidden">
+            <div data-seg id="ana-period-mob" class="flex h-10 rounded-xl bg-muted p-1" role="group" aria-label="Period">
+              <button type="button" data-value="1m" aria-pressed="false" class="flex-1 whitespace-nowrap rounded-lg text-[13px] font-medium text-muted-foreground">Month</button>
+              <button type="button" data-value="3m" aria-pressed="false" class="flex-1 whitespace-nowrap rounded-lg text-[13px] font-medium text-muted-foreground">3m</button>
+              <button type="button" data-value="6m" aria-pressed="true" class="flex-1 whitespace-nowrap rounded-lg bg-card text-[13px] font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]">6m</button>
+              <button type="button" data-value="1y" aria-pressed="false" class="flex-1 whitespace-nowrap rounded-lg text-[13px] font-medium text-muted-foreground">Year</button>
+            </div>
+            <div id="ana-scope-mob" class="flex h-10 rounded-xl bg-muted p-1" role="group" aria-label="Visibility scope">
+              <button type="button" data-value="all" aria-pressed="true" class="flex-1 whitespace-nowrap rounded-lg bg-card text-[13px] font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]">All</button>
+              <button type="button" data-value="shared" aria-pressed="false" class="flex-1 whitespace-nowrap rounded-lg text-[13px] font-medium text-muted-foreground">Shared</button>
+              <button type="button" data-value="only-you" aria-pressed="false" class="flex-1 whitespace-nowrap rounded-lg text-[13px] font-medium text-muted-foreground">Only you</button>
+            </div>
+          </div>
+
+          <!-- Top 4 KPI strip (inspired by analytics-propuesta-a) -->
+          <div class="mt-4 grid grid-cols-2 gap-2.5 px-5 lg:mt-6 lg:grid-cols-4 lg:gap-4 lg:px-0">
+            <div class="rounded-2xl border bg-card p-3.5 lg:p-4">
+              <p class="flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground"><i data-icon="arrow-down-left" class="size-3.5 text-positive"></i>Money in</p>
+              <p id="kpi-in" class="num mt-1 text-[20px] font-semibold tracking-[-0.02em] text-positive">+$52,500.00</p>
+              <p id="kpi-in-sub" class="mt-0.5 text-[12px] text-muted-foreground">Jun 1 – Nov 12</p>
+            </div>
+            <div class="rounded-2xl border bg-card p-3.5 lg:p-4">
+              <p class="flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground"><i data-icon="arrow-up-right" class="size-3.5"></i>Money out</p>
+              <p id="kpi-out" class="num mt-1 text-[20px] font-semibold tracking-[-0.02em]">$47,341.53</p>
+              <p id="kpi-out-sub" class="num mt-0.5 text-[12px] text-muted-foreground">Avg $8,505.88 / full mo</p>
+            </div>
+            <div class="rounded-2xl border bg-card p-3.5 lg:p-4">
+              <p class="flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground"><i data-icon="trending-up" class="size-3.5 text-primary-text"></i>Net saved</p>
+              <p id="kpi-net" class="num mt-1 text-[20px] font-semibold tracking-[-0.02em] text-primary-text">+$5,158.47</p>
+              <p id="kpi-net-sub" class="mt-0.5 text-[12px] text-muted-foreground">Period net gain</p>
+            </div>
+            <div class="rounded-2xl border bg-card p-3.5 lg:p-4">
+              <p class="flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground"><i data-icon="percent" class="size-3.5"></i>Savings rate</p>
+              <p id="kpi-rate" class="num mt-1 text-[20px] font-semibold tracking-[-0.02em]">9.8%</p>
+              <p id="kpi-rate-sub" class="num mt-0.5 text-[12px] text-muted-foreground">Nov so far: 21.4%</p>
+            </div>
+          </div>
+
+          <!-- 2x2 Analytical Cards -->
+          <div class="mt-5 grid grid-cols-1 gap-4 px-5 lg:grid-cols-2 lg:gap-6 lg:px-0">
+            <!-- CARD 1: Cashflow -->
+            <section class="flex flex-col justify-between rounded-3xl border bg-card p-5" aria-labelledby="c1-q">
+              <div>
+                <p id="c1-q" class="text-[13px] font-medium text-muted-foreground">Are we keeping more than we spend?</p>
+                <h2 id="c1-conc" class="mt-1 text-[17px] leading-[23px] font-semibold tracking-[-0.01em]">
+                  You kept $1,312.86 so far in November, 21% of what came in.
+                </h2>
+                <div class="mt-3 flex flex-wrap items-center gap-4 text-[12px] text-muted-foreground">
+                  <span class="inline-flex items-center gap-1.5"><span class="size-2.5 rounded-[3px] bg-positive"></span>Money in</span>
+                  <span class="inline-flex items-center gap-1.5"><span class="size-2.5 rounded-[3px] bg-primary"></span>Money out</span>
+                  <span class="ml-auto">Nov is through day 12</span>
+                </div>
+                <div id="c1-chart" class="relative mt-3">
+                  <svg id="svg-cashflow" class="block h-[160px] w-full lg:h-[210px]" role="img" aria-label="Monthly Money in vs Money out"></svg>
+                  <div id="tip-c1" class="pointer-events-none absolute top-1 left-1/2 hidden -translate-x-1/2 rounded-full bg-foreground px-2.5 py-1 text-[11px] font-medium whitespace-nowrap text-background shadow"></div>
+                </div>
+                <div id="c1-table" class="mt-3 hidden overflow-x-auto">
+                  <table class="w-full text-[13px]">
+                    <thead class="border-b text-[12px] text-muted-foreground"><tr><th class="py-2 text-left font-medium">Month</th><th class="text-right font-medium">Money in</th><th class="text-right font-medium">Money out</th><th class="text-right font-medium">Net kept</th></tr></thead>
+                    <tbody id="c1-tbody" class="divide-y"></tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="mt-3 flex items-center justify-between border-t pt-3">
+                <span class="text-[12px] text-muted-foreground">Excludes transfers &amp; card payments</span>
+                <button type="button" data-toggle-view="c1" class="text-[13px] font-semibold text-primary-text hover:underline">View as table</button>
+              </div>
+            </section>
+
+            <!-- CARD 2: Categories Breakdown (replaces Owe / Need / Want completely) -->
+            <section class="flex flex-col justify-between rounded-3xl border bg-card p-5" aria-labelledby="c2-q">
+              <div>
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <p id="c2-q" class="text-[13px] font-medium text-muted-foreground">Where does it go?</p>
+                    <h2 id="c2-conc" class="mt-1 text-[17px] leading-[23px] font-semibold tracking-[-0.01em]">
+                      Rent (45%) and Groceries (15%) lead November spend.
+                    </h2>
+                  </div>
+                </div>
+                <!-- Colored stacked bar by Category -->
+                <div id="c2-stack-bar" class="mt-3 flex h-3 overflow-hidden rounded-full bg-muted"></div>
+                <div id="c2-chart" class="mt-3.5 space-y-2.5"></div>
+                <div id="c2-table" class="mt-3 hidden overflow-x-auto">
+                  <table class="w-full text-[13px]">
+                    <thead class="border-b text-[12px] text-muted-foreground"><tr><th class="py-2 text-left font-medium">Category</th><th class="text-right font-medium">Spent</th><th class="text-right font-medium">Share</th><th class="text-right font-medium">Monthly cap</th></tr></thead>
+                    <tbody id="c2-tbody" class="divide-y"></tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="mt-3 flex items-center justify-between border-t pt-3">
+                <a href="budget.html" class="text-[12px] font-medium text-muted-foreground hover:text-foreground">Manage category limits →</a>
+                <button type="button" data-toggle-view="c2" class="text-[13px] font-semibold text-primary-text hover:underline">View as table</button>
+              </div>
+            </section>
+
+            <!-- CARD 3: Month-over-Month Change (Categories · Merchants) -->
+            <section class="flex flex-col justify-between rounded-3xl border bg-card p-5" aria-labelledby="c3-q">
+              <div>
+                <p id="c3-q" class="text-[13px] font-medium text-muted-foreground">What changed since last month?</p>
+                <h2 id="c3-conc" class="mt-1 text-[17px] leading-[23px] font-semibold tracking-[-0.01em]">
+                  $156.84 more than Oct 1–12. Groceries &amp; Entertainment explain it.
+                </h2>
+                <div data-seg id="c3-mode" class="mt-3 flex h-9 rounded-xl bg-muted p-0.5" role="group" aria-label="Breakdown">
+                  <button type="button" data-value="cats" aria-pressed="true" class="flex-1 rounded-[10px] bg-card text-[13px] font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]">Categories</button>
+                  <button type="button" data-value="merchants" aria-pressed="false" class="flex-1 rounded-[10px] text-[13px] font-medium text-muted-foreground">Merchants</button>
+                </div>
+                <div id="c3-chart" class="mt-3 space-y-3"></div>
+                <div id="c3-table" class="mt-3 hidden overflow-x-auto">
+                  <table class="w-full text-[13px]">
+                    <thead class="border-b text-[12px] text-muted-foreground"><tr><th class="py-2 text-left font-medium">Name</th><th class="text-right font-medium">Nov 1–12</th><th class="text-right font-medium">Oct 1–12</th><th class="text-right font-medium">Diff</th></tr></thead>
+                    <tbody id="c3-tbody" class="divide-y"></tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="mt-3 flex items-center justify-between border-t pt-3">
+                <span class="text-[12px] text-muted-foreground">Compared with Oct 1 to 12</span>
+                <button type="button" data-toggle-view="c3" class="text-[13px] font-semibold text-primary-text hover:underline">View as table</button>
+              </div>
+            </section>
+
+            <!-- CARD 4: Net Balance Growth & Accounts Split -->
+            <section class="flex flex-col justify-between rounded-3xl border bg-card p-5" aria-labelledby="c4-q">
+              <div>
+                <p id="c4-q" class="text-[13px] font-medium text-muted-foreground">Is our total balance growing?</p>
+                <h2 id="c4-conc" class="mt-1 text-[17px] leading-[23px] font-semibold tracking-[-0.01em]">
+                  Up $5,158.47 since June 1 across all accounts.
+                </h2>
+                <div id="c4-chart" class="relative mt-3">
+                  <svg id="svg-balance" class="block h-[155px] w-full lg:h-[195px]" role="img" aria-label="Balance growth from June 1 to November 12"></svg>
+                  <div id="tip-c4" class="pointer-events-none absolute top-1 left-1/2 hidden -translate-x-1/2 rounded-full bg-foreground px-2.5 py-1 text-[11px] font-medium whitespace-nowrap text-background shadow"></div>
+                </div>
+                <div id="c4-table" class="mt-3 hidden overflow-x-auto">
+                  <table class="w-full text-[13px]">
+                    <thead class="border-b text-[12px] text-muted-foreground"><tr><th class="py-2 text-left font-medium">Date</th><th class="text-right font-medium">Net balance</th><th class="text-right font-medium">Change</th></tr></thead>
+                    <tbody id="c4-tbody" class="divide-y"></tbody>
+                  </table>
+                </div>
+                <!-- Account payment mix (from analytics-propuesta-a) -->
+                <div id="c4-accounts-mix" class="mt-3 rounded-2xl border bg-background/50 p-3">
+                  <div class="flex items-center justify-between text-[12px] font-medium">
+                    <span class="text-muted-foreground">Spending by account (Nov)</span>
+                    <span class="num text-muted-foreground">$4,812.14 total</span>
+                  </div>
+                  <div class="mt-2 flex h-2 overflow-hidden rounded-full bg-muted">
+                    <div class="h-full bg-violet-500" style="width:76.5%" title="Joint Checking $3,680"></div>
+                    <div class="h-full bg-sky-500" style="width:11.2%" title="Sapphire Reserve $540"></div>
+                    <div class="h-full bg-amber-600" style="width:6.3%" title="Maya's Checking $304"></div>
+                    <div class="h-full bg-slate-400" style="width:6.0%" title="Amex Gold, Cash & BBVA"></div>
+                  </div>
+                  <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
+                    <span class="inline-flex items-center gap-1"><span class="size-2 rounded-full bg-violet-500"></span>Joint Checking 76%</span>
+                    <span class="inline-flex items-center gap-1"><span class="size-2 rounded-full bg-sky-500"></span>Sapphire 11%</span>
+                    <span class="inline-flex items-center gap-1"><span class="size-2 rounded-full bg-amber-600"></span>Maya's 6%</span>
+                    <span class="inline-flex items-center gap-1"><span class="size-2 rounded-full bg-slate-400"></span>Cards &amp; Cash 7%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3 flex items-center justify-between border-t pt-3">
+                <a href="accounts.html" class="text-[12px] font-medium text-muted-foreground hover:text-foreground">View all 7 accounts →</a>
+                <button type="button" data-toggle-view="c4" class="text-[13px] font-semibold text-primary-text hover:underline">View as table</button>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <!-- EMPTY -->
+        <div data-view="empty">
+          <div class="flex flex-col items-center px-8 py-16 text-center lg:py-24">
+            <span class="grid size-14 place-items-center rounded-2xl bg-muted"><i data-icon="chart-column" class="size-6 text-muted-foreground"></i></span>
+            <h2 class="mt-4 text-[17px] font-semibold">Not enough history yet</h2>
+            <p class="mt-1.5 max-w-[300px] text-[14px] leading-[20px] text-muted-foreground">Charts appear after your first full week of transactions.</p>
+          </div>
+        </div>
+
+        <!-- LOADING -->
+        <div data-view="loading" aria-busy="true">
+          <p class="sr-only" role="status">Loading analytics</p>
+          <div aria-hidden="true" class="space-y-4 px-5 pt-4 lg:px-0 lg:pt-6">
+            <div class="grid grid-cols-2 gap-2.5 lg:grid-cols-4 lg:gap-4">
+              <div class="h-24 rounded-2xl border bg-card p-4"><div class="sk h-3 w-20"></div><div class="sk mt-2 h-6 w-28"></div></div>
+              <div class="h-24 rounded-2xl border bg-card p-4"><div class="sk h-3 w-20"></div><div class="sk mt-2 h-6 w-28"></div></div>
+              <div class="h-24 rounded-2xl border bg-card p-4"><div class="sk h-3 w-20"></div><div class="sk mt-2 h-6 w-28"></div></div>
+              <div class="h-24 rounded-2xl border bg-card p-4"><div class="sk h-3 w-20"></div><div class="sk mt-2 h-6 w-28"></div></div>
+            </div>
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
+              <div class="rounded-3xl border bg-card p-5"><div class="sk h-3.5 w-44"></div><div class="sk mt-2 h-5 w-64"></div><div class="sk mt-4 h-[180px] w-full rounded-xl"></div></div>
+              <div class="rounded-3xl border bg-card p-5"><div class="sk h-3.5 w-36"></div><div class="sk mt-2 h-5 w-60"></div><div class="sk mt-4 h-[180px] w-full rounded-xl"></div></div>
+              <div class="rounded-3xl border bg-card p-5"><div class="sk h-3.5 w-44"></div><div class="sk mt-2 h-5 w-64"></div><div class="sk mt-4 h-[180px] w-full rounded-xl"></div></div>
+              <div class="rounded-3xl border bg-card p-5"><div class="sk h-3.5 w-36"></div><div class="sk mt-2 h-5 w-56"></div><div class="sk mt-4 h-[180px] w-full rounded-xl"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ERROR -->
+        <div data-view="error">
+          <div class="flex flex-col items-center px-8 py-12 text-center lg:py-24">
+            <span class="grid size-14 place-items-center rounded-2xl bg-muted"><i data-icon="cloud-off" class="size-6 text-muted-foreground"></i></span>
+            <h2 class="mt-4 text-[17px] font-semibold">We couldn't load this</h2>
+            <p class="mt-1.5 max-w-[280px] text-[14px] text-muted-foreground">Check your connection and try again. Nothing was changed.</p>
+            <div class="mt-5"><button type="button" class="flex h-11 items-center rounded-xl border bg-card px-4 text-[14px] font-semibold">Try again</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/icons.js"></script>
+    <script>
+      (function () {
+        var COLOR_TILE = {
+          green: "bg-brand-green text-brand-green-foreground",
+          orange: "bg-brand-orange text-brand-orange-foreground",
+          blue: "bg-brand-blue text-brand-blue-foreground",
+          purple: "bg-brand-purple text-brand-purple-foreground",
+          pink: "bg-brand-pink text-brand-pink-foreground",
+          yellow: "bg-brand-yellow text-brand-yellow-foreground",
+          red: "bg-brand-red text-brand-red-foreground",
+          gray: "bg-brand-gray text-brand-gray-foreground",
+        };
+        var BAR_COLOR = {
+          green: "bg-emerald-500",
+          orange: "bg-orange-500",
+          blue: "bg-sky-500",
+          purple: "bg-violet-500",
+          pink: "bg-pink-500",
+          yellow: "bg-amber-500",
+          red: "bg-rose-500",
+          gray: "bg-slate-400",
+        };
+        var HEX = {
+          green: "#10b981",
+          orange: "#f97316",
+          blue: "#0ea5e9",
+          purple: "#8b5cf6",
+          pink: "#ec4899",
+          yellow: "#eab308",
+          red: "#ef4444",
+          gray: "#94a3b8",
+        };
+
+        var MONTHS = [
+          { m: "Jun", min: 927500, mout: 893080 },
+          { m: "Jul", min: 927500, mout: 795645 },
+          { m: "Aug", min: 927500, mout: 886535 },
+          { m: "Sep", min: 927500, mout: 796847 },
+          { m: "Oct", min: 927500, mout: 880832 },
+          { m: "Nov", min: 612500, mout: 481214, soFar: true },
+        ];
+
+        // Nov spend broken down by category & visibility scope (Shared + Priv = exact totals)
+        var CAT_BREAKDOWN = [
+          { name: "Rent", icon: "building-2", color: "purple", shared: 215000, priv: 0, cap: 215000 },
+          { name: "Groceries", icon: "shopping-cart", color: "green", shared: 67146, priv: 3800, cap: 90000 },
+          { name: "Car loan", icon: "car", color: "red", shared: 32000, priv: 0, cap: 32000 },
+          { name: "Dining out", icon: "utensils", color: "orange", shared: 25099, priv: 6270, cap: 45000 },
+          { name: "Transport", icon: "bus", color: "blue", shared: 4820, priv: 20200, cap: 30000 },
+          { name: "Entertainment", icon: "ticket", color: "pink", shared: 17710, priv: 3499, cap: 25000 },
+          { name: "Phone & internet", icon: "wifi", color: "blue", shared: 17999, priv: 0, cap: 18000 },
+          { name: "Shopping", icon: "shopping-bag", color: "purple", shared: 6784, priv: 6331, cap: 0 },
+          { name: "Fitness", icon: "dumbbell", color: "green", shared: 8900, priv: 3200, cap: 0 },
+          { name: "Gifts", icon: "gift", color: "orange", shared: 0, priv: 11685, cap: 0 },
+          { name: "Other 5 categories", icon: "layers", color: "gray", shared: 26536, priv: 4235, cap: 0 },
+        ];
+
+        var DIFF_CATS = [
+          { name: "Groceries", color: "green", nov: 70946, oct: 59820 },
+          { name: "Dining out", color: "orange", nov: 31369, oct: 26840 },
+          { name: "Transport", color: "blue", nov: 25020, oct: 24410 },
+          { name: "Entertainment", color: "pink", nov: 21209, oct: 9600 },
+          { name: "Phone & internet", color: "blue", nov: 17999, oct: 17999 },
+          { name: "Shopping", color: "purple", nov: 13115, oct: 20375 },
+        ];
+        var DIFF_MERCHANTS = [
+          { name: "Parkside Apartments", nov: 215000, oct: 215000 },
+          { name: "Toyota Financial", nov: 32000, oct: 32000 },
+          { name: "Whole Foods", nov: 28031, oct: 22190 },
+          { name: "Costco", nov: 21136, oct: 18400 },
+          { name: "Trader Joe's", nov: 17979, oct: 19230 },
+          { name: "Metro-North", nov: 16800, oct: 16800 },
+        ];
+
+        var BAL_SERIES = [31240, 31010, 31620, 31890, 31450, 32080, 32410, 32150, 32760, 33020, 32690, 33340, 33610, 33280, 33950, 34320, 34010, 34590, 34880, 34610, 35086, 35190, 34888, 36398];
+        var BAL_DATES = ["Jun 1", "Jun 8", "Jun 15", "Jun 22", "Jul 1", "Jul 8", "Jul 15", "Jul 22", "Aug 1", "Aug 8", "Aug 15", "Aug 22", "Sep 1", "Sep 8", "Sep 15", "Sep 22", "Oct 1", "Oct 8", "Oct 15", "Oct 22", "Nov 1", "Nov 5", "Nov 9", "Today"];
+        var BAL_MONTHS = [
+          { label: "Jun 1", val: 3124000, chg: 0 },
+          { label: "Jul 1", val: 3158420, chg: 34420 },
+          { label: "Aug 1", val: 3290275, chg: 131855 },
+          { label: "Sep 1", val: 3331240, chg: 40965 },
+          { label: "Oct 1", val: 3461893, chg: 130653 },
+          { label: "Nov 1", val: 3508561, chg: 46668 },
+          { label: "Nov 12", val: 3639847, chg: 131286 },
+        ];
+
+        function fmt(c, signed) {
+          var neg = c < 0;
+          var abs = Math.abs(c);
+          var s = "$" + (abs / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          if (neg) return "−" + s;
+          return signed && c > 0 ? "+" + s : s;
+        }
+        function fmtShort(c) {
+          var neg = c < 0;
+          var s = "$" + Math.round(Math.abs(c) / 100).toLocaleString("en-US");
+          return (neg ? "−" : "+") + s;
+        }
+        function normalizeScope(s) { return !s || s === "everything" ? "all" : s; }
+
+        var params = new URLSearchParams(location.search);
+        var curPeriod = params.get("period") || "6m";
+        var curScope = normalizeScope(params.get("scope") || (window.fableScope ? window.fableScope() : "all"));
+        var curC3 = "cats";
+        var tableView = { c1: false, c2: false, c3: false, c4: false };
+
+        function scopedMonths() {
+          var n = curPeriod === "1m" ? 1 : curPeriod === "3m" ? 3 : 6;
+          var slice = MONTHS.slice(-n);
+          if (curScope === "all") return slice;
+          var inScale = curScope === "shared" ? 0.68 : 0.32;
+          var outScale = curScope === "shared" ? 0.877 : 0.123;
+          return slice.map(function (d) {
+            if (d.m === "Nov") {
+              return curScope === "shared"
+                ? { m: "Nov", min: 315000, mout: 421994, soFar: true }
+                : { m: "Nov", min: 297500, mout: 59220, soFar: true };
+            }
+            return { m: d.m, min: Math.round(d.min * inScale), mout: Math.round(d.mout * outScale), soFar: false };
+          });
+        }
+
+        function renderAll() {
+          if (window.fableScope) window.fableScope(curScope === "all" ? "everything" : curScope);
+
+          ["ana-period-mob", "ana-period-desk"].forEach(function (cid) {
+            var isMob = cid.indexOf("mob") > 0;
+            document.querySelectorAll("#" + cid + " > button").forEach(function (b) {
+              var on = b.dataset.value === curPeriod;
+              b.setAttribute("aria-pressed", String(on));
+              if (isMob) {
+                b.classList.toggle("bg-card", on);
+                b.classList.toggle("text-foreground", on);
+                b.classList.toggle("shadow-[0_1px_2px_rgb(11_18_32/0.12)]", on);
+                b.classList.toggle("text-muted-foreground", !on);
+              } else {
+                b.classList.toggle("bg-foreground", on);
+                b.classList.toggle("text-background", on);
+                b.classList.toggle("text-muted-foreground", !on);
+              }
+            });
+          });
+          ["ana-scope-mob", "ana-scope-desk"].forEach(function (cid) {
+            var isMob = cid.indexOf("mob") > 0;
+            document.querySelectorAll("#" + cid + " > button").forEach(function (b) {
+              var on = b.dataset.value === curScope;
+              b.setAttribute("aria-pressed", String(on));
+              if (isMob) {
+                b.classList.toggle("bg-card", on);
+                b.classList.toggle("text-foreground", on);
+                b.classList.toggle("shadow-[0_1px_2px_rgb(11_18_32/0.12)]", on);
+                b.classList.toggle("text-muted-foreground", !on);
+              } else {
+                b.classList.toggle("bg-foreground", on);
+                b.classList.toggle("text-background", on);
+                b.classList.toggle("text-muted-foreground", !on);
+              }
+            });
+          });
+
+          var rows = scopedMonths();
+          var sumIn = 0, sumOut = 0;
+          rows.forEach(function (r) { sumIn += r.min; sumOut += r.mout; });
+          var sumNet = sumIn - sumOut;
+          var rate = sumIn ? ((sumNet / sumIn) * 100).toFixed(1) : "0.0";
+          document.getElementById("kpi-in").textContent = fmt(sumIn, true);
+          document.getElementById("kpi-out").textContent = fmt(sumOut);
+          document.getElementById("kpi-net").textContent = fmt(sumNet, true);
+          document.getElementById("kpi-net").className = "num mt-1 text-[20px] font-semibold tracking-[-0.02em] " + (sumNet >= 0 ? "text-primary-text" : "text-warning");
+          document.getElementById("kpi-rate").textContent = rate + "%";
+          document.getElementById("kpi-in-sub").textContent = curPeriod === "1m" ? "Nov 1 – 12" : rows[0].m + " 1 – Nov 12";
+
+          // CARD 1: Cashflow SVG
+          var nov = rows[rows.length - 1];
+          var novNet = nov.min - nov.mout;
+          var novRate = nov.min ? Math.round((novNet / nov.min) * 100) : 0;
+          document.getElementById("c1-conc").textContent = novNet >= 0
+            ? "You kept " + fmt(novNet) + " so far in November, " + novRate + "% of what came in."
+            : "Shared accounts spent " + fmt(Math.abs(novNet)) + " more than came in before Maya's transfer.";
+
+          var maxV1 = Math.max.apply(null, rows.map(function (r) { return Math.max(r.min, r.mout); }).concat([1]));
+          var W = 440, H = 175, padX = 16, padTop = 18, baseY = 142;
+          var step = (W - padX * 2) / rows.length;
+          var bw = Math.min(18, Math.max(11, Math.floor((step - 12) / 2)));
+          var s1 = '<defs><pattern id="novDots" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="2.5" cy="2.5" r="1.1" fill="white" fill-opacity="0.45"/></pattern></defs>';
+          s1 += '<line x1="0" y1="' + baseY + '" x2="' + W + '" y2="' + baseY + '" stroke="var(--border)" stroke-width="1"/>';
+          rows.forEach(function (r, idx) {
+            var cx = padX + step * idx + step / 2;
+            var hIn = Math.max(6, Math.round((r.min / maxV1) * (baseY - padTop)));
+            var hOut = Math.max(6, Math.round((r.mout / maxV1) * (baseY - padTop)));
+            var yIn = baseY - hIn, yOut = baseY - hOut;
+            var xIn = Math.round(cx - bw - 2), xOut = Math.round(cx + 2);
+            var tip = r.m + " · In " + fmt(r.min) + " · Out " + fmt(r.mout);
+            s1 += '<g data-tip-c1="' + tip + '" class="cursor-pointer">' +
+              '<rect x="' + (cx - bw - 8) + '" y="0" width="' + (bw * 2 + 20) + '" height="' + H + '" fill="transparent"/>' +
+              '<rect x="' + xIn + '" y="' + yIn + '" width="' + bw + '" height="' + hIn + '" rx="4" fill="var(--positive)"/>' +
+              (r.soFar ? '<rect x="' + xIn + '" y="' + yIn + '" width="' + bw + '" height="' + hIn + '" rx="4" fill="url(#novDots)"/>' : "") +
+              '<rect x="' + xOut + '" y="' + yOut + '" width="' + bw + '" height="' + hOut + '" rx="4" fill="var(--primary)" opacity="' + (r.soFar ? "0.7" : "0.85") + '"/>' +
+              (r.soFar ? '<text x="' + cx + '" y="' + (Math.min(yIn, yOut) - 5) + '" text-anchor="middle" fill="var(--muted-foreground)" font-size="10">so far</text>' : "") +
+              '<text x="' + cx + '" y="157" text-anchor="middle" fill="var(--muted-foreground)" font-size="11">' + r.m + "</text>" +
+              '<text x="' + cx + '" y="171" text-anchor="middle" fill="var(--muted-foreground)" font-size="10.5">' + fmtShort(r.min - r.mout) + "</text></g>";
+          });
+          var svg1 = document.getElementById("svg-cashflow");
+          svg1.setAttribute("viewBox", "0 0 " + W + " " + H);
+          svg1.innerHTML = s1;
+          document.getElementById("c1-tbody").innerHTML = rows.map(function (r) {
+            return '<tr><td class="py-2 font-medium">' + r.m + (r.soFar ? " (to 12th)" : "") + '</td><td class="num text-right text-positive">' + fmt(r.min) + '</td><td class="num text-right">' + fmt(r.mout) + '</td><td class="num text-right font-semibold">' + fmt(r.min - r.mout, true) + "</td></tr>";
+          }).join("");
+
+          // CARD 2: Category breakdown (NO Owe / Need / Want!)
+          var catItems = CAT_BREAKDOWN.map(function (c) {
+            var sp = curScope === "shared" ? c.shared : curScope === "only-you" ? c.priv : (c.shared + c.priv);
+            return { name: c.name, icon: c.icon, color: c.color, spent: sp, cap: c.cap };
+          }).filter(function (c) { return c.spent > 0; });
+          catItems.sort(function (a, b) { return b.spent - a.spent; });
+          var catTotal = catItems.reduce(function (s, c) { return s + c.spent; }, 0) || 1;
+          var topTwo = catItems.slice(0, 2);
+          document.getElementById("c2-conc").textContent = topTwo.length >= 2
+            ? topTwo[0].name + " (" + Math.round((topTwo[0].spent / catTotal) * 100) + "%) and " + topTwo[1].name + " (" + Math.round((topTwo[1].spent / catTotal) * 100) + "%) lead November spend."
+            : "Top spending categories in November.";
+
+          document.getElementById("c2-stack-bar").innerHTML = catItems.map(function (c) {
+            var w = (c.spent / catTotal) * 100;
+            return '<div style="width:' + w.toFixed(2) + '%;background:' + HEX[c.color] + '" class="h-full border-r border-card/40 last:border-r-0" title="' + c.name + " " + fmt(c.spent) + '"></div>';
+          }).join("");
+
+          var topDisplay = catItems.slice(0, 7);
+          var maxCat = topDisplay[0] ? topDisplay[0].spent : 1;
+          var c2El = document.getElementById("c2-chart");
+          c2El.innerHTML = topDisplay.map(function (c) {
+            var share = ((c.spent / catTotal) * 100).toFixed(1);
+            var barW = Math.max(6, Math.round((c.spent / maxCat) * 100));
+            return (
+              '<a href="transactions.html?cat=' + encodeURIComponent(c.name) + '" class="block rounded-xl p-1 -mx-1 hover:bg-accent/50">' +
+              '<div class="flex items-center justify-between gap-2 text-[13px]">' +
+              '<span class="flex min-w-0 items-center gap-2"><span class="grid size-6 shrink-0 place-items-center rounded-md ' + COLOR_TILE[c.color] + '"><i data-icon="' + c.icon + '" class="size-3.5"></i></span><span class="truncate font-medium">' + c.name + "</span></span>" +
+              '<span class="num shrink-0"><span class="font-semibold">' + fmt(c.spent) + '</span> <span class="text-muted-foreground">· ' + share + "%</span></span></div>" +
+              '<div class="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted"><div class="h-full rounded-full ' + BAR_COLOR[c.color] + '" style="width:' + barW + '%"></div></div></a>'
+            );
+          }).join("");
+          document.getElementById("c2-tbody").innerHTML = catItems.map(function (c) {
+            return '<tr><td class="py-2 font-medium">' + c.name + '</td><td class="num text-right font-semibold">' + fmt(c.spent) + '</td><td class="num text-right text-muted-foreground">' + ((c.spent / catTotal) * 100).toFixed(1) + '%</td><td class="num text-right text-muted-foreground">' + (c.cap ? fmt(c.cap) : "Uncapped") + "</td></tr>";
+          }).join("");
+
+          // CARD 3: MoM comparison
+          var scale3 = curScope === "shared" ? 0.87 : curScope === "only-you" ? 0.13 : 1;
+          var list3 = (curC3 === "cats" ? DIFF_CATS : DIFF_MERCHANTS).map(function (item) {
+            var novV = Math.round(item.nov * scale3);
+            var octV = Math.round(item.oct * scale3);
+            return { name: item.name, color: item.color || "purple", nov: novV, oct: octV, diff: novV - octV };
+          });
+          var max3 = Math.max.apply(null, list3.map(function (i) { return i.nov; }).concat([1]));
+          document.getElementById("c3-chart").innerHTML = list3.map(function (i) {
+            var barW = Math.max(5, Math.round((i.nov / max3) * 100));
+            var diffTxt = i.diff === 0 ? "$0.00" : fmt(i.diff, true);
+            var ic = i.diff > 0 ? '<i data-icon="trending-up" class="size-3.5 text-muted-foreground"></i>' : i.diff < 0 ? '<i data-icon="trending-down" class="size-3.5 text-muted-foreground"></i>' : "";
+            return (
+              "<div>" +
+              '<div class="flex items-baseline justify-between gap-2 text-[13px]">' +
+              '<span class="flex items-center gap-2 font-medium"><span class="size-2 rounded-full ' + BAR_COLOR[i.color] + '"></span>' + i.name + ' <span class="num font-normal text-muted-foreground">' + fmt(i.nov) + "</span></span>" +
+              '<span class="num inline-flex items-center gap-1 font-medium text-muted-foreground">' + ic + diffTxt + "</span></div>" +
+              '<div class="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted"><div class="h-full rounded-full ' + BAR_COLOR[i.color] + '" style="width:' + barW + '%"></div></div></div>'
+            );
+          }).join("");
+          document.getElementById("c3-tbody").innerHTML = list3.map(function (i) {
+            return '<tr><td class="py-2 font-medium">' + i.name + '</td><td class="num text-right font-semibold">' + fmt(i.nov) + '</td><td class="num text-right text-muted-foreground">' + fmt(i.oct) + '</td><td class="num text-right text-muted-foreground">' + fmt(i.diff, true) + "</td></tr>";
+          }).join("");
+
+          // CARD 4: Balance line SVG
+          var bScale = curScope === "shared" ? 0.848 : curScope === "only-you" ? 0.152 : 1;
+          var pts = BAL_SERIES.map(function (v) { return Math.round(v * bScale); });
+          document.getElementById("c4-conc").textContent = "Up " + fmt(Math.round(515847 * bScale)) + " since June 1 across " + (curScope === "shared" ? "shared accounts." : curScope === "only-you" ? "private accounts." : "all accounts.");
+          var bwW = 440, bwH = 160, bpX = 12, bpT = 12, bpB = 132;
+          var bMin = Math.min.apply(null, pts) - 300;
+          var bMax = Math.max.apply(null, pts) + 300;
+          var coords = pts.map(function (v, idx) {
+            var x = bpX + ((bwW - bpX * 2) * idx) / (pts.length - 1);
+            var y = bpB - ((v - bMin) / (bMax - bMin || 1)) * (bpB - bpT);
+            return { x: x, y: y, v: v, d: BAL_DATES[idx] };
+          });
+          var lineD = coords.map(function (p, i) { return (i ? "L" : "M") + p.x.toFixed(1) + " " + p.y.toFixed(1); }).join(" ");
+          var areaD = lineD + " L" + coords[coords.length - 1].x.toFixed(1) + " " + bpB + " L" + coords[0].x.toFixed(1) + " " + bpB + " Z";
+          var lastP = coords[coords.length - 1];
+          var lbls = ["Jun", "Jul", "Aug", "Sep", "Oct", "Nov"];
+          var s4 = '<defs><linearGradient id="c4Fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--primary)" stop-opacity="0.26"/><stop offset="100%" stop-color="var(--primary)" stop-opacity="0"/></linearGradient></defs>' +
+            '<line x1="0" y1="' + bpB + '" x2="' + bwW + '" y2="' + bpB + '" stroke="var(--border)" stroke-width="1"/>' +
+            '<path d="' + areaD + '" fill="url(#c4Fill)"/>' +
+            '<path d="' + lineD + '" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '<circle cx="' + lastP.x.toFixed(1) + '" cy="' + lastP.y.toFixed(1) + '" r="4.5" fill="var(--primary)" stroke="var(--card)" stroke-width="2"/>' +
+            coords.map(function (p) {
+              return '<circle data-tip-c4="' + p.d + " · $" + p.v.toLocaleString("en-US") + '" cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="9" fill="transparent" class="cursor-pointer"/>';
+            }).join("") +
+            lbls.map(function (lb, i) {
+              var x = bpX + ((bwW - bpX * 2) * (i * 4)) / (pts.length - 1);
+              return '<text x="' + x.toFixed(1) + '" y="150" fill="var(--muted-foreground)" font-size="11">' + lb + "</text>";
+            }).join("");
+          var svg4 = document.getElementById("svg-balance");
+          svg4.setAttribute("viewBox", "0 0 " + bwW + " " + bwH);
+          svg4.innerHTML = s4;
+
+          document.getElementById("c4-tbody").innerHTML = BAL_MONTHS.map(function (b) {
+            return '<tr><td class="py-2 font-medium">' + b.label + '</td><td class="num text-right font-semibold">' + fmt(Math.round(b.val * bScale)) + '</td><td class="num text-right text-positive">' + (b.chg ? fmt(Math.round(b.chg * bScale), true) : "—") + "</td></tr>";
+          }).join("");
+
+          if (window.fableIcons) window.fableIcons(document.querySelector('[data-view="data"]'));
+        }
+
+        // Event wiring
+        ["ana-period-mob", "ana-period-desk"].forEach(function (cid) {
+          document.getElementById(cid).addEventListener("click", function (e) {
+            var b = e.target.closest("button[data-value]");
+            if (!b) return;
+            curPeriod = b.dataset.value;
+            renderAll();
+          });
+        });
+        ["ana-scope-mob", "ana-scope-desk"].forEach(function (cid) {
+          document.getElementById(cid).addEventListener("click", function (e) {
+            var b = e.target.closest("button[data-value]");
+            if (!b) return;
+            curScope = normalizeScope(b.dataset.value);
+            renderAll();
+          });
+        });
+        document.getElementById("c3-mode").addEventListener("fable:change", function (e) { curC3 = e.detail; renderAll(); });
+
+        document.addEventListener("click", function (e) {
+          var t = e.target.closest("[data-toggle-view]");
+          if (t) {
+            var k = t.dataset.toggleView;
+            tableView[k] = !tableView[k];
+            document.getElementById(k + "-chart").classList.toggle("hidden", tableView[k]);
+            document.getElementById(k + "-table").classList.toggle("hidden", !tableView[k]);
+            t.textContent = tableView[k] ? "View as chart" : "View as table";
+            return;
+          }
+          var g1 = e.target.closest("[data-tip-c1]");
+          if (g1) {
+            var tip1 = document.getElementById("tip-c1");
+            tip1.textContent = g1.dataset.tipC1;
+            tip1.classList.remove("hidden");
+          }
+          var g4 = e.target.closest("[data-tip-c4]");
+          if (g4) {
+            var tip4 = document.getElementById("tip-c4");
+            tip4.textContent = g4.dataset.tipC4;
+            tip4.classList.remove("hidden");
+          }
+        });
+        document.getElementById("svg-cashflow").addEventListener("mouseover", function (e) {
+          var g = e.target.closest("[data-tip-c1]");
+          var tip = document.getElementById("tip-c1");
+          if (g) { tip.textContent = g.dataset.tipC1; tip.classList.remove("hidden"); }
+          else tip.classList.add("hidden");
+        });
+        document.getElementById("svg-balance").addEventListener("mouseover", function (e) {
+          var g = e.target.closest("[data-tip-c4]");
+          var tip = document.getElementById("tip-c4");
+          if (g) { tip.textContent = g.dataset.tipC4; tip.classList.remove("hidden"); }
+          else tip.classList.add("hidden");
+        });
+
+        renderAll();
+      })();
+    </script>
+  </body>
+</html>

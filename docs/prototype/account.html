@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="en" data-state="data">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Account · Firecent</title>
+    <link rel="icon" href="assets/brand/favicon.svg" />
+    <link rel="stylesheet" href="assets/app.css" />
+    <script src="assets/proto.js"></script>
+  </head>
+  <body class="min-h-dvh bg-background text-foreground">
+    <div data-shell data-tab="more" data-nav="accounts"></div>
+
+    <div class="lg:pl-60">
+      <div class="relative mx-auto min-h-dvh max-w-[430px] pb-28 lg:max-w-[1160px] lg:px-8 lg:pb-12">
+        <!-- Mobile top bar -->
+        <header class="flex h-14 items-center gap-1 px-2 lg:hidden">
+          <a href="accounts.html" class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Accounts">
+            <i data-icon="chevron-left" class="size-[22px]"></i>
+          </a>
+          <h1 data-acc-title class="flex-1 truncate text-[17px] font-semibold tracking-[-0.01em]">Joint Checking</h1>
+          <button type="button" data-acc-menu-btn class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-haspopup="menu" aria-expanded="false" aria-label="Account actions">
+            <i data-icon="ellipsis" class="size-[22px]"></i>
+          </button>
+        </header>
+
+        <!-- Desktop header -->
+        <header class="hidden items-center justify-between gap-3 pt-8 lg:flex">
+          <div class="flex items-center gap-3">
+            <a href="accounts.html" class="-ml-2 grid size-10 place-items-center rounded-full hover:bg-accent" aria-label="Accounts">
+              <i data-icon="chevron-left" class="size-5"></i>
+            </a>
+            <span id="desk-acc-tile" class="grid size-10 place-items-center rounded-xl bg-brand-purple text-brand-purple-foreground">
+              <i data-icon="landmark" class="size-5"></i>
+            </span>
+            <div>
+              <h1 data-acc-title class="text-[24px] leading-[30px] font-semibold tracking-[-0.02em]">Joint Checking</h1>
+              <p id="desk-acc-sub" class="text-[13px] text-muted-foreground">Checking ·· 4821 · Maya &amp; Daniel</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <a id="desk-view-tx" href="transactions.html?account=Joint+Checking" class="flex h-10 items-center gap-1.5 rounded-xl border bg-card px-3.5 text-[13px] font-medium hover:bg-accent">
+              <span>All in Transactions</span><i data-icon="arrow-up-right" class="size-4"></i>
+            </a>
+            <button type="button" data-acc-menu-btn class="grid size-10 place-items-center rounded-xl border bg-card hover:bg-accent" aria-haspopup="menu" aria-expanded="false" aria-label="Account actions">
+              <i data-icon="ellipsis" class="size-5"></i>
+            </button>
+            <button type="button" data-open="ask" class="flex h-10 items-center gap-2 rounded-xl border bg-card px-4 text-[14px] font-semibold hover:bg-accent">
+              <i data-icon="firecent-mono" class="h-4 w-auto"></i>Ask
+            </button>
+            <a href="notifications.html" class="relative grid size-10 place-items-center rounded-full hover:bg-accent" aria-label="Notifications, 2 unread">
+              <i data-icon="bell" class="size-[22px]"></i>
+              <span class="absolute top-2 right-2 size-2 rounded-full bg-primary ring-2 ring-background [html[data-state=empty]_&]:hidden" aria-hidden="true"></span>
+            </a>
+          </div>
+        </header>
+
+        <!-- Actions dropdown -->
+        <div id="acc-menu" role="menu" class="fixed top-14 right-5 z-30 hidden w-56 divide-y rounded-2xl border bg-card py-1 shadow-[0_12px_32px_-8px_rgb(11_18_32/0.22)] lg:top-20 lg:right-36">
+          <div class="py-1">
+            <button type="button" role="menuitem" data-toast-msg="Edit account opens here" class="flex h-10 w-full items-center px-4 text-left text-[14px] font-medium hover:bg-accent">Edit account</button>
+            <button type="button" role="menuitem" data-toast-msg="Balance adjusted" class="flex h-10 w-full items-center px-4 text-left text-[14px] font-medium hover:bg-accent">Adjust balance</button>
+            <button type="button" id="menu-edit-dates" role="menuitem" data-toast-msg="Edit dates and limit opens here" class="hidden h-10 w-full items-center px-4 text-left text-[14px] font-medium hover:bg-accent">Edit dates and limit</button>
+          </div>
+          <div class="py-1">
+            <button type="button" id="menu-share" data-open="share" role="menuitem" class="flex h-10 w-full items-center px-4 text-left text-[14px] font-medium hover:bg-accent">Make private</button>
+          </div>
+          <div class="py-1">
+            <button type="button" role="menuitem" data-toast-msg="Account archived" data-toast-action="Undo" class="flex h-10 w-full items-center px-4 text-left text-[14px] font-medium text-destructive hover:bg-accent">Archive</button>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════ WITH DATA ═══════════════════════════ -->
+        <div data-view="data">
+          <!-- VARIANT A: NORMAL ACCOUNT -->
+          <div id="view-normal" class="lg:grid lg:grid-cols-12 lg:items-start lg:gap-6 lg:pt-6">
+            <div class="lg:col-span-5">
+              <!-- Account Balance Summary Card -->
+              <section class="px-5 pt-2 lg:px-0 lg:pt-0" aria-labelledby="h-norm-bal">
+                <div class="rounded-[26px] border bg-card p-5">
+                  <div class="flex items-center justify-between gap-2">
+                    <h2 id="h-norm-bal" class="text-[13px] font-medium text-muted-foreground">Balance</h2>
+                    <div class="flex items-center gap-1.5">
+                      <span id="norm-vis-pill" class="inline-flex h-6 items-center gap-1 rounded-full bg-muted px-2.5 text-[11px] font-medium text-foreground"></span>
+                      <span id="norm-type-pill" class="num inline-flex h-6 items-center rounded-full bg-muted px-2.5 text-[11px] font-medium text-muted-foreground"></span>
+                    </div>
+                  </div>
+                  <p id="norm-hero" class="num mt-2 text-[40px] leading-[44px] font-semibold tracking-[-0.035em]"></p>
+                  <p id="norm-fx-line" class="num mt-1.5 hidden text-[13px] text-muted-foreground"></p>
+                  <p id="norm-change" class="mt-2.5 flex items-center gap-1.5 text-[13px]"></p>
+
+                  <!-- In / Out sub-strip -->
+                  <dl class="mt-4 grid grid-cols-2 gap-2.5">
+                    <div class="rounded-2xl border bg-muted/40 p-3">
+                      <dt class="flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground">
+                        <i data-icon="arrow-down-left" class="size-3.5 text-positive"></i>In this month
+                      </dt>
+                      <dd id="norm-in" class="num mt-1 text-[18px] font-semibold tracking-[-0.02em]"></dd>
+                    </div>
+                    <div class="rounded-2xl border bg-muted/40 p-3">
+                      <dt class="flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground">
+                        <i data-icon="arrow-up-right" class="size-3.5 text-warning"></i>Out this month
+                      </dt>
+                      <dd id="norm-out" class="num mt-1 text-[18px] font-semibold tracking-[-0.02em]"></dd>
+                    </div>
+                  </dl>
+                  <p class="mt-2.5 text-[11px] text-muted-foreground">Includes inter-account transfers in &amp; out of this account.</p>
+                </div>
+              </section>
+
+              <!-- Coming up on this account -->
+              <section id="norm-upcoming-sec" class="px-5 pt-6 lg:px-0" aria-labelledby="h-norm-upcoming">
+                <h2 id="h-norm-upcoming" class="px-1 pb-2 text-[17px] font-semibold tracking-[-0.01em]">Coming up</h2>
+                <div class="overflow-hidden rounded-2xl border bg-card">
+                  <ul id="norm-upcoming-list" class="divide-y"></ul>
+                  <div class="flex items-center justify-between border-t bg-muted/35 px-4 py-3 text-[13px]">
+                    <span class="text-muted-foreground" id="norm-proj-label">Expected balance on Nov 19</span>
+                    <span class="num font-semibold" id="norm-proj-val">~$9,963.75</span>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <!-- Right column: Account Transactions -->
+            <section class="px-5 pt-6 lg:col-span-7 lg:px-0 lg:pt-0" aria-labelledby="h-norm-tx">
+              <div class="flex items-baseline justify-between px-1 pb-2">
+                <h2 id="h-norm-tx" class="text-[17px] font-semibold tracking-[-0.01em]">Transactions</h2>
+                <a id="norm-see-all" href="transactions.html?account=Joint+Checking" class="flex h-11 items-center text-[13px] font-medium text-primary-text hover:underline">See all &gt;</a>
+              </div>
+              <div id="norm-tx-mobile" class="lg:hidden"></div>
+              <div id="norm-tx-desktop" class="hidden overflow-hidden rounded-2xl border bg-card lg:block">
+                <table class="w-full text-[14px]">
+                  <thead class="border-b text-[12px] font-medium text-muted-foreground">
+                    <tr>
+                      <th class="py-3 pl-4 text-left font-medium">Date</th>
+                      <th class="py-3 text-left font-medium">Payee</th>
+                      <th class="py-3 text-left font-medium">Category</th>
+                      <th class="py-3 text-left font-medium">By</th>
+                      <th class="py-3 pr-4 text-right font-medium">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody id="norm-tx-rows"></tbody>
+                </table>
+              </div>
+              <p id="norm-tx-empty" class="hidden rounded-2xl border bg-card p-6 text-center text-[14px] text-muted-foreground">
+                No transactions in this account yet.
+              </p>
+            </section>
+          </div>
+
+          <!-- VARIANT B: CREDIT CARD (?id=3 Sapphire Reserve or ?id=7 Amex Gold) -->
+          <div id="view-card" class="lg:grid lg:grid-cols-12 lg:items-start lg:gap-6 lg:pt-6" style="display: none">
+            <div class="lg:col-span-5">
+              <!-- Card Balance + Credit Limit Summary Card -->
+              <section class="px-5 pt-2 lg:px-0 lg:pt-0" aria-labelledby="h-card-owe">
+                <div class="rounded-[26px] border bg-card p-5">
+                  <div class="flex items-center justify-between gap-2">
+                    <h2 id="h-card-owe" class="text-[13px] font-medium text-muted-foreground">You owe</h2>
+                    <div class="flex items-center gap-1.5">
+                      <span id="card-vis-pill" class="inline-flex h-6 items-center gap-1 rounded-full bg-muted px-2.5 text-[11px] font-medium text-foreground"></span>
+                      <span id="card-num-pill" class="num inline-flex h-6 items-center rounded-full bg-muted px-2.5 text-[11px] font-medium text-muted-foreground"></span>
+                    </div>
+                  </div>
+                  <p id="card-hero" class="num mt-2 text-[40px] leading-[44px] font-semibold tracking-[-0.035em]"></p>
+                  <div class="mt-4">
+                    <div class="h-2 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label="Credit utilization">
+                      <div id="card-util-bar" class="h-full rounded-full bg-sky-500" style="width: 15.4%"></div>
+                    </div>
+                    <div class="mt-2 flex justify-between text-[13px]">
+                      <span id="card-avail" class="num font-medium text-foreground"></span>
+                      <span id="card-limit-lbl" class="num text-muted-foreground"></span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- What makes up the balance -->
+              <section class="px-5 pt-6 lg:px-0" aria-labelledby="h-card-breakdown">
+                <h2 id="h-card-breakdown" class="px-1 pb-2 text-[17px] font-semibold tracking-[-0.01em]">What makes up the balance</h2>
+                <div class="overflow-hidden rounded-2xl border bg-card">
+                  <div class="p-4">
+                    <div class="flex items-baseline justify-between gap-2">
+                      <p id="card-stmt-lbl" class="font-medium"></p>
+                      <p id="card-stmt-amt" class="num font-semibold"></p>
+                    </div>
+                    <div class="mt-1 flex items-center justify-between gap-2 text-[13px] text-muted-foreground">
+                      <span id="card-stmt-meta"></span>
+                      <span id="card-due-pill" class="inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[12px] font-medium"></span>
+                    </div>
+                    <button type="button" data-open="pay-card" class="mt-3 flex h-10 w-full items-center justify-center rounded-xl bg-primary/10 px-3 text-[14px] font-semibold text-primary-text hover:bg-primary/15">
+                      Record payment
+                    </button>
+                  </div>
+                  <div class="border-t px-4 py-3.5">
+                    <div class="flex items-baseline justify-between gap-2">
+                      <p class="font-medium">Since the statement</p>
+                      <p id="card-since-amt" class="num font-semibold"></p>
+                    </div>
+                    <p id="card-since-meta" class="mt-0.5 text-[13px] text-muted-foreground"></p>
+                  </div>
+                  <div class="border-t px-4 py-3.5">
+                    <div class="flex items-baseline justify-between gap-2">
+                      <p class="font-medium">Installments not billed yet</p>
+                      <p id="card-inst-amt" class="num font-semibold"></p>
+                    </div>
+                    <p id="card-inst-meta" class="mt-0.5 text-[13px] text-muted-foreground"></p>
+                  </div>
+                  <div class="flex items-center justify-between border-t bg-muted/40 px-4 py-3 text-[14px]">
+                    <span class="text-muted-foreground">You owe</span>
+                    <span id="card-total-owe" class="num font-semibold"></span>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Dates & settings -->
+              <section class="px-5 pt-6 lg:px-0" aria-labelledby="h-card-dates">
+                <h2 id="h-card-dates" class="px-1 pb-2 text-[17px] font-semibold tracking-[-0.01em]">Dates</h2>
+                <div class="divide-y rounded-2xl border bg-card">
+                  <div class="flex h-12 items-center justify-between px-4 text-[14px]"><span class="text-muted-foreground">Statement closes</span><span id="card-close-day" class="num font-medium"></span></div>
+                  <div class="flex h-12 items-center justify-between px-4 text-[14px]"><span class="text-muted-foreground">Payment is due</span><span id="card-pay-day" class="num font-medium"></span></div>
+                  <div class="flex h-12 items-center justify-between px-4 text-[14px]"><span class="text-muted-foreground">Paid from</span><span id="card-paid-from" class="font-medium"></span></div>
+                  <div class="flex h-12 items-center justify-between px-4 text-[14px]"><span class="text-muted-foreground">APR</span><span id="card-apr" class="num font-medium"></span></div>
+                </div>
+              </section>
+            </div>
+
+            <!-- Right column: Installments + Card Transactions -->
+            <div class="lg:col-span-7">
+              <section class="px-5 pt-6 lg:px-0 lg:pt-0" aria-labelledby="h-card-plans">
+                <h2 id="h-card-plans" class="px-1 pb-2 text-[17px] font-semibold tracking-[-0.01em]">Installment plans</h2>
+                <div id="card-plans-box" class="divide-y rounded-2xl border bg-card"></div>
+              </section>
+
+              <section class="px-5 pt-6 lg:px-0" aria-labelledby="h-card-tx">
+                <div class="flex items-baseline justify-between px-1 pb-2">
+                  <h2 id="h-card-tx" class="text-[17px] font-semibold tracking-[-0.01em]">Transactions</h2>
+                  <a id="card-see-all" href="transactions.html" class="flex h-11 items-center text-[13px] font-medium text-primary-text hover:underline">See all &gt;</a>
+                </div>
+                <div data-seg id="card-tx-tab" class="flex h-11 rounded-xl bg-muted p-1" role="group" aria-label="Billing cycle">
+                  <button type="button" data-value="since" aria-pressed="true" class="flex-1 rounded-lg bg-card text-[14px] font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]">Since statement</button>
+                  <button type="button" data-value="stmt" aria-pressed="false" id="card-stmt-tab-btn" class="flex-1 rounded-lg text-[14px] font-medium text-muted-foreground">Statement Oct 21</button>
+                </div>
+                <div id="card-tx-mobile" class="mt-3 lg:hidden"></div>
+                <div id="card-tx-desktop" class="mt-3 hidden overflow-hidden rounded-2xl border bg-card lg:block">
+                  <table class="w-full text-[14px]">
+                    <thead class="border-b text-[12px] font-medium text-muted-foreground">
+                      <tr>
+                        <th class="py-3 pl-4 text-left font-medium">Date</th>
+                        <th class="py-3 text-left font-medium">Payee</th>
+                        <th class="py-3 text-left font-medium">Category</th>
+                        <th class="py-3 pr-4 text-right font-medium">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody id="card-tx-rows"></tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+
+        <!-- EMPTY -->
+        <div data-view="empty">
+          <div class="px-5 pt-2 lg:px-0 lg:pt-6">
+            <section class="rounded-[26px] border bg-card p-5">
+              <h2 class="text-[13px] font-medium text-muted-foreground">Balance</h2>
+              <p class="num mt-2 text-[42px] leading-[46px] font-semibold tracking-[-0.035em] text-muted-foreground">
+                <span class="mr-0.5 text-[24px]">$</span>0<span class="text-[24px]">.00</span>
+              </p>
+            </section>
+            <div class="mt-6 rounded-2xl border bg-card p-6 text-center text-[14px] text-muted-foreground">
+              No transactions in this account yet.
+            </div>
+          </div>
+        </div>
+
+        <!-- LOADING -->
+        <div data-view="loading" aria-busy="true">
+          <p class="sr-only" role="status">Loading account</p>
+          <div aria-hidden="true" class="px-5 pt-4 lg:grid lg:grid-cols-12 lg:gap-6 lg:px-0 lg:pt-6">
+            <div class="space-y-4 lg:col-span-5">
+              <div class="h-44 rounded-[26px] border bg-card p-5">
+                <div class="sk h-3.5 w-20"></div>
+                <div class="sk mt-3 h-10 w-44 rounded-xl"></div>
+                <div class="mt-6 grid grid-cols-2 gap-2.5"><div class="sk h-14 rounded-2xl"></div><div class="sk h-14 rounded-2xl"></div></div>
+              </div>
+              <div class="h-32 rounded-2xl border bg-card p-4"><div class="sk h-4 w-36"></div><div class="sk mt-3 h-10 w-full rounded-xl"></div></div>
+            </div>
+            <div class="mt-6 lg:col-span-7 lg:mt-0">
+              <div class="divide-y rounded-2xl border bg-card">
+                <div class="flex min-h-16 items-center gap-3 px-4 py-3"><div class="sk size-10 rounded-xl"></div><div class="flex-1 space-y-2"><div class="sk h-4 w-36"></div><div class="sk h-3 w-24"></div></div><div class="sk h-4 w-16"></div></div>
+                <div class="flex min-h-16 items-center gap-3 px-4 py-3"><div class="sk size-10 rounded-xl"></div><div class="flex-1 space-y-2"><div class="sk h-4 w-32"></div><div class="sk h-3 w-20"></div></div><div class="sk h-4 w-16"></div></div>
+                <div class="flex min-h-16 items-center gap-3 px-4 py-3"><div class="sk size-10 rounded-xl"></div><div class="flex-1 space-y-2"><div class="sk h-4 w-40"></div><div class="sk h-3 w-28"></div></div><div class="sk h-4 w-16"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ERROR -->
+        <div data-view="error">
+          <div class="flex flex-col items-center px-8 py-12 text-center lg:py-24">
+            <span class="grid size-14 place-items-center rounded-2xl bg-muted"><i data-icon="cloud-off" class="size-6 text-muted-foreground"></i></span>
+            <h2 class="mt-4 text-[17px] font-semibold">We couldn't load this</h2>
+            <p class="mt-1.5 max-w-[280px] text-[14px] text-muted-foreground">Check your connection and try again. Nothing was changed.</p>
+            <div class="mt-5"><button type="button" class="flex h-11 items-center rounded-xl border bg-card px-4 text-[14px] font-semibold">Try again</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHEET: RECORD PAYMENT (?sheet=pay-card) -->
+    <div data-sheet-id="pay-card">
+      <div data-veil data-close class="fixed inset-0 z-40 bg-[#0b1220]/50"></div>
+      <div role="dialog" aria-modal="true" aria-labelledby="sh-pay-title" class="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[90dvh] w-full max-w-[430px] overflow-y-auto rounded-t-3xl bg-card px-5 pt-3 pb-8 shadow-[0_24px_48px_-12px_rgb(11_18_32/0.28)] lg:inset-y-auto lg:top-1/2 lg:left-1/2 lg:w-[440px] lg:max-w-[92vw] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-3xl lg:border lg:pt-5">
+        <div class="mx-auto mb-2 h-1 w-9 rounded-full bg-muted-foreground/25 lg:hidden" aria-hidden="true"></div>
+        <div class="flex h-12 items-center justify-between">
+          <h2 id="sh-pay-title" class="text-[17px] font-semibold tracking-[-0.01em]">Record a payment</h2>
+          <button type="button" data-close class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Close"><i data-icon="x" class="size-[22px]"></i></button>
+        </div>
+        <div class="mt-3 space-y-4">
+          <div id="pay-radios" role="radiogroup" aria-label="Payment amount" class="divide-y rounded-2xl border bg-card">
+            <button type="button" role="radio" aria-checked="true" data-pay-opt="statement" data-pay-amt="1512.80" class="flex min-h-14 w-full items-center gap-3 px-4 text-left hover:bg-accent/60">
+              <span data-dot class="grid size-5 place-items-center rounded-full border-2 border-primary"><span class="size-2.5 rounded-full bg-primary"></span></span>
+              <span class="flex-1 text-[14px] font-medium">Statement balance</span>
+              <span id="pay-opt-stmt-amt" class="num font-semibold">$1,512.80</span>
+            </button>
+            <button type="button" role="radio" aria-checked="false" data-pay-opt="min" data-pay-amt="35.00" class="flex min-h-14 w-full items-center gap-3 px-4 text-left hover:bg-accent/60">
+              <span data-dot class="grid size-5 place-items-center rounded-full border-2 border-input"></span>
+              <span class="flex-1 text-[14px] font-medium">Minimum payment</span>
+              <span class="num font-semibold">$35.00</span>
+            </button>
+            <button type="button" role="radio" aria-checked="false" data-pay-opt="other" data-pay-amt="" class="flex min-h-14 w-full items-center gap-3 px-4 text-left hover:bg-accent/60">
+              <span data-dot class="grid size-5 place-items-center rounded-full border-2 border-input"></span>
+              <span class="flex-1 text-[14px] font-medium">Another amount</span>
+            </button>
+          </div>
+          <div id="pay-other-wrap" class="hidden">
+            <label for="pay-other-input" class="mb-1.5 block text-[13px] font-medium">Amount</label>
+            <input id="pay-other-input" type="text" inputmode="decimal" placeholder="$0.00" class="num h-12 w-full rounded-xl border border-input bg-card px-3.5 text-[16px]" />
+          </div>
+          <div id="pay-over-warn" class="hidden items-start gap-2.5 rounded-xl bg-warning/12 px-3.5 py-3 text-[13px] leading-[19px]">
+            <i data-icon="circle-alert" class="mt-0.5 size-4 shrink-0 text-warning"></i>
+            <p><span id="pay-from-warn-name">Joint Checking</span> has <span id="pay-from-warn-bal">$8,420.55</span>.</p>
+          </div>
+          <div class="divide-y rounded-2xl border bg-card">
+            <div class="flex h-12 items-center justify-between px-4 text-[14px]">
+              <span class="text-muted-foreground">From</span>
+              <span id="pay-from-row" class="num flex items-center gap-1.5 font-medium">Joint Checking · $8,420.55</span>
+            </div>
+            <div class="flex h-12 items-center justify-between px-4 text-[14px]">
+              <span class="text-muted-foreground">Date</span>
+              <span class="font-medium">Today</span>
+            </div>
+          </div>
+          <button type="button" id="pay-submit" class="num inline-flex h-11 w-full items-center justify-center rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground">Record $1,512.80</button>
+          <p class="text-center text-[12px] text-muted-foreground">This records the payment in Firecent. It does not move money at your bank.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHEET: INSTALLMENT PLAN (?sheet=plan) -->
+    <div data-sheet-id="plan">
+      <div data-veil data-close class="fixed inset-0 z-40 bg-[#0b1220]/50"></div>
+      <div role="dialog" aria-modal="true" aria-labelledby="sh-plan-title" class="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[90dvh] w-full max-w-[430px] overflow-y-auto rounded-t-3xl bg-card px-5 pt-3 pb-8 shadow-[0_24px_48px_-12px_rgb(11_18_32/0.28)] lg:inset-y-auto lg:top-1/2 lg:left-1/2 lg:w-[440px] lg:max-w-[92vw] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-3xl lg:border lg:pt-5">
+        <div class="mx-auto mb-2 h-1 w-9 rounded-full bg-muted-foreground/25 lg:hidden" aria-hidden="true"></div>
+        <div class="flex h-12 items-center justify-between">
+          <h2 id="sh-plan-title" class="text-[17px] font-semibold tracking-[-0.01em]">Dyson V15 · Best Buy</h2>
+          <button type="button" data-close class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Close"><i data-icon="x" class="size-[22px]"></i></button>
+        </div>
+        <div class="mt-2 space-y-5">
+          <div>
+            <p id="plan-hero-left" class="num text-[34px] leading-[38px] font-semibold tracking-[-0.03em]"><span class="mr-0.5 text-[22px] font-medium text-muted-foreground">$</span>149.98 left</p>
+            <p id="plan-hero-sub" class="num mt-1 text-[14px] text-muted-foreground">of $449.94 · 0% interest</p>
+            <div id="plan-seg-bars" class="mt-4 grid grid-cols-6 gap-1" role="progressbar" aria-label="4 of 6 billed">
+              <span class="h-1.5 rounded-full bg-primary"></span><span class="h-1.5 rounded-full bg-primary"></span>
+              <span class="h-1.5 rounded-full bg-primary"></span><span class="h-1.5 rounded-full bg-primary"></span>
+              <span class="h-1.5 rounded-full bg-muted"></span><span class="h-1.5 rounded-full bg-muted"></span>
+            </div>
+            <p id="plan-seg-lbl" class="num mt-1.5 text-[12px] text-muted-foreground">4 of 6 billed</p>
+          </div>
+          <ul id="plan-schedule" class="divide-y rounded-2xl border bg-card">
+            <li class="flex items-center justify-between px-4 py-3 text-[14px]"><span>Jul 21 · $74.99</span><span class="inline-flex items-center gap-1 text-[13px] text-muted-foreground"><i data-icon="check" class="size-3.5"></i>Billed</span></li>
+            <li class="flex items-center justify-between px-4 py-3 text-[14px]"><span>Aug 21 · $74.99</span><span class="inline-flex items-center gap-1 text-[13px] text-muted-foreground"><i data-icon="check" class="size-3.5"></i>Billed</span></li>
+            <li class="flex items-center justify-between px-4 py-3 text-[14px]"><span>Sep 21 · $74.99</span><span class="inline-flex items-center gap-1 text-[13px] text-muted-foreground"><i data-icon="check" class="size-3.5"></i>Billed</span></li>
+            <li class="flex items-center justify-between px-4 py-3 text-[14px]"><span>Oct 21 · $74.99</span><span class="text-[13px] font-medium text-warning">In the statement due Nov 15</span></li>
+            <li class="flex items-center justify-between px-4 py-3 text-[14px]"><span>Nov 21 · $74.99</span><span class="text-[13px] text-muted-foreground">Upcoming</span></li>
+            <li class="flex items-center justify-between px-4 py-3 text-[14px]"><span>Dec 21 · $74.99</span><span class="text-[13px] text-muted-foreground">Upcoming</span></li>
+          </ul>
+          <div class="rounded-2xl border bg-card">
+            <a href="transactions.html?sheet=detail&amp;id=1038" class="flex min-h-14 items-center gap-3 px-4 hover:bg-accent/60">
+              <span class="grid size-9 shrink-0 place-items-center rounded-xl bg-brand-yellow text-brand-yellow-foreground"><i data-icon="receipt" class="size-[18px]"></i></span>
+              <span class="flex-1 font-medium">Original purchase</span>
+              <span class="num text-[14px] text-muted-foreground">$449.94 · Jul 10</span>
+              <i data-icon="chevron-right" class="size-4 text-muted-foreground"></i>
+            </a>
+          </div>
+          <button type="button" data-close data-toast-msg="Plan marked as paid off" data-toast-action="Undo" class="flex h-11 w-full items-center justify-center rounded-xl text-[14px] font-medium text-muted-foreground hover:bg-accent hover:text-foreground">Mark as paid off early</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHEET: SHARE CONFIRMATION (?sheet=share) -->
+    <div data-sheet-id="share">
+      <div data-veil data-close class="fixed inset-0 z-40 bg-[#0b1220]/50"></div>
+      <div role="dialog" aria-modal="true" aria-labelledby="sh-share-title" class="fixed top-1/2 left-1/2 z-50 w-[340px] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 rounded-3xl border bg-card p-6 shadow-[0_24px_48px_-12px_rgb(11_18_32/0.28)]">
+        <h2 id="sh-share-title" class="text-[17px] font-semibold tracking-[-0.01em]">Share account?</h2>
+        <p id="sh-share-body" class="mt-2 text-[14px] leading-[21px] text-muted-foreground"></p>
+        <div class="mt-5 space-y-2">
+          <button type="button" id="sh-share-confirm" data-close data-toast-msg="Visibility updated" class="inline-flex h-11 w-full items-center justify-center rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground"></button>
+          <button type="button" id="sh-share-cancel" data-close class="flex h-11 w-full items-center justify-center rounded-xl text-[14px] font-medium text-muted-foreground hover:bg-accent"></button>
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/icons.js"></script>
+    <script>
+      (function () {
+        var COLOR_TILE = {
+          green: "bg-brand-green text-brand-green-foreground",
+          orange: "bg-brand-orange text-brand-orange-foreground",
+          blue: "bg-brand-blue text-brand-blue-foreground",
+          purple: "bg-brand-purple text-brand-purple-foreground",
+          pink: "bg-brand-pink text-brand-pink-foreground",
+          yellow: "bg-brand-yellow text-brand-yellow-foreground",
+          red: "bg-brand-red text-brand-red-foreground",
+          gray: "bg-brand-gray text-brand-gray-foreground",
+          brown: "bg-brand-brown text-brand-brown-foreground",
+        };
+        var COLOR_DOT = {
+          green: "bg-emerald-500",
+          orange: "bg-orange-500",
+          blue: "bg-sky-500",
+          purple: "bg-violet-500",
+          pink: "bg-pink-500",
+          yellow: "bg-amber-500",
+          red: "bg-rose-500",
+          gray: "bg-slate-400",
+        };
+        var CAT_META = {
+          "Groceries": { icon: "shopping-cart", color: "green" },
+          "Dining out": { icon: "utensils", color: "orange" },
+          "Transport": { icon: "bus", color: "blue" },
+          "Entertainment": { icon: "ticket", color: "pink" },
+          "Subscriptions": { icon: "tv", color: "purple" },
+          "Utilities": { icon: "zap", color: "yellow" },
+          "Health": { icon: "heart-pulse", color: "green" },
+          "Household": { icon: "lamp", color: "yellow" },
+          "Pets": { icon: "paw-print", color: "gray" },
+          "Shopping": { icon: "shopping-bag", color: "purple" },
+          "Fitness": { icon: "dumbbell", color: "green" },
+          "Gifts": { icon: "gift", color: "orange" },
+          "Car loan": { icon: "car", color: "red" },
+          "Phone & internet": { icon: "wifi", color: "blue" },
+          "Rent": { icon: "building-2", color: "purple" },
+          "Paycheck": { icon: "briefcase", color: "green" },
+          "Transfer": { icon: "arrow-left-right", color: "gray" },
+        };
+
+        var DATA = {
+          "1": {
+            kind: "normal", name: "Joint Checking", icon: "landmark", color: "purple",
+            shared: true, typePill: "Checking ·· 4821", balance: "$8,420.55",
+            change: "+$855.13", changeUp: true, mIn: "$4,950.00", mOut: "$4,094.87",
+            upcoming: [
+              { cal: "Sun 15", label: "Pay Sapphire Reserve", amt: "$1,512.80", sub: "Card payment", meta: "Due in 3 days", warn: true, icon: "clock", href: "account.html?id=3" },
+              { cal: "Mon 16", label: "Daniel's paycheck", amt: "+$3,150.00", sub: "Paycheck", meta: "Expected", pos: true, icon: "arrow-down-left", href: "recurring.html" },
+              { cal: "Wed 18", label: "Con Edison", amt: "~$94.00", sub: "Utilities", meta: "Manual", icon: "hand", href: "recurring.html?sheet=confirm" },
+            ],
+            projLabel: "Expected balance on Nov 19", projVal: "~$9,963.75",
+            tx: [
+              { id: 1044, day: "Today", shortDate: "Nov 12", total: "−$41.24", payee: "DoorDash", cat: "Dining out", by: "M", amt: "−$41.24" },
+              { id: 1041, day: "Yesterday", shortDate: "Nov 11", total: "−$418.86", payee: "Ticketmaster", cat: "Entertainment", by: "M", amt: "−$142.60" },
+              { id: 1039, day: "Yesterday", shortDate: "Nov 11", payee: "Costco", cat: "Groceries", by: "D", amt: "−$211.36" },
+              { id: 1038, day: "Yesterday", shortDate: "Nov 11", payee: "Target", cat: "Household", by: "D", amt: "−$64.90" },
+              { id: 1035, day: "Tue, Nov 10", shortDate: "Nov 10", total: "−$152.37", payee: "National Grid", cat: "Utilities", by: "R", amt: "−$58.75" },
+              { id: 1034, day: "Tue, Nov 10", shortDate: "Nov 10", payee: "Trader Joe's", cat: "Groceries", by: "M", amt: "−$93.62" },
+              { id: 1031, day: "Mon, Nov 9", shortDate: "Nov 9", total: "−$129.99", payee: "Joe's Pizza", cat: "Dining out", by: "D", amt: "−$28.75" },
+              { id: 1029, day: "Mon, Nov 9", shortDate: "Nov 9", payee: "Chewy", cat: "Pets", by: "M", amt: "−$61.24" },
+              { id: 1028, day: "Mon, Nov 9", shortDate: "Nov 9", payee: "Dr. Patel", cat: "Health", by: "M", amt: "−$40.00" },
+              { id: 1027, day: "Sun, Nov 8", shortDate: "Nov 8", total: "−$67.84", payee: "Amazon", cat: "Shopping", by: "D", amt: "−$67.84" },
+            ],
+          },
+          "2": {
+            kind: "normal", name: "Emergency Fund", icon: "piggy-bank", color: "green",
+            shared: true, typePill: "Savings ·· 9034", balance: "$24,300.00",
+            change: "$0.00", changeUp: null, mIn: "$0.00", mOut: "$0.00",
+            upcoming: [
+              { cal: "Fri 20", label: "Emergency Fund top-up", amt: "+$750.00", sub: "From Joint Checking", meta: "Transfer", pos: true, icon: "repeat", href: "recurring.html" },
+            ],
+            projLabel: "Expected balance on Nov 21", projVal: "$25,050.00",
+            tx: [],
+          },
+          "4": {
+            kind: "normal", name: "Maya's Checking", icon: "landmark", color: "brown",
+            shared: false, typePill: "Checking ·· 2260", balance: "$3,912.18",
+            change: "+$770.65", changeUp: true, mIn: "$2,975.00", mOut: "$2,204.35",
+            upcoming: [
+              { cal: "Fri 20", label: "Student loan · Nelnet", amt: "$385.00", sub: "Student loan", meta: "Auto", icon: "repeat", href: "recurring.html" },
+              { cal: "Sat 28", label: "Pay Amex Gold", amt: "$268.90", sub: "Card payment", meta: "Due in 16 days", icon: "clock", href: "account.html?id=7" },
+            ],
+            projLabel: "Expected balance on Nov 30", projVal: "$3,258.28",
+            tx: [
+              { id: 1037, day: "Tue, Nov 10", shortDate: "Nov 10", total: "−$60.00", payee: "Paper Source", cat: "Gifts", by: "M", amt: "−$60.00" },
+              { id: 1020, day: "Fri, Nov 6", shortDate: "Nov 6", total: "+$1,132.65", payee: "CVS Pharmacy", cat: "Health", by: "M", amt: "−$42.35" },
+              { id: 1019, day: "Fri, Nov 6", shortDate: "Nov 6", payee: "Maya's Checking → Joint Checking", cat: "Transfer", by: "R", amt: "−$1,800.00" },
+              { id: 1018, day: "Fri, Nov 6", shortDate: "Nov 6", payee: "Lumen Labs", cat: "Paycheck", by: "R", amt: "+$2,975.00" },
+              { id: 1012, day: "Wed, Nov 4", shortDate: "Nov 4", total: "−$100.00", payee: "Maya's Checking → Cash", cat: "Transfer", by: "M", amt: "−$100.00" },
+              { id: 1007, day: "Tue, Nov 3", shortDate: "Nov 3", total: "−$202.00", payee: "Metro-North", cat: "Transport", by: "M", amt: "−$168.00" },
+              { id: 1006, day: "Tue, Nov 3", shortDate: "Nov 3", payee: "MTA OMNY", cat: "Transport", by: "M", amt: "−$34.00" },
+            ],
+          },
+          "5": {
+            kind: "normal", name: "Cash", icon: "banknote", color: "yellow",
+            shared: false, typePill: "Wallet · USD", balance: "$140.00",
+            change: "+$10.00", changeUp: true, mIn: "$100.00", mOut: "$90.00",
+            upcoming: [],
+            tx: [
+              { id: 1042, day: "Today", shortDate: "Nov 12", total: "−$38.00", payee: "Union Sq Greenmarket", cat: "Groceries", by: "M", amt: "−$38.00" },
+              { id: 1024, day: "Sat, Nov 7", shortDate: "Nov 7", total: "−$22.00", payee: "Street fair", cat: "Entertainment", by: "M", amt: "−$22.00" },
+              { id: 1017, day: "Thu, Nov 5", shortDate: "Nov 5", total: "−$30.00", payee: "The Dead Rabbit", cat: "Dining out", by: "M", amt: "−$30.00" },
+              { id: 1012, day: "Wed, Nov 4", shortDate: "Nov 4", total: "+$100.00", payee: "Maya's Checking → Cash", cat: "Transfer", by: "M", amt: "+$100.00" },
+            ],
+          },
+          "6": {
+            kind: "normal", name: "BBVA México", icon: "piggy-bank", color: "blue",
+            shared: false, typePill: "Savings ·· 5512", balance: "MX$38,500.00",
+            fx: "≈ $2,084.46 at 18.47 MXN per USD",
+            change: "−MX$1,050.00", changeUp: false, mIn: "MX$0.00", mOut: "MX$1,050.00",
+            upcoming: [],
+            tx: [
+              { id: 1033, day: "Mon, Nov 9", shortDate: "Nov 9", total: "−MX$1,050.00", payee: "Liverpool", cat: "Gifts", by: "M", amt: "−MX$1,050.00" },
+            ],
+          },
+          "3": {
+            kind: "card", name: "Sapphire Reserve", icon: "credit-card", color: "blue",
+            shared: true, numPill: "Credit card ·· 7719", owe: "$1,846.32",
+            utilPct: 15.4, avail: "$10,153.68 available", limitLbl: "of $12,000 limit",
+            stmtLbl: "Statement due Nov 15", stmtAmt: "$1,512.80", stmtMeta: "Closed Oct 21 · Minimum $35.00",
+            dueTxt: "Due in 3 days", dueUrgent: true,
+            sinceAmt: "$183.54", sinceMeta: "Next statement closes Nov 21",
+            instAmt: "$149.98", instMeta: "1 active plan",
+            closeDay: "21st of each month", payDay: "15th of each month", paidFrom: "Joint Checking", paidFromBal: "$8,420.55", apr: "24.99%",
+            plan: { title: "Dyson V15 · Best Buy", progress: "4 of 6", sub: "$74.99 a month · 0% interest", foot: "$149.98 left · ends Dec 21", filled: 4, total: 6 },
+            stmtTabLabel: "Statement Oct 21",
+            sinceTx: [
+              { id: 1036, day: "Tue, Nov 10", shortDate: "Nov 10", total: "−$2.99", payee: "iCloud+", cat: "Subscriptions", amt: "−$2.99" },
+              { id: 1026, day: "Sun, Nov 8", shortDate: "Nov 8", total: "−$18.49", payee: "Max", cat: "Subscriptions", amt: "−$18.49" },
+              { id: 1023, day: "Sat, Nov 7", shortDate: "Nov 7", total: "−$84.60", payee: "Via Carota", cat: "Dining out", amt: "−$84.60" },
+              { id: 1016, day: "Thu, Nov 5", shortDate: "Nov 5", total: "−$18.99", payee: "Spotify Duo", cat: "Subscriptions", amt: "−$18.99" },
+              { id: 1044, day: "Wed, Oct 28", shortDate: "Oct 28", total: "−$24.18", payee: "Lyft", cat: "Transport", amt: "−$24.18" },
+              { id: 1044, day: "Sat, Oct 24", shortDate: "Oct 24", total: "−$34.29", payee: "Shake Shack", cat: "Dining out", amt: "−$34.29" },
+            ],
+            stmtTx: [
+              { id: 1044, day: "Oct 1 – Oct 21", shortDate: "Oct 18", total: "−$1,437.81", payee: "Period purchases", cat: "Subscriptions", amt: "−$1,437.81" },
+              { id: 1038, day: "Oct 1 – Oct 21", shortDate: "Oct 21", payee: "Dyson V15 (4/6 installment)", cat: "Household", amt: "−$74.99" },
+            ],
+          },
+          "7": {
+            kind: "card", name: "Amex Gold", icon: "credit-card", color: "gray",
+            shared: false, numPill: "Credit card ·· 1008", owe: "$612.40",
+            utilPct: 7.7, avail: "$7,387.60 available", limitLbl: "of $8,000 limit",
+            stmtLbl: "Statement due Nov 28", stmtAmt: "$268.90", stmtMeta: "Closed Nov 3 · Minimum $35.00",
+            dueTxt: "Due in 16 days", dueUrgent: false,
+            sinceAmt: "$93.50", sinceMeta: "Next statement closes Dec 3",
+            instAmt: "$250.00", instMeta: "1 active plan",
+            closeDay: "3rd of each month", payDay: "28th of each month", paidFrom: "Maya's Checking", paidFromBal: "$3,912.18", apr: "21.24%",
+            plan: { title: "Carry-on · Away", progress: "1 of 3", sub: "$125.00 a month · 0% interest", foot: "$250.00 left · ends Jan 3", filled: 1, total: 3 },
+            stmtTabLabel: "Statement Nov 3",
+            sinceTx: [
+              { id: 1043, day: "Today", shortDate: "Nov 12", total: "−$25.31", payee: "McNally Jackson", cat: "Shopping", amt: "−$25.31" },
+              { id: 1040, day: "Yesterday", shortDate: "Nov 11", total: "−$6.75", payee: "Blue Bottle", cat: "Dining out", amt: "−$6.75" },
+              { id: 1037, day: "Tue, Nov 10", shortDate: "Nov 10", total: "−$12.99", payee: "Kindle", cat: "Entertainment", amt: "−$12.99" },
+              { id: 1030, day: "Mon, Nov 9", shortDate: "Nov 9", total: "−$16.45", payee: "Sweetgreen", cat: "Dining out", amt: "−$16.45" },
+              { id: 1021, day: "Fri, Nov 6", shortDate: "Nov 6", total: "−$32.00", payee: "Barry's", cat: "Fitness", amt: "−$32.00" },
+            ],
+            stmtTx: [
+              { id: 1009, day: "Nov 3", shortDate: "Nov 3", total: "−$38.00", payee: "Glossier", cat: "Shopping", amt: "−$38.00" },
+              { id: 1003, day: "Nov 1", shortDate: "Nov 1", total: "−$9.50", payee: "Blue Bottle", cat: "Dining out", amt: "−$9.50" },
+            ],
+          },
+        };
+
+        var params = new URLSearchParams(location.search);
+        var id = params.get("id") || "1";
+        if (id === "1" && params.get("private") === "1") id = "4";
+        if (id === "1" && params.get("currency") === "MXN") id = "6";
+        if (id === "3" && params.get("private") === "1") id = "7";
+        var acc = DATA[id] || DATA["1"];
+
+        var isCard = acc.kind === "card";
+        document.title = acc.name + " · Firecent";
+        document.querySelectorAll("[data-acc-title]").forEach(function (el) { el.textContent = acc.name; });
+        document.getElementById("desk-acc-tile").className = "grid size-10 place-items-center rounded-xl " + COLOR_TILE[acc.color];
+        document.getElementById("desk-acc-tile").innerHTML = '<i data-icon="' + acc.icon + '" class="size-5"></i>';
+        if (window.fableIcons) window.fableIcons(document.getElementById("desk-acc-tile"));
+        document.getElementById("desk-acc-sub").textContent = (acc.typePill || acc.numPill) + " · " + (acc.shared ? "Maya & Daniel" : "Only you");
+        document.getElementById("desk-view-tx").href = "transactions.html?account=" + encodeURIComponent(acc.name);
+
+        if (isCard) {
+          document.getElementById("menu-edit-dates").classList.remove("hidden");
+          document.getElementById("menu-edit-dates").classList.add("flex");
+        }
+
+        // Share menu & sheet copy
+        var menuShare = document.getElementById("menu-share");
+        menuShare.textContent = acc.shared ? "Make private" : "Share with Maya & Daniel";
+        document.getElementById("sh-share-title").textContent = acc.shared ? "Make " + acc.name + " private?" : "Share " + acc.name + "?";
+        document.getElementById("sh-share-body").textContent = acc.shared
+          ? "Daniel will no longer see this account or its transactions. Totals he sees will change."
+          : "Daniel will see this account, its balance and all of its history, including past transactions.";
+        document.getElementById("sh-share-confirm").textContent = acc.shared ? "Make private" : "Share account";
+        document.getElementById("sh-share-cancel").textContent = acc.shared ? "Cancel" : "Keep private";
+
+        function fmtHero(s) {
+          var m = String(s).match(/^([−+]?)(MX\$|\$)?([\d,]+)(\.\d{2})?$/);
+          if (!m) return s;
+          return (m[1] ? '<span class="mr-0.5 text-[24px] font-medium">' + m[1] + "</span>" : "") +
+            '<span class="mr-0.5 text-[24px] font-medium text-muted-foreground">' + (m[2] || "$") + "</span>" +
+            m[3] + '<span class="text-[24px] font-medium text-muted-foreground">' + (m[4] || "") + "</span>";
+        }
+
+        function renderTxRows(list, includeBy) {
+          var mob = "";
+          var desk = "";
+          var curDay = null;
+          list.forEach(function (r) {
+            var meta = CAT_META[r.cat] || { icon: "circle-dot", color: "gray" };
+            var pos = r.amt.indexOf("+") === 0;
+            if (r.day !== curDay) {
+              if (curDay !== null) mob += "</ul>";
+              curDay = r.day;
+              mob += '<div class="flex items-baseline justify-between px-1 pt-4 pb-1.5 text-[12px] font-medium text-muted-foreground"><span>' + r.day + '</span><span class="num">' + (r.total || "") + "</span></div><ul class=\"divide-y rounded-2xl border bg-card\">";
+              desk += '<tr class="border-b bg-muted/40 text-[12px] font-medium text-muted-foreground"><td colspan="' + (includeBy ? 5 : 4) + '" class="px-4 py-2"><div class="flex justify-between"><span>' + r.day + '</span><span class="num">' + (r.total || "") + "</span></div></td></tr>";
+            }
+            mob +=
+              '<li><a href="transactions.html?sheet=detail&amp;id=' + r.id + '" class="flex min-h-14 items-center gap-3 px-4 py-2.5 hover:bg-accent/60">' +
+              '<span class="grid size-10 shrink-0 place-items-center rounded-xl ' + COLOR_TILE[meta.color] + '"><i data-icon="' + meta.icon + '" class="size-4"></i></span>' +
+              '<span class="min-w-0 flex-1"><span class="block truncate font-medium">' + r.payee + '</span>' +
+              '<span class="mt-0.5 flex items-center gap-1.5 text-[12px] text-muted-foreground"><span class="size-1.5 rounded-full ' + COLOR_DOT[meta.color] + '"></span><span>' + r.cat + "</span></span></span>" +
+              '<span class="num shrink-0 font-semibold ' + (pos ? "text-positive" : "") + '">' + r.amt + "</span></a></li>";
+
+            var byTd = "";
+            if (includeBy) {
+              byTd = r.by === "R"
+                ? '<td><span class="inline-grid size-6 place-items-center rounded-full bg-muted text-muted-foreground" aria-label="Recurring"><i data-icon="repeat" class="size-3"></i></span></td>'
+                : '<td><span class="inline-grid size-6 place-items-center rounded-full text-[11px] font-semibold ' + (r.by === "D" ? "bg-brand-orange text-brand-orange-foreground" : "bg-brand-purple text-brand-purple-foreground") + '">' + r.by + "</span></td>";
+            }
+            desk +=
+              '<tr class="border-b last:border-b-0 hover:bg-accent/40">' +
+              '<td class="num py-3 pl-4 text-muted-foreground">' + r.shortDate + "</td>" +
+              '<td><a href="transactions.html?sheet=detail&amp;id=' + r.id + '" class="flex items-center gap-2.5 py-2.5 font-medium hover:underline">' +
+              '<span class="grid size-8 shrink-0 place-items-center rounded-lg ' + COLOR_TILE[meta.color] + '"><i data-icon="' + meta.icon + '" class="size-4"></i></span>' +
+              "<span>" + r.payee + "</span></a></td>" +
+              '<td><span class="inline-flex h-6 items-center gap-1.5 rounded-full px-2.5 text-[12px] font-medium ' + COLOR_TILE[meta.color] + '"><span class="size-1.5 rounded-full ' + COLOR_DOT[meta.color] + '"></span>' + r.cat + "</span></td>" +
+              byTd +
+              '<td class="num py-3 pr-4 text-right font-semibold ' + (pos ? "text-positive" : "") + '">' + r.amt + "</td></tr>";
+          });
+          if (curDay !== null) mob += "</ul>";
+          return { mob: mob, desk: desk };
+        }
+
+        if (!isCard) {
+          document.getElementById("view-normal").style.display = "";
+          document.getElementById("view-card").style.display = "none";
+
+          document.getElementById("norm-hero").innerHTML = fmtHero(acc.balance);
+          if (acc.fx) {
+            var fxEl = document.getElementById("norm-fx-line");
+            fxEl.textContent = acc.fx;
+            fxEl.classList.remove("hidden");
+          }
+          var vp = document.getElementById("norm-vis-pill");
+          vp.innerHTML = acc.shared
+            ? '<i data-icon="users" class="size-3"></i>Shared'
+            : '<i data-icon="lock" class="size-3"></i>Only you';
+          document.getElementById("norm-type-pill").textContent = acc.typePill;
+          document.getElementById("norm-in").textContent = acc.mIn;
+          document.getElementById("norm-out").textContent = acc.mOut;
+          document.getElementById("norm-change").innerHTML = acc.changeUp === null
+            ? '<span class="text-muted-foreground">No change since Nov 1</span>'
+            : '<span class="inline-flex items-center gap-1 font-medium ' + (acc.changeUp ? "text-positive" : "text-warning") + '"><i data-icon="' + (acc.changeUp ? "trending-up" : "trending-down") + '" class="size-4"></i>' + acc.change + '</span><span class="text-muted-foreground">since Nov 1</span>';
+
+          var upSec = document.getElementById("norm-upcoming-sec");
+          if (!acc.upcoming.length) {
+            upSec.classList.add("hidden");
+          } else {
+            document.getElementById("norm-proj-label").textContent = acc.projLabel;
+            document.getElementById("norm-proj-val").textContent = acc.projVal;
+            document.getElementById("norm-upcoming-list").innerHTML = acc.upcoming.map(function (u) {
+              return '<li><a href="' + u.href + '" class="flex items-center gap-3 p-4 hover:bg-accent/60">' +
+                '<div class="grid size-10 shrink-0 place-items-center rounded-xl bg-muted text-center leading-tight"><span class="text-[10px] font-medium text-muted-foreground">' + u.cal.split(" ")[0] + '</span><span class="num text-[13px] font-semibold">' + u.cal.split(" ")[1] + '</span></div>' +
+                '<div class="min-w-0 flex-1"><p class="truncate font-medium">' + u.label + '</p><p class="text-[13px] text-muted-foreground">' + u.sub + '</p></div>' +
+                '<div class="text-right"><p class="num font-semibold ' + (u.pos ? "text-positive" : "") + '">' + u.amt + '</p>' +
+                '<p class="inline-flex items-center gap-1 text-[12px] ' + (u.warn ? "font-medium text-warning" : "text-muted-foreground") + '"><i data-icon="' + u.icon + '" class="size-3"></i>' + u.meta + "</p></div></a></li>";
+            }).join("");
+          }
+
+          document.getElementById("norm-see-all").href = "transactions.html?account=" + encodeURIComponent(acc.name);
+          if (!acc.tx.length) {
+            document.getElementById("norm-tx-mobile").classList.add("hidden");
+            document.getElementById("norm-tx-desktop").classList.add("hidden");
+            document.getElementById("norm-tx-empty").classList.remove("hidden");
+          } else {
+            var built = renderTxRows(acc.tx, true);
+            document.getElementById("norm-tx-mobile").innerHTML = built.mob;
+            document.getElementById("norm-tx-rows").innerHTML = built.desk;
+          }
+          if (window.fableIcons) window.fableIcons(document.getElementById("view-normal"));
+        } else {
+          document.getElementById("view-normal").style.display = "none";
+          document.getElementById("view-card").style.display = "";
+
+          document.getElementById("card-hero").innerHTML = fmtHero(acc.owe);
+          var cvp = document.getElementById("card-vis-pill");
+          cvp.innerHTML = acc.shared
+            ? '<i data-icon="users" class="size-3"></i>Shared'
+            : '<i data-icon="lock" class="size-3"></i>Only you';
+          document.getElementById("card-num-pill").textContent = acc.numPill;
+          document.getElementById("card-util-bar").style.width = acc.utilPct + "%";
+          document.getElementById("card-avail").textContent = acc.avail;
+          document.getElementById("card-limit-lbl").textContent = acc.limitLbl;
+
+          document.getElementById("card-stmt-lbl").textContent = acc.stmtLbl;
+          document.getElementById("card-stmt-amt").textContent = acc.stmtAmt;
+          document.getElementById("card-stmt-meta").textContent = acc.stmtMeta;
+          var duePill = document.getElementById("card-due-pill");
+          duePill.textContent = acc.dueTxt;
+          duePill.className = "inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[12px] font-medium " +
+            (acc.dueUrgent ? "bg-warning/15 text-warning" : "bg-muted text-muted-foreground");
+
+          document.getElementById("card-since-amt").textContent = acc.sinceAmt;
+          document.getElementById("card-since-meta").textContent = acc.sinceMeta;
+          document.getElementById("card-inst-amt").textContent = acc.instAmt;
+          document.getElementById("card-inst-meta").textContent = acc.instMeta;
+          document.getElementById("card-total-owe").textContent = acc.owe;
+          document.getElementById("card-close-day").textContent = acc.closeDay;
+          document.getElementById("card-pay-day").textContent = acc.payDay;
+          document.getElementById("card-paid-from").textContent = acc.paidFrom;
+          document.getElementById("card-apr").textContent = acc.apr;
+
+          document.getElementById("pay-opt-stmt-amt").textContent = acc.stmtAmt;
+          document.getElementById("pay-submit").textContent = "Record " + acc.stmtAmt;
+          document.getElementById("pay-from-row").textContent = acc.paidFrom + " · " + acc.paidFromBal;
+          document.getElementById("pay-from-warn-name").textContent = acc.paidFrom;
+          document.getElementById("pay-from-warn-bal").textContent = acc.paidFromBal;
+          document.querySelector('[data-pay-opt="statement"]').dataset.payAmt = acc.stmtAmt.replace(/[^0-9.]/g, "");
+
+          // Installment plan card
+          var p = acc.plan;
+          var segs = "";
+          for (var i = 0; i < p.total; i++) {
+            segs += '<span class="h-1.5 rounded-full ' + (i < p.filled ? "bg-primary" : "bg-muted") + '"></span>';
+          }
+          document.getElementById("card-plans-box").innerHTML =
+            '<button type="button" data-open="plan" class="block w-full p-4 text-left hover:bg-accent/60">' +
+            '<div class="flex items-baseline justify-between gap-2"><p class="font-semibold">' + p.title + '</p><span class="num text-[14px] font-medium">' + p.progress + "</span></div>" +
+            '<p class="mt-0.5 text-[13px] text-muted-foreground">' + p.sub + "</p>" +
+            '<div class="mt-3 grid gap-1" style="grid-template-columns:repeat(' + p.total + ',minmax(0,1fr))" role="progressbar">' + segs + "</div>" +
+            '<p class="mt-2 text-[12px] text-muted-foreground">' + p.foot + "</p></button>";
+
+          document.getElementById("card-stmt-tab-btn").textContent = acc.stmtTabLabel;
+          document.getElementById("card-see-all").href = "transactions.html?account=" + encodeURIComponent(acc.name);
+
+          function renderCardTx(which) {
+            var built = renderTxRows(which === "stmt" ? acc.stmtTx : acc.sinceTx, false);
+            document.getElementById("card-tx-mobile").innerHTML = built.mob;
+            document.getElementById("card-tx-rows").innerHTML = built.desk;
+            if (window.fableIcons) window.fableIcons(document.getElementById("view-card"));
+          }
+          document.getElementById("card-tx-tab").addEventListener("fable:change", function (e) { renderCardTx(e.detail); });
+          renderCardTx("since");
+        }
+
+        // Actions menu
+        var menu = document.getElementById("acc-menu");
+        document.querySelectorAll("[data-acc-menu-btn]").forEach(function (btn) {
+          btn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            var open = !menu.classList.contains("hidden");
+            menu.classList.toggle("hidden", open);
+            btn.setAttribute("aria-expanded", String(!open));
+          });
+        });
+        document.addEventListener("click", function (e) {
+          if (!e.target.closest("#acc-menu") && !e.target.closest("[data-acc-menu-btn]")) menu.classList.add("hidden");
+        });
+
+        // Pay card radios
+        var fromLimit = parseFloat((acc.paidFromBal || "8420.55").replace(/[^0-9.]/g, ""));
+        var otherWrap = document.getElementById("pay-other-wrap");
+        var otherInp = document.getElementById("pay-other-input");
+        var overWarn = document.getElementById("pay-over-warn");
+        var payBtn = document.getElementById("pay-submit");
+        function setPayAmount(n) {
+          var v = Math.max(0, n || 0);
+          payBtn.textContent = "Record $" + v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          var over = v > fromLimit;
+          overWarn.classList.toggle("hidden", !over);
+          overWarn.classList.toggle("flex", over);
+        }
+        document.getElementById("pay-radios").addEventListener("click", function (e) {
+          var r = e.target.closest("[data-pay-opt]");
+          if (!r) return;
+          document.querySelectorAll("#pay-radios [data-pay-opt]").forEach(function (b) {
+            var on = b === r;
+            b.setAttribute("aria-checked", String(on));
+            var dot = b.querySelector("[data-dot]");
+            dot.className = "grid size-5 place-items-center rounded-full border-2 " + (on ? "border-primary" : "border-input");
+            dot.innerHTML = on ? '<span class="size-2.5 rounded-full bg-primary"></span>' : "";
+          });
+          var isOther = r.dataset.payOpt === "other";
+          otherWrap.classList.toggle("hidden", !isOther);
+          if (isOther) {
+            otherInp.focus();
+            setPayAmount(parseFloat(otherInp.value.replace(/[^0-9.]/g, "")) || 0);
+          } else {
+            setPayAmount(parseFloat(r.dataset.payAmt));
+          }
+        });
+        otherInp.addEventListener("input", function () { setPayAmount(parseFloat(this.value.replace(/[^0-9.]/g, "")) || 0); });
+        payBtn.addEventListener("click", function () {
+          var pill = document.getElementById("card-due-pill");
+          pill.className = "inline-flex shrink-0 items-center gap-1 rounded-full bg-positive/12 px-2 py-0.5 text-[12px] font-medium text-positive";
+          pill.innerHTML = '<i data-icon="circle-check" class="size-3"></i>Paid Nov 12';
+          if (window.fableIcons) window.fableIcons(pill);
+          window.fableClose();
+          window.fableToast("Payment recorded", "Undo");
+        });
+      })();
+    </script>
+  </body>
+</html>

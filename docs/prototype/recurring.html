@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="en" data-state="data">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Recurring · Firecent</title>
+    <link rel="icon" href="assets/brand/favicon.svg" />
+    <link rel="stylesheet" href="assets/app.css" />
+    <script src="assets/proto.js"></script>
+  </head>
+  <body class="min-h-dvh bg-background text-foreground">
+    <div data-shell data-tab="more" data-nav="recurring"></div>
+
+    <div class="lg:pl-60">
+      <div class="relative mx-auto min-h-dvh max-w-[430px] pb-28 lg:max-w-[1160px] lg:px-8 lg:pb-12">
+        <!-- Mobile top bar -->
+        <header class="flex h-14 items-center gap-1 px-2 lg:hidden">
+          <a href="more.html" class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Back">
+            <i data-icon="chevron-left" class="size-[22px]"></i>
+          </a>
+          <h1 class="flex-1 truncate text-[17px] font-semibold tracking-[-0.01em]">Recurring</h1>
+          <button type="button" data-open="add-recurring" class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Add recurring">
+            <i data-icon="plus" class="size-[22px]"></i>
+          </button>
+        </header>
+
+        <!-- Desktop header -->
+        <header class="hidden items-center justify-between gap-4 pt-8 lg:flex">
+          <div>
+            <h1 class="text-[24px] leading-[32px] font-semibold tracking-[-0.02em]">Recurring</h1>
+            <p class="mt-0.5 text-[14px] text-muted-foreground">Monthly bills, subscriptions, paychecks &amp; transfers · Nov 2026</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <div id="rec-scope-desk" class="inline-flex h-10 rounded-xl border bg-card p-1 text-[13px]" role="group" aria-label="Visibility scope">
+              <button type="button" data-value="all" aria-pressed="true" class="whitespace-nowrap rounded-lg bg-foreground px-3 font-medium text-background">All</button>
+              <button type="button" data-value="shared" aria-pressed="false" class="whitespace-nowrap rounded-lg px-3 font-medium text-muted-foreground">Shared</button>
+              <button type="button" data-value="only-you" aria-pressed="false" class="whitespace-nowrap rounded-lg px-3 font-medium text-muted-foreground">Only you</button>
+            </div>
+            <button type="button" data-open="add-recurring" class="flex h-10 items-center gap-1.5 whitespace-nowrap rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground hover:opacity-95">
+              <i data-icon="plus" class="size-4"></i>Add recurring
+            </button>
+            <button type="button" data-open="ask" class="flex h-10 items-center gap-2 rounded-xl border bg-card px-4 text-[14px] font-semibold hover:bg-accent">
+              <i data-icon="firecent-mono" class="h-4 w-auto"></i>Ask
+            </button>
+            <a href="notifications.html" class="relative grid size-10 place-items-center rounded-full hover:bg-accent" aria-label="Notifications, 2 unread">
+              <i data-icon="bell" class="size-[22px]"></i>
+              <span class="absolute top-2 right-2 size-2 rounded-full bg-primary ring-2 ring-background [html[data-state=empty]_&]:hidden" aria-hidden="true"></span>
+            </a>
+          </div>
+        </header>
+
+        <!-- ═══════════════════════════ WITH DATA ═══════════════════════════ -->
+        <div data-view="data">
+          <!-- Mobile Scope switcher -->
+          <div class="px-5 pt-1 lg:hidden">
+            <div id="rec-scope-mob" class="flex h-10 rounded-xl bg-muted p-1 text-[13px]" role="group" aria-label="Visibility scope">
+              <button type="button" data-value="all" aria-pressed="true" class="flex-1 rounded-lg bg-card font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]">All</button>
+              <button type="button" data-value="shared" aria-pressed="false" class="flex-1 rounded-lg font-medium text-muted-foreground">Shared</button>
+              <button type="button" data-value="only-you" aria-pressed="false" class="flex-1 rounded-lg font-medium text-muted-foreground">Only you</button>
+            </div>
+          </div>
+
+          <!-- Clean Light Summary Card -->
+          <div class="px-5 pt-3 lg:px-0 lg:pt-6">
+            <section class="rounded-[26px] border bg-card p-5 lg:p-6" aria-labelledby="h-rec-sum">
+              <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                  <h2 id="h-rec-sum" class="text-[13px] font-medium text-muted-foreground">Committed monthly expenses</h2>
+                  <p class="mt-1.5 flex flex-wrap items-baseline gap-2">
+                    <span id="rec-mo-total" class="num text-[34px] leading-[38px] font-semibold tracking-[-0.03em] lg:text-[40px] lg:leading-[44px]">$3,526.95</span>
+                    <span id="rec-mo-sub" class="text-[14px] text-muted-foreground">a month · 14 payments</span>
+                  </p>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2 lg:w-[460px] lg:gap-2.5">
+                  <div class="rounded-2xl border bg-muted/40 p-2.5 lg:p-3">
+                    <p class="truncate text-[11px] font-medium text-muted-foreground">Left in Nov</p>
+                    <p id="rec-left-amt" class="num mt-1 whitespace-nowrap text-[14px] font-semibold lg:text-[17px]">$689.49</p>
+                    <p id="rec-left-sub" class="mt-0.5 truncate text-[11px] text-muted-foreground">5 bills due</p>
+                  </div>
+                  <button type="button" id="rec-jump-subs" class="rounded-2xl border bg-muted/40 p-2.5 text-left transition-colors hover:bg-accent lg:p-3">
+                    <p class="flex items-center justify-between gap-1 truncate text-[11px] font-medium text-muted-foreground">
+                      <span>Subscriptions</span>
+                      <span class="size-1.5 shrink-0 rounded-full bg-amber-500"></span>
+                    </p>
+                    <p id="rec-subs-amt" class="num mt-1 whitespace-nowrap text-[14px] font-semibold lg:text-[17px]">$55.96</p>
+                    <p class="mt-0.5 truncate text-[11px] text-warning">3 hiked</p>
+                  </button>
+                  <div class="rounded-2xl border bg-muted/40 p-2.5 lg:p-3">
+                    <p class="truncate text-[11px] font-medium text-muted-foreground">Income in</p>
+                    <p id="rec-inc-amt" class="num mt-1 whitespace-nowrap text-[13px] font-semibold text-positive lg:text-[17px]">+$6,125.00</p>
+                    <p class="mt-0.5 truncate text-[11px] text-muted-foreground">2 paychecks</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Mobile View Tabs (Upcoming / All) -->
+          <div class="px-5 pt-4 lg:hidden">
+            <div data-seg id="rec-mob-tab" class="flex h-10 rounded-xl bg-muted p-1" role="tablist" aria-label="Recurring view">
+              <button type="button" data-value="upcoming" aria-pressed="true" class="flex-1 rounded-lg bg-card text-[13px] font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]">Upcoming</button>
+              <button type="button" data-value="all" aria-pressed="false" class="flex-1 rounded-lg text-[13px] font-medium text-muted-foreground">All (18)</button>
+            </div>
+          </div>
+
+          <!-- Desktop Split / Mobile Switched -->
+          <div class="mt-4 px-5 lg:mt-6 lg:grid lg:grid-cols-12 lg:items-start lg:gap-6 lg:px-0">
+            <!-- Left 5: UPCOMING TIMELINE -->
+            <section id="rec-upcoming-col" class="lg:col-span-5" aria-labelledby="h-rec-upcoming">
+              <div class="mb-2.5 flex items-baseline justify-between px-1">
+                <h2 id="h-rec-upcoming" class="text-[16px] font-semibold tracking-[-0.01em]">Upcoming</h2>
+                <span class="text-[12px] text-muted-foreground">Through Nov 30</span>
+              </div>
+              <div id="rec-upcoming-body" class="space-y-5"></div>
+            </section>
+
+            <!-- Right 7: ALL RECURRING LIST -->
+            <section id="rec-all-col" class="hidden lg:col-span-7 lg:block" aria-labelledby="h-rec-all">
+              <div class="mb-2.5 flex flex-wrap items-center justify-between gap-2 px-1">
+                <h2 id="h-rec-all" class="text-[16px] font-semibold tracking-[-0.01em]">All recurring</h2>
+                <span id="rec-all-meta" class="num text-[12px] text-muted-foreground">18 active rules</span>
+              </div>
+
+              <!-- Kind filter chips -->
+              <div id="rec-kind-pills" class="no-scrollbar -mx-1 mb-3 flex gap-1.5 overflow-x-auto px-1 pb-0.5" role="group" aria-label="Filter recurring">
+                <button type="button" data-kind="all" aria-pressed="true" class="h-8 shrink-0 rounded-full bg-foreground px-3 text-[12px] font-medium text-background">All</button>
+                <button type="button" data-kind="subscriptions" aria-pressed="false" class="h-8 shrink-0 rounded-full border bg-card px-3 text-[12px] font-medium text-muted-foreground">Subscriptions</button>
+                <button type="button" data-kind="bills" aria-pressed="false" class="h-8 shrink-0 rounded-full border bg-card px-3 text-[12px] font-medium text-muted-foreground">Bills</button>
+                <button type="button" data-kind="income" aria-pressed="false" class="h-8 shrink-0 rounded-full border bg-card px-3 text-[12px] font-medium text-muted-foreground">Income</button>
+                <button type="button" data-kind="transfers" aria-pressed="false" class="h-8 shrink-0 rounded-full border bg-card px-3 text-[12px] font-medium text-muted-foreground">Transfers</button>
+              </div>
+
+              <div id="rec-all-body" class="space-y-4"></div>
+            </section>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════ EMPTY ═══════════════════════════ -->
+        <div data-view="empty">
+          <div class="flex flex-col items-center px-8 py-12 text-center lg:py-20">
+            <span class="grid size-14 place-items-center rounded-2xl bg-muted"><i data-icon="repeat" class="size-6 text-muted-foreground"></i></span>
+            <h2 class="mt-4 text-[17px] font-semibold">Nothing repeats yet</h2>
+            <p class="mt-1.5 max-w-[310px] text-[14px] leading-[20px] text-muted-foreground">
+              Bills, subscriptions, and paychecks show up here once added or spotted by Assistant.
+            </p>
+            <div class="mt-5">
+              <button type="button" data-open="add-recurring" class="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground">
+                <i data-icon="plus" class="size-4"></i>Add recurring
+              </button>
+            </div>
+
+            <!-- Spotted repeating charge suggestion -->
+            <div class="mt-8 w-full max-w-[380px] rounded-2xl border bg-card p-4 text-left">
+              <div class="flex items-start gap-3">
+                <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary-text">
+                  <i data-icon="firecent-mono" class="h-4 w-auto"></i>
+                </span>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[12px] font-semibold text-primary-text">Spotted by Assistant</p>
+                  <p class="mt-0.5 font-semibold">Chewy · ~$61.24 / month</p>
+                  <p class="mt-0.5 text-[13px] text-muted-foreground">Charged Sep 9, Oct 9, and Nov 9 on Joint Checking · Pets.</p>
+                  <div class="mt-3 flex gap-2">
+                    <a href="assistant.html?view=thread" class="inline-flex h-9 items-center rounded-xl bg-primary/10 px-3 text-[13px] font-semibold text-primary-text hover:bg-primary/15">Review proposal</a>
+                    <button type="button" data-open="add-recurring" class="inline-flex h-9 items-center rounded-xl border px-3 text-[13px] font-medium hover:bg-accent">Add now</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════ LOADING ═══════════════════════════ -->
+        <div data-view="loading" aria-busy="true">
+          <p class="sr-only" role="status">Loading recurring items</p>
+          <div aria-hidden="true" class="px-5 pt-4 lg:px-0 lg:pt-6">
+            <div class="rounded-[26px] border bg-card p-5 lg:p-6">
+              <div class="sk h-3.5 w-44"></div>
+              <div class="sk mt-3 h-10 w-56 rounded-xl"></div>
+              <div class="mt-4 grid grid-cols-3 gap-2.5"><div class="sk h-16 rounded-2xl"></div><div class="sk h-16 rounded-2xl"></div><div class="sk h-16 rounded-2xl"></div></div>
+            </div>
+            <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
+              <div class="divide-y rounded-2xl border bg-card lg:col-span-5">
+                <div class="flex min-h-16 items-center gap-3 px-4 py-3"><div class="sk size-10 rounded-xl"></div><div class="flex-1 space-y-2"><div class="sk h-4 w-36"></div><div class="sk h-3 w-28"></div></div><div class="sk h-4 w-16"></div></div>
+                <div class="flex min-h-16 items-center gap-3 px-4 py-3"><div class="sk size-10 rounded-xl"></div><div class="flex-1 space-y-2"><div class="sk h-4 w-40"></div><div class="sk h-3 w-24"></div></div><div class="sk h-4 w-16"></div></div>
+                <div class="flex min-h-16 items-center gap-3 px-4 py-3"><div class="sk size-10 rounded-xl"></div><div class="flex-1 space-y-2"><div class="sk h-4 w-32"></div><div class="sk h-3 w-24"></div></div><div class="sk h-4 w-16"></div></div>
+              </div>
+              <div class="divide-y rounded-2xl border bg-card lg:col-span-7">
+                <div class="flex min-h-16 items-center gap-3 px-4 py-3"><div class="sk size-10 rounded-xl"></div><div class="flex-1 space-y-2"><div class="sk h-4 w-36"></div><div class="sk h-3 w-28"></div></div><div class="sk h-4 w-16"></div></div>
+                <div class="flex min-h-16 items-center gap-3 px-4 py-3"><div class="sk size-10 rounded-xl"></div><div class="flex-1 space-y-2"><div class="sk h-4 w-44"></div><div class="sk h-3 w-32"></div></div><div class="sk h-4 w-16"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════ ERROR ═══════════════════════════ -->
+        <div data-view="error">
+          <div class="flex flex-col items-center px-8 py-12 text-center lg:py-24">
+            <span class="grid size-14 place-items-center rounded-2xl bg-muted"><i data-icon="cloud-off" class="size-6 text-muted-foreground"></i></span>
+            <h2 class="mt-4 text-[17px] font-semibold">We couldn't load this</h2>
+            <p class="mt-1.5 max-w-[280px] text-[14px] text-muted-foreground">Check your connection and try again. Nothing was changed.</p>
+            <div class="mt-5"><button type="button" class="flex h-11 items-center rounded-xl border bg-card px-4 text-[14px] font-semibold">Try again</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════ SHEET: RECURRING DETAIL (?sheet=detail) ═══════════════════════════ -->
+    <div data-sheet-id="detail">
+      <div data-veil data-close class="fixed inset-0 z-40 bg-[#0b1220]/50"></div>
+      <div role="dialog" aria-modal="true" aria-labelledby="sh-rd-title" class="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[90dvh] w-full max-w-[430px] overflow-y-auto rounded-t-3xl bg-card px-5 pt-3 pb-8 shadow-[0_24px_48px_-12px_rgb(11_18_32/0.28)] lg:inset-y-auto lg:top-1/2 lg:left-1/2 lg:w-[460px] lg:max-w-[92vw] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-3xl lg:border lg:pt-5">
+        <div class="mx-auto mb-2 h-1 w-9 rounded-full bg-muted-foreground/25 lg:hidden" aria-hidden="true"></div>
+        <div class="flex h-12 items-center justify-between">
+          <h2 id="sh-rd-title" class="text-[17px] font-semibold">Recurring item</h2>
+          <button type="button" data-close class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Close"><i data-icon="x" class="size-[22px]"></i></button>
+        </div>
+
+        <div class="mt-2 flex items-center gap-3.5">
+          <span id="rd-icon-tile" class="grid size-13 place-items-center rounded-2xl bg-brand-purple text-brand-purple-foreground"><i data-icon="tv" class="size-6"></i></span>
+          <div class="min-w-0 flex-1">
+            <p id="rd-name" class="truncate text-[18px] font-semibold">Spotify Duo</p>
+            <p id="rd-cat" class="text-[13px] text-muted-foreground">Subscriptions · Monthly on the 5th</p>
+          </div>
+          <p id="rd-amt" class="num text-[22px] font-semibold">$18.99</p>
+        </div>
+
+        <div id="rd-hike-banner" class="mt-4 hidden items-center gap-2.5 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-2.5 text-[13px] text-amber-800 dark:text-amber-300">
+          <i data-icon="trending-up" class="size-4 shrink-0"></i>
+          <span id="rd-hike-txt">Increased by $2.00 on Nov 5 (was $16.99/mo).</span>
+        </div>
+
+        <dl class="mt-4 divide-y rounded-2xl border text-[14px]">
+          <div class="flex items-center justify-between px-4 py-3">
+            <dt class="text-muted-foreground">Account</dt>
+            <dd id="rd-acc" class="font-medium">Sapphire Reserve</dd>
+          </div>
+          <div class="flex items-center justify-between px-4 py-3">
+            <dt class="text-muted-foreground">Mode</dt>
+            <dd class="flex items-center gap-2">
+              <span id="rd-mode-lbl" class="text-[13px] font-medium">Automatic</span>
+              <button type="button" id="rd-mode-toggle" class="h-7 rounded-lg border bg-muted px-2.5 text-[12px] font-semibold hover:bg-accent">Switch</button>
+            </dd>
+          </div>
+          <div class="flex items-center justify-between px-4 py-3">
+            <dt class="text-muted-foreground">Next due</dt>
+            <dd id="rd-next" class="num font-medium">Dec 5, 2026</dd>
+          </div>
+          <div class="flex items-center justify-between px-4 py-3">
+            <dt class="text-muted-foreground">Visibility</dt>
+            <dd id="rd-vis" class="font-medium">Shared (Maya &amp; Daniel)</dd>
+          </div>
+        </dl>
+
+        <div class="mt-5">
+          <p class="mb-2 px-1 text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">Recent charges</p>
+          <ul id="rd-history" class="divide-y rounded-2xl border text-[13px]"></ul>
+        </div>
+
+        <div class="mt-5 grid grid-cols-3 gap-2">
+          <button type="button" data-close data-toast-msg="Paused · won't generate next month" class="flex h-10 items-center justify-center gap-1.5 rounded-xl border text-[13px] font-medium hover:bg-accent">
+            <i data-icon="pause" class="size-3.5"></i>Pause
+          </button>
+          <button type="button" data-close data-toast-msg="Skipped next occurrence" class="flex h-10 items-center justify-center gap-1.5 rounded-xl border text-[13px] font-medium hover:bg-accent">
+            <i data-icon="skip-forward" class="size-3.5"></i>Skip next
+          </button>
+          <button type="button" data-close data-toast-msg="Recurring rule deleted" class="flex h-10 items-center justify-center gap-1.5 rounded-xl border border-destructive/30 text-[13px] font-medium text-destructive hover:bg-destructive/10">
+            <i data-icon="trash-2" class="size-3.5"></i>Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════ SHEET: CONFIRM AUTO MODE (?sheet=auto) ═══════════════════════════ -->
+    <div data-sheet-id="auto">
+      <div data-veil data-close class="fixed inset-0 z-40 bg-[#0b1220]/50"></div>
+      <div role="dialog" aria-modal="true" aria-labelledby="sh-auto-title" class="fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-[430px] rounded-t-3xl bg-card px-5 pt-4 pb-8 shadow-[0_24px_48px_-12px_rgb(11_18_32/0.28)] lg:inset-y-auto lg:top-1/2 lg:left-1/2 lg:w-[400px] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-3xl lg:border">
+        <h2 id="sh-auto-title" class="text-[17px] font-semibold">Create transactions automatically?</h2>
+        <p class="mt-2 text-[14px] leading-[20px] text-muted-foreground">
+          Every due date, Firecent will log this transaction on its linked account for you. You can still edit the amount or switch back to manual anytime.
+        </p>
+        <div class="mt-5 flex flex-col gap-2">
+          <button type="button" id="auto-confirm-btn" class="flex h-11 items-center justify-center rounded-xl bg-primary text-[14px] font-semibold text-primary-foreground">Turn on automatic</button>
+          <button type="button" data-close class="flex h-11 items-center justify-center rounded-xl border text-[14px] font-medium hover:bg-accent">Keep manual</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════ SHEET: CONFIRM ESTIMATED BILL (?sheet=confirm) ═══════════════════════════ -->
+    <div data-sheet-id="confirm">
+      <div data-veil data-close class="fixed inset-0 z-40 bg-[#0b1220]/50"></div>
+      <div role="dialog" aria-modal="true" aria-labelledby="sh-cf-title" class="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[90dvh] w-full max-w-[430px] overflow-y-auto rounded-t-3xl bg-card px-5 pt-3 pb-8 shadow-[0_24px_48px_-12px_rgb(11_18_32/0.28)] lg:inset-y-auto lg:top-1/2 lg:left-1/2 lg:w-[440px] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-3xl lg:border lg:pt-5">
+        <div class="mx-auto mb-2 h-1 w-9 rounded-full bg-muted-foreground/25 lg:hidden" aria-hidden="true"></div>
+        <div class="flex h-12 items-center justify-between">
+          <h2 id="sh-cf-title" class="text-[17px] font-semibold">Confirm payment</h2>
+          <button type="button" data-close class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Close"><i data-icon="x" class="size-[22px]"></i></button>
+        </div>
+        <div class="mt-1 flex items-center gap-3 rounded-2xl border bg-muted/40 p-3.5">
+          <span id="cf-icon-tile" class="grid size-11 place-items-center rounded-xl bg-brand-yellow text-brand-yellow-foreground"><i data-icon="zap" class="size-5"></i></span>
+          <div>
+            <p id="cf-name" class="font-semibold">Con Edison</p>
+            <p id="cf-sub" class="text-[13px] text-muted-foreground">Joint Checking · Due Nov 18 · Estimated ~$94.00</p>
+          </div>
+        </div>
+
+        <label class="mt-4 block text-[13px] font-medium text-muted-foreground" for="cf-amt">Actual amount</label>
+        <div class="mt-1.5 flex h-14 items-center rounded-2xl border bg-background px-4 focus-within:border-primary">
+          <span class="mr-1 text-[22px] font-medium text-muted-foreground">$</span>
+          <input id="cf-amt" type="number" step="0.01" value="94.00" class="num w-full bg-transparent text-[26px] font-semibold outline-none" />
+        </div>
+
+        <div class="mt-3">
+          <p class="mb-1.5 text-[12px] font-medium text-muted-foreground">Last 3 payments (tap to copy)</p>
+          <div id="cf-hist-chips" class="flex flex-wrap gap-1.5">
+            <button type="button" data-copy-amt="92.47" class="num rounded-xl border bg-card px-3 py-1.5 text-[12px] font-medium hover:bg-accent">Oct · $92.47</button>
+            <button type="button" data-copy-amt="101.40" class="num rounded-xl border bg-card px-3 py-1.5 text-[12px] font-medium hover:bg-accent">Sep · $101.40</button>
+            <button type="button" data-copy-amt="88.12" class="num rounded-xl border bg-card px-3 py-1.5 text-[12px] font-medium hover:bg-accent">Aug · $88.12</button>
+          </div>
+        </div>
+
+        <div class="mt-5 flex flex-col gap-2">
+          <button type="button" id="cf-submit" class="flex h-12 items-center justify-center rounded-xl bg-primary text-[15px] font-semibold text-primary-foreground">Log $94.00 payment</button>
+          <button type="button" data-close data-toast-msg="Skipped this month" class="flex h-10 items-center justify-center text-[13px] font-medium text-muted-foreground hover:text-foreground">Skip this occurrence</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════ SHEET: ADD RECURRING (?sheet=add-recurring) ═══════════════════════════ -->
+    <div data-sheet-id="add-recurring">
+      <div data-veil data-close class="fixed inset-0 z-40 bg-[#0b1220]/50"></div>
+      <div role="dialog" aria-modal="true" aria-labelledby="sh-ar-title" class="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[90dvh] w-full max-w-[430px] overflow-y-auto rounded-t-3xl bg-card px-5 pt-3 pb-8 shadow-[0_24px_48px_-12px_rgb(11_18_32/0.28)] lg:inset-y-auto lg:top-1/2 lg:left-1/2 lg:w-[460px] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-3xl lg:border lg:pt-5">
+        <div class="mx-auto mb-2 h-1 w-9 rounded-full bg-muted-foreground/25 lg:hidden" aria-hidden="true"></div>
+        <div class="flex h-12 items-center justify-between">
+          <h2 id="sh-ar-title" class="text-[17px] font-semibold">Add recurring item</h2>
+          <button type="button" data-close class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Close"><i data-icon="x" class="size-[22px]"></i></button>
+        </div>
+        <form id="ar-form" class="mt-2 space-y-4">
+          <div class="flex h-10 rounded-xl bg-muted p-1 text-[13px]">
+            <button type="button" data-ar-type="EXPENSE" aria-pressed="true" class="flex-1 rounded-lg bg-card font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]">Expense / Bill</button>
+            <button type="button" data-ar-type="INCOME" aria-pressed="false" class="flex-1 rounded-lg font-medium text-muted-foreground">Income</button>
+            <button type="button" data-ar-type="TRANSFER" aria-pressed="false" class="flex-1 rounded-lg font-medium text-muted-foreground">Transfer</button>
+          </div>
+          <div>
+            <label for="ar-name" class="block text-[13px] font-medium text-muted-foreground">Name</label>
+            <input id="ar-name" type="text" placeholder="e.g. Chewy autoship" class="mt-1 h-11 w-full rounded-xl border bg-background px-3.5 text-[14px] outline-none focus:border-primary" required />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="ar-amt" class="block text-[13px] font-medium text-muted-foreground">Amount</label>
+              <input id="ar-amt" type="number" step="0.01" placeholder="61.24" class="num mt-1 h-11 w-full rounded-xl border bg-background px-3.5 text-[14px] outline-none focus:border-primary" required />
+            </div>
+            <div>
+              <label for="ar-day" class="block text-[13px] font-medium text-muted-foreground">Day of month</label>
+              <input id="ar-day" type="number" min="1" max="31" value="9" class="num mt-1 h-11 w-full rounded-xl border bg-background px-3.5 text-[14px] outline-none focus:border-primary" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="ar-cat" class="block text-[13px] font-medium text-muted-foreground">Category</label>
+              <select id="ar-cat" class="mt-1 h-11 w-full rounded-xl border bg-background px-3 text-[14px] outline-none">
+                <option>Subscriptions</option>
+                <option>Utilities</option>
+                <option>Phone &amp; internet</option>
+                <option>Rent</option>
+                <option>Pets</option>
+                <option>Fitness</option>
+                <option>Insurance</option>
+              </select>
+            </div>
+            <div>
+              <label for="ar-acc" class="block text-[13px] font-medium text-muted-foreground">Account</label>
+              <select id="ar-acc" class="mt-1 h-11 w-full rounded-xl border bg-background px-3 text-[14px] outline-none">
+                <option>Joint Checking</option>
+                <option>Sapphire Reserve</option>
+                <option>Maya's Checking</option>
+                <option>Amex Gold</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="mt-2 flex h-12 w-full items-center justify-center rounded-xl bg-primary text-[15px] font-semibold text-primary-foreground">Save recurring rule</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="assets/icons.js"></script>
+    <script>
+      (function () {
+        var COLOR_TILE = {
+          purple: "bg-brand-purple text-brand-purple-foreground",
+          red: "bg-brand-red text-brand-red-foreground",
+          green: "bg-brand-green text-brand-green-foreground",
+          orange: "bg-brand-orange text-brand-orange-foreground",
+          blue: "bg-brand-blue text-brand-blue-foreground",
+          pink: "bg-brand-pink text-brand-pink-foreground",
+          yellow: "bg-brand-yellow text-brand-yellow-foreground",
+          gray: "bg-brand-gray text-brand-gray-foreground",
+        };
+        var COLOR_DOT = {
+          purple: "bg-brand-purple-foreground",
+          red: "bg-brand-red-foreground",
+          green: "bg-brand-green-foreground",
+          orange: "bg-brand-orange-foreground",
+          blue: "bg-brand-blue-foreground",
+          pink: "bg-brand-pink-foreground",
+          yellow: "bg-brand-yellow-foreground",
+          gray: "bg-brand-gray-foreground",
+        };
+
+        var ITEMS = [
+          // Subscriptions (4 · $55.96)
+          { id: "rc11", name: "Netflix", group: "subscriptions", cat: "Subscriptions", color: "purple", icon: "tv", amt: 1549, kind: "EXPENSE", acc: "Sapphire Reserve", day: 14, dow: "Thu", auto: true, shared: true, hike: "Up $2.50 in Jan", upcoming: "7d", status: "Auto", hist: ["Oct 14 · $15.49", "Sep 14 · $15.49", "Aug 14 · $15.49"] },
+          { id: "rc12", name: "Spotify Duo", group: "subscriptions", cat: "Subscriptions", color: "purple", icon: "tv", amt: 1899, kind: "EXPENSE", acc: "Sapphire Reserve", day: 5, dow: "Tue", auto: true, shared: true, hike: "Up $2.00 on Nov 5", status: "Paid Nov 5", hist: ["Nov 5 · $18.99", "Oct 5 · $16.99", "Sep 5 · $16.99", "Aug 5 · $16.99"] },
+          { id: "rc13", name: "Max", group: "subscriptions", cat: "Subscriptions", color: "purple", icon: "tv", amt: 1849, kind: "EXPENSE", acc: "Sapphire Reserve", day: 8, dow: "Fri", auto: true, shared: true, hike: "Up $3.00 in Jun", status: "Paid Nov 8", hist: ["Nov 8 · $18.49", "Oct 8 · $18.49", "May 8 · $15.49"] },
+          { id: "rc14", name: "iCloud+", group: "subscriptions", cat: "Subscriptions", color: "purple", icon: "tv", amt: 299, kind: "EXPENSE", acc: "Sapphire Reserve", day: 10, dow: "Sun", auto: true, shared: true, status: "Paid Nov 10", hist: ["Nov 10 · $2.99", "Oct 10 · $2.99", "Sep 10 · $2.99"] },
+
+          // Bills & utilities (10 · $3,470.99)
+          { id: "rc1", name: "Parkside Apartments", group: "bills", cat: "Rent", color: "purple", icon: "building-2", amt: 215000, kind: "EXPENSE", acc: "Joint Checking", day: 1, dow: "Fri", auto: true, shared: true, status: "Paid Nov 1", hist: ["Nov 1 · $2,150.00", "Oct 1 · $2,150.00", "Sep 1 · $2,150.00"] },
+          { id: "rc2", name: "Verizon", group: "bills", cat: "Phone & internet", color: "blue", icon: "wifi", amt: 11000, kind: "EXPENSE", acc: "Joint Checking", day: 2, dow: "Sat", auto: true, shared: true, status: "Paid Nov 2", hist: ["Nov 2 · $110.00", "Oct 2 · $110.00"] },
+          { id: "rc3", name: "Chelsea Piers Fitness", group: "bills", cat: "Fitness", color: "green", icon: "dumbbell", amt: 8900, kind: "EXPENSE", acc: "Joint Checking", day: 4, dow: "Mon", auto: true, shared: true, status: "Paid Nov 4", hist: ["Nov 4 · $89.00", "Oct 4 · $89.00"] },
+          { id: "rc4", name: "Toyota Financial", group: "bills", cat: "Car loan", color: "red", icon: "car", amt: 32000, kind: "EXPENSE", acc: "Joint Checking", day: 5, dow: "Tue", auto: true, shared: true, linked: "Debt d1", status: "Paid Nov 5", hist: ["Nov 5 · $320.00", "Oct 5 · $320.00"] },
+          { id: "rc5", name: "Spectrum", group: "bills", cat: "Phone & internet", color: "blue", icon: "wifi", amt: 6999, kind: "EXPENSE", acc: "Joint Checking", day: 5, dow: "Tue", auto: true, shared: true, status: "Paid Nov 5", hist: ["Nov 5 · $69.99", "Oct 5 · $69.99"] },
+          { id: "rc6", name: "National Grid", group: "bills", cat: "Utilities", color: "yellow", icon: "zap", amt: 5800, est: true, kind: "EXPENSE", acc: "Joint Checking", day: 10, dow: "Sun", auto: false, shared: true, status: "Paid $58.75", hist: ["Nov 10 · $58.75", "Oct 10 · $56.40"] },
+          { id: "rc15", name: "Pay Sapphire Reserve", group: "bills", cat: "Card payment", color: "blue", icon: "credit-card", amt: 151280, kind: "CARD_PAY", acc: "From Joint Checking", day: 15, dow: "Fri", auto: false, shared: true, upcoming: "7d", warn: "Due in 3 days", confirmable: true, hist: ["Oct 15 · $1,390.12", "Sep 15 · $1,210.45"] },
+          { id: "rc7", name: "Con Edison", group: "bills", cat: "Utilities", color: "yellow", icon: "zap", amt: 9400, est: true, kind: "EXPENSE", acc: "Joint Checking", day: 18, dow: "Mon", auto: false, shared: true, upcoming: "7d", confirmable: true, hist: ["Oct 18 · $92.47", "Sep 18 · $101.40", "Aug 18 · $88.12"] },
+          { id: "rc8", name: "Nelnet Student loan", group: "bills", cat: "Student loan", color: "purple", icon: "graduation-cap", amt: 38500, kind: "EXPENSE", acc: "Maya's Checking", day: 20, dow: "Wed", auto: false, shared: false, upcoming: "later", hist: ["Oct 20 · $385.00", "Sep 20 · $385.00"] },
+          { id: "rc9", name: "Car insurance", group: "bills", cat: "Insurance", color: "orange", icon: "shield", amt: 14500, kind: "EXPENSE", acc: "Joint Checking", day: 22, dow: "Fri", auto: true, shared: true, upcoming: "later", hist: ["Oct 22 · $145.00", "Sep 22 · $145.00"] },
+          { id: "rc10", name: "Health insurance", group: "bills", cat: "Insurance", color: "orange", icon: "shield", amt: 5000, kind: "EXPENSE", acc: "Maya's Checking", day: 24, dow: "Sun", auto: true, shared: false, upcoming: "later", hist: ["Oct 24 · $50.00", "Sep 24 · $50.00"] },
+          { id: "rc16", name: "Pay Amex Gold", group: "bills", cat: "Card payment", color: "gray", icon: "credit-card", amt: 26890, kind: "CARD_PAY", acc: "From Maya's Checking", day: 28, dow: "Thu", auto: false, shared: false, upcoming: "later", confirmable: true, hist: ["Oct 28 · $245.10"] },
+
+          // Income (2 · $6,125.00)
+          { id: "rc17", name: "Daniel's paycheck", group: "income", cat: "Paycheck", color: "green", icon: "briefcase", amt: 315000, kind: "INCOME", acc: "Joint Checking", day: 16, dow: "Sat", auto: true, shared: true, upcoming: "7d", status: "Biweekly", hist: ["Nov 2 · +$3,150.00", "Oct 19 · +$3,150.00"] },
+          { id: "rc18", name: "Maya's paycheck", group: "income", cat: "Paycheck", color: "green", icon: "briefcase", amt: 297500, kind: "INCOME", acc: "Maya's Checking", day: 20, dow: "Wed", auto: true, shared: false, upcoming: "later", status: "Biweekly", hist: ["Nov 6 · +$2,975.00", "Oct 23 · +$2,975.00"] },
+
+          // Transfers (2 · $2,550.00)
+          { id: "rc19", name: "Maya's share", group: "transfers", cat: "Transfer", color: "blue", icon: "arrow-left-right", amt: 180000, kind: "TRANSFER", excludeOut: true, acc: "Maya's Checking → Joint", day: 20, dow: "Wed", auto: true, shared: false, upcoming: "later", hist: ["Nov 6 · $1,800.00"] },
+          { id: "rc20", name: "Emergency Fund top-up", group: "transfers", cat: "Transfer", color: "green", icon: "piggy-bank", amt: 75000, kind: "TRANSFER", acc: "Joint Checking → Savings", day: 20, dow: "Wed", auto: true, shared: true, upcoming: "later", hist: ["Oct 20 · $750.00"] },
+        ];
+
+        var curScope = (function () {
+          var s = window.fableScope ? window.fableScope() : "all";
+          return s === "everything" ? "all" : s;
+        })();
+        var curKind = "all";
+        var curMobTab = "upcoming";
+        var selectedDetail = ITEMS[1];
+
+        function fmt(cents, plus) {
+          var neg = cents < 0;
+          var s = "$" + (Math.abs(cents) / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          return neg ? "−" + s : plus ? "+" + s : s;
+        }
+
+        function visibleItems() {
+          return ITEMS.filter(function (x) {
+            if (curScope === "shared") return x.shared;
+            if (curScope === "only-you") return !x.shared;
+            return true;
+          });
+        }
+
+        function renderRow(it, mode) {
+          var sign = it.kind === "INCOME" ? "+" : "";
+          var amtTxt = (it.est ? "~" : "") + fmt(it.amt, it.kind === "INCOME");
+          var amtCls = it.kind === "INCOME" ? "text-positive" : "";
+          var lockHtml = it.shared ? "" : '<i data-icon="lock" class="size-3 shrink-0 text-muted-foreground"></i>';
+          var hikeBadge = it.hike ? '<span class="ml-1.5 inline-flex items-center rounded-full bg-amber-500/15 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:text-amber-300">' + it.hike + "</span>" : "";
+          var modePill = it.auto
+            ? '<span class="inline-flex items-center gap-1 text-[12px] text-muted-foreground"><i data-icon="repeat" class="size-3"></i>Auto</span>'
+            : '<span class="inline-flex items-center gap-1 text-[12px] ' + (it.warn ? "font-medium text-warning" : "text-muted-foreground") + '"><i data-icon="hand" class="size-3"></i>' + (it.warn || "Manual") + "</span>";
+
+          var rightCtrl = mode === "upcoming" && it.confirmable
+            ? '<button type="button" data-confirm-id="' + it.id + '" class="mt-1 inline-flex h-7 items-center rounded-lg bg-primary/10 px-2.5 text-[12px] font-semibold text-primary-text hover:bg-primary/15">Confirm</button>'
+            : '<div class="mt-0.5">' + modePill + "</div>";
+
+          var leftBadge = mode === "upcoming"
+            ? '<div class="grid size-10 shrink-0 place-items-center rounded-xl bg-muted text-center leading-tight"><span class="text-[10px] font-medium text-muted-foreground">' + it.dow + '</span><span class="num text-[13px] font-semibold">' + it.day + "</span></div>"
+            : '<span class="grid size-10 shrink-0 place-items-center rounded-xl ' + COLOR_TILE[it.color] + '"><i data-icon="' + it.icon + '" class="size-5"></i></span>';
+
+          return (
+            '<li class="flex items-center gap-3 px-4 py-3 hover:bg-accent/50">' +
+            '<button type="button" data-detail-id="' + it.id + '" class="flex min-w-0 flex-1 items-center gap-3 text-left">' +
+            leftBadge +
+            '<div class="min-w-0 flex-1">' +
+            '<div class="flex items-center gap-1.5"><p class="truncate font-medium">' + it.name + "</p>" + lockHtml + hikeBadge + "</div>" +
+            '<p class="mt-0.5 flex items-center gap-1.5 truncate text-[12px] text-muted-foreground">' +
+            '<span class="inline-flex items-center gap-1"><span class="size-1.5 rounded-full ' + COLOR_DOT[it.color] + '"></span>' + it.cat + "</span>" +
+            "<span>·</span><span class=\"truncate\">" + it.acc + "</span></p></div></button>" +
+            '<div class="shrink-0 text-right">' +
+            '<p class="num font-semibold ' + amtCls + '">' + amtTxt + "</p>" +
+            rightCtrl + "</div></li>"
+          );
+        }
+
+        function renderAll() {
+          if (window.fableScope) window.fableScope(curScope === "all" ? "everything" : curScope);
+
+          ["rec-scope-mob", "rec-scope-desk"].forEach(function (cid) {
+            var isMob = cid.indexOf("mob") > 0;
+            document.querySelectorAll("#" + cid + " > button").forEach(function (b) {
+              var on = b.dataset.value === curScope;
+              b.setAttribute("aria-pressed", String(on));
+              if (isMob) {
+                b.classList.toggle("bg-card", on);
+                b.classList.toggle("text-foreground", on);
+                b.classList.toggle("shadow-[0_1px_2px_rgb(11_18_32/0.12)]", on);
+                b.classList.toggle("text-muted-foreground", !on);
+              } else {
+                b.classList.toggle("bg-foreground", on);
+                b.classList.toggle("text-background", on);
+                b.classList.toggle("text-muted-foreground", !on);
+              }
+            });
+          });
+
+          var vis = visibleItems();
+          var exp = vis.filter(function (x) { return x.kind === "EXPENSE"; });
+          var moCents = exp.reduce(function (s, x) { return s + x.amt; }, 0);
+          var leftBills = exp.filter(function (x) { return x.upcoming; });
+          var leftCents = leftBills.reduce(function (s, x) { return s + x.amt; }, 0);
+          var subsCents = vis.filter(function (x) { return x.group === "subscriptions"; }).reduce(function (s, x) { return s + x.amt; }, 0);
+          var incCents = vis.filter(function (x) { return x.kind === "INCOME"; }).reduce(function (s, x) { return s + x.amt; }, 0);
+
+          document.getElementById("rec-mo-total").textContent = fmt(moCents);
+          document.getElementById("rec-mo-sub").textContent = "a month · " + exp.length + " payments";
+          document.getElementById("rec-left-amt").textContent = fmt(leftCents);
+          document.getElementById("rec-left-sub").textContent = leftBills.length + (leftBills.length === 1 ? " bill due" : " bills due");
+          document.getElementById("rec-subs-amt").textContent = fmt(subsCents);
+          document.getElementById("rec-inc-amt").textContent = fmt(incCents, true);
+
+          // Upcoming buckets
+          var u7 = vis.filter(function (x) { return x.upcoming === "7d"; }).sort(function (a, b) { return a.day - b.day; });
+          var uLat = vis.filter(function (x) { return x.upcoming === "later"; }).sort(function (a, b) { return a.day - b.day; });
+          var u7Out = u7.filter(function (x) { return x.kind !== "INCOME" && !x.excludeOut; }).reduce(function (s, x) { return s + x.amt; }, 0);
+          var uLatOut = uLat.filter(function (x) { return x.kind !== "INCOME" && !x.excludeOut; }).reduce(function (s, x) { return s + x.amt; }, 0);
+
+          document.querySelector('#rec-mob-tab button[data-value="all"]').textContent = "All (" + vis.length + ")";
+
+          var upHtml = "";
+          if (u7.length) {
+            upHtml += '<div><div class="mb-2 flex items-baseline justify-between px-1 text-[13px] font-medium text-muted-foreground"><h3>Next 7 days</h3><span class="num font-semibold text-foreground">' + fmt(u7Out) + ' out</span></div>' +
+              '<div class="overflow-hidden rounded-2xl border bg-card"><ul class="divide-y">' + u7.map(function (i) { return renderRow(i, "upcoming"); }).join("") + "</ul></div></div>";
+          }
+          if (uLat.length) {
+            upHtml += '<div><div class="mb-2 flex items-baseline justify-between px-1 text-[13px] font-medium text-muted-foreground"><h3>Later in November</h3><span class="num font-semibold text-foreground">' + fmt(uLatOut) + ' out</span></div>' +
+              '<div class="overflow-hidden rounded-2xl border bg-card"><ul class="divide-y">' + uLat.map(function (i) { return renderRow(i, "upcoming"); }).join("") + "</ul></div></div>";
+          }
+          document.getElementById("rec-upcoming-body").innerHTML = upHtml || '<p class="rounded-2xl border bg-card p-6 text-center text-[14px] text-muted-foreground">No upcoming items left this month in this scope.</p>';
+
+          // All recurring grouped
+          var GROUPS = [
+            { key: "subscriptions", label: "Subscriptions" },
+            { key: "bills", label: "Bills & utilities" },
+            { key: "income", label: "Income" },
+            { key: "transfers", label: "Transfers" },
+          ];
+          var showGroups = curKind === "all" ? GROUPS : GROUPS.filter(function (g) { return g.key === curKind; });
+          var allHtml = showGroups.map(function (g) {
+            var list = vis.filter(function (x) { return x.group === g.key; });
+            if (!list.length) return "";
+            var tot = list.reduce(function (s, x) { return s + x.amt; }, 0);
+            return '<div><div class="mb-2 flex items-baseline justify-between px-1 text-[13px] font-medium text-muted-foreground"><h3>' + g.label + '</h3><span class="num">' + fmt(tot, g.key === "income") + "</span></div>" +
+              '<div class="overflow-hidden rounded-2xl border bg-card"><ul class="divide-y">' + list.map(function (i) { return renderRow(i, "all"); }).join("") + "</ul></div></div>";
+          }).join("");
+
+          document.getElementById("rec-all-meta").textContent = vis.length + " active rules";
+          document.getElementById("rec-all-body").innerHTML = allHtml || '<p class="rounded-2xl border bg-card p-6 text-center text-[14px] text-muted-foreground">No recurring rules in this filter.</p>';
+
+          // Filter pills active state
+          document.querySelectorAll("#rec-kind-pills > button").forEach(function (b) {
+            var on = b.dataset.kind === curKind;
+            b.setAttribute("aria-pressed", String(on));
+            b.className = on
+              ? "h-8 shrink-0 rounded-full bg-foreground px-3 text-[12px] font-medium text-background"
+              : "h-8 shrink-0 rounded-full border bg-card px-3 text-[12px] font-medium text-muted-foreground hover:text-foreground";
+          });
+
+          // Mobile tab visibility (<lg only)
+          var upCol = document.getElementById("rec-upcoming-col");
+          var allCol = document.getElementById("rec-all-col");
+          if (curMobTab === "upcoming") {
+            upCol.classList.remove("hidden");
+            allCol.classList.add("hidden");
+            allCol.classList.add("lg:block");
+          } else {
+            upCol.classList.add("hidden");
+            upCol.classList.add("lg:block");
+            allCol.classList.remove("hidden");
+          }
+
+          if (window.fableIcons) window.fableIcons(document.body);
+        }
+
+        function hydrateDetail(it) {
+          selectedDetail = it;
+          var tile = document.getElementById("rd-icon-tile");
+          tile.className = "grid size-13 shrink-0 place-items-center rounded-2xl " + COLOR_TILE[it.color];
+          tile.innerHTML = '<i data-icon="' + it.icon + '" class="size-6"></i>';
+          document.getElementById("rd-name").textContent = it.name;
+          document.getElementById("rd-cat").textContent = it.cat + " · Monthly on the " + it.day + (it.day === 1 ? "st" : it.day === 2 ? "nd" : it.day === 3 ? "rd" : "th");
+          document.getElementById("rd-amt").textContent = (it.est ? "~" : "") + fmt(it.amt, it.kind === "INCOME");
+          var hb = document.getElementById("rd-hike-banner");
+          if (it.hike) {
+            hb.classList.remove("hidden");
+            hb.classList.add("flex");
+            document.getElementById("rd-hike-txt").textContent = it.hike + " on " + it.acc + ".";
+          } else {
+            hb.classList.add("hidden");
+            hb.classList.remove("flex");
+          }
+          document.getElementById("rd-acc").textContent = it.acc;
+          document.getElementById("rd-mode-lbl").textContent = it.auto ? "Automatic" : "Manual confirm";
+          document.getElementById("rd-next").textContent = (it.upcoming ? "Nov " : "Dec ") + it.day + ", 2026";
+          document.getElementById("rd-vis").textContent = it.shared ? "Shared (Maya & Daniel)" : "Only you";
+          document.getElementById("rd-history").innerHTML = (it.hist || []).map(function (h) {
+            return '<li class="flex items-center justify-between px-4 py-2.5"><span class="text-muted-foreground">' + h.split(" · ")[0] + '</span><span class="num font-medium">' + h.split(" · ")[1] + "</span></li>";
+          }).join("") || '<li class="px-4 py-3 text-muted-foreground">No past occurrences yet</li>';
+          if (window.fableIcons) window.fableIcons(document.querySelector('[data-sheet-id="detail"]'));
+        }
+        function openDetail(it) {
+          hydrateDetail(it);
+          if (window.fableOpen) window.fableOpen("detail");
+        }
+
+        function openConfirm(it) {
+          var tile = document.getElementById("cf-icon-tile");
+          tile.className = "grid size-11 shrink-0 place-items-center rounded-xl " + COLOR_TILE[it.color];
+          tile.innerHTML = '<i data-icon="' + it.icon + '" class="size-5"></i>';
+          document.getElementById("cf-name").textContent = it.name;
+          document.getElementById("cf-sub").textContent = it.acc + " · Due Nov " + it.day + (it.est ? " · Estimated ~" + fmt(it.amt) : "");
+          var val = (it.amt / 100).toFixed(2);
+          document.getElementById("cf-amt").value = val;
+          document.getElementById("cf-submit").textContent = "Log $" + val + " payment";
+          document.getElementById("cf-hist-chips").innerHTML = (it.hist || []).map(function (h) {
+            var parts = h.split(" · ");
+            var num = parts[1].replace(/[^0-9.]/g, "");
+            return '<button type="button" data-copy-amt="' + num + '" class="num rounded-xl border bg-card px-3 py-1.5 text-[12px] font-medium hover:bg-accent">' + parts[0] + " · " + parts[1] + "</button>";
+          }).join("");
+          if (window.fableIcons) window.fableIcons(document.querySelector('[data-sheet-id="confirm"]'));
+          if (window.fableOpen) window.fableOpen("confirm");
+        }
+
+        // Event bindings
+        ["rec-scope-mob", "rec-scope-desk"].forEach(function (cid) {
+          document.getElementById(cid).addEventListener("click", function (e) {
+            var b = e.target.closest("button[data-value]");
+            if (b) { curScope = b.dataset.value; renderAll(); }
+          });
+        });
+
+        document.getElementById("rec-kind-pills").addEventListener("click", function (e) {
+          var b = e.target.closest("button[data-kind]");
+          if (b) { curKind = b.dataset.kind; renderAll(); }
+        });
+
+        document.getElementById("rec-mob-tab").addEventListener("fable:change", function (e) {
+          curMobTab = e.detail;
+          renderAll();
+        });
+
+        document.getElementById("rec-jump-subs").addEventListener("click", function () {
+          curKind = "subscriptions";
+          curMobTab = "all";
+          renderAll();
+          document.getElementById("rec-all-col").scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+
+        document.addEventListener("click", function (e) {
+          var det = e.target.closest("[data-detail-id]");
+          if (det) {
+            var found = ITEMS.find(function (x) { return x.id === det.dataset.detailId; });
+            if (found) openDetail(found);
+            return;
+          }
+          var cfm = e.target.closest("[data-confirm-id]");
+          if (cfm) {
+            var f2 = ITEMS.find(function (x) { return x.id === cfm.dataset.confirmId; });
+            if (f2) openConfirm(f2);
+            return;
+          }
+          var cp = e.target.closest("[data-copy-amt]");
+          if (cp) {
+            document.getElementById("cf-amt").value = cp.dataset.copyAmt;
+            document.getElementById("cf-submit").textContent = "Log $" + Number(cp.dataset.copyAmt).toFixed(2) + " payment";
+          }
+        });
+
+        document.getElementById("rd-mode-toggle").addEventListener("click", function () {
+          if (selectedDetail.auto) {
+            selectedDetail.auto = false;
+            document.getElementById("rd-mode-lbl").textContent = "Manual confirm";
+            renderAll();
+            if (window.fableToast) window.fableToast("Switched to manual confirm");
+          } else {
+            if (window.fableOpen) window.fableOpen("auto");
+          }
+        });
+
+        document.getElementById("auto-confirm-btn").addEventListener("click", function () {
+          selectedDetail.auto = true;
+          document.getElementById("rd-mode-lbl").textContent = "Automatic";
+          renderAll();
+          if (window.fableClose) window.fableClose();
+          if (window.fableToast) window.fableToast("Automatic mode turned on");
+        });
+
+        document.getElementById("cf-amt").addEventListener("input", function () {
+          var v = Number(this.value || 0).toFixed(2);
+          document.getElementById("cf-submit").textContent = "Log $" + v + " payment";
+        });
+
+        document.getElementById("cf-submit").addEventListener("click", function () {
+          if (window.fableClose) window.fableClose();
+          if (window.fableToast) window.fableToast("Logged $" + Number(document.getElementById("cf-amt").value || 0).toFixed(2) + " · Added to Transactions");
+        });
+
+        document.getElementById("ar-form").addEventListener("submit", function (e) {
+          e.preventDefault();
+          var nm = document.getElementById("ar-name").value.trim() || "New recurring";
+          if (window.fableClose) window.fableClose();
+          if (window.fableToast) window.fableToast("Added " + nm + " to Recurring");
+        });
+
+        document.querySelectorAll("[data-ar-type]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            document.querySelectorAll("[data-ar-type]").forEach(function (x) {
+              var on = x === b;
+              x.setAttribute("aria-pressed", String(on));
+              x.className = on
+                ? "flex-1 rounded-lg bg-card font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]"
+                : "flex-1 rounded-lg font-medium text-muted-foreground";
+            });
+          });
+        });
+
+        hydrateDetail(selectedDetail);
+        renderAll();
+      })();
+    </script>
+  </body>
+</html>

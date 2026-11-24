@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en" data-state="data">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Set up your space · Firecent</title>
+    <link rel="icon" href="assets/brand/favicon.svg" />
+    <link rel="stylesheet" href="assets/app.css" />
+    <script src="assets/proto.js"></script>
+  </head>
+  <body class="min-h-dvh bg-background text-foreground">
+    <div data-shell data-tabbar="off" data-sidebar="off"></div>
+
+    <main class="flex min-h-dvh flex-col justify-between px-5 py-6 lg:px-10 lg:py-10">
+      <!-- Top bar -->
+      <header class="mx-auto flex w-full max-w-[520px] items-center justify-between gap-4">
+        <a href="home.html" class="inline-flex h-10 items-center text-foreground" aria-label="Firecent">
+          <i data-icon="firecent-logo" class="h-7 w-auto"></i>
+        </a>
+        <div class="flex items-center gap-3">
+          <span id="ob-step-label" class="num text-[13px] font-medium text-muted-foreground">Step 1 of 4</span>
+          <a href="home.html" class="inline-flex h-9 items-center rounded-full border bg-card px-3 text-[13px] font-medium hover:bg-accent">Exit</a>
+        </div>
+      </header>
+
+      <!-- DATA -->
+      <div data-view="data" class="mx-auto my-8 w-full max-w-[520px]">
+        <!-- Progress bar -->
+        <div class="mb-6 grid grid-cols-4 gap-1.5" aria-hidden="true">
+          <span data-ob-bar="1" class="h-1.5 rounded-full bg-primary"></span>
+          <span data-ob-bar="2" class="h-1.5 rounded-full bg-muted"></span>
+          <span data-ob-bar="3" class="h-1.5 rounded-full bg-muted"></span>
+          <span data-ob-bar="4" class="h-1.5 rounded-full bg-muted"></span>
+        </div>
+
+        <section class="rounded-[28px] border bg-card p-6 sm:p-8">
+          <!-- Step 1 -->
+          <div data-ob-step="1" class="space-y-5">
+            <div>
+              <h1 class="text-[26px] leading-[32px] font-bold tracking-[-0.025em]">Welcome to Firecent</h1>
+              <p class="mt-1.5 text-[15px] leading-[22px] text-muted-foreground">A calm place for your accounts, category caps, and shared household money.</p>
+            </div>
+            <div>
+              <label for="ob-name" class="mb-1.5 block text-[13px] font-medium">Your first name</label>
+              <input id="ob-name" type="text" value="Maya" class="h-12 w-full rounded-xl border border-input bg-background px-4 text-[16px]" />
+            </div>
+            <div>
+              <label for="ob-currency" class="mb-1.5 block text-[13px] font-medium">Default currency</label>
+              <select id="ob-currency" class="h-12 w-full rounded-xl border border-input bg-background px-4 text-[16px]">
+                <option value="USD">USD · US Dollar ($)</option>
+                <option value="MXN">MXN · Mexican Peso (MX$)</option>
+                <option value="EUR">EUR · Euro (€)</option>
+              </select>
+            </div>
+            <button type="button" data-ob-next="2" class="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-[15px] font-semibold text-primary-foreground">
+              Continue<i data-icon="arrow-right" class="size-4"></i>
+            </button>
+          </div>
+
+          <!-- Step 2 -->
+          <div data-ob-step="2" class="hidden space-y-5">
+            <div>
+              <h1 class="text-[26px] leading-[32px] font-bold tracking-[-0.025em]">Who is this space for?</h1>
+              <p class="mt-1.5 text-[15px] leading-[22px] text-muted-foreground">You can add another space or invite someone later in Settings.</p>
+            </div>
+            <div class="grid gap-3 sm:grid-cols-2" id="ob-mode-cards">
+              <button type="button" data-ob-mode="solo" aria-pressed="false" class="rounded-2xl border bg-background p-4 text-left hover:bg-accent/50">
+                <span class="grid size-10 place-items-center rounded-xl bg-muted text-foreground"><i data-icon="user" class="size-5"></i></span>
+                <p class="mt-3 font-semibold">Just me</p>
+                <p class="mt-0.5 text-[13px] text-muted-foreground">Keep everything private to your login.</p>
+              </button>
+              <button type="button" data-ob-mode="shared" aria-pressed="true" class="rounded-2xl border border-primary bg-primary/[0.05] p-4 text-left">
+                <span class="grid size-10 place-items-center rounded-xl bg-primary/15 text-primary-text"><i data-icon="users" class="size-5"></i></span>
+                <p class="mt-3 font-semibold">Me &amp; someone else</p>
+                <p class="mt-0.5 text-[13px] text-muted-foreground">Share chosen accounts and category caps.</p>
+              </button>
+            </div>
+            <div>
+              <label for="ob-space-name" class="mb-1.5 block text-[13px] font-medium">Space name</label>
+              <input id="ob-space-name" type="text" value="Maya &amp; Daniel" class="h-12 w-full rounded-xl border border-input bg-background px-4 text-[16px]" />
+            </div>
+            <div class="flex gap-2">
+              <button type="button" data-ob-next="1" class="inline-flex h-12 items-center justify-center rounded-xl border bg-card px-4 text-[14px] font-medium hover:bg-accent">Back</button>
+              <button type="button" data-ob-next="3" class="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-[15px] font-semibold text-primary-foreground">
+                Continue<i data-icon="arrow-right" class="size-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div data-ob-step="3" class="hidden space-y-5">
+            <div>
+              <h1 class="text-[26px] leading-[32px] font-bold tracking-[-0.025em]">Add your first account</h1>
+              <p class="mt-1.5 text-[15px] leading-[22px] text-muted-foreground">Track a checking account, savings, cash wallet, or credit card manually.</p>
+            </div>
+            <div>
+              <label for="ob-acc-name" class="mb-1.5 block text-[13px] font-medium">Account name</label>
+              <input id="ob-acc-name" type="text" value="Joint Checking" class="h-12 w-full rounded-xl border border-input bg-background px-4 text-[16px]" />
+            </div>
+            <div class="grid gap-3 sm:grid-cols-2">
+              <div>
+                <label for="ob-acc-type" class="mb-1.5 block text-[13px] font-medium">Account type</label>
+                <select id="ob-acc-type" class="h-12 w-full rounded-xl border border-input bg-background px-3.5 text-[15px]">
+                  <option value="CHECKING">Checking</option>
+                  <option value="SAVINGS">Savings</option>
+                  <option value="CREDIT_CARD">Credit card</option>
+                  <option value="CASH">Cash</option>
+                </select>
+              </div>
+              <div>
+                <label for="ob-acc-bal" class="mb-1.5 block text-[13px] font-medium">Current balance</label>
+                <input id="ob-acc-bal" type="text" inputmode="decimal" value="$8,420.55" class="num h-12 w-full rounded-xl border border-input bg-background px-3.5 text-[15px]" />
+              </div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <div class="flex gap-2">
+                <button type="button" data-ob-next="2" class="inline-flex h-12 items-center justify-center rounded-xl border bg-card px-4 text-[14px] font-medium hover:bg-accent">Back</button>
+                <button type="button" data-ob-next="4" class="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-[15px] font-semibold text-primary-foreground">
+                  Save account<i data-icon="arrow-right" class="size-4"></i>
+                </button>
+              </div>
+              <button type="button" data-ob-next="4" class="h-10 text-[14px] font-medium text-muted-foreground hover:text-foreground">Skip for now</button>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div data-ob-step="4" class="hidden space-y-5">
+            <div>
+              <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-green px-3 py-1 text-[12px] font-semibold text-brand-green-foreground">
+                <i data-icon="check" class="size-3.5"></i>Space ready
+              </span>
+              <h1 class="mt-3 text-[26px] leading-[32px] font-bold tracking-[-0.025em]">Invite someone to <span id="ob-final-space">Maya &amp; Daniel</span></h1>
+              <p class="mt-1.5 text-[15px] leading-[22px] text-muted-foreground">You control account visibility anytime — Only you accounts never appear in their view.</p>
+            </div>
+            <div>
+              <label for="ob-invite-email" class="mb-1.5 block text-[13px] font-medium">Partner's email (optional)</label>
+              <input id="ob-invite-email" type="email" placeholder="daniel.reyes@gmail.com" class="h-12 w-full rounded-xl border border-input bg-background px-4 text-[16px]" />
+            </div>
+            <div class="flex flex-col gap-2">
+              <a href="home.html" class="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-[15px] font-semibold text-primary-foreground">
+                Open Firecent<i data-icon="arrow-right" class="size-4"></i>
+              </a>
+              <button type="button" data-ob-next="3" class="h-10 text-[14px] font-medium text-muted-foreground hover:text-foreground">Back</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- EMPTY -->
+      <div data-view="empty" class="mx-auto my-8 w-full max-w-[460px] rounded-3xl border bg-card p-8 text-center">
+        <p class="text-[18px] font-semibold">Invite expired</p>
+        <p class="mt-1 text-[14px] text-muted-foreground">Ask your space owner for a fresh link or create your own space.</p>
+        <a href="onboarding.html" class="mt-4 inline-flex h-11 items-center rounded-xl bg-primary px-5 text-[14px] font-semibold text-primary-foreground">Start fresh</a>
+      </div>
+
+      <!-- LOADING -->
+      <div data-view="loading" class="mx-auto my-8 w-full max-w-[520px]">
+        <div class="h-80 animate-pulse rounded-[28px] bg-muted"></div>
+      </div>
+
+      <!-- ERROR -->
+      <div data-view="error" class="mx-auto my-8 w-full max-w-[460px] rounded-3xl border bg-card p-6 text-center">
+        <p class="text-[16px] font-semibold">Couldn't save space setup</p>
+        <p class="mt-1 text-[14px] text-muted-foreground">Try again in a moment.</p>
+        <button type="button" onclick="location.reload()" class="mt-4 inline-flex h-10 items-center rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground">Try again</button>
+      </div>
+
+      <footer class="mx-auto flex w-full max-w-[520px] items-center justify-between text-[12px] text-muted-foreground">
+        <span>Firecent · Personal &amp; Shared</span>
+        <a href="home.html" class="hover:text-foreground">Already have an account? Home</a>
+      </footer>
+    </main>
+
+    <script src="assets/icons.js"></script>
+    <script>
+      (function () {
+        var params = new URLSearchParams(location.search);
+        var step = Math.min(4, Math.max(1, Number(params.get("step") || "1") || 1));
+
+        function showStep(n) {
+          step = n;
+          document.getElementById("ob-step-label").textContent = "Step " + step + " of 4";
+          document.querySelectorAll("[data-ob-bar]").forEach(function (b) {
+            var active = Number(b.dataset.obBar) <= step;
+            b.classList.toggle("bg-primary", active);
+            b.classList.toggle("bg-muted", !active);
+          });
+          document.querySelectorAll("[data-ob-step]").forEach(function (el) {
+            el.classList.toggle("hidden", Number(el.dataset.obStep) !== step);
+          });
+          var sp = document.getElementById("ob-space-name").value.trim() || "Maya & Daniel";
+          var fin = document.getElementById("ob-final-space");
+          if (fin) fin.textContent = sp;
+        }
+
+        document.addEventListener("click", function (e) {
+          var next = e.target.closest("[data-ob-next]");
+          if (next) showStep(Number(next.dataset.obNext));
+
+          var modeBtn = e.target.closest("[data-ob-mode]");
+          if (modeBtn) {
+            var mode = modeBtn.dataset.obMode;
+            document.querySelectorAll("[data-ob-mode]").forEach(function (b) {
+              var on = b === modeBtn;
+              b.setAttribute("aria-pressed", String(on));
+              b.className = "rounded-2xl border p-4 text-left " + (on ? "border-primary bg-primary/[0.05]" : "bg-background hover:bg-accent/50");
+            });
+            document.getElementById("ob-space-name").value = mode === "solo" ? "Personal" : "Maya & Daniel";
+          }
+        });
+
+        showStep(step);
+        if (window.fableIcons) window.fableIcons(document);
+      })();
+    </script>
+  </body>
+</html>

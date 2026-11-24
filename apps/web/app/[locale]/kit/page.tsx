@@ -59,6 +59,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import { FirecentPrimitives } from "./_sections/firecent-primitives";
+import { FirecentComponents } from "./_sections/firecent-components";
 
 export default function UiKitPage() {
   const { theme, setTheme } = useTheme();
@@ -146,6 +148,10 @@ export default function UiKitPage() {
             </p>
           </div>
         </section>
+
+        <FirecentPrimitives />
+
+        <FirecentComponents />
 
         {/* ── 1. Paleta de Color Semántica ── */}
         <section className="space-y-3">

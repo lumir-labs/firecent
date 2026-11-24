@@ -21,7 +21,7 @@
 /* Non-color values: identical in both themes, so a flat `:root` (outside
  * `@layer theme`). `shadcn.theme.css` maps `--radius-lg: var(--radius)`. */
 :root {
-  --radius: 0.5rem;
+  --radius: 0.75rem;
   --shadow-x: 0px;
   --shadow-y: 4px;
   --shadow-blur: 8px;
@@ -49,7 +49,7 @@
   :root {
     @variant light {
       /* shadcn semantic colors */
-      --background: #f8fafc;
+      --background: #f4f6fa;
       --foreground: #0b1220;
       --card: #ffffff;
       --card-foreground: #0b1220;
@@ -59,11 +59,11 @@
       --primary-foreground: #ffffff;
       --secondary: #f1f4f9;
       --secondary-foreground: #1f2937;
-      --muted: #f4f6fa;
-      --muted-foreground: #64748b;
+      --muted: #eef1f6;
+      --muted-foreground: #566275;
       --accent: #f1f4f9;
       --accent-foreground: #0b1220;
-      --destructive: #ef4444;
+      --destructive: #dc2626;
       --destructive-foreground: #ffffff;
       --border: #e2e8f0;
       --input: #e2e8f0;
@@ -81,6 +81,24 @@
       --sidebar-accent-foreground: #0b1220;
       --sidebar-border: #e2e8f0;
       --sidebar-ring: #7c5cff;
+
+      /* Firecent semantics (tokens.proposed.css) */
+      --positive: #047857;
+      --warning: #b45309;
+      --primary-text: #5046e0;
+      --nature-owe: #334155;
+      --nature-need: #5e54f0;
+      --nature-want: #f9622f;
+      --assistant: #fff7f0;
+      --assistant-border: #fbdcc8;
+      --assistant-accent: #c2410c;
+      --hero: #0b1220;
+      --hero-foreground: #f4f6fa;
+      --hero-muted: #94a3b8;
+      --hero-border: #1e293b;
+      --hero-positive: #34d399;
+      --hero-accent: #a99bff;
+      --hero-line: #9a88fb;
 
       /* brand aliases (semantic layer over the --color-brand-* palettes) */
       --brand-default: var(--color-brand-default-100);
@@ -113,15 +131,15 @@
       --card-foreground: #f4f6fa;
       --popover: #11192a;
       --popover-foreground: #f4f6fa;
-      --primary: #7c5cff;
+      --primary: #7758fb;
       --primary-foreground: #ffffff;
       --secondary: #182236;
       --secondary-foreground: #e2e8f0;
-      --muted: #131b2e;
+      --muted: #17202f;
       --muted-foreground: #94a3b8;
       --accent: #182236;
       --accent-foreground: #f4f6fa;
-      --destructive: #ef4444;
+      --destructive: #f87171;
       --destructive-foreground: #ffffff;
       --border: #1e293b;
       --input: #1e293b;
@@ -139,6 +157,24 @@
       --sidebar-accent-foreground: #e2e8f0;
       --sidebar-border: #1e293b;
       --sidebar-ring: #a78bfa;
+
+      /* Firecent semantics (tokens.proposed.css) */
+      --positive: #34d399;
+      --warning: #fbbf24;
+      --primary-text: #a99bff;
+      --nature-owe: #a9b4c6;
+      --nature-need: #9a88fb;
+      --nature-want: #ff7a3d;
+      --assistant: #1e1714;
+      --assistant-border: #3d261b;
+      --assistant-accent: #ffa983;
+      --hero: #11192a;
+      --hero-foreground: #f4f6fa;
+      --hero-muted: #94a3b8;
+      --hero-border: #1e293b;
+      --hero-positive: #34d399;
+      --hero-accent: #a99bff;
+      --hero-line: #9a88fb;
 
       /* brand aliases */
       --brand-default: var(--color-brand-default-800);

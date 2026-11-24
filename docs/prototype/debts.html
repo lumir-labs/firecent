@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en" data-state="data">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Debts · Firecent</title>
+    <link rel="icon" href="assets/brand/favicon.svg" />
+    <link rel="stylesheet" href="assets/app.css" />
+    <script src="assets/proto.js"></script>
+  </head>
+  <body class="min-h-dvh bg-background text-foreground">
+    <div data-shell data-tab="more" data-nav="debts"></div>
+
+    <div class="lg:pl-60">
+      <div class="relative mx-auto min-h-dvh max-w-[430px] pb-28 lg:max-w-[1160px] lg:px-8 lg:pb-12">
+        <!-- Mobile top bar -->
+        <header class="flex h-14 items-center gap-1 px-2 lg:hidden">
+          <a href="more.html" class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Back">
+            <i data-icon="chevron-left" class="size-[22px]"></i>
+          </a>
+          <h1 class="flex-1 truncate text-[17px] font-semibold tracking-[-0.01em]">Debts</h1>
+          <button type="button" data-open="add-debt" class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Add debt">
+            <i data-icon="plus" class="size-[22px]"></i>
+          </button>
+        </header>
+
+        <!-- Desktop header -->
+        <header class="hidden items-center justify-between gap-4 pt-8 lg:flex">
+          <div>
+            <h1 class="text-[24px] leading-[32px] font-semibold tracking-[-0.02em]">Debts</h1>
+            <p class="mt-0.5 text-[14px] text-muted-foreground">Loans &amp; money shared between people · Tracked apart from Balance</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <div id="dbt-scope-desk" class="inline-flex h-10 rounded-xl border bg-card p-1 text-[13px]" role="group" aria-label="Visibility scope">
+              <button type="button" data-value="all" aria-pressed="true" class="whitespace-nowrap rounded-lg bg-foreground px-3 font-medium text-background">All</button>
+              <button type="button" data-value="shared" aria-pressed="false" class="whitespace-nowrap rounded-lg px-3 font-medium text-muted-foreground">Shared</button>
+              <button type="button" data-value="only-you" aria-pressed="false" class="whitespace-nowrap rounded-lg px-3 font-medium text-muted-foreground">Only you</button>
+            </div>
+            <button type="button" data-open="add-debt" class="flex h-10 items-center gap-1.5 whitespace-nowrap rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground hover:opacity-95">
+              <i data-icon="plus" class="size-4"></i>Add debt
+            </button>
+            <button type="button" data-open="ask" class="flex h-10 items-center gap-2 rounded-xl border bg-card px-4 text-[14px] font-semibold hover:bg-accent">
+              <i data-icon="firecent-mono" class="h-4 w-auto"></i>Ask
+            </button>
+            <a href="notifications.html" class="relative grid size-10 place-items-center rounded-full hover:bg-accent" aria-label="Notifications, 2 unread">
+              <i data-icon="bell" class="size-[22px]"></i>
+              <span class="absolute top-2 right-2 size-2 rounded-full bg-primary ring-2 ring-background [html[data-state=empty]_&]:hidden" aria-hidden="true"></span>
+            </a>
+          </div>
+        </header>
+
+        <!-- ═══════════════════════════ WITH DATA ═══════════════════════════ -->
+        <div data-view="data">
+          <!-- Mobile scope switcher -->
+          <div class="px-5 pt-1 lg:hidden">
+            <div id="dbt-scope-mob" class="flex h-10 rounded-xl bg-muted p-1 text-[13px]" role="group" aria-label="Visibility scope">
+              <button type="button" data-value="all" aria-pressed="true" class="flex-1 rounded-lg bg-card font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]">All</button>
+              <button type="button" data-value="shared" aria-pressed="false" class="flex-1 rounded-lg font-medium text-muted-foreground">Shared</button>
+              <button type="button" data-value="only-you" aria-pressed="false" class="flex-1 rounded-lg font-medium text-muted-foreground">Only you</button>
+            </div>
+          </div>
+
+          <!-- Two clean summary cards (no dark card) -->
+          <div class="mt-3 grid grid-cols-2 gap-3 px-5 lg:mt-6 lg:gap-4 lg:px-0">
+            <section class="rounded-[24px] border bg-card p-4 lg:p-5" aria-labelledby="h-dbt-owe">
+              <div class="flex items-center justify-between gap-2">
+                <h2 id="h-dbt-owe" class="text-[13px] font-medium text-muted-foreground">You owe</h2>
+                <span class="grid size-8 place-items-center rounded-xl bg-brand-red text-brand-red-foreground"><i data-icon="arrow-up-right" class="size-4"></i></span>
+              </div>
+              <p id="dbt-owe-total" class="num mt-2 text-[24px] leading-[28px] font-semibold tracking-[-0.025em] lg:text-[32px] lg:leading-[36px]">$19,885.00</p>
+              <p id="dbt-owe-sub" class="mt-1 text-[12px] text-muted-foreground">3 active · $705/mo scheduled</p>
+            </section>
+
+            <section class="rounded-[24px] border bg-card p-4 lg:p-5" aria-labelledby="h-dbt-rec">
+              <div class="flex items-center justify-between gap-2">
+                <h2 id="h-dbt-rec" class="text-[13px] font-medium text-muted-foreground">Owed to you</h2>
+                <span class="grid size-8 place-items-center rounded-xl bg-brand-green text-brand-green-foreground"><i data-icon="arrow-down-left" class="size-4"></i></span>
+              </div>
+              <p id="dbt-rec-total" class="num mt-2 text-[24px] leading-[28px] font-semibold tracking-[-0.025em] text-positive lg:text-[32px] lg:leading-[36px]">+$421.30</p>
+              <p id="dbt-rec-sub" class="mt-1 text-[12px] text-muted-foreground">2 people · No fixed dates</p>
+            </section>
+          </div>
+
+          <!-- Info callout (schema-accurate: excludeFromStats / apart from Net balance) -->
+          <div class="mt-3 px-5 lg:mt-4 lg:px-0">
+            <div class="flex items-start gap-2.5 rounded-2xl border bg-muted/40 px-3.5 py-2.5 text-[13px] text-muted-foreground">
+              <i data-icon="info" class="mt-0.5 size-4 shrink-0 text-primary-text"></i>
+              <p>Debts are tracked apart and excluded from Net balance. Loan installments linked to a category still count toward that category's monthly cap.</p>
+            </div>
+          </div>
+
+          <!-- Mobile direction tabs -->
+          <div class="px-5 pt-4 lg:hidden">
+            <div data-seg id="dbt-mob-tab" class="flex h-10 rounded-xl bg-muted p-1" role="tablist" aria-label="Debt direction">
+              <button type="button" data-value="owe" aria-pressed="true" id="tab-owe-mob" class="flex-1 rounded-lg bg-card text-[13px] font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]">You owe (3)</button>
+              <button type="button" data-value="rec" aria-pressed="false" id="tab-rec-mob" class="flex-1 rounded-lg text-[13px] font-medium text-muted-foreground">Owed to you (2)</button>
+            </div>
+          </div>
+
+          <!-- Main Grid: Lists + Desktop Sticky Detail Panel -->
+          <div class="mt-4 px-5 lg:mt-6 lg:grid lg:grid-cols-12 lg:items-start lg:gap-6 lg:px-0">
+            <div class="space-y-6 lg:col-span-7">
+              <section id="sec-owe" aria-labelledby="h-sec-owe">
+                <div class="mb-2 flex items-baseline justify-between px-1">
+                  <h3 id="h-sec-owe" class="text-[15px] font-semibold">You owe</h3>
+                  <span id="cnt-owe-lbl" class="num text-[12px] text-muted-foreground">3 items</span>
+                </div>
+                <ul id="list-owe" class="space-y-2.5"></ul>
+              </section>
+
+              <section id="sec-rec" class="hidden lg:block" aria-labelledby="h-sec-rec">
+                <div class="mb-2 flex items-baseline justify-between px-1">
+                  <h3 id="h-sec-rec" class="text-[15px] font-semibold">Owed to you</h3>
+                  <span id="cnt-rec-lbl" class="num text-[12px] text-muted-foreground">2 people</span>
+                </div>
+                <ul id="list-rec" class="space-y-2.5"></ul>
+              </section>
+            </div>
+
+            <!-- Desktop Detail Panel (inspired by Transactions split view) -->
+            <aside class="sticky top-6 hidden rounded-3xl border bg-card p-5 lg:col-span-5 lg:block" aria-labelledby="h-dbt-panel">
+              <div id="dbt-panel-body"></div>
+            </aside>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════ EMPTY ═══════════════════════════ -->
+        <div data-view="empty">
+          <div class="flex flex-col items-center px-8 py-12 text-center lg:py-24">
+            <span class="grid size-14 place-items-center rounded-2xl bg-muted"><i data-icon="hand-coins" class="size-6 text-muted-foreground"></i></span>
+            <h2 class="mt-4 text-[17px] font-semibold">No debts tracked</h2>
+            <p class="mt-1.5 max-w-[300px] text-[14px] leading-[20px] text-muted-foreground">
+              Track car loans, student loans, or money you lent friends separately from your Net balance.
+            </p>
+            <div class="mt-5">
+              <button type="button" data-open="add-debt" class="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground">
+                <i data-icon="plus" class="size-4"></i>Add debt
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════ LOADING ═══════════════════════════ -->
+        <div data-view="loading" aria-busy="true">
+          <p class="sr-only" role="status">Loading debts</p>
+          <div aria-hidden="true" class="px-5 pt-4 lg:px-0 lg:pt-6">
+            <div class="grid grid-cols-2 gap-3 lg:gap-4">
+              <div class="h-28 rounded-[24px] border bg-card p-4"><div class="sk h-3.5 w-20"></div><div class="sk mt-3 h-8 w-36 rounded-xl"></div><div class="sk mt-2 h-3 w-28"></div></div>
+              <div class="h-28 rounded-[24px] border bg-card p-4"><div class="sk h-3.5 w-20"></div><div class="sk mt-3 h-8 w-28 rounded-xl"></div><div class="sk mt-2 h-3 w-24"></div></div>
+            </div>
+            <div class="mt-6 space-y-3 lg:grid lg:grid-cols-12 lg:gap-6 lg:space-y-0">
+              <div class="space-y-3 lg:col-span-7">
+                <div class="h-28 rounded-2xl border bg-card p-4"><div class="sk h-5 w-40"></div><div class="sk mt-3 h-2 w-full"></div><div class="sk mt-3 h-3 w-36"></div></div>
+                <div class="h-28 rounded-2xl border bg-card p-4"><div class="sk h-5 w-44"></div><div class="sk mt-3 h-2 w-full"></div><div class="sk mt-3 h-3 w-32"></div></div>
+              </div>
+              <div class="hidden h-72 rounded-3xl border bg-card p-5 lg:col-span-5 lg:block"><div class="sk h-6 w-36"></div><div class="sk mt-4 h-10 w-44"></div><div class="sk mt-6 h-24 w-full rounded-2xl"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════ ERROR ═══════════════════════════ -->
+        <div data-view="error">
+          <div class="flex flex-col items-center px-8 py-12 text-center lg:py-24">
+            <span class="grid size-14 place-items-center rounded-2xl bg-muted"><i data-icon="cloud-off" class="size-6 text-muted-foreground"></i></span>
+            <h2 class="mt-4 text-[17px] font-semibold">We couldn't load this</h2>
+            <p class="mt-1.5 max-w-[280px] text-[14px] text-muted-foreground">Check your connection and try again. Nothing was changed.</p>
+            <div class="mt-5"><button type="button" class="flex h-11 items-center rounded-xl border bg-card px-4 text-[14px] font-semibold">Try again</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════ SHEET: DEBT DETAIL (?sheet=detail) ═══════════════════════════ -->
+    <div data-sheet-id="detail">
+      <div data-veil data-close class="fixed inset-0 z-40 bg-[#0b1220]/50"></div>
+      <div role="dialog" aria-modal="true" aria-labelledby="sh-dd-title" class="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[90dvh] w-full max-w-[430px] overflow-y-auto rounded-t-3xl bg-card px-5 pt-3 pb-8 shadow-[0_24px_48px_-12px_rgb(11_18_32/0.28)] lg:inset-y-auto lg:top-1/2 lg:left-1/2 lg:w-[460px] lg:max-w-[92vw] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-3xl lg:border lg:pt-5">
+        <div class="mx-auto mb-2 h-1 w-9 rounded-full bg-muted-foreground/25 lg:hidden" aria-hidden="true"></div>
+        <div class="flex h-12 items-center justify-between">
+          <h2 id="sh-dd-title" class="text-[17px] font-semibold">Debt detail</h2>
+          <button type="button" data-close class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Close"><i data-icon="x" class="size-[22px]"></i></button>
+        </div>
+        <div id="dbt-sheet-body" class="mt-1"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════ SHEET: RECORD PAYMENT (?sheet=pay-debt) ═══════════════════════════ -->
+    <div data-sheet-id="pay-debt">
+      <div data-veil data-close class="fixed inset-0 z-40 bg-[#0b1220]/50"></div>
+      <div role="dialog" aria-modal="true" aria-labelledby="sh-pd-title" class="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[90dvh] w-full max-w-[430px] overflow-y-auto rounded-t-3xl bg-card px-5 pt-3 pb-8 shadow-[0_24px_48px_-12px_rgb(11_18_32/0.28)] lg:inset-y-auto lg:top-1/2 lg:left-1/2 lg:w-[440px] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-3xl lg:border lg:pt-5">
+        <div class="mx-auto mb-2 h-1 w-9 rounded-full bg-muted-foreground/25 lg:hidden" aria-hidden="true"></div>
+        <div class="flex h-12 items-center justify-between">
+          <h2 id="sh-pd-title" class="text-[17px] font-semibold">Record payment</h2>
+          <button type="button" data-close class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Close"><i data-icon="x" class="size-[22px]"></i></button>
+        </div>
+        <form id="pd-form" class="mt-2 space-y-4">
+          <p id="pd-who" class="text-[14px] text-muted-foreground">For Leo Reyes · Remaining $350.00</p>
+          <div>
+            <label for="pd-amt" class="block text-[13px] font-medium text-muted-foreground">Amount</label>
+            <div class="mt-1 flex h-13 items-center rounded-2xl border bg-background px-4 focus-within:border-primary">
+              <span class="mr-1 text-[20px] text-muted-foreground">$</span>
+              <input id="pd-amt" type="number" step="0.01" value="150.00" class="num w-full bg-transparent text-[24px] font-semibold outline-none" required />
+            </div>
+          </div>
+          <div>
+            <label for="pd-acc" class="block text-[13px] font-medium text-muted-foreground">Account</label>
+            <select id="pd-acc" class="mt-1 h-11 w-full rounded-xl border bg-background px-3 text-[14px] outline-none">
+              <option>Joint Checking · $8,420.55</option>
+              <option>Maya's Checking · $3,912.18</option>
+              <option>Cash · $140.00</option>
+            </select>
+          </div>
+          <label class="flex items-start gap-2.5 rounded-2xl border bg-muted/40 p-3 text-[13px]">
+            <input type="checkbox" checked class="mt-0.5 size-4 accent-primary" />
+            <span><strong class="font-medium text-foreground">Exclude from monthly spending stats</strong><br /><span class="text-muted-foreground">Updates the account balance and debt remaining without inflating your category spend.</span></span>
+          </label>
+          <button type="submit" class="flex h-12 w-full items-center justify-center rounded-xl bg-primary text-[15px] font-semibold text-primary-foreground">Save payment</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════ SHEET: ADD DEBT (?sheet=add-debt) ═══════════════════════════ -->
+    <div data-sheet-id="add-debt">
+      <div data-veil data-close class="fixed inset-0 z-40 bg-[#0b1220]/50"></div>
+      <div role="dialog" aria-modal="true" aria-labelledby="sh-ad-title" class="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[90dvh] w-full max-w-[430px] overflow-y-auto rounded-t-3xl bg-card px-5 pt-3 pb-8 shadow-[0_24px_48px_-12px_rgb(11_18_32/0.28)] lg:inset-y-auto lg:top-1/2 lg:left-1/2 lg:w-[460px] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-3xl lg:border lg:pt-5">
+        <div class="mx-auto mb-2 h-1 w-9 rounded-full bg-muted-foreground/25 lg:hidden" aria-hidden="true"></div>
+        <div class="flex h-12 items-center justify-between">
+          <h2 id="sh-ad-title" class="text-[17px] font-semibold">Add debt</h2>
+          <button type="button" data-close class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Close"><i data-icon="x" class="size-[22px]"></i></button>
+        </div>
+        <form id="ad-form" class="mt-2 space-y-4">
+          <div class="flex h-10 rounded-xl bg-muted p-1 text-[13px]">
+            <button type="button" data-ad-dir="OWE" aria-pressed="true" class="flex-1 rounded-lg bg-card font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]">I owe</button>
+            <button type="button" data-ad-dir="OWED_TO_ME" aria-pressed="false" class="flex-1 rounded-lg font-medium text-muted-foreground">Owed to me</button>
+          </div>
+          <div>
+            <label for="ad-name" class="block text-[13px] font-medium text-muted-foreground">Counterparty or lender</label>
+            <input id="ad-name" type="text" placeholder="e.g. Marco · Laptop split" class="mt-1 h-11 w-full rounded-xl border bg-background px-3.5 text-[14px] outline-none focus:border-primary" required />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="ad-rem" class="block text-[13px] font-medium text-muted-foreground">Remaining</label>
+              <input id="ad-rem" type="number" step="0.01" placeholder="450.00" class="num mt-1 h-11 w-full rounded-xl border bg-background px-3.5 text-[14px] outline-none focus:border-primary" required />
+            </div>
+            <div>
+              <label for="ad-orig" class="block text-[13px] font-medium text-muted-foreground">Original (optional)</label>
+              <input id="ad-orig" type="number" step="0.01" placeholder="600.00" class="num mt-1 h-11 w-full rounded-xl border bg-background px-3.5 text-[14px] outline-none focus:border-primary" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="ad-cat" class="block text-[13px] font-medium text-muted-foreground">Category cap (opt.)</label>
+              <select id="ad-cat" class="mt-1 h-11 w-full rounded-xl border bg-background px-3 text-[14px] outline-none">
+                <option value="">None (exclude from stats)</option>
+                <option>Car loan</option>
+                <option>Student loan</option>
+                <option>Shopping</option>
+              </select>
+            </div>
+            <div>
+              <label for="ad-vis" class="block text-[13px] font-medium text-muted-foreground">Visibility</label>
+              <select id="ad-vis" class="mt-1 h-11 w-full rounded-xl border bg-background px-3 text-[14px] outline-none">
+                <option value="SHARED">Shared (Maya &amp; Daniel)</option>
+                <option value="PRIVATE">Only you</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="flex h-12 w-full items-center justify-center rounded-xl bg-primary text-[15px] font-semibold text-primary-foreground">Add debt</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="assets/icons.js"></script>
+    <script>
+      (function () {
+        var COLOR_TILE = {
+          purple: "bg-brand-purple text-brand-purple-foreground",
+          red: "bg-brand-red text-brand-red-foreground",
+          green: "bg-brand-green text-brand-green-foreground",
+          orange: "bg-brand-orange text-brand-orange-foreground",
+          blue: "bg-brand-blue text-brand-blue-foreground",
+          gray: "bg-brand-gray text-brand-gray-foreground",
+        };
+        var BAR_COLOR = {
+          purple: "bg-purple-500",
+          red: "bg-rose-500",
+          green: "bg-emerald-500",
+          orange: "bg-orange-500",
+          blue: "bg-sky-500",
+          gray: "bg-slate-400",
+        };
+
+        var DEBTS = [
+          {
+            id: "d1", dir: "owe", name: "Toyota Financial", icon: "car", color: "red",
+            rem: 1120000, orig: 1800000, paidStr: "$6,800.00 paid", pct: 38,
+            schedule: "Auto loan · $320.00/mo · Auto on 5th", nextDue: "Dec 5, 2026",
+            catNote: "Tracked in Car loan cap ($320)", acc: "Joint Checking",
+            shared: true, linkedRec: "rc4",
+            history: [
+              { date: "Nov 5, 2026", amt: "$320.00", acc: "Joint Checking", note: "Scheduled installment" },
+              { date: "Oct 5, 2026", amt: "$320.00", acc: "Joint Checking", note: "Scheduled installment" },
+              { date: "Sep 5, 2026", amt: "$320.00", acc: "Joint Checking", note: "Scheduled installment" },
+            ],
+          },
+          {
+            id: "d2", dir: "owe", name: "Nelnet", icon: "graduation-cap", color: "purple",
+            rem: 808500, orig: 1400000, paidStr: "$5,915.00 paid", pct: 42,
+            schedule: "Student loan · $385.00/mo · Due Nov 20", nextDue: "Nov 20, 2026",
+            catNote: "Tracked in Student loan cap ($385)", acc: "Maya's Checking",
+            shared: false, linkedRec: "rc8",
+            history: [
+              { date: "Oct 20, 2026", amt: "$385.00", acc: "Maya's Checking", note: "Confirmed payment" },
+              { date: "Sep 20, 2026", amt: "$385.00", acc: "Maya's Checking", note: "Confirmed payment" },
+            ],
+          },
+          {
+            id: "d3", dir: "owe", name: "Elena Torres", icon: "users", color: "orange",
+            rem: 60000, orig: 120000, paidStr: "$600.00 repaid", pct: 50,
+            schedule: "Personal · No fixed date", nextDue: "Flexible",
+            catNote: "Excluded from spending stats", acc: "Joint Checking",
+            shared: true,
+            history: [
+              { date: "Sep 14, 2026", amt: "$300.00", acc: "Joint Checking", note: "Partial repayment" },
+              { date: "Jul 22, 2026", amt: "$300.00", acc: "Joint Checking", note: "First installment" },
+            ],
+          },
+          {
+            id: "d4", dir: "rec", name: "Leo Reyes", icon: "hand-coins", color: "blue",
+            rem: 35000, orig: 50000, paidStr: "$150.00 received", pct: 30,
+            schedule: "No fixed date · Lent Jul 2026", nextDue: "Flexible",
+            catNote: "Excluded from income stats", acc: "Joint Checking",
+            shared: true,
+            history: [
+              { date: "Oct 18, 2026", amt: "+$150.00", acc: "Joint Checking", note: "Zelle partial payback" },
+            ],
+          },
+          {
+            id: "d5", dir: "rec", name: "Sofía Torres", icon: "utensils", color: "green",
+            rem: 7130, orig: null, paidStr: "Full balance open", pct: 0,
+            schedule: "Split dinner · Nov 8", nextDue: "Open",
+            catNote: "Excluded from income stats", acc: "Maya's Checking",
+            shared: false,
+            history: [
+              { date: "Nov 8, 2026", amt: "$71.30 owed", acc: "Maya's Checking", note: "Via Carota share" },
+            ],
+          },
+        ];
+
+        var curScope = (function () {
+          var s = window.fableScope ? window.fableScope() : "all";
+          return s === "everything" ? "all" : s;
+        })();
+        var curMobTab = "owe";
+        var selectedId = "d4";
+
+        function fmt(cents, plus) {
+          return (plus ? "+" : "") + "$" + (Math.abs(cents) / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function renderDetailHtml(d, isSheet) {
+          var isRec = d.dir === "rec";
+          var cta = isRec ? "Record received" : "Record payment";
+          var pct = d.orig ? Math.round(((d.orig - d.rem) / d.orig) * 100) : null;
+
+          return (
+            '<div class="flex items-start gap-3">' +
+            '<span class="grid size-12 shrink-0 place-items-center rounded-2xl ' + COLOR_TILE[d.color] + '"><i data-icon="' + d.icon + '" class="size-6"></i></span>' +
+            '<div class="min-w-0 flex-1">' +
+            '<div class="flex items-center gap-1.5"><h3 id="h-dbt-panel" class="truncate text-[17px] font-semibold">' + d.name + "</h3>" +
+            (d.shared ? "" : '<i data-icon="lock" class="size-3.5 text-muted-foreground"></i>') + "</div>" +
+            '<p class="mt-0.5 text-[13px] text-muted-foreground">' + (isRec ? "Owed to you" : "You owe") + " · " + (d.shared ? "Shared" : "Only you") + "</p>" +
+            "</div></div>" +
+
+            '<div class="mt-4 rounded-2xl border bg-muted/40 p-4">' +
+            '<p class="text-[12px] font-medium text-muted-foreground">Remaining balance</p>' +
+            '<p class="num mt-1 text-[30px] leading-[34px] font-semibold tracking-[-0.025em] ' + (isRec ? "text-positive" : "") + '">' + fmt(d.rem, isRec) + "</p>" +
+            (d.orig
+              ? '<div class="mt-3"><div class="h-2 overflow-hidden rounded-full bg-muted"><div class="h-full rounded-full ' + BAR_COLOR[d.color] + '" style="width:' + pct + '%"></div></div>' +
+                '<div class="mt-1.5 flex justify-between text-[12px] text-muted-foreground"><span class="num">' + d.paidStr + '</span><span class="num">of ' + fmt(d.orig) + " (" + pct + "%)</span></div></div>"
+              : '<p class="mt-1.5 text-[12px] text-muted-foreground">' + d.paidStr + "</p>") +
+            "</div>" +
+
+            '<dl class="mt-4 divide-y rounded-2xl border text-[13px]">' +
+            '<div class="flex items-center justify-between gap-3 px-4 py-2.5"><dt class="shrink-0 text-muted-foreground">Schedule</dt><dd class="text-right font-medium">' + d.schedule + "</dd></div>" +
+            '<div class="flex items-center justify-between gap-3 px-4 py-2.5"><dt class="shrink-0 text-muted-foreground">Account</dt><dd class="text-right font-medium">' + d.acc + "</dd></div>" +
+            '<div class="flex items-center justify-between gap-3 px-4 py-2.5"><dt class="shrink-0 text-muted-foreground">Stats rule</dt><dd class="text-right font-medium">' + d.catNote + "</dd></div>" +
+            "</dl>" +
+
+            '<div class="mt-4">' +
+            '<p class="mb-2 px-1 text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">History</p>' +
+            '<ul class="divide-y rounded-2xl border text-[13px]">' +
+            d.history.map(function (h) {
+              return '<li class="flex items-center justify-between gap-2 px-4 py-2.5"><div><p class="font-medium">' + h.note + '</p><p class="text-[12px] text-muted-foreground">' + h.date + " · " + h.acc + '</p></div><span class="num font-semibold">' + h.amt + "</span></li>";
+            }).join("") +
+            "</ul></div>" +
+
+            '<div class="mt-5 flex flex-col gap-2">' +
+            '<button type="button" data-open-pay="' + d.id + '" class="flex h-11 w-full items-center justify-center rounded-xl bg-primary text-[14px] font-semibold text-primary-foreground hover:opacity-95">' + cta + "</button>" +
+            '<button type="button" ' + (isSheet ? "data-close " : "") + 'data-toast-msg="Marked ' + d.name + ' as paid in full" class="flex h-10 w-full items-center justify-center rounded-xl border text-[13px] font-medium hover:bg-accent">Mark as settled</button>' +
+            "</div>"
+          );
+        }
+
+        function renderRow(d) {
+          var isRec = d.dir === "rec";
+          var active = d.id === selectedId;
+          var pct = d.orig ? Math.round(((d.orig - d.rem) / d.orig) * 100) : null;
+          return (
+            '<li><button type="button" data-select-debt="' + d.id + '" class="block w-full rounded-2xl border bg-card p-4 text-left transition-colors ' +
+            (active ? "lg:border-primary lg:ring-2 lg:ring-primary/20 " : "hover:bg-accent/40 ") + '">' +
+            '<div class="flex items-start gap-3">' +
+            '<span class="grid size-10 shrink-0 place-items-center rounded-xl ' + COLOR_TILE[d.color] + '"><i data-icon="' + d.icon + '" class="size-5"></i></span>' +
+            '<div class="min-w-0 flex-1">' +
+            '<div class="flex items-center justify-between gap-2">' +
+            '<span class="flex min-w-0 items-center gap-1.5"><span class="truncate font-semibold">' + d.name + "</span>" +
+            (d.shared ? "" : '<i data-icon="lock" class="size-3.5 shrink-0 text-muted-foreground"></i>') + "</span>" +
+            '<span class="num shrink-0 font-semibold ' + (isRec ? "text-positive" : "") + '">' + fmt(d.rem, isRec) + "</span></div>" +
+            '<p class="mt-0.5 text-[12px] text-muted-foreground">' + d.schedule + "</p>" +
+            (pct !== null
+              ? '<div class="mt-2.5 flex items-center gap-2.5"><div class="h-1.5 flex-1 overflow-hidden rounded-full bg-muted"><div class="h-full rounded-full ' + BAR_COLOR[d.color] + '" style="width:' + pct + '%"></div></div>' +
+                '<span class="num shrink-0 text-[11px] text-muted-foreground">' + pct + "% of " + fmt(d.orig).replace(/\.00$/, "") + "</span></div>"
+              : "") +
+            "</div></div></button></li>"
+          );
+        }
+
+        function renderAll() {
+          if (window.fableScope) window.fableScope(curScope === "all" ? "everything" : curScope);
+
+          ["dbt-scope-mob", "dbt-scope-desk"].forEach(function (cid) {
+            var isMob = cid.indexOf("mob") > 0;
+            document.querySelectorAll("#" + cid + " > button").forEach(function (b) {
+              var on = b.dataset.value === curScope;
+              b.setAttribute("aria-pressed", String(on));
+              if (isMob) {
+                b.classList.toggle("bg-card", on);
+                b.classList.toggle("text-foreground", on);
+                b.classList.toggle("shadow-[0_1px_2px_rgb(11_18_32/0.12)]", on);
+                b.classList.toggle("text-muted-foreground", !on);
+              } else {
+                b.classList.toggle("bg-foreground", on);
+                b.classList.toggle("text-background", on);
+                b.classList.toggle("text-muted-foreground", !on);
+              }
+            });
+          });
+
+          var vis = DEBTS.filter(function (d) {
+            if (curScope === "shared") return d.shared;
+            if (curScope === "only-you") return !d.shared;
+            return true;
+          });
+          var owe = vis.filter(function (d) { return d.dir === "owe"; });
+          var rec = vis.filter(function (d) { return d.dir === "rec"; });
+
+          if (!vis.find(function (d) { return d.id === selectedId; }) && vis.length) {
+            selectedId = vis[0].id;
+          }
+
+          var oweCents = owe.reduce(function (s, d) { return s + d.rem; }, 0);
+          var recCents = rec.reduce(function (s, d) { return s + d.rem; }, 0);
+          document.getElementById("dbt-owe-total").textContent = fmt(oweCents);
+          document.getElementById("dbt-owe-sub").textContent = owe.length + " active · " + (curScope === "only-you" ? "$385/mo manual" : "$705/mo scheduled");
+          document.getElementById("dbt-rec-total").textContent = fmt(recCents, true);
+          document.getElementById("dbt-rec-sub").textContent = rec.length + (rec.length === 1 ? " person" : " people") + " · No fixed dates";
+
+          document.getElementById("tab-owe-mob").textContent = "You owe (" + owe.length + ")";
+          document.getElementById("tab-rec-mob").textContent = "Owed to you (" + rec.length + ")";
+          document.getElementById("cnt-owe-lbl").textContent = owe.length + (owe.length === 1 ? " item" : " items");
+          document.getElementById("cnt-rec-lbl").textContent = rec.length + (rec.length === 1 ? " person" : " people");
+
+          document.getElementById("list-owe").innerHTML = owe.map(renderRow).join("") || '<li class="rounded-2xl border bg-card p-6 text-center text-[14px] text-muted-foreground">Nothing owed in this scope.</li>';
+          document.getElementById("list-rec").innerHTML = rec.map(renderRow).join("") || '<li class="rounded-2xl border bg-card p-6 text-center text-[14px] text-muted-foreground">No one owes you in this scope.</li>';
+
+          var secOwe = document.getElementById("sec-owe");
+          var secRec = document.getElementById("sec-rec");
+          if (curMobTab === "owe") {
+            secOwe.classList.remove("hidden");
+            secRec.classList.add("hidden", "lg:block");
+          } else {
+            secOwe.classList.add("hidden", "lg:block");
+            secRec.classList.remove("hidden");
+          }
+
+          var sel = vis.find(function (d) { return d.id === selectedId; }) || DEBTS[3];
+          document.getElementById("dbt-panel-body").innerHTML = renderDetailHtml(sel, false);
+          document.getElementById("dbt-sheet-body").innerHTML = renderDetailHtml(sel, true);
+
+          if (window.fableIcons) window.fableIcons(document.body);
+        }
+
+        ["dbt-scope-mob", "dbt-scope-desk"].forEach(function (cid) {
+          document.getElementById(cid).addEventListener("click", function (e) {
+            var b = e.target.closest("button[data-value]");
+            if (b) { curScope = b.dataset.value; renderAll(); }
+          });
+        });
+
+        document.getElementById("dbt-mob-tab").addEventListener("fable:change", function (e) {
+          curMobTab = e.detail;
+          renderAll();
+        });
+
+        document.addEventListener("click", function (e) {
+          var selBtn = e.target.closest("[data-select-debt]");
+          if (selBtn) {
+            selectedId = selBtn.dataset.selectDebt;
+            renderAll();
+            if (window.innerWidth < 1024 && window.fableOpen) window.fableOpen("detail");
+            return;
+          }
+          var payBtn = e.target.closest("[data-open-pay]");
+          if (payBtn) {
+            var d = DEBTS.find(function (x) { return x.id === payBtn.dataset.openPay; }) || DEBTS[3];
+            document.getElementById("sh-pd-title").textContent = d.dir === "rec" ? "Record received" : "Record payment";
+            document.getElementById("pd-who").textContent = "For " + d.name + " · Remaining " + fmt(d.rem);
+            document.getElementById("pd-amt").value = (Math.min(d.rem, 15000) / 100).toFixed(2);
+            if (window.fableOpen) window.fableOpen("pay-debt");
+          }
+        });
+
+        document.getElementById("pd-form").addEventListener("submit", function (e) {
+          e.preventDefault();
+          var v = Number(document.getElementById("pd-amt").value || 0).toFixed(2);
+          if (window.fableClose) window.fableClose();
+          if (window.fableToast) window.fableToast("Recorded $" + v + " · Debt updated");
+        });
+
+        document.getElementById("ad-form").addEventListener("submit", function (e) {
+          e.preventDefault();
+          var nm = document.getElementById("ad-name").value.trim() || "New debt";
+          if (window.fableClose) window.fableClose();
+          if (window.fableToast) window.fableToast("Added " + nm + " to Debts");
+        });
+
+        document.querySelectorAll("[data-ad-dir]").forEach(function (b) {
+          b.addEventListener("click", function () {
+            document.querySelectorAll("[data-ad-dir]").forEach(function (x) {
+              var on = x === b;
+              x.setAttribute("aria-pressed", String(on));
+              x.className = on
+                ? "flex-1 rounded-lg bg-card font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]"
+                : "flex-1 rounded-lg font-medium text-muted-foreground";
+            });
+          });
+        });
+
+        renderAll();
+      })();
+    </script>
+  </body>
+</html>

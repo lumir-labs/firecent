@@ -1,0 +1,894 @@
+<!doctype html>
+<html lang="en" data-state="data">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Home · Firecent</title>
+    <link rel="icon" href="assets/brand/favicon.svg" />
+    <link rel="stylesheet" href="assets/app.css" />
+    <script src="assets/proto.js"></script>
+  </head>
+  <body class="min-h-dvh bg-background text-foreground">
+    <!--
+      MOCK DATA (cents in DB, aligned with packages/db/prisma/schema.prisma & fable/mock-data.md).
+      Today: Thu Nov 12, 2026 (day 12 of 30 -> 40% pace, 18 days left).
+      Space "Maya & Daniel" (Organization), seen by Maya Torres.
+
+      Accounts (BankAccount):
+        1 Joint Checking     CHECKING_ACCOUNT USD SHARED  $8,420.55   ·· 4821  (Nov +$855.13)
+        2 Emergency Fund     SAVINGS_ACCOUNT  USD SHARED  $24,300.00  ·· 9034
+        3 Sapphire Reserve   CREDIT_CARD      USD SHARED  -$1,846.32  ·· 7719  (limit $12,000, statement $1,512.80 due Nov 15)
+        4 Maya's Checking    CHECKING_ACCOUNT USD PRIVATE $3,912.18   ·· 2260  (Nov +$770.65)
+        5 Cash               CASH             USD PRIVATE $140.00
+        6 BBVA México        SAVINGS_ACCOUNT  MXN PRIVATE MX$38,500.00 ≈ $2,084.46 (18.47 MXN/USD)
+        7 Amex Gold          CREDIT_CARD      USD PRIVATE -$612.40    ·· 1008  (limit $8,000, statement $268.90 due Nov 28)
+
+      Scopes (BankAccount.visibility):
+        Everything: Assets $38,857.19 - Cards $2,458.72 = $36,398.47 | In $6,125.00, Out $4,812.14, Net +$1,312.86
+        Shared:     $30,874.23 | In $3,150.00, Out $4,219.94, Scope transfers +$1,800.00, Net balance +$730.06
+        Only you:   $5,524.24  | In $2,975.00, Out $592.20,   Scope transfers -$1,800.00, Net balance +$582.80
+
+      November Category Caps (12 capped + 5 uncapped = $4,812.14 total out):
+        Capped ($5,580.00 cap): $4,317.00 spent (77.4%), $1,263.00 remaining ($70.17/day for 18 days)
+        Uncapped (5 categories: Shopping, Fitness, Gifts, Household, Pets): $495.14 spent
+    -->
+    <div data-shell data-tab="home" data-nav="home"></div>
+
+    <div class="lg:pl-60">
+      <div class="relative mx-auto min-h-dvh max-w-[430px] pb-28 lg:max-w-[1160px] lg:px-8 lg:pb-12">
+        <h1 class="sr-only lg:hidden">Home</h1>
+
+        <!-- Desktop header -->
+        <header class="hidden items-center justify-between gap-3 pt-8 lg:flex">
+          <div>
+            <h1 class="text-[24px] leading-[32px] font-semibold tracking-[-0.02em]">Good afternoon, Maya</h1>
+            <p class="text-[13px] text-muted-foreground">Thu, Nov 12 · Maya &amp; Daniel</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <a href="assistant.html" class="flex h-10 items-center gap-2 rounded-xl border bg-card px-3.5 text-[14px] font-semibold hover:bg-accent">
+              <i data-icon="firecent-mono" class="h-4 w-auto"></i>Ask assistant
+            </a>
+            <a href="notifications.html" class="relative grid size-10 place-items-center rounded-full border bg-card hover:bg-accent" aria-label="Notifications, 2 unread">
+              <i data-icon="bell" class="size-[20px]"></i>
+              <span class="absolute top-2 right-2 size-2 rounded-full bg-nature-want ring-2 ring-card [html[data-state=empty]_&]:hidden" aria-hidden="true"></span>
+            </a>
+            <button type="button" data-open="add" class="inline-flex h-10 items-center gap-1.5 rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground hover:opacity-95">
+              <i data-icon="plus" class="size-4"></i>Add transaction
+            </button>
+          </div>
+        </header>
+
+        <!-- ═══════════════════════════ WITH DATA ═══════════════════════════ -->
+        <div data-view="data">
+          <!-- Mobile header -->
+          <header class="flex items-center justify-between px-5 pt-2 lg:hidden">
+            <a href="home.html" class="inline-flex h-11 items-center text-foreground" aria-label="Firecent Home">
+              <i data-icon="firecent-logo" class="h-8 w-auto"></i>
+            </a>
+            <div class="flex items-center gap-1">
+              <a href="assistant.html" class="grid size-10 place-items-center rounded-full hover:bg-accent" aria-label="Open Assistant">
+                <i data-icon="firecent-mono" class="h-5 w-auto"></i>
+              </a>
+              <a href="notifications.html" class="relative grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Notifications, 2 unread">
+                <i data-icon="bell" class="size-[22px]"></i>
+                <span class="absolute top-2.5 right-2.5 size-2.5 rounded-full bg-nature-want ring-2 ring-background" aria-hidden="true"></span>
+              </a>
+            </div>
+          </header>
+
+          <!-- ROW 1: Dark Hero Balance Card + November Category Limits -->
+          <div class="lg:grid lg:grid-cols-12 lg:items-stretch lg:gap-6 lg:pt-6">
+            <!-- Hero Balance Card -->
+            <section class="px-5 pt-3 lg:col-span-7 lg:px-0 lg:pt-0" aria-labelledby="h-balance">
+              <div
+                class="relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-hero-border bg-hero p-5 text-hero-foreground"
+                style="background-image: radial-gradient(110% 85% at 10% 0%, rgb(94 84 240 / 0.24), transparent 58%), radial-gradient(80% 75% at 95% 100%, rgb(255 107 61 / 0.14), transparent 62%)"
+              >
+                <div>
+                  <!-- Top bar inside hero: Balance label + Scope filter -->
+                  <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <h2 id="h-balance" class="text-[13px] font-medium text-hero-muted">Balance</h2>
+                      <p id="hero-acc-sub" class="text-[12px] text-hero-muted/80">7 accounts · Maya &amp; Daniel</p>
+                    </div>
+                    <div id="home-scope" class="inline-flex rounded-xl border border-white/10 bg-white/5 p-0.5 text-[12px] font-medium" role="group" aria-label="Account visibility scope">
+                      <button type="button" data-scope="everything" aria-pressed="true" class="rounded-lg bg-white/15 px-2.5 py-1.5 text-hero-foreground">All</button>
+                      <button type="button" data-scope="shared" aria-pressed="false" class="rounded-lg px-2.5 py-1.5 text-hero-muted hover:text-hero-foreground">Shared</button>
+                      <button type="button" data-scope="only-you" aria-pressed="false" class="rounded-lg px-2.5 py-1.5 text-hero-muted hover:text-hero-foreground">Only you</button>
+                    </div>
+                  </div>
+
+                  <!-- Hero number + Delta + Assets vs Credit -->
+                  <div class="mt-3 flex flex-wrap items-end justify-between gap-x-4 gap-y-2">
+                    <div>
+                      <p id="hero-total" class="num text-[42px] leading-[46px] font-semibold tracking-[-0.035em] lg:text-[46px] lg:leading-[50px]">
+                        <span class="mr-0.5 text-[24px] font-medium tracking-normal text-hero-muted">$</span>36,398<span class="text-[24px] font-medium tracking-[-0.01em] text-hero-muted">.47</span>
+                      </p>
+                      <p class="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px]">
+                        <span id="hero-delta-pill" class="inline-flex items-center gap-1 font-medium text-hero-positive">
+                          <i data-icon="trending-up" class="size-3.5"></i>
+                          <span id="hero-delta" class="num">+$1,312.86</span>
+                        </span>
+                        <span id="hero-delta-sub" class="text-hero-muted">this month since Nov 1</span>
+                      </p>
+                    </div>
+                    <div class="flex items-center gap-3 text-[12px] text-hero-muted">
+                      <span>Assets <strong id="hero-assets" class="num font-semibold text-hero-foreground">$38,857.19</strong></span>
+                      <span aria-hidden="true" class="text-white/20">·</span>
+                      <span>Cards <strong id="hero-cards" class="num font-semibold text-hero-foreground">−$2,458.72</strong></span>
+                    </div>
+                  </div>
+
+                  <!-- 6-Month Balance Sparkline -->
+                  <figure class="mt-4">
+                    <div id="spark-box" class="relative h-[68px] lg:h-[118px]">
+                      <svg id="spark" class="absolute inset-0 size-full overflow-visible" viewBox="0 0 100 72" preserveAspectRatio="none" role="img" aria-label="Balance over the last six months, rising from $31,240 on June 1 to $36,398 today">
+                        <defs>
+                          <linearGradient id="spark-fill" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0" style="stop-color: var(--hero-line); stop-opacity: 0.28" />
+                            <stop offset="1" style="stop-color: var(--hero-line); stop-opacity: 0" />
+                          </linearGradient>
+                        </defs>
+                        <path data-area fill="url(#spark-fill)" />
+                        <path data-line fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" style="stroke: var(--hero-line)" />
+                      </svg>
+                      <span id="spark-dot" class="absolute right-0 size-2.5 translate-x-1/2 -translate-y-1/2 rounded-full bg-hero-line ring-[3px] ring-hero" aria-hidden="true"></span>
+                      <div id="spark-hover" class="pointer-events-none absolute inset-y-0 hidden" aria-hidden="true">
+                        <span class="absolute inset-y-0 left-0 w-px -translate-x-1/2 bg-white/35"></span>
+                        <span data-hover-dot class="absolute left-0 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-hero-line ring-[3px] ring-hero"></span>
+                        <span data-hover-label class="num absolute -top-8 left-0 -translate-x-1/2 rounded-lg bg-hero-foreground px-2 py-1 text-[12px] font-medium whitespace-nowrap text-hero"></span>
+                      </div>
+                    </div>
+                    <figcaption class="mt-1.5 flex justify-between text-[11px] text-hero-muted lg:hidden">
+                      <span>Jun 1 · $31,240</span>
+                      <span>Today</span>
+                    </figcaption>
+                    <figcaption class="relative mt-1.5 hidden h-4 text-[12px] text-hero-muted lg:block" aria-hidden="true">
+                      <span class="absolute left-0">Jun</span>
+                      <span class="absolute -translate-x-1/2" style="left: 18.29%">Jul</span>
+                      <span class="absolute -translate-x-1/2" style="left: 37.2%">Aug</span>
+                      <span class="absolute -translate-x-1/2" style="left: 56.1%">Sep</span>
+                      <span class="absolute -translate-x-1/2" style="left: 74.39%">Oct</span>
+                      <span class="absolute -translate-x-1/2" style="left: 93.29%">Nov</span>
+                    </figcaption>
+                  </figure>
+                </div>
+
+                <!-- Monthly Cashflow Glass Strip + Shared/Only you Split Bar -->
+                <div class="mt-4 space-y-3">
+                  <div class="grid grid-cols-3 gap-2">
+                    <a href="transactions.html?type=INCOME" class="rounded-xl border border-white/10 bg-white/5 p-2.5 hover:bg-white/10 lg:p-3">
+                      <span class="flex items-center gap-1 text-[11px] font-medium text-hero-muted">
+                        <i data-icon="arrow-down-left" class="size-3.5 text-hero-positive"></i>Money in
+                      </span>
+                      <span id="hero-in" class="num mt-1 block text-[15px] font-semibold lg:text-[17px]">$6,125.00</span>
+                      <span id="hero-in-sub" class="block text-[11px] text-hero-muted">2 deposits</span>
+                    </a>
+                    <a href="transactions.html?type=EXPENSE" class="rounded-xl border border-white/10 bg-white/5 p-2.5 hover:bg-white/10 lg:p-3">
+                      <span class="flex items-center gap-1 text-[11px] font-medium text-hero-muted">
+                        <i data-icon="arrow-up-right" class="size-3.5 text-[#ff7a3d]"></i>Money out
+                      </span>
+                      <span id="hero-out" class="num mt-1 block text-[15px] font-semibold lg:text-[17px]">$4,812.14</span>
+                      <span id="hero-out-sub" class="block text-[11px] text-hero-muted">40 expenses</span>
+                    </a>
+                    <a href="budget.html" class="rounded-xl border border-white/10 bg-white/5 p-2.5 hover:bg-white/10 lg:p-3">
+                      <span id="hero-third-lbl" class="flex items-center gap-1 text-[11px] font-medium text-hero-muted">
+                        <i data-icon="piggy-bank" class="size-3.5 text-hero-accent"></i>Left in caps
+                      </span>
+                      <span id="hero-third-val" class="num mt-1 block text-[15px] font-semibold lg:text-[17px]">$1,263.00</span>
+                      <span id="hero-third-sub" class="num block text-[11px] text-hero-muted">$70.17 / day</span>
+                    </a>
+                  </div>
+
+                  <!-- Shared vs Only you split -->
+                  <div id="hero-split-wrap" class="border-t border-white/10 pt-3">
+                    <div class="flex h-1 gap-0.5" aria-hidden="true">
+                      <span class="rounded-full bg-hero-line" style="width: 84.8%"></span>
+                      <span class="flex-1 rounded-full bg-white/25"></span>
+                    </div>
+                    <div class="mt-2 flex items-center justify-between gap-4 text-[12px]">
+                      <button type="button" data-jump-scope="shared" class="inline-flex items-center gap-1.5 text-left text-hero-muted hover:text-hero-foreground">
+                        <i data-icon="users" class="size-3.5 text-hero-accent"></i>
+                        <span>Shared <strong class="num font-semibold text-hero-foreground">$30,874.23</strong></span>
+                      </button>
+                      <button type="button" data-jump-scope="only-you" class="inline-flex items-center gap-1.5 text-right text-hero-muted hover:text-hero-foreground">
+                        <i data-icon="lock" class="size-3"></i>
+                        <span>Only you <strong class="num font-semibold text-hero-foreground">$5,524.24</strong></span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Right Column Top: November Category Limits -->
+            <section class="px-5 pt-7 lg:col-span-5 lg:px-0 lg:pt-0" aria-labelledby="h-month">
+              <div class="flex h-full flex-col rounded-2xl border bg-card">
+                <div class="flex items-baseline justify-between px-4 pt-4">
+                  <div>
+                    <h2 id="h-month" class="text-[17px] font-semibold tracking-[-0.01em]">November category limits</h2>
+                    <p class="num mt-0.5 text-[12px] text-muted-foreground">
+                      <strong class="font-semibold text-foreground">$4,317.00</strong> of $5,580.00 across 12 limits
+                    </p>
+                  </div>
+                  <a href="budget.html" class="-my-2 -mr-2 flex h-10 items-center gap-0.5 rounded-xl px-2 text-[14px] font-medium text-primary-text hover:bg-accent">
+                    Budget <i data-icon="chevron-right" class="size-4"></i>
+                  </a>
+                </div>
+
+                <!-- Stacked Category Allocation Bar (Presupuesto Propuesta A) -->
+                <div class="px-4 pt-3">
+                  <div class="flex h-2.5 w-full gap-0.5 overflow-hidden rounded-full bg-muted" role="img" aria-label="November spending by capped category: Rent 50%, Groceries 16%, Car loan 7%, Dining out 7%, Transport 6%, Entertainment 5%, Other 6%">
+                    <span class="bg-brand-purple-500 dark:bg-brand-purple-400" style="width: 38.5%" title="Rent · $2,150.00"></span>
+                    <span class="bg-brand-green-500 dark:bg-brand-green-400" style="width: 12.7%" title="Groceries · $709.46"></span>
+                    <span class="bg-brand-red-500 dark:bg-brand-red-400" style="width: 5.7%" title="Car loan · $320.00"></span>
+                    <span class="bg-brand-orange-500 dark:bg-brand-orange-400" style="width: 5.6%" title="Dining out · $313.69"></span>
+                    <span class="bg-brand-blue-500 dark:bg-brand-blue-400" style="width: 4.5%" title="Transport · $250.20"></span>
+                    <span class="bg-brand-pink-500 dark:bg-brand-pink-400" style="width: 3.8%" title="Entertainment · $212.09"></span>
+                    <span class="bg-brand-yellow-500 dark:bg-brand-yellow-400" style="width: 6.5%" title="Phone, Utilities, Health, Subs · $361.56"></span>
+                  </div>
+                  <div class="mt-2 flex items-center justify-between text-[12px] text-muted-foreground">
+                    <span>77.4% of monthly caps used</span>
+                    <span class="font-medium text-warning">4 above 40% pace</span>
+                  </div>
+                </div>
+
+                <!-- Active Variable Category Bars -->
+                <ul class="mt-2 flex-1 divide-y border-t">
+                  <li>
+                    <a href="transactions.html?cat=Groceries" class="block px-4 py-3 hover:bg-accent/60">
+                      <div class="flex items-center gap-2.5 text-[14px]">
+                        <span class="grid size-8 shrink-0 place-items-center rounded-lg bg-brand-green text-brand-green-foreground"><i data-icon="shopping-cart" class="size-4"></i></span>
+                        <span class="min-w-0 flex-1 truncate font-medium">Groceries</span>
+                        <span class="inline-flex items-center rounded-full bg-brand-orange px-1.5 py-0.5 text-[11px] font-medium text-brand-orange-foreground">79%</span>
+                        <span class="num shrink-0"><span class="font-medium">$709.46</span> <span class="text-muted-foreground">/ $900</span></span>
+                      </div>
+                      <div class="relative mt-2 h-1.5 rounded-full bg-muted" role="progressbar" aria-label="Groceries, 79% of monthly limit spent" aria-valuemin="0" aria-valuemax="100" aria-valuenow="79">
+                        <div class="h-full rounded-full bg-brand-green-500 dark:bg-brand-green-400" style="width: 78.8%"></div>
+                        <span class="absolute -top-1 -bottom-1 w-0.5 -translate-x-1/2 rounded-full bg-foreground/45" style="left: 40%" aria-hidden="true"></span>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="transactions.html?cat=Dining+out" class="block px-4 py-3 hover:bg-accent/60">
+                      <div class="flex items-center gap-2.5 text-[14px]">
+                        <span class="grid size-8 shrink-0 place-items-center rounded-lg bg-brand-orange text-brand-orange-foreground"><i data-icon="utensils" class="size-4"></i></span>
+                        <span class="min-w-0 flex-1 truncate font-medium">Dining out</span>
+                        <span class="inline-flex items-center rounded-full bg-brand-orange px-1.5 py-0.5 text-[11px] font-medium text-brand-orange-foreground">70%</span>
+                        <span class="num shrink-0"><span class="font-medium">$313.69</span> <span class="text-muted-foreground">/ $450</span></span>
+                      </div>
+                      <div class="relative mt-2 h-1.5 rounded-full bg-muted" role="progressbar" aria-label="Dining out, 70% of monthly limit spent" aria-valuemin="0" aria-valuemax="100" aria-valuenow="70">
+                        <div class="h-full rounded-full bg-brand-orange-500 dark:bg-brand-orange-400" style="width: 69.7%"></div>
+                        <span class="absolute -top-1 -bottom-1 w-0.5 -translate-x-1/2 rounded-full bg-foreground/45" style="left: 40%" aria-hidden="true"></span>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="transactions.html?cat=Transport" class="block px-4 py-3 hover:bg-accent/60">
+                      <div class="flex items-center gap-2.5 text-[14px]">
+                        <span class="grid size-8 shrink-0 place-items-center rounded-lg bg-brand-blue text-brand-blue-foreground"><i data-icon="bus" class="size-4"></i></span>
+                        <span class="min-w-0 flex-1 truncate font-medium">Transport</span>
+                        <span class="inline-flex items-center rounded-full bg-brand-orange px-1.5 py-0.5 text-[11px] font-medium text-brand-orange-foreground">83%</span>
+                        <span class="num shrink-0"><span class="font-medium">$250.20</span> <span class="text-muted-foreground">/ $300</span></span>
+                      </div>
+                      <div class="relative mt-2 h-1.5 rounded-full bg-muted" role="progressbar" aria-label="Transport, 83% of monthly limit spent" aria-valuemin="0" aria-valuemax="100" aria-valuenow="83">
+                        <div class="h-full rounded-full bg-brand-blue-500 dark:bg-brand-blue-400" style="width: 83.4%"></div>
+                        <span class="absolute -top-1 -bottom-1 w-0.5 -translate-x-1/2 rounded-full bg-foreground/45" style="left: 40%" aria-hidden="true"></span>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="transactions.html?cat=Entertainment" class="block px-4 py-3 hover:bg-accent/60">
+                      <div class="flex items-center gap-2.5 text-[14px]">
+                        <span class="grid size-8 shrink-0 place-items-center rounded-lg bg-brand-pink text-brand-pink-foreground"><i data-icon="ticket" class="size-4"></i></span>
+                        <span class="min-w-0 flex-1 truncate font-medium">Entertainment</span>
+                        <span class="inline-flex items-center rounded-full bg-brand-orange px-1.5 py-0.5 text-[11px] font-medium text-brand-orange-foreground">85%</span>
+                        <span class="num shrink-0"><span class="font-medium">$212.09</span> <span class="text-muted-foreground">/ $250</span></span>
+                      </div>
+                      <div class="relative mt-2 h-1.5 rounded-full bg-muted" role="progressbar" aria-label="Entertainment, 85% of monthly limit spent" aria-valuemin="0" aria-valuemax="100" aria-valuenow="85">
+                        <div class="h-full rounded-full bg-brand-pink-500 dark:bg-brand-pink-400" style="width: 84.8%"></div>
+                        <span class="absolute -top-1 -bottom-1 w-0.5 -translate-x-1/2 rounded-full bg-foreground/45" style="left: 40%" aria-hidden="true"></span>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="transactions.html?cat=Utilities" class="block px-4 py-3 hover:bg-accent/60">
+                      <div class="flex items-center gap-2.5 text-[14px]">
+                        <span class="grid size-8 shrink-0 place-items-center rounded-lg bg-brand-yellow text-brand-yellow-foreground"><i data-icon="zap" class="size-4"></i></span>
+                        <span class="min-w-0 flex-1 truncate font-medium">Utilities</span>
+                        <span class="inline-flex items-center rounded-full bg-brand-green px-1.5 py-0.5 text-[11px] font-medium text-brand-green-foreground">27%</span>
+                        <span class="num shrink-0"><span class="font-medium">$58.75</span> <span class="text-muted-foreground">/ $220</span></span>
+                      </div>
+                      <div class="relative mt-2 h-1.5 rounded-full bg-muted" role="progressbar" aria-label="Utilities, 27% of monthly limit spent" aria-valuemin="0" aria-valuemax="100" aria-valuenow="27">
+                        <div class="h-full rounded-full bg-brand-yellow-500 dark:bg-brand-yellow-400" style="width: 26.7%"></div>
+                        <span class="absolute -top-1 -bottom-1 w-0.5 -translate-x-1/2 rounded-full bg-foreground/45" style="left: 40%" aria-hidden="true"></span>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+
+                <!-- Uncapped + Pace Footer -->
+                <div class="flex items-center justify-between gap-2 border-t px-4 py-3 text-[12px]">
+                  <span class="flex items-center gap-1.5 text-muted-foreground">
+                    <span class="h-3 w-0.5 rounded-full bg-foreground/45" aria-hidden="true"></span>
+                    Today · 40% pace
+                  </span>
+                  <a href="budget.html" class="num font-medium text-primary-text hover:underline">+$495.14 in 5 uncapped →</a>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- ROW 2: Needs your attention (Dashboard Propuesta B + Schema CardStatement/Debt/Recurring) -->
+          <section class="px-5 pt-7 lg:px-0" aria-labelledby="h-attention">
+            <div class="flex items-center gap-2">
+              <h2 id="h-attention" class="text-[17px] font-semibold tracking-[-0.01em]">Needs your attention</h2>
+              <span class="num inline-flex h-5 items-center rounded-full bg-muted px-2 text-[12px] font-semibold text-muted-foreground">3</span>
+            </div>
+            <div class="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-3">
+              <a href="account.html?id=3" class="flex items-center gap-3 rounded-2xl border bg-card p-3.5 hover:bg-accent/60">
+                <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-orange text-brand-orange-foreground">
+                  <i data-icon="credit-card" class="size-5"></i>
+                </span>
+                <span class="min-w-0 flex-1">
+                  <span class="block text-[14px] font-semibold">Sapphire Reserve due Nov 15</span>
+                  <span class="num mt-0.5 block text-[12px] text-warning">$1,512.80 · Min $35.00</span>
+                </span>
+                <span class="shrink-0 rounded-lg border px-2.5 py-1 text-[12px] font-semibold">Pay</span>
+              </a>
+
+              <a href="debts.html?sheet=detail" class="flex items-center gap-3 rounded-2xl border bg-card p-3.5 hover:bg-accent/60">
+                <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-green text-brand-green-foreground">
+                  <i data-icon="hand-coins" class="size-5"></i>
+                </span>
+                <span class="min-w-0 flex-1">
+                  <span class="block text-[14px] font-semibold">Sofía owes $71.30</span>
+                  <span class="num mt-0.5 block text-[12px] text-muted-foreground">Ticketmaster · $421.30 owed</span>
+                </span>
+                <span class="shrink-0 rounded-lg border px-2.5 py-1 text-[12px] font-semibold">Review</span>
+              </a>
+
+              <a href="recurring.html?sheet=confirm" class="flex items-center gap-3 rounded-2xl border bg-card p-3.5 hover:bg-accent/60">
+                <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-yellow text-brand-yellow-foreground">
+                  <i data-icon="zap" class="size-5"></i>
+                </span>
+                <span class="min-w-0 flex-1">
+                  <span class="block text-[14px] font-semibold">Con Edison ~$94.00</span>
+                  <span class="mt-0.5 block text-[12px] text-muted-foreground">Due Nov 18 · Confirm bill</span>
+                </span>
+                <span class="shrink-0 rounded-lg border px-2.5 py-1 text-[12px] font-semibold">Confirm</span>
+              </a>
+            </div>
+          </section>
+
+          <!-- ROW 3: Accounts Overview (Dashboard A + Cuentas A + BankAccount schema) -->
+          <section class="px-5 pt-7 lg:px-0" aria-labelledby="h-accounts">
+            <div class="rounded-2xl border bg-card p-4 lg:p-5">
+              <div class="flex flex-wrap items-baseline justify-between gap-3">
+                <div class="flex flex-wrap items-baseline gap-x-5 gap-y-1">
+                  <h2 id="h-accounts" class="text-[17px] font-semibold tracking-[-0.01em]">Accounts</h2>
+                  <p class="num text-[13px] text-muted-foreground">
+                    Checking &amp; Cash <strong class="font-medium text-foreground">$12,472.73</strong>
+                    <span class="mx-1.5 opacity-40">·</span>
+                    Savings <strong class="font-medium text-foreground">$26,384.46</strong>
+                    <span class="mx-1.5 opacity-40">·</span>
+                    Credit used <strong class="font-medium text-warning">$2,458.72</strong>
+                  </p>
+                </div>
+                <a href="accounts.html" class="-my-2 -mr-2 flex h-10 items-center gap-0.5 rounded-xl px-2 text-[14px] font-medium text-primary-text hover:bg-accent">
+                  All 7 accounts <i data-icon="chevron-right" class="size-4"></i>
+                </a>
+              </div>
+
+              <!-- Asset Allocation Composition Bar -->
+              <div class="mt-3 flex h-1.5 gap-0.5 overflow-hidden rounded-full bg-muted" role="img" aria-label="Account mix: Checking and Cash 30%, Savings 64%, Credit used 6%">
+                <span class="bg-brand-purple-500 dark:bg-brand-purple-400" style="width: 30.2%" title="Checking & Cash · $12,472.73"></span>
+                <span class="bg-brand-green-500 dark:bg-brand-green-400" style="width: 63.8%" title="Savings · $26,384.46"></span>
+                <span class="bg-brand-orange-500 dark:bg-brand-orange-400" style="width: 6.0%" title="Credit used · $2,458.72"></span>
+              </div>
+
+              <!-- Primary Accounts Grid (dynamically filtered by active Scope) -->
+              <div id="home-accounts-grid" class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"></div>
+
+              <!-- Secondary Private Accounts Pill Strip (shown in All scope on Home so all 7 are glanceable) -->
+              <div id="home-accounts-more" class="mt-3 flex flex-wrap items-center gap-2 border-t pt-3 text-[12px]">
+                <span class="font-medium text-muted-foreground">Also private to you:</span>
+                <a href="accounts.html?scope=only-you" class="inline-flex items-center gap-1.5 rounded-lg border bg-muted/40 px-2.5 py-1 hover:bg-accent">
+                  <span class="size-2 rounded-full bg-brand-blue-500"></span>
+                  <span class="font-medium">BBVA México</span>
+                  <span class="num text-muted-foreground">MX$38,500 ≈ $2,084.46</span>
+                </a>
+                <a href="accounts.html?scope=only-you" class="inline-flex items-center gap-1.5 rounded-lg border bg-muted/40 px-2.5 py-1 hover:bg-accent">
+                  <span class="size-2 rounded-full bg-brand-gray-500"></span>
+                  <span class="font-medium">Amex Gold</span>
+                  <span class="num text-muted-foreground">−$612.40 · 8%</span>
+                </a>
+                <a href="accounts.html?scope=only-you" class="inline-flex items-center gap-1.5 rounded-lg border bg-muted/40 px-2.5 py-1 hover:bg-accent">
+                  <span class="size-2 rounded-full bg-brand-yellow-500"></span>
+                  <span class="font-medium">Cash</span>
+                  <span class="num text-muted-foreground">$140.00</span>
+                </a>
+              </div>
+            </div>
+          </section>
+
+          <!-- ROW 4: Recent Activity (cols 1-7) + Coming up & Assistant (cols 8-12) -->
+          <div class="lg:grid lg:grid-cols-12 lg:items-start lg:gap-6 lg:pt-7">
+            <!-- Recent Activity (visible on both Mobile & Desktop, grouped Today / Yesterday) -->
+            <section class="px-5 pt-7 lg:col-span-7 lg:px-0 lg:pt-0" aria-labelledby="h-recent">
+              <div class="flex items-baseline justify-between">
+                <h2 id="h-recent" class="text-[17px] font-semibold tracking-[-0.01em]">Recent activity</h2>
+                <a href="transactions.html" class="-my-2 -mr-2 flex h-10 items-center gap-0.5 rounded-xl px-2 text-[14px] font-medium text-primary-text hover:bg-accent">
+                  All 44 transactions <i data-icon="chevron-right" class="size-4"></i>
+                </a>
+              </div>
+              <div id="home-recent-card" class="mt-3 rounded-2xl border bg-card"></div>
+            </section>
+
+            <!-- Right Column Bottom: Coming Up + Assistant Insight + Debts Strip -->
+            <div class="space-y-7 px-5 pt-7 lg:col-span-5 lg:px-0 lg:pt-0">
+              <section aria-labelledby="h-upcoming">
+                <div class="flex items-baseline justify-between">
+                  <h2 id="h-upcoming" class="text-[17px] font-semibold tracking-[-0.01em]">Coming up</h2>
+                  <a href="recurring.html" class="-my-2 -mr-2 flex h-10 items-center gap-0.5 rounded-xl px-2 text-[14px] font-medium text-primary-text hover:bg-accent">
+                    Calendar <i data-icon="chevron-right" class="size-4"></i>
+                  </a>
+                </div>
+                <div id="upcoming-card" class="mt-3"></div>
+              </section>
+
+              <section id="insight-card" aria-labelledby="h-insight">
+                <div class="relative rounded-2xl border border-assistant-border bg-assistant p-4">
+                  <button type="button" onclick="document.getElementById('insight-card').classList.add('hidden')" class="absolute top-1.5 right-1.5 grid size-10 place-items-center rounded-full text-muted-foreground hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10" aria-label="Dismiss this insight">
+                    <i data-icon="x" class="size-[18px]"></i>
+                  </button>
+                  <p class="flex items-center gap-2 pr-10 text-[13px] font-medium text-assistant-accent">
+                    <i data-icon="firecent" class="h-5 w-auto"></i>
+                    Your assistant noticed
+                  </p>
+                  <h2 id="h-insight" class="mt-2.5 text-[17px] leading-[23px] font-semibold tracking-[-0.01em]">Spotify went up $2.00 this month</h2>
+                  <p class="mt-1.5 text-[14px] leading-[21px] text-foreground/80">
+                    Duo is now <span class="num font-medium">$18.99</span>. Together with Netflix and Max, subscriptions rose <span class="num font-medium">$7.50/mo</span> this year. Also, <strong class="font-medium">Chewy</strong> looks like a monthly order (~$61).
+                  </p>
+                  <div class="mt-4 flex flex-wrap items-center gap-1.5">
+                    <a href="recurring.html?view=all&amp;chip=subscriptions" class="flex h-10 items-center rounded-xl border border-assistant-border bg-card px-3.5 text-[13px] font-semibold hover:bg-accent/60">Review subscriptions</a>
+                    <a href="assistant.html?view=thread" class="flex h-10 items-center rounded-xl px-3 text-[13px] font-medium text-assistant-accent hover:bg-black/5 dark:hover:bg-white/10">Ask about it</a>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════ EMPTY (new space) ═══════════════════════════ -->
+        <div data-view="empty">
+          <header class="flex items-center justify-between px-5 pt-2 lg:hidden">
+            <a href="home.html" class="inline-flex h-11 items-center text-foreground" aria-label="Firecent Home">
+              <i data-icon="firecent-logo" class="h-8 w-auto"></i>
+            </a>
+            <a href="notifications.html" class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Notifications">
+              <i data-icon="bell" class="size-[22px]"></i>
+            </a>
+          </header>
+
+          <div class="lg:grid lg:grid-cols-12 lg:items-start lg:gap-6 lg:pt-6">
+            <section class="px-5 pt-4 lg:col-span-7 lg:px-0 lg:pt-0" aria-labelledby="h-balance-empty">
+              <div class="rounded-2xl border border-hero-border bg-hero p-5 text-hero-foreground">
+                <h2 id="h-balance-empty" class="text-[13px] font-medium text-hero-muted">Balance</h2>
+                <p class="num mt-1 text-[44px] leading-[48px] font-semibold tracking-[-0.035em] text-hero-muted">
+                  <span class="mr-0.5 text-[26px] font-medium tracking-normal">$</span>0<span class="text-[26px] font-medium tracking-[-0.01em]">.00</span>
+                </p>
+                <p class="mt-2 text-[14px] text-hero-muted">Add your accounts to track balances, monthly category limits, and household cashflow.</p>
+              </div>
+            </section>
+
+            <section class="px-5 pt-7 lg:col-span-5 lg:px-0 lg:pt-0" aria-labelledby="h-start">
+              <h2 id="h-start" class="text-[17px] font-semibold tracking-[-0.01em]">Three steps to a full picture</h2>
+              <ol class="mt-3 divide-y rounded-2xl border bg-card">
+                <li>
+                  <a href="accounts.html?sheet=add-account" class="flex items-center gap-3.5 p-4 hover:bg-accent/60">
+                    <span class="num grid size-7 shrink-0 place-items-center rounded-full bg-primary text-[13px] font-semibold text-primary-foreground">1</span>
+                    <span class="min-w-0 flex-1">
+                      <span class="block font-medium">Add an account</span>
+                      <span class="mt-0.5 block text-[13px] text-muted-foreground">Checking, savings, cash or credit card</span>
+                    </span>
+                    <i data-icon="chevron-right" class="size-[18px] shrink-0 text-muted-foreground"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="budget.html" class="flex items-center gap-3.5 p-4 hover:bg-accent/60">
+                    <span class="num grid size-7 shrink-0 place-items-center rounded-full border text-[13px] font-semibold text-muted-foreground">2</span>
+                    <span class="min-w-0 flex-1">
+                      <span class="block font-medium">Set category limits</span>
+                      <span class="mt-0.5 block text-[13px] text-muted-foreground">Put a monthly cap on the categories you track</span>
+                    </span>
+                    <i data-icon="chevron-right" class="size-[18px] shrink-0 text-muted-foreground"></i>
+                  </a>
+                </li>
+                <li>
+                  <button type="button" data-open="add" class="flex w-full items-center gap-3.5 p-4 text-left hover:bg-accent/60">
+                    <span class="num grid size-7 shrink-0 place-items-center rounded-full border text-[13px] font-semibold text-muted-foreground">3</span>
+                    <span class="min-w-0 flex-1">
+                      <span class="block font-medium">Record or import your month</span>
+                      <span class="mt-0.5 block text-[13px] text-muted-foreground">Tap + to log as you go, or send a statement to the assistant</span>
+                    </span>
+                    <i data-icon="chevron-right" class="size-[18px] shrink-0 text-muted-foreground"></i>
+                  </button>
+                </li>
+              </ol>
+            </section>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════ LOADING ═══════════════════════════ -->
+        <div data-view="loading" aria-busy="true">
+          <p class="sr-only" role="status">Loading your balance</p>
+          <div aria-hidden="true">
+            <div class="flex items-center justify-between px-5 pt-2 lg:hidden">
+              <div class="flex h-11 items-center"><div class="sk h-7 w-24 rounded-lg"></div></div>
+              <div class="sk size-7 rounded-full"></div>
+            </div>
+            <div class="lg:grid lg:grid-cols-12 lg:items-start lg:gap-6 lg:pt-6">
+              <div class="px-5 pt-3 lg:col-span-7 lg:px-0 lg:pt-0">
+                <div class="rounded-2xl border border-hero-border bg-hero p-5">
+                  <div class="flex justify-between">
+                    <div class="h-4 w-28 rounded-md bg-white/10"></div>
+                    <div class="h-7 w-36 rounded-lg bg-white/10"></div>
+                  </div>
+                  <div class="mt-3 h-11 w-56 rounded-xl bg-white/15"></div>
+                  <div class="mt-2 h-4 w-44 rounded-md bg-white/10"></div>
+                  <div class="mt-5 h-[68px] rounded-xl bg-white/10 lg:h-[118px]"></div>
+                  <div class="mt-4 grid grid-cols-3 gap-2">
+                    <div class="h-16 rounded-xl bg-white/10"></div>
+                    <div class="h-16 rounded-xl bg-white/10"></div>
+                    <div class="h-16 rounded-xl bg-white/10"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="px-5 pt-7 lg:col-span-5 lg:px-0 lg:pt-0">
+                <div class="rounded-2xl border bg-card p-4 space-y-4">
+                  <div class="flex justify-between"><div class="sk h-5 w-36"></div><div class="sk h-5 w-16"></div></div>
+                  <div class="sk h-2.5 rounded-full"></div>
+                  <div class="space-y-3 pt-2">
+                    <div class="sk h-10 rounded-xl"></div>
+                    <div class="sk h-10 rounded-xl"></div>
+                    <div class="sk h-10 rounded-xl"></div>
+                    <div class="sk h-10 rounded-xl"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-7 grid grid-cols-1 gap-3 px-5 lg:grid-cols-3 lg:px-0">
+              <div class="sk h-[68px] rounded-2xl"></div>
+              <div class="sk h-[68px] rounded-2xl"></div>
+              <div class="sk h-[68px] rounded-2xl"></div>
+            </div>
+            <div class="mt-7 px-5 lg:px-0">
+              <div class="sk h-44 rounded-2xl"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════ ERROR ═══════════════════════════ -->
+        <div data-view="error">
+          <header class="flex items-center justify-between px-5 pt-2 lg:hidden">
+            <a href="home.html" class="inline-flex h-11 items-center text-foreground" aria-label="Firecent Home">
+              <i data-icon="firecent-logo" class="h-8 w-auto"></i>
+            </a>
+            <a href="notifications.html" class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Notifications">
+              <i data-icon="bell" class="size-[22px]"></i>
+            </a>
+          </header>
+          <div class="flex flex-col items-center px-8 py-16 text-center lg:py-24">
+            <span class="grid size-14 place-items-center rounded-2xl bg-muted">
+              <i data-icon="cloud-off" class="size-6 text-muted-foreground"></i>
+            </span>
+            <h2 class="mt-4 text-[17px] font-semibold">We couldn't load this</h2>
+            <p class="mt-1.5 max-w-[280px] text-[14px] leading-[20px] text-muted-foreground">
+              Check your connection and try again. Nothing was changed.
+            </p>
+            <div class="mt-5">
+              <button type="button" class="flex h-11 items-center rounded-xl border bg-card px-4 text-[14px] font-semibold hover:bg-accent">Try again</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/icons.js"></script>
+    <script>
+      (function () {
+        var COLOR_TILE = {
+          green: "bg-brand-green text-brand-green-foreground",
+          orange: "bg-brand-orange text-brand-orange-foreground",
+          blue: "bg-brand-blue text-brand-blue-foreground",
+          purple: "bg-brand-purple text-brand-purple-foreground",
+          pink: "bg-brand-pink text-brand-pink-foreground",
+          red: "bg-brand-red text-brand-red-foreground",
+          yellow: "bg-brand-yellow text-brand-yellow-foreground",
+          brown: "bg-brand-brown text-brand-brown-foreground",
+          gray: "bg-brand-gray text-brand-gray-foreground",
+        };
+        var BAR_COLOR = {
+          blue: "bg-brand-blue-500 dark:bg-brand-blue-400",
+          gray: "bg-brand-gray-500 dark:bg-brand-gray-400",
+        };
+
+        var SCOPES = {
+          everything: {
+            accSub: "7 accounts · Maya & Daniel",
+            whole: "36,398", dec: ".47",
+            delta: "+$1,312.86", deltaSub: "this month since Nov 1",
+            assets: "$38,857.19", cards: "−$2,458.72",
+            moneyIn: "$6,125.00", inSub: "2 deposits",
+            moneyOut: "$4,812.14", outSub: "40 tx",
+            thirdLbl: "Left in caps", thirdVal: "$1,263.00", thirdSub: "$70.17 / day",
+            showSplit: true,
+          },
+          shared: {
+            accSub: "3 shared accounts · Maya & Daniel",
+            whole: "30,874", dec: ".23",
+            delta: "+$730.06", deltaSub: "net change incl. $1,800 transfer",
+            assets: "$32,720.55", cards: "−$1,846.32",
+            moneyIn: "$3,150.00", inSub: "1 deposit",
+            moneyOut: "$4,219.94", outSub: "25 tx",
+            thirdLbl: "Scope net", thirdVal: "+$1,800.00", thirdSub: "Maya share",
+            showSplit: false,
+          },
+          "only-you": {
+            accSub: "4 private accounts · Only Maya",
+            whole: "5,524", dec: ".24",
+            delta: "+$582.80", deltaSub: "this month incl. −$1,800 transfer",
+            assets: "$6,136.64", cards: "−$612.40",
+            moneyIn: "$2,975.00", inSub: "1 deposit",
+            moneyOut: "$592.20", outSub: "15 tx",
+            thirdLbl: "Scope net", thirdVal: "−$1,800.00", thirdSub: "Maya share",
+            showSplit: false,
+          },
+        };
+
+        var ACCOUNTS_LIST = [
+          {
+            id: 1, href: "account.html?id=1", name: "Joint Checking", typeLabel: "Checking ·· 4821",
+            icon: "landmark", color: "purple", shared: true, owners: ["M", "D"],
+            balance: "$8,420.55", sub: "+$855.13 this month", subCls: "text-positive", featured: true,
+          },
+          {
+            id: 2, href: "accounts.html", name: "Emergency Fund", typeLabel: "Savings ·· 9034",
+            icon: "piggy-bank", color: "green", shared: true, owners: ["M", "D"],
+            balance: "$24,300.00", sub: "Shared reserve", subCls: "text-muted-foreground", featured: true,
+          },
+          {
+            id: 3, href: "account.html?id=3", name: "Sapphire Reserve", typeLabel: "Credit ·· 7719",
+            icon: "credit-card", color: "blue", shared: true, owners: ["D", "M"],
+            balance: "−$1,846.32", sub: "Due Nov 15 · $1,512.80", subCls: "text-warning",
+            utilPct: 15.4, limitTxt: "15% of $12k", featured: true,
+          },
+          {
+            id: 4, href: "account.html?id=1&private=1", name: "Maya's Checking", typeLabel: "Only you ·· 2260",
+            icon: "landmark", color: "orange", shared: false, owners: ["M"],
+            balance: "$3,912.18", sub: "+$770.65 this month", subCls: "text-positive", featured: true,
+          },
+          {
+            id: 6, href: "accounts.html?scope=only-you", name: "BBVA México", typeLabel: "Savings ·· 5512",
+            icon: "piggy-bank", color: "blue", shared: false, owners: ["M"],
+            balance: "MX$38,500", sub: "≈ $2,084.46 USD", subCls: "text-muted-foreground", featured: false,
+          },
+          {
+            id: 7, href: "accounts.html?scope=only-you", name: "Amex Gold", typeLabel: "Credit ·· 1008",
+            icon: "credit-card", color: "gray", shared: false, owners: ["M"],
+            balance: "−$612.40", sub: "Due Nov 28 · $268.90", subCls: "text-muted-foreground",
+            utilPct: 7.7, limitTxt: "8% of $8k", featured: false,
+          },
+          {
+            id: 5, href: "accounts.html?scope=only-you", name: "Cash", typeLabel: "Wallet · USD",
+            icon: "banknote", color: "yellow", shared: false, owners: ["M"],
+            balance: "$140.00", sub: "1 expense today", subCls: "text-muted-foreground", featured: false,
+          },
+        ];
+
+        var RECENT_ITEMS = [
+          { id: 1044, day: "Today", payee: "DoorDash", cat: "Dining out", icon: "utensils", color: "orange", acc: "Joint Checking", shared: true, by: "M", amt: "−$41.24" },
+          { id: 1043, day: "Today", payee: "McNally Jackson", cat: "Shopping", icon: "shopping-bag", color: "purple", acc: "Amex Gold", shared: false, by: "M", amt: "−$25.31" },
+          { id: 1042, day: "Today", payee: "Union Sq Greenmarket", cat: "Groceries", icon: "shopping-cart", color: "green", acc: "Cash", shared: false, by: "M", amt: "−$38.00" },
+          { id: 1041, day: "Yesterday", payee: "Ticketmaster", cat: "Entertainment", icon: "ticket", color: "pink", acc: "Joint Checking", shared: true, by: "M", tag: "Sofía owes $71.30", amt: "−$142.60" },
+          { id: 1039, day: "Yesterday", payee: "Costco", cat: "Groceries", icon: "shopping-cart", color: "green", acc: "Joint Checking", shared: true, by: "D", amt: "−$211.36" },
+          { id: 1038, day: "Yesterday", payee: "Target", cat: "Household", icon: "lamp", color: "yellow", acc: "Joint Checking", shared: true, by: "D", label: "Reimbursable", amt: "−$64.90" },
+        ];
+
+        var currentScope = window.fableScope ? window.fableScope() : "everything";
+        if (!SCOPES[currentScope]) currentScope = "everything";
+
+        function renderScope(scope) {
+          currentScope = SCOPES[scope] ? scope : "everything";
+          if (window.fableScope) window.fableScope(currentScope);
+          var s = SCOPES[currentScope];
+
+          document.getElementById("hero-acc-sub").textContent = s.accSub;
+          document.getElementById("hero-total").innerHTML =
+            '<span class="mr-0.5 text-[24px] font-medium tracking-normal text-hero-muted">$</span>' +
+            s.whole + '<span class="text-[24px] font-medium tracking-[-0.01em] text-hero-muted">' + s.dec + "</span>";
+          document.getElementById("hero-delta").textContent = s.delta;
+          document.getElementById("hero-delta-sub").textContent = s.deltaSub;
+          document.getElementById("hero-assets").textContent = s.assets;
+          document.getElementById("hero-cards").textContent = s.cards;
+          document.getElementById("hero-in").textContent = s.moneyIn;
+          document.getElementById("hero-in-sub").textContent = s.inSub;
+          document.getElementById("hero-out").textContent = s.moneyOut;
+          document.getElementById("hero-out-sub").textContent = s.outSub;
+          document.getElementById("hero-third-val").textContent = s.thirdVal;
+          document.getElementById("hero-third-sub").textContent = s.thirdSub;
+          document.getElementById("hero-third-lbl").lastChild.textContent = s.thirdLbl;
+
+          var splitWrap = document.getElementById("hero-split-wrap");
+          splitWrap.classList.toggle("hidden", !s.showSplit);
+
+          document.querySelectorAll("#home-scope [data-scope]").forEach(function (btn) {
+            var on = btn.dataset.scope === currentScope;
+            btn.setAttribute("aria-pressed", String(on));
+            btn.className = on
+              ? "rounded-lg bg-white/15 px-2.5 py-1.5 text-hero-foreground"
+              : "rounded-lg px-2.5 py-1.5 text-hero-muted hover:text-hero-foreground";
+          });
+
+          // Render Accounts grid according to scope
+          var accs = ACCOUNTS_LIST.filter(function (a) {
+            if (currentScope === "shared") return a.shared;
+            if (currentScope === "only-you") return !a.shared;
+            return a.featured;
+          });
+          var accEl = document.getElementById("home-accounts-grid");
+          accEl.className = currentScope === "shared"
+            ? "mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3"
+            : "mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4";
+          accEl.innerHTML = accs.map(function (a) {
+            var badge = a.shared
+              ? '<span class="inline-flex shrink-0 items-center -space-x-1">' + a.owners.map(function (o) {
+                  return '<span class="grid size-5 place-items-center rounded-full ring-2 ring-card text-[9px] font-semibold ' +
+                    (o === "D" ? "bg-brand-orange text-brand-orange-foreground" : "bg-brand-purple text-brand-purple-foreground") + '">' + o + "</span>";
+                }).join("") + "</span>"
+              : '<span class="grid size-6 shrink-0 place-items-center rounded-full bg-muted text-muted-foreground" aria-label="Only you" title="Only you"><i data-icon="lock" class="size-3"></i></span>';
+
+            var util = a.utilPct
+              ? '<div class="mt-2.5"><div class="flex justify-between text-[11px] text-muted-foreground"><span>Credit limit</span><span class="num">' + a.limitTxt + '</span></div>' +
+                '<div class="mt-1 h-1 rounded-full bg-muted"><div class="h-full rounded-full ' + (BAR_COLOR[a.color] || BAR_COLOR.gray) + '" style="width:' + a.utilPct + '%"></div></div></div>'
+              : "";
+
+            return (
+              '<a href="' + a.href + '" class="flex flex-col justify-between rounded-xl border bg-background/50 p-3.5 hover:bg-accent/60">' +
+              '<div class="flex items-start justify-between gap-2">' +
+              '<div class="flex items-center gap-2.5 min-w-0">' +
+              '<span class="grid size-9 shrink-0 place-items-center rounded-xl ' + COLOR_TILE[a.color] + '"><i data-icon="' + a.icon + '" class="size-4"></i></span>' +
+              '<div class="min-w-0"><p class="truncate text-[14px] font-semibold">' + a.name + "</p><p class=\"num truncate text-[12px] text-muted-foreground\">" + a.typeLabel + "</p></div>" +
+              "</div>" + badge + "</div>" +
+              '<div class="mt-3"><p class="num text-[18px] font-semibold tracking-[-0.02em]">' + a.balance + "</p>" +
+              '<p class="num mt-0.5 text-[12px] font-medium ' + a.subCls + '">' + a.sub + "</p>" + util + "</div>" +
+              "</a>"
+            );
+          }).join("");
+          document.getElementById("home-accounts-more").classList.toggle("hidden", currentScope !== "everything");
+          if (window.fableIcons) window.fableIcons(accEl);
+
+          // Render Recent activity filtered by scope
+          var rec = RECENT_ITEMS.filter(function (r) {
+            if (currentScope === "shared") return r.shared;
+            if (currentScope === "only-you") return !r.shared;
+            return true;
+          });
+          var recEl = document.getElementById("home-recent-card");
+          recEl.innerHTML = '<ul class="divide-y">' + rec.map(function (r) {
+            var who = r.by === "D"
+              ? '<span class="inline-grid size-4 shrink-0 place-items-center rounded-full bg-brand-orange text-[9px] font-semibold text-brand-orange-foreground" aria-label="Daniel">D</span>'
+              : '<span class="inline-grid size-4 shrink-0 place-items-center rounded-full bg-brand-purple text-[9px] font-semibold text-brand-purple-foreground" aria-label="Maya">M</span>';
+            var extra = r.label
+              ? '<span class="inline-flex h-5 shrink-0 items-center rounded-full bg-brand-green px-2 text-[11px] font-medium text-brand-green-foreground">' + r.label + "</span>"
+              : r.tag
+                ? '<span class="inline-flex h-5 shrink-0 items-center rounded-full bg-primary/10 px-2 text-[11px] font-medium text-primary-text">' + r.tag + "</span>"
+                : "";
+            return (
+              '<li><a href="transactions.html?sheet=detail&amp;id=' + r.id + '" class="flex min-h-16 items-center gap-3 px-4 py-3 hover:bg-accent/60">' +
+              '<span class="grid size-10 shrink-0 place-items-center rounded-xl ' + COLOR_TILE[r.color] + '"><i data-icon="' + r.icon + '" class="size-5"></i></span>' +
+              '<span class="min-w-0 flex-1">' +
+              '<span class="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 font-medium"><span>' + r.payee + "</span>" + extra + "</span>" +
+              '<span class="mt-0.5 flex items-center gap-1.5 truncate text-[12px] text-muted-foreground">' +
+              "<span>" + r.day + "</span><span>·</span><span>" + r.cat + "</span><span>·</span>" +
+              (!r.shared ? '<i data-icon="lock" class="size-3 shrink-0"></i>' : "") +
+              '<span class="truncate">' + r.acc + "</span>" + who +
+              "</span></span>" +
+              '<span class="num shrink-0 font-semibold">' + r.amt + "</span>" +
+              "</a></li>"
+            );
+          }).join("") + "</ul>";
+          if (window.fableIcons) window.fableIcons(recEl);
+        }
+
+        document.getElementById("home-scope").addEventListener("click", function (e) {
+          var b = e.target.closest("[data-scope]");
+          if (b) renderScope(b.dataset.scope);
+        });
+        document.querySelectorAll("[data-jump-scope]").forEach(function (b) {
+          b.addEventListener("click", function () { renderScope(b.dataset.jumpScope); });
+        });
+        renderScope(currentScope);
+
+        // Coming up card (next 7 days · $1,622.29)
+        var upcomingEl = document.getElementById("upcoming-card");
+        upcomingEl.innerHTML =
+          '<div class="rounded-2xl border bg-card">' +
+          '<ul class="divide-y">' +
+          '<li><a href="recurring.html?sheet=detail" class="flex items-center gap-3 p-4 hover:bg-accent/60">' +
+          '<span class="grid size-11 shrink-0 place-items-center rounded-xl bg-muted text-center leading-none"><span><span class="block text-[11px] font-medium text-muted-foreground">Sat</span><span class="num mt-0.5 block text-[16px] font-semibold">14</span></span></span>' +
+          '<span class="min-w-0 flex-1"><span class="flex items-baseline justify-between gap-3"><span class="truncate font-medium">Netflix</span><span class="num shrink-0 font-medium">$15.49</span></span>' +
+          '<span class="mt-0.5 flex items-center justify-between gap-3 text-[12px] text-muted-foreground"><span class="truncate">On Sapphire Reserve</span><span class="inline-flex shrink-0 items-center gap-1"><i data-icon="repeat" class="size-3"></i>Auto</span></span></span></a></li>' +
+          '<li><a href="account.html?id=3" class="flex items-center gap-3 p-4 hover:bg-accent/60">' +
+          '<span class="grid size-11 shrink-0 place-items-center rounded-xl bg-muted text-center leading-none"><span><span class="block text-[11px] font-medium text-muted-foreground">Sun</span><span class="num mt-0.5 block text-[16px] font-semibold">15</span></span></span>' +
+          '<span class="min-w-0 flex-1"><span class="flex items-baseline justify-between gap-3"><span class="truncate font-medium">Pay Sapphire Reserve</span><span class="num shrink-0 font-medium">$1,512.80</span></span>' +
+          '<span class="mt-0.5 flex items-center justify-between gap-3 text-[12px] text-muted-foreground"><span class="truncate">From Joint Checking</span><span class="inline-flex shrink-0 items-center gap-1 font-medium text-warning"><i data-icon="clock" class="size-3"></i>Due in 3 days</span></span></span></a></li>' +
+          '<li><a href="recurring.html?sheet=confirm&amp;id=paycheck" class="flex items-center gap-3 p-4 hover:bg-accent/60">' +
+          '<span class="grid size-11 shrink-0 place-items-center rounded-xl bg-muted text-center leading-none"><span><span class="block text-[11px] font-medium text-muted-foreground">Mon</span><span class="num mt-0.5 block text-[16px] font-semibold">16</span></span></span>' +
+          '<span class="min-w-0 flex-1"><span class="flex items-baseline justify-between gap-3"><span class="truncate font-medium">Daniel\'s paycheck</span><span class="num shrink-0 font-medium text-positive">+$3,150.00</span></span>' +
+          '<span class="mt-0.5 flex items-center justify-between gap-3 text-[12px] text-muted-foreground"><span class="truncate">Into Joint Checking</span><span class="inline-flex shrink-0 items-center gap-1"><i data-icon="arrow-down-left" class="size-3"></i>Expected</span></span></span></a></li>' +
+          '<li><a href="recurring.html?sheet=confirm" class="flex items-center gap-3 p-4 hover:bg-accent/60">' +
+          '<span class="grid size-11 shrink-0 place-items-center rounded-xl bg-muted text-center leading-none"><span><span class="block text-[11px] font-medium text-muted-foreground">Wed</span><span class="num mt-0.5 block text-[16px] font-semibold">18</span></span></span>' +
+          '<span class="min-w-0 flex-1"><span class="flex items-baseline justify-between gap-3"><span class="truncate font-medium">Con Edison</span><span class="num shrink-0 font-medium">~$94.00</span></span>' +
+          '<span class="mt-0.5 flex items-center justify-between gap-3 text-[12px] text-muted-foreground"><span class="truncate">You confirm the amount</span><span class="inline-flex shrink-0 items-center gap-1"><i data-icon="hand" class="size-3"></i>Manual</span></span></span></a></li>' +
+          '</ul><p class="flex items-baseline justify-between border-t px-4 py-3 text-[13px]"><span class="text-muted-foreground">To pay in next 7 days</span><span class="num font-semibold">$1,622.29</span></p></div>';
+        if (window.fableIcons) window.fableIcons(upcomingEl);
+
+        // Smooth 6-month balance sparkline with desktop hover rule
+        var vals = [
+          31240, 31010, 31620, 31890, 31450, 32080, 32410, 32150, 32760, 33020, 32690, 33340,
+          33610, 33280, 33950, 34320, 34010, 34590, 34880, 34610, 35086, 35190, 34888, 36398,
+        ];
+        var svg = document.getElementById("spark");
+        if (svg) {
+          var min = Math.min.apply(null, vals);
+          var max = Math.max.apply(null, vals);
+          var span = max - min || 1;
+          var pts = vals.map(function (v, i) {
+            return { x: (i / (vals.length - 1)) * 100, y: 12 + (1 - (v - min) / span) * 48 };
+          });
+
+          var d = "M " + pts[0].x.toFixed(2) + " " + pts[0].y.toFixed(2);
+          for (var i = 0; i < pts.length - 1; i++) {
+            var p0 = pts[i - 1] || pts[0], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+            var t = 0.3;
+            d += " C " + (p1.x + (p2.x - p0.x) * t).toFixed(2) + " " + (p1.y + (p2.y - p0.y) * t).toFixed(2) + ", " +
+              (p2.x - (p3.x - p1.x) * t).toFixed(2) + " " + (p2.y - (p3.y - p1.y) * t).toFixed(2) + ", " +
+              p2.x.toFixed(2) + " " + p2.y.toFixed(2);
+          }
+          svg.querySelector("[data-line]").setAttribute("d", d);
+          svg.querySelector("[data-area]").setAttribute("d", d + " L 100 72 L 0 72 Z");
+          document.getElementById("spark-dot").style.top = ((pts[pts.length - 1].y / 72) * 100).toFixed(2) + "%";
+
+          var SNAPS = [
+            { x: 0, i: 0, label: "Jun 1 · $31,240.00" },
+            { x: 18.29, i: 4, label: "Jul 1 · $31,584.20" },
+            { x: 37.2, i: 8, label: "Aug 1 · $32,902.75" },
+            { x: 56.1, i: 12, label: "Sep 1 · $33,312.40" },
+            { x: 74.39, i: 16, label: "Oct 1 · $34,618.93" },
+            { x: 93.29, i: 20, label: "Nov 1 · $35,085.61" },
+            { x: 100, i: 23, label: "Today · $36,398.47" },
+          ];
+          var box = document.getElementById("spark-box");
+          var hover = document.getElementById("spark-hover");
+          if (box && hover) {
+            box.addEventListener("mousemove", function (e) {
+              if (window.innerWidth < 1024) return;
+              var rect = box.getBoundingClientRect();
+              var pct = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+              var snap = SNAPS.reduce(function (a, b) { return Math.abs(b.x - pct) < Math.abs(a.x - pct) ? b : a; });
+              hover.classList.remove("hidden");
+              hover.style.left = snap.x + "%";
+              hover.querySelector("[data-hover-dot]").style.top = ((pts[snap.i].y / 72) * 100).toFixed(2) + "%";
+              var lbl = hover.querySelector("[data-hover-label]");
+              lbl.textContent = snap.label;
+              lbl.style.transform = snap.x < 15 ? "translateX(0)" : snap.x > 85 ? "translateX(-100%)" : "translateX(-50%)";
+            });
+            box.addEventListener("mouseleave", function () { hover.classList.add("hidden"); });
+          }
+        }
+      })();
+    </script>
+  </body>
+</html>

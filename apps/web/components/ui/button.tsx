@@ -19,6 +19,8 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",
+        // Firecent E16: borderless text button in the brand text color.
+        text: "text-primary-text font-medium hover:bg-accent",
       },
       size: {
         default:
@@ -32,8 +34,20 @@ const buttonVariants = cva(
         "icon-sm":
           "size-8 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-md",
         "icon-lg": "size-10",
+        // Firecent touch sizes (44 px targets, 12 px radius).
+        touch: "h-11 gap-2 rounded-xl px-4 text-[14px] font-semibold",
+        "icon-touch":
+          "size-11 rounded-full [&_svg:not([class*='size-'])]:size-[22px]",
       },
     },
+    compoundVariants: [
+      // E16 is font-medium with px-3, even at touch size.
+      {
+        variant: "text",
+        size: "touch",
+        class: "px-3 font-medium",
+      },
+    ],
     defaultVariants: {
       variant: "default",
       size: "default",

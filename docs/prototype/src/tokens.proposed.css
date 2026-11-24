@@ -1,0 +1,97 @@
+/* PROPOSED adjustments on top of packages/lib/src/tokens/tokens.css.
+ *
+ * Imported AFTER the real tokens, so every value here is either an override of
+ * an existing token or a new one. Same shape as tokens.css (`@variant light` /
+ * `@variant dark` under `@layer theme`), so the block can be merged verbatim.
+ * Uniwind rule respected: every var in `light` also exists in `dark`.
+ * Rationale for each change lives in ../design-notes.md. */
+
+:root {
+  /* 8px → 12px base. Cards use rounded-2xl (16px), sheets rounded-3xl (24px). */
+  --radius: 0.75rem;
+}
+
+@layer theme {
+  :root {
+    @variant light {
+      /* ── overrides ── */
+      --background: #f4f6fa; /* brand Gray 50, lets white cards separate without a shadow */
+      --muted: #eef1f6; /* one step below the new background (tracks, tiles) */
+      --muted-foreground: #566275; /* was #64748b: 4.40:1 on muted, now 5.46:1 */
+      --primary: #5e54f0; /* unchanged (white on it: 5.25:1), restated for the dark override below */
+      --destructive: #dc2626; /* was #ef4444: 3.76:1 as text on white, now 4.83:1 */
+
+      /* ── new: money semantics ── */
+      --positive: #047857; /* money in */
+      --warning: #b45309; /* due soon, over pace */
+      --primary-text: #5046e0; /* primary used as TEXT on background/card */
+
+      /* ── new: spending nature (Owe / Need / Want) ── */
+      --nature-owe: #334155; /* slate ink, a step softer than brand Gray 700 so the bar does not read as black */
+      --nature-need: #5e54f0; /* brand violet */
+      --nature-want: #f9622f; /* brand Fire Orange #ff6b3d is 2.83:1 on white; this reaches 3:1 for graphics */
+
+      /* ── new: the assistant's voice (brand Sand) ── */
+      --assistant: #fff7f0;
+      --assistant-border: #fbdcc8;
+      --assistant-accent: #c2410c;
+
+      /* ── new: dark hero balance card ── */
+      --hero: #0b1220;
+      --hero-foreground: #f4f6fa;
+      --hero-muted: #94a3b8;
+      --hero-border: #1e293b;
+      --hero-positive: #34d399;
+      --hero-accent: #a99bff;
+      --hero-line: #9a88fb;
+    }
+
+    @variant dark {
+      /* ── overrides (unchanged values restated so both themes define the same set) ── */
+      --background: #0b1220;
+      --muted: #17202f;
+      --muted-foreground: #94a3b8;
+      --primary: #7758fb; /* was #7c5cff: white text on it 4.35:1, now 4.59:1 */
+      --destructive: #f87171; /* was #ef4444: 4.66:1 as text on card, now 6.35:1 */
+
+      --positive: #34d399;
+      --warning: #fbbf24;
+      --primary-text: #a99bff;
+
+      --nature-owe: #a9b4c6;
+      --nature-need: #9a88fb;
+      --nature-want: #ff7a3d;
+
+      --assistant: #1e1714;
+      --assistant-border: #3d261b;
+      --assistant-accent: #ffa983;
+
+      --hero: #11192a;
+      --hero-foreground: #f4f6fa;
+      --hero-muted: #94a3b8;
+      --hero-border: #1e293b;
+      --hero-positive: #34d399;
+      --hero-accent: #a99bff;
+      --hero-line: #9a88fb;
+    }
+  }
+}
+
+@theme inline {
+  --color-positive: var(--positive);
+  --color-warning: var(--warning);
+  --color-primary-text: var(--primary-text);
+  --color-nature-owe: var(--nature-owe);
+  --color-nature-need: var(--nature-need);
+  --color-nature-want: var(--nature-want);
+  --color-assistant: var(--assistant);
+  --color-assistant-border: var(--assistant-border);
+  --color-assistant-accent: var(--assistant-accent);
+  --color-hero: var(--hero);
+  --color-hero-foreground: var(--hero-foreground);
+  --color-hero-muted: var(--hero-muted);
+  --color-hero-border: var(--hero-border);
+  --color-hero-positive: var(--hero-positive);
+  --color-hero-accent: var(--hero-accent);
+  --color-hero-line: var(--hero-line);
+}

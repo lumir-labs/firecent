@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="en" data-state="data">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Budget · Firecent</title>
+    <link rel="icon" href="assets/brand/favicon.svg" />
+    <link rel="stylesheet" href="assets/app.css" />
+    <script src="assets/proto.js"></script>
+  </head>
+  <body class="min-h-dvh bg-background text-foreground">
+    <div data-shell data-tab="more" data-nav="budget"></div>
+
+    <div class="lg:pl-60">
+      <div class="relative mx-auto min-h-dvh max-w-[430px] pb-28 lg:max-w-[1160px] lg:px-8 lg:pb-12">
+        <!-- Mobile top bar -->
+        <header class="flex h-14 items-center gap-1 px-2 lg:hidden">
+          <a href="more.html" class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Back">
+            <i data-icon="chevron-left" class="size-[22px]"></i>
+          </a>
+          <h1 class="flex-1 truncate text-[17px] font-semibold tracking-[-0.01em]">Budget</h1>
+          <button type="button" data-open="edit-plan" class="flex h-11 items-center px-3 text-[14px] font-semibold text-primary-text">
+            Edit caps
+          </button>
+        </header>
+
+        <!-- Desktop header -->
+        <header class="hidden items-center justify-between gap-3 pt-8 lg:flex">
+          <div>
+            <h1 class="text-[24px] leading-[32px] font-semibold tracking-[-0.02em]">Category budget</h1>
+            <p class="mt-0.5 text-[14px] text-muted-foreground">Direct monthly caps per category · Day 12 of 30 · 40% pace</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <a href="categories.html" class="flex h-10 items-center gap-1.5 rounded-xl border bg-card px-3.5 text-[13px] font-medium hover:bg-accent">
+              <i data-icon="tag" class="size-4"></i>Manage categories
+            </a>
+            <button type="button" data-open="edit-plan" class="flex h-10 items-center gap-1.5 rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground">
+              <i data-icon="sliders-horizontal" class="size-4"></i>Edit caps
+            </button>
+            <button type="button" data-open="ask" class="flex h-10 items-center gap-2 rounded-xl border bg-card px-4 text-[14px] font-semibold hover:bg-accent">
+              <i data-icon="firecent-mono" class="h-4 w-auto"></i>Ask
+            </button>
+            <a href="notifications.html" class="relative grid size-10 place-items-center rounded-full hover:bg-accent" aria-label="Notifications, 2 unread">
+              <i data-icon="bell" class="size-[22px]"></i>
+              <span class="absolute top-2 right-2 size-2 rounded-full bg-primary ring-2 ring-background [html[data-state=empty]_&]:hidden" aria-hidden="true"></span>
+            </a>
+          </div>
+        </header>
+
+        <!-- ═══════════════════════════ WITH DATA ═══════════════════════════ -->
+        <div data-view="data">
+          <!-- Month & Scope strip -->
+          <div class="mt-1 flex flex-wrap items-center justify-between gap-3 px-5 lg:mt-5 lg:px-0">
+            <div class="inline-flex h-10 items-center gap-1 rounded-xl border bg-card px-1">
+              <button type="button" id="bgt-prev" class="grid size-8 place-items-center rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground" aria-label="Previous month">
+                <i data-icon="chevron-left" class="size-4"></i>
+              </button>
+              <span id="bgt-month-label" class="px-2 text-[14px] font-semibold">November 2026</span>
+              <button type="button" id="bgt-next" disabled class="grid size-8 place-items-center rounded-lg text-muted-foreground disabled:opacity-35" aria-label="Next month">
+                <i data-icon="chevron-right" class="size-4"></i>
+              </button>
+            </div>
+
+            <div id="bgt-scope" class="inline-flex h-10 rounded-xl border bg-card p-1 text-[13px]" role="group" aria-label="Visibility scope">
+              <button type="button" data-value="all" aria-pressed="true" class="rounded-lg bg-foreground px-3 font-medium text-background">All</button>
+              <button type="button" data-value="shared" aria-pressed="false" class="rounded-lg px-3 font-medium text-muted-foreground">Shared</button>
+              <button type="button" data-value="only-you" aria-pressed="false" class="rounded-lg px-3 font-medium text-muted-foreground">Only you</button>
+            </div>
+          </div>
+
+          <!-- Top Grid: Budget Summary Card + Income & Uncapped Overview -->
+          <div class="mt-4 px-5 lg:grid lg:grid-cols-12 lg:items-stretch lg:gap-6 lg:px-0">
+            <!-- Left 7: Summary Budget Card -->
+            <section class="rounded-[26px] border bg-card p-5 lg:col-span-7 lg:p-6" aria-labelledby="h-bgt-left">
+              <div class="flex h-full flex-col justify-between gap-4">
+                <div>
+                  <div class="flex items-center justify-between gap-2">
+                    <h2 id="h-bgt-left" class="text-[13px] font-medium text-muted-foreground">Left in monthly caps</h2>
+                    <span id="bgt-pace-badge" class="inline-flex items-center gap-1.5 rounded-full border bg-muted/60 px-2.5 py-0.5 text-[12px] font-medium text-foreground">
+                      <span class="size-1.5 rounded-full bg-amber-500"></span><span id="bgt-pace-badge-txt">4 above 40% pace</span>
+                    </span>
+                  </div>
+                  <p id="bgt-hero-left" class="num mt-2 text-[40px] leading-[44px] font-semibold tracking-[-0.035em] lg:text-[44px] lg:leading-[48px]">
+                    <span class="mr-0.5 text-[24px] font-medium text-muted-foreground">$</span>1,263<span class="text-[24px] font-medium text-muted-foreground">.00</span>
+                  </p>
+                  <p id="bgt-hero-sub" class="num mt-1.5 text-[13px] text-muted-foreground">
+                    $70.17 a day left across 12 capped categories · 18 days remaining
+                  </p>
+                </div>
+
+                <!-- Multi-colored stacked category utilization bar with 40% pace line -->
+                <div>
+                  <div class="relative h-3 w-full rounded-full bg-muted">
+                    <div id="bgt-stack-bar" class="flex h-full overflow-hidden rounded-full"></div>
+                    <div id="bgt-pace-marker" class="absolute -top-1 -bottom-1 w-[2px] rounded-full bg-foreground/75" style="left: 40%;" title="Today · 40% of month"></div>
+                  </div>
+                  <div class="mt-2 flex items-center justify-between gap-2 text-[12px] text-muted-foreground">
+                    <span id="bgt-bar-spent" class="num font-medium text-foreground">$4,317.00 of $5,580.00</span>
+                    <span id="bgt-bar-cap" class="num">77.4% used</span>
+                  </div>
+                </div>
+
+                <!-- 3 KPI tiles -->
+                <div class="grid grid-cols-3 gap-2">
+                  <div class="rounded-2xl border bg-muted/40 p-2.5 sm:p-3">
+                    <p class="truncate text-[11px] font-medium text-muted-foreground">Caps</p>
+                    <p id="bgt-tile-cap" class="num mt-1 whitespace-nowrap text-[14px] font-semibold sm:text-[16px]">$5,580.00</p>
+                    <p id="bgt-tile-cap-sub" class="mt-0.5 truncate text-[11px] text-muted-foreground">12 limits</p>
+                  </div>
+                  <div class="rounded-2xl border bg-muted/40 p-2.5 sm:p-3">
+                    <p class="truncate text-[11px] font-medium text-muted-foreground">In caps</p>
+                    <p id="bgt-tile-spent" class="num mt-1 whitespace-nowrap text-[14px] font-semibold sm:text-[16px]">$4,317.00</p>
+                    <p id="bgt-tile-spent-sub" class="num mt-0.5 truncate text-[11px] text-positive">$4,812 total</p>
+                  </div>
+                  <div class="rounded-2xl border bg-muted/40 p-2.5 sm:p-3">
+                    <p class="truncate text-[11px] font-medium text-muted-foreground">Uncapped</p>
+                    <p id="bgt-tile-uncap" class="num mt-1 whitespace-nowrap text-[14px] font-semibold text-warning sm:text-[16px]">+$495.14</p>
+                    <p id="bgt-tile-uncap-sub" class="mt-0.5 truncate text-[11px] text-muted-foreground">5 cats</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Right 5: Income & Plan Coverage Card -->
+            <section class="mt-4 flex flex-col justify-between rounded-3xl border bg-card p-5 lg:col-span-5 lg:mt-0" aria-labelledby="h-bgt-income">
+              <div>
+                <div class="flex items-center justify-between">
+                  <h2 id="h-bgt-income" class="text-[16px] font-semibold tracking-[-0.01em]">Plan vs expected income</h2>
+                  <button type="button" id="bgt-btn-set-income" data-open="edit-plan" class="text-[13px] font-medium text-primary-text hover:underline">Edit</button>
+                </div>
+                <dl class="mt-3 divide-y text-[14px]">
+                  <div class="flex items-center justify-between py-2.5">
+                    <dt class="text-muted-foreground">Expected monthly income</dt>
+                    <dd id="inc-expected" class="num font-semibold">$9,275.00</dd>
+                  </div>
+                  <div class="flex items-center justify-between py-2.5">
+                    <dt class="text-muted-foreground">Total category caps</dt>
+                    <dd id="inc-caps" class="num font-semibold">$5,580.00 <span class="text-[12px] font-normal text-muted-foreground">(60.2%)</span></dd>
+                  </div>
+                  <div class="flex items-center justify-between py-2.5">
+                    <dt class="text-muted-foreground">Spent outside caps</dt>
+                    <dd id="inc-uncap" class="num font-medium text-warning">+$495.14</dd>
+                  </div>
+                  <div class="flex items-center justify-between py-2.5">
+                    <dt class="font-medium">Unallocated income</dt>
+                    <dd id="inc-unalloc" class="num font-semibold text-positive">$3,695.00</dd>
+                  </div>
+                </dl>
+              </div>
+
+              <div class="mt-3 flex items-start gap-2.5 rounded-2xl bg-muted/60 px-3.5 py-3 text-[12px] leading-[18px] text-muted-foreground">
+                <i data-icon="info" class="mt-0.5 size-4 shrink-0 text-primary-text"></i>
+                <p id="bgt-avg-note">Total spending ($4,812.14) vs Oct–Jun avg of $8,505.88/mo. Every category has its own monthly cap — tap any card to adjust.</p>
+              </div>
+            </section>
+          </div>
+
+          <!-- Filter & Sort Bar -->
+          <div class="mt-6 flex flex-wrap items-center justify-between gap-3 px-5 lg:px-0">
+            <div id="bgt-filter-pills" class="flex flex-wrap gap-1.5" role="group" aria-label="Filter categories">
+              <button type="button" data-filter="all" aria-pressed="true" class="h-9 rounded-full bg-foreground px-3.5 text-[13px] font-medium text-background">All <span class="num opacity-75">17</span></button>
+              <button type="button" data-filter="above" aria-pressed="false" class="h-9 rounded-full border bg-card px-3.5 text-[13px] font-medium text-muted-foreground hover:bg-accent">Above pace <span class="num opacity-75">4</span></button>
+              <button type="button" data-filter="bills" aria-pressed="false" class="h-9 rounded-full border bg-card px-3.5 text-[13px] font-medium text-muted-foreground hover:bg-accent">Bills &amp; Fixed <span class="num opacity-75">5</span></button>
+              <button type="button" data-filter="uncapped" aria-pressed="false" class="h-9 rounded-full border bg-card px-3.5 text-[13px] font-medium text-muted-foreground hover:bg-accent">Uncapped <span class="num opacity-75">5</span></button>
+            </div>
+            <div class="flex items-center gap-2">
+              <select id="bgt-sort" class="h-9 rounded-xl border bg-card px-3 text-[13px] font-medium">
+                <option value="pct">Sort: % used</option>
+                <option value="rem">Sort: Left to spend</option>
+                <option value="amt">Sort: Highest spend</option>
+                <option value="name">Sort: Name A–Z</option>
+              </select>
+              <button type="button" id="bgt-add-limit-btn" class="inline-flex h-9 items-center gap-1.5 rounded-xl bg-primary/10 px-3 text-[13px] font-semibold text-primary-text hover:bg-primary/15">
+                <i data-icon="plus" class="size-3.5"></i>Add limit
+              </button>
+            </div>
+          </div>
+
+          <!-- Capped Categories Grid -->
+          <section class="mt-4 px-5 lg:px-0" aria-labelledby="h-bgt-capped">
+            <div class="mb-2.5 flex items-baseline justify-between gap-2 px-1">
+              <h2 id="h-bgt-capped" class="text-[16px] font-semibold tracking-[-0.01em]">Capped categories <span id="bgt-capped-count" class="num text-[14px] font-normal text-muted-foreground">(12)</span></h2>
+              <span class="shrink-0 text-[12px] text-muted-foreground">Pace = 40%</span>
+            </div>
+            <div id="bgt-capped-grid" class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3"></div>
+          </section>
+
+          <!-- Uncapped Categories Section -->
+          <section id="bgt-uncapped-sec" class="mt-7 px-5 lg:px-0" aria-labelledby="h-bgt-uncapped">
+            <div class="mb-2.5 flex items-baseline justify-between px-1">
+              <h2 id="h-bgt-uncapped" class="text-[16px] font-semibold tracking-[-0.01em]">No monthly cap yet <span id="bgt-uncapped-total" class="num text-[14px] font-normal text-muted-foreground">(5 · $495.14 spent)</span></h2>
+              <span class="text-[12px] text-muted-foreground">Tap Set limit to track a cap</span>
+            </div>
+            <div id="bgt-uncapped-grid" class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3"></div>
+          </section>
+        </div>
+
+        <!-- EMPTY -->
+        <div data-view="empty">
+          <div class="px-5 pt-2 lg:px-0 lg:pt-6">
+            <section class="rounded-[26px] border bg-card p-5 lg:p-6">
+              <h2 class="text-[13px] font-medium text-muted-foreground">Left in monthly caps</h2>
+              <p class="num mt-2 text-[40px] font-semibold text-muted-foreground">$0.00</p>
+            </section>
+          </div>
+          <div class="flex flex-col items-center px-8 py-12 text-center lg:py-20">
+            <span class="grid size-14 place-items-center rounded-2xl bg-muted"><i data-icon="target" class="size-6 text-muted-foreground"></i></span>
+            <h2 class="mt-4 text-[17px] font-semibold">No category limits for November yet</h2>
+            <p class="mt-1.5 max-w-[300px] text-[14px] leading-[20px] text-muted-foreground">
+              Set monthly spending caps on the categories you care about. Firecent tracks daily pace automatically.
+            </p>
+            <div class="mt-5 flex flex-col items-center gap-2">
+              <button type="button" data-open="edit-plan" class="inline-flex h-11 items-center gap-2 rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground">Set category limits</button>
+              <button type="button" data-toast-msg="Copied October's category limits" class="flex h-11 items-center px-4 text-[14px] font-semibold text-primary-text">Copy October's limits</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- LOADING -->
+        <div data-view="loading" aria-busy="true">
+          <p class="sr-only" role="status">Loading budget</p>
+          <div aria-hidden="true" class="px-5 pt-4 lg:px-0 lg:pt-6">
+            <div class="grid gap-6 lg:grid-cols-12">
+              <div class="h-56 rounded-[26px] border bg-card p-5 lg:col-span-7">
+                <div class="sk h-3.5 w-32"></div>
+                <div class="sk mt-3 h-10 w-48 rounded-xl"></div>
+                <div class="sk mt-6 h-3 w-full rounded-full"></div>
+                <div class="mt-6 grid grid-cols-3 gap-2.5"><div class="sk h-16 rounded-2xl"></div><div class="sk h-16 rounded-2xl"></div><div class="sk h-16 rounded-2xl"></div></div>
+              </div>
+              <div class="h-56 rounded-3xl border bg-card p-5 lg:col-span-5">
+                <div class="sk h-4 w-36"></div><div class="sk mt-4 h-8 w-full"></div><div class="sk mt-3 h-8 w-full"></div><div class="sk mt-3 h-8 w-full"></div>
+              </div>
+            </div>
+            <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <div class="h-36 rounded-2xl border bg-card p-4"><div class="sk h-9 w-40"></div><div class="sk mt-4 h-5 w-32"></div><div class="sk mt-3 h-2 w-full"></div></div>
+              <div class="h-36 rounded-2xl border bg-card p-4"><div class="sk h-9 w-40"></div><div class="sk mt-4 h-5 w-32"></div><div class="sk mt-3 h-2 w-full"></div></div>
+              <div class="h-36 rounded-2xl border bg-card p-4"><div class="sk h-9 w-40"></div><div class="sk mt-4 h-5 w-32"></div><div class="sk mt-3 h-2 w-full"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ERROR -->
+        <div data-view="error">
+          <div class="flex flex-col items-center px-8 py-12 text-center lg:py-24">
+            <span class="grid size-14 place-items-center rounded-2xl bg-muted"><i data-icon="cloud-off" class="size-6 text-muted-foreground"></i></span>
+            <h2 class="mt-4 text-[17px] font-semibold">We couldn't load this</h2>
+            <p class="mt-1.5 max-w-[280px] text-[14px] text-muted-foreground">Check your connection and try again. Nothing was changed.</p>
+            <div class="mt-5"><button type="button" class="flex h-11 items-center rounded-xl border bg-card px-4 text-[14px] font-semibold">Try again</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHEET: EDIT MONTHLY CAPS (?sheet=edit-plan) -->
+    <div data-sheet-id="edit-plan">
+      <div data-veil data-close class="fixed inset-0 z-40 bg-[#0b1220]/50"></div>
+      <div role="dialog" aria-modal="true" aria-labelledby="sh-plan-title" class="fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[90dvh] w-full max-w-[430px] flex-col rounded-t-3xl bg-card px-5 pt-3 pb-6 shadow-[0_24px_48px_-12px_rgb(11_18_32/0.28)] lg:inset-y-auto lg:top-1/2 lg:left-1/2 lg:w-[500px] lg:max-w-[92vw] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-3xl lg:border lg:pt-5">
+        <div class="mx-auto mb-2 h-1 w-9 shrink-0 rounded-full bg-muted-foreground/25 lg:hidden" aria-hidden="true"></div>
+        <div class="flex h-12 shrink-0 items-center justify-between">
+          <h2 id="sh-plan-title" class="text-[17px] font-semibold tracking-[-0.01em]">November category caps</h2>
+          <button type="button" data-close class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Close"><i data-icon="x" class="size-[22px]"></i></button>
+        </div>
+
+        <div class="min-h-0 flex-1 space-y-4 overflow-y-auto py-2">
+          <div>
+            <label for="plan-income" class="mb-1.5 block text-[13px] font-medium">Expected monthly income</label>
+            <input id="plan-income" type="text" inputmode="decimal" value="$9,275" class="num h-11 w-full rounded-xl border border-input bg-card px-3.5 text-[15px] font-medium" />
+            <p class="mt-1 text-[12px] text-muted-foreground">From recurring paychecks. Used as reference for cap totals.</p>
+          </div>
+
+          <div class="border-t pt-3">
+            <div class="mb-2 flex items-center justify-between text-[13px]">
+              <span class="font-medium">Category monthly limits</span>
+              <span id="ep-total-pill" class="num text-muted-foreground">$5,580 of $9,275 (60.2%)</span>
+            </div>
+            <div id="ep-cat-rows" class="divide-y rounded-2xl border bg-background/40"></div>
+          </div>
+        </div>
+
+        <div class="mt-3 shrink-0 space-y-2 border-t pt-3">
+          <button type="button" id="ep-save" class="inline-flex h-11 w-full items-center justify-center rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground">Save caps</button>
+          <button type="button" id="ep-copy" class="flex h-10 w-full items-center justify-center rounded-xl text-[13px] font-medium text-primary-text hover:bg-accent">Copy October's limits</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHEET: CATEGORY LIMIT (?sheet=limit) -->
+    <div data-sheet-id="limit">
+      <div data-veil data-close class="fixed inset-0 z-40 bg-[#0b1220]/50"></div>
+      <div role="dialog" aria-modal="true" aria-labelledby="sh-lim-title" class="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[90dvh] w-full max-w-[430px] overflow-y-auto rounded-t-3xl bg-card px-5 pt-3 pb-8 shadow-[0_24px_48px_-12px_rgb(11_18_32/0.28)] lg:inset-y-auto lg:top-1/2 lg:left-1/2 lg:w-[420px] lg:max-w-[92vw] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-3xl lg:border lg:pt-5">
+        <div class="mx-auto mb-2 h-1 w-9 rounded-full bg-muted-foreground/25 lg:hidden" aria-hidden="true"></div>
+        <div class="flex h-12 items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <span id="sh-lim-icon" class="grid size-8 place-items-center rounded-lg bg-brand-green text-brand-green-foreground"><i data-icon="shopping-cart" class="size-4"></i></span>
+            <h2 id="sh-lim-title" class="text-[17px] font-semibold tracking-[-0.01em]">Groceries</h2>
+          </div>
+          <button type="button" data-close class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Close"><i data-icon="x" class="size-[22px]"></i></button>
+        </div>
+
+        <div class="mt-3 space-y-4">
+          <div id="lim-pick-wrap" class="hidden">
+            <label for="lim-cat-select" class="mb-1.5 block text-[13px] font-medium">Category</label>
+            <select id="lim-cat-select" class="h-11 w-full rounded-xl border border-input bg-card px-3 text-[14px] font-medium"></select>
+          </div>
+
+          <div data-seg id="lim-mode" class="flex h-11 rounded-xl bg-muted p-1" role="group" aria-label="Limit type">
+            <button type="button" data-value="limit" aria-pressed="true" class="flex-1 rounded-lg bg-card text-[14px] font-medium text-foreground shadow-[0_1px_2px_rgb(11_18_32/0.12)]">Monthly cap</button>
+            <button type="button" data-value="none" aria-pressed="false" class="flex-1 rounded-lg text-[14px] font-medium text-muted-foreground">No cap</button>
+          </div>
+
+          <div id="lim-field">
+            <label for="lim-amt" class="mb-1.5 block text-[13px] font-medium">Monthly limit</label>
+            <input id="lim-amt" type="text" inputmode="decimal" value="$900" class="num h-12 w-full rounded-xl border border-input bg-card px-3.5 text-[18px] font-semibold" />
+            <p id="lim-spent-note" class="mt-1.5 text-[13px] text-muted-foreground">Spent so far this month: $709.46 (78.8%)</p>
+          </div>
+
+          <div class="pt-1">
+            <button type="button" id="lim-save" class="inline-flex h-11 w-full items-center justify-center rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground">Save limit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/icons.js"></script>
+    <script>
+      (function () {
+        var COLOR_TILE = {
+          green: "bg-brand-green text-brand-green-foreground",
+          orange: "bg-brand-orange text-brand-orange-foreground",
+          blue: "bg-brand-blue text-brand-blue-foreground",
+          purple: "bg-brand-purple text-brand-purple-foreground",
+          pink: "bg-brand-pink text-brand-pink-foreground",
+          yellow: "bg-brand-yellow text-brand-yellow-foreground",
+          red: "bg-brand-red text-brand-red-foreground",
+          gray: "bg-brand-gray text-brand-gray-foreground",
+        };
+        var BAR_COLOR = {
+          green: "bg-emerald-500",
+          orange: "bg-orange-500",
+          blue: "bg-sky-500",
+          purple: "bg-violet-500",
+          pink: "bg-pink-500",
+          yellow: "bg-amber-500",
+          red: "bg-rose-500",
+          gray: "bg-slate-400",
+        };
+        var SEG_HEX = {
+          green: "#10b981",
+          orange: "#f97316",
+          blue: "#0ea5e9",
+          purple: "#8b5cf6",
+          pink: "#ec4899",
+          yellow: "#eab308",
+          red: "#ef4444",
+          gray: "#94a3b8",
+        };
+
+        // Direct category caps & real Nov spent split cleanly by visibility scope (Shared vs Only you = $4,219.94 + $592.20 = $4,812.14)
+        var CATS = [
+          { name: "Rent", icon: "building-2", color: "purple", bill: true, cap: 215000, shared: 215000, priv: 0, paid: true, txCount: 1, octCap: 215000, octSpent: 215000 },
+          { name: "Car loan", icon: "car", color: "red", bill: true, cap: 32000, shared: 32000, priv: 0, paid: true, txCount: 1, octCap: 32000, octSpent: 32000 },
+          { name: "Student loan", icon: "graduation-cap", color: "purple", bill: true, cap: 38500, shared: 0, priv: 0, dueNote: "Due Nov 20", txCount: 0, octCap: 38500, octSpent: 38500 },
+          { name: "Insurance", icon: "shield", color: "orange", bill: true, cap: 19500, shared: 0, priv: 0, dueNote: "Due Nov 22", txCount: 0, octCap: 19500, octSpent: 19500 },
+          { name: "Groceries", icon: "shopping-cart", color: "green", bill: false, cap: 90000, shared: 67146, priv: 3800, txCount: 6, octCap: 85000, octSpent: 81420 },
+          { name: "Dining out", icon: "utensils", color: "orange", bill: false, cap: 45000, shared: 25099, priv: 6270, txCount: 8, octCap: 45000, octSpent: 41280 },
+          { name: "Transport", icon: "bus", color: "blue", bill: false, cap: 30000, shared: 4820, priv: 20200, txCount: 3, octCap: 30000, octSpent: 28900 },
+          { name: "Entertainment", icon: "ticket", color: "pink", bill: false, cap: 25000, shared: 17710, priv: 3499, txCount: 4, octCap: 25000, octSpent: 21800 },
+          { name: "Utilities", icon: "zap", color: "yellow", bill: true, cap: 22000, shared: 5875, priv: 0, dueNote: "Con Edison ~$94 due Nov 18", txCount: 1, octCap: 22000, octSpent: 19387 },
+          { name: "Phone & internet", icon: "wifi", color: "blue", bill: true, cap: 18000, shared: 17999, priv: 0, paid: true, txCount: 2, octCap: 18000, octSpent: 17999 },
+          { name: "Health", icon: "heart-pulse", color: "green", bill: false, cap: 15000, shared: 4000, priv: 4235, txCount: 2, octCap: 15000, octSpent: 11200 },
+          { name: "Subscriptions", icon: "tv", color: "purple", bill: true, cap: 8000, shared: 4047, priv: 0, dueNote: "Netflix $15.49 due Nov 14", txCount: 3, octCap: 7500, octSpent: 7300 },
+          // Uncapped
+          { name: "Shopping", icon: "shopping-bag", color: "purple", bill: false, cap: 0, shared: 6784, priv: 6331, txCount: 3, octCap: 0, octSpent: 34200 },
+          { name: "Fitness", icon: "dumbbell", color: "green", bill: false, cap: 0, shared: 8900, priv: 3200, txCount: 2, octCap: 0, octSpent: 12100 },
+          { name: "Gifts", icon: "gift", color: "orange", bill: false, cap: 0, shared: 0, priv: 11685, txCount: 2, octCap: 0, octSpent: 9500 },
+          { name: "Household", icon: "lamp", color: "yellow", bill: false, cap: 0, shared: 6490, priv: 0, txCount: 1, octCap: 0, octSpent: 49900 },
+          { name: "Pets", icon: "paw-print", color: "gray", bill: false, cap: 0, shared: 6124, priv: 0, txCount: 1, octCap: 0, octSpent: 6040 },
+        ];
+
+        function fmt(c) {
+          var abs = Math.abs(c);
+          return "$" + (abs / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        function fmtWhole(c) {
+          return "$" + Math.round(c / 100).toLocaleString("en-US");
+        }
+        function normalizeScope(s) { return !s || s === "everything" ? "all" : s; }
+
+        var params = new URLSearchParams(location.search);
+        var curScope = normalizeScope(params.get("scope") || (window.fableScope ? window.fableScope() : "all"));
+        var curFilter = "all";
+        var curSort = "pct";
+        var curMonth = "nov"; // or "oct"
+        var expectedIncomeCents = 927500;
+        var editingCatName = "Groceries";
+
+        function spentFor(cat) {
+          if (curMonth === "oct") {
+            return Math.round(cat.octSpent * (curScope === "shared" ? 0.85 : curScope === "only-you" ? 0.15 : 1));
+          }
+          if (curScope === "shared") return cat.shared;
+          if (curScope === "only-you") return cat.priv;
+          return cat.shared + cat.priv;
+        }
+        function capFor(cat) {
+          return curMonth === "oct" ? cat.octCap : cat.cap;
+        }
+
+        function catStatus(cat) {
+          var spent = spentFor(cat);
+          var cap = capFor(cat);
+          if (!cap) return { kind: "uncapped", label: "Uncapped", pct: 0, cls: "bg-muted text-muted-foreground" };
+          var pct = (spent / cap) * 100;
+          if (curMonth === "oct") {
+            return spent > cap
+              ? { kind: "over", label: "Over by " + fmt(spent - cap), pct: pct, cls: "bg-destructive/12 text-destructive", barOver: true }
+              : { kind: "paid", label: "Closed on plan", pct: pct, cls: "bg-positive/12 text-positive" };
+          }
+          if (spent > cap) return { kind: "over", label: "Over by " + fmt(spent - cap), pct: pct, cls: "bg-destructive/12 text-destructive", barOver: true };
+          if (cat.paid || pct >= 99.5) return { kind: "paid", label: "Paid", pct: pct, cls: "bg-positive/12 text-positive" };
+          if (cat.dueNote && spent === 0) return { kind: "due", label: cat.dueNote, pct: pct, cls: "bg-muted text-muted-foreground" };
+          if (pct > 55 && curScope === "all") return { kind: "above", label: "Above pace", pct: pct, cls: "bg-brand-orange text-brand-orange-foreground" };
+          return { kind: "on", label: "On pace", pct: pct, cls: "bg-muted text-muted-foreground" };
+        }
+
+        function render() {
+          if (window.fableScope) window.fableScope(curScope === "all" ? "everything" : curScope);
+
+          var capped = CATS.filter(function (c) { return capFor(c) > 0; });
+          var uncapped = CATS.filter(function (c) { return capFor(c) === 0; });
+
+          var totalCap = 0, totalCapSpent = 0, totalUncapSpent = 0, aboveCount = 0;
+          capped.forEach(function (c) {
+            totalCap += capFor(c);
+            totalCapSpent += spentFor(c);
+            if (catStatus(c).kind === "above" || catStatus(c).kind === "over") aboveCount++;
+          });
+          uncapped.forEach(function (c) { totalUncapSpent += spentFor(c); });
+
+          var left = totalCap - totalCapSpent;
+          var pctTotal = totalCap ? (totalCapSpent / totalCap) * 100 : 0;
+          var absLeft = Math.abs(left);
+          var whole = Math.floor(absLeft / 100).toLocaleString("en-US");
+          var dec = "." + String(absLeft % 100).padStart(2, "0");
+
+          document.getElementById("bgt-month-label").textContent = curMonth === "nov" ? "November 2026" : "October 2026";
+          document.getElementById("bgt-prev").disabled = curMonth === "oct";
+          document.getElementById("bgt-next").disabled = curMonth === "nov";
+
+          document.getElementById("bgt-hero-left").innerHTML =
+            (left < 0 ? '<span class="mr-0.5 text-[24px] font-medium text-destructive">−</span>' : "") +
+            '<span class="mr-0.5 text-[24px] font-medium text-muted-foreground">$</span>' +
+            whole + '<span class="text-[24px] font-medium text-muted-foreground">' + dec + "</span>";
+          document.getElementById("h-bgt-left").textContent = curMonth === "nov" ? "Left in monthly caps" : (left < 0 ? "Over October caps" : "Finished October under caps");
+          document.getElementById("bgt-hero-sub").textContent = curMonth === "nov"
+            ? fmt(Math.max(0, Math.round(left / 18))) + " a day left across " + capped.length + " capped categories · 18 days remaining"
+            : "Final October total · " + fmt(totalCapSpent + totalUncapSpent) + " overall spending";
+
+          document.getElementById("bgt-pace-badge-txt").textContent = curMonth === "nov"
+            ? aboveCount + " above 40% pace"
+            : "Closed Oct 31";
+          document.getElementById("bgt-pace-marker").style.display = curMonth === "nov" ? "block" : "none";
+
+          // Hero stacked colored bar proportional to totalCap
+          var denom = Math.max(totalCap, totalCapSpent, 1);
+          document.getElementById("bgt-stack-bar").innerHTML = capped.map(function (c) {
+            var sp = spentFor(c);
+            if (!sp) return "";
+            var w = (sp / denom) * 100;
+            return '<div style="width:' + w.toFixed(2) + '%;background:' + SEG_HEX[c.color] + '" class="h-full border-r border-card/70 last:border-r-0" title="' + c.name + " · " + fmt(sp) + '"></div>';
+          }).join("");
+
+          document.getElementById("bgt-bar-spent").textContent = fmt(totalCapSpent) + " of " + fmt(totalCap);
+          document.getElementById("bgt-bar-cap").textContent = pctTotal.toFixed(1) + "% used";
+          document.getElementById("bgt-tile-cap").textContent = fmt(totalCap);
+          document.getElementById("bgt-tile-cap-sub").textContent = capped.length + " limits";
+          document.getElementById("bgt-tile-spent").textContent = fmt(totalCapSpent);
+          var allSpent = totalCapSpent + totalUncapSpent;
+          document.getElementById("bgt-tile-spent-sub").textContent = fmt(allSpent) + " total";
+          document.getElementById("bgt-tile-uncap").textContent = "+" + fmt(totalUncapSpent);
+          document.getElementById("bgt-tile-uncap-sub").textContent = uncapped.length + " cats";
+
+          // Income box
+          document.getElementById("inc-expected").textContent = fmt(expectedIncomeCents);
+          var capShare = expectedIncomeCents ? ((totalCap / expectedIncomeCents) * 100).toFixed(1) : "0.0";
+          document.getElementById("inc-caps").innerHTML = fmt(totalCap) + ' <span class="text-[12px] font-normal text-muted-foreground">(' + capShare + "%)</span>";
+          document.getElementById("inc-uncap").textContent = "+" + fmt(totalUncapSpent);
+          var unalloc = expectedIncomeCents - totalCap;
+          document.getElementById("inc-unalloc").textContent = (unalloc < 0 ? "−" : "") + fmt(Math.abs(unalloc));
+          document.getElementById("inc-unalloc").className = "num font-semibold " + (unalloc < 0 ? "text-warning" : "text-positive");
+
+          // Scope buttons
+          document.querySelectorAll("#bgt-scope > button").forEach(function (b) {
+            var on = b.dataset.value === curScope;
+            b.setAttribute("aria-pressed", String(on));
+            b.classList.toggle("bg-foreground", on);
+            b.classList.toggle("text-background", on);
+            b.classList.toggle("text-muted-foreground", !on);
+          });
+
+          // Filter & sort capped list
+          var list = capped.filter(function (c) {
+            if (curFilter === "above") {
+              var k = catStatus(c).kind;
+              return k === "above" || k === "over";
+            }
+            if (curFilter === "bills") return c.bill;
+            if (curFilter === "uncapped") return false;
+            return true;
+          });
+          list.sort(function (a, b) {
+            if (curSort === "name") return a.name.localeCompare(b.name);
+            if (curSort === "amt") return spentFor(b) - spentFor(a);
+            if (curSort === "rem") return (capFor(b) - spentFor(b)) - (capFor(a) - spentFor(a));
+            return (spentFor(b) / capFor(b)) - (spentFor(a) / capFor(a));
+          });
+
+          document.getElementById("bgt-capped-count").textContent = "(" + list.length + ")";
+          var cappedEl = document.getElementById("bgt-capped-grid");
+          cappedEl.parentElement.classList.toggle("hidden", curFilter === "uncapped");
+          cappedEl.innerHTML = list.map(function (c) {
+            var st = catStatus(c);
+            var sp = spentFor(c), cap = capFor(c), rem = cap - sp;
+            var pct = Math.min(100, Math.round(st.pct));
+            var footLeft = st.kind === "paid" ? "Fixed · settled"
+              : c.dueNote && sp === 0 ? c.dueNote
+                : rem < 0 ? "Over cap by " + fmt(Math.abs(rem))
+                  : fmt(rem) + " left · " + fmt(Math.round(rem / 18)) + "/day";
+            return (
+              '<article class="flex flex-col justify-between rounded-2xl border bg-card p-4 transition-colors hover:border-primary/40">' +
+              '<div>' +
+              '<div class="flex items-start justify-between gap-2">' +
+              '<div class="flex min-w-0 items-center gap-2.5">' +
+              '<span class="grid size-10 shrink-0 place-items-center rounded-xl ' + COLOR_TILE[c.color] + '"><i data-icon="' + c.icon + '" class="size-5"></i></span>' +
+              '<div class="min-w-0">' +
+              '<h3 class="truncate text-[15px] font-semibold">' + c.name + '</h3>' +
+              '<p class="text-[12px] text-muted-foreground">' + (c.bill ? "Fixed / recurring" : "Flexible cap") + " · " + c.txCount + " tx</p>" +
+              "</div></div>" +
+              '<span class="inline-flex h-6 shrink-0 items-center rounded-full px-2.5 text-[11px] font-semibold ' + st.cls + '">' +
+              (st.kind === "above" || st.kind === "over" ? Math.round(st.pct) + "% · " : "") + st.label +
+              "</span></div>" +
+              '<div class="mt-3.5 flex items-baseline justify-between gap-2">' +
+              '<p class="num text-[18px] font-semibold tracking-[-0.02em]">' + fmt(sp) + ' <span class="text-[13px] font-normal text-muted-foreground">of ' + fmtWhole(cap) + "</span></p>" +
+              '<span class="num text-[12px] font-medium text-muted-foreground">' + Math.round(st.pct) + "%</span>" +
+              "</div>" +
+              '<div class="relative mt-2 h-2 w-full rounded-full bg-muted">' +
+              '<div class="h-full rounded-full ' + (st.barOver ? "bg-destructive" : BAR_COLOR[c.color]) + '" style="width:' + pct + '%"></div>' +
+              (curMonth === "nov" ? '<div class="absolute -top-0.5 -bottom-0.5 w-[2px] bg-foreground/65" style="left:40%"></div>' : "") +
+              "</div></div>" +
+              '<div class="mt-3 flex items-center justify-between gap-2 border-t pt-2.5 text-[12px]">' +
+              '<span class="num truncate text-muted-foreground">' + footLeft + "</span>" +
+              '<div class="flex shrink-0 items-center gap-2.5">' +
+              '<button type="button" data-edit-limit="' + c.name + '" class="font-medium text-muted-foreground hover:text-foreground">Edit cap</button>' +
+              '<a href="transactions.html?cat=' + encodeURIComponent(c.name) + '" class="font-semibold text-primary-text hover:underline">Tx →</a>' +
+              "</div></div></article>"
+            );
+          }).join("");
+
+          // Uncapped section
+          var showUncapped = curFilter === "all" || curFilter === "uncapped";
+          var uncapSec = document.getElementById("bgt-uncapped-sec");
+          uncapSec.classList.toggle("hidden", !showUncapped || !uncapped.length);
+          document.getElementById("bgt-uncapped-total").textContent = "(" + uncapped.length + " · " + fmt(totalUncapSpent) + " spent)";
+          document.getElementById("bgt-uncapped-grid").innerHTML = uncapped.map(function (c) {
+            var sp = spentFor(c);
+            return (
+              '<div class="flex items-center justify-between gap-3 rounded-2xl border border-dashed bg-card p-3.5">' +
+              '<a href="transactions.html?cat=' + encodeURIComponent(c.name) + '" class="flex min-w-0 flex-1 items-center gap-3 hover:opacity-80">' +
+              '<span class="grid size-10 shrink-0 place-items-center rounded-xl ' + COLOR_TILE[c.color] + '"><i data-icon="' + c.icon + '" class="size-5"></i></span>' +
+              '<div class="min-w-0"><p class="truncate text-[14px] font-semibold">' + c.name + '</p><p class="num text-[12px] text-muted-foreground">' + fmt(sp) + " · " + c.txCount + " tx</p></div></a>" +
+              '<button type="button" data-edit-limit="' + c.name + '" class="inline-flex h-8 shrink-0 items-center gap-1 rounded-xl border bg-background px-3 text-[12px] font-semibold text-primary-text hover:bg-accent">+ Set limit</button>' +
+              "</div>"
+            );
+          }).join("");
+
+          // Populate Filter pills counts
+          var btns = document.querySelectorAll("#bgt-filter-pills > button");
+          btns.forEach(function (b) {
+            var on = b.dataset.filter === curFilter;
+            b.setAttribute("aria-pressed", String(on));
+            b.className = on
+              ? "h-9 rounded-full bg-foreground px-3.5 text-[13px] font-medium text-background"
+              : "h-9 rounded-full border bg-card px-3.5 text-[13px] font-medium text-muted-foreground hover:bg-accent";
+          });
+          btns[0].innerHTML = 'All <span class="num opacity-75">' + CATS.length + "</span>";
+          btns[1].innerHTML = 'Above pace <span class="num opacity-75">' + aboveCount + "</span>";
+          btns[2].innerHTML = 'Bills &amp; Fixed <span class="num opacity-75">' + capped.filter(function (c) { return c.bill; }).length + "</span>";
+          btns[3].innerHTML = 'Uncapped <span class="num opacity-75">' + uncapped.length + "</span>";
+
+          if (window.fableIcons) window.fableIcons(document.querySelector('[data-view="data"]'));
+        }
+
+        function openLimitSheet(catName, allowPicker) {
+          var c = CATS.find(function (x) { return x.name === catName; }) || CATS.find(function (x) { return x.name === "Groceries"; });
+          editingCatName = c.name;
+          var pickWrap = document.getElementById("lim-pick-wrap");
+          pickWrap.classList.toggle("hidden", !allowPicker);
+          if (allowPicker) {
+            document.getElementById("lim-cat-select").innerHTML = CATS.map(function (x) {
+              return '<option value="' + x.name + '"' + (x.name === c.name ? " selected" : "") + ">" + x.name + (x.cap ? " ($" + Math.round(x.cap / 100) + ")" : " (uncapped)") + "</option>";
+            }).join("");
+          }
+          document.getElementById("sh-lim-title").textContent = c.name;
+          var icEl = document.getElementById("sh-lim-icon");
+          icEl.className = "grid size-8 place-items-center rounded-lg " + COLOR_TILE[c.color];
+          icEl.innerHTML = '<i data-icon="' + c.icon + '" class="size-4"></i>';
+          if (window.fableIcons) window.fableIcons(icEl);
+
+          var hasCap = c.cap > 0;
+          document.getElementById("lim-amt").value = hasCap ? "$" + Math.round(c.cap / 100) : "$150";
+          document.getElementById("lim-spent-note").textContent = "Spent so far this month: " + fmt(c.shared + c.priv);
+          document.querySelectorAll("#lim-mode > button").forEach(function (b) {
+            var on = b.dataset.value === (hasCap ? "limit" : "none");
+            b.setAttribute("aria-pressed", String(on));
+            b.classList.toggle("bg-card", on);
+            b.classList.toggle("text-foreground", on);
+            b.classList.toggle("shadow-[0_1px_2px_rgb(11_18_32/0.12)]", on);
+            b.classList.toggle("text-muted-foreground", !on);
+          });
+          document.getElementById("lim-field").classList.toggle("hidden", !hasCap);
+          window.fableOpen("limit");
+        }
+
+        function renderEditPlanRows() {
+          var box = document.getElementById("ep-cat-rows");
+          box.innerHTML = CATS.map(function (c, idx) {
+            return (
+              '<div class="flex items-center justify-between gap-3 px-3.5 py-2.5">' +
+              '<div class="flex min-w-0 items-center gap-2.5">' +
+              '<span class="grid size-8 shrink-0 place-items-center rounded-lg ' + COLOR_TILE[c.color] + '"><i data-icon="' + c.icon + '" class="size-4"></i></span>' +
+              '<div class="min-w-0"><p class="truncate text-[14px] font-medium">' + c.name + '</p><p class="num text-[11px] text-muted-foreground">Spent ' + fmt(c.shared + c.priv) + "</p></div></div>" +
+              '<input type="text" inputmode="decimal" data-ep-idx="' + idx + '" value="' + (c.cap ? "$" + Math.round(c.cap / 100) : "") + '" placeholder="No cap" class="num h-9 w-24 rounded-lg border border-input bg-card px-2.5 text-right text-[14px] font-medium placeholder:text-muted-foreground" />' +
+              "</div>"
+            );
+          }).join("");
+          if (window.fableIcons) window.fableIcons(box);
+          updateEditPlanTotal();
+        }
+        function parseNum(s) {
+          var n = parseFloat(String(s || "").replace(/[^0-9.]/g, ""));
+          return isNaN(n) ? 0 : Math.round(n * 100);
+        }
+        function updateEditPlanTotal() {
+          var inc = parseNum(document.getElementById("plan-income").value) || 927500;
+          var sum = 0;
+          document.querySelectorAll("[data-ep-idx]").forEach(function (inp) { sum += parseNum(inp.value); });
+          var pct = inc ? ((sum / inc) * 100).toFixed(1) : "0.0";
+          document.getElementById("ep-total-pill").textContent = fmtWhole(sum) + " of " + fmtWhole(inc) + " (" + pct + "%)";
+        }
+
+        document.addEventListener("click", function (e) {
+          var el = e.target.closest("[data-edit-limit]");
+          if (el) { openLimitSheet(el.dataset.editLimit, false); return; }
+          if (e.target.closest("#bgt-add-limit-btn")) { openLimitSheet("Shopping", true); return; }
+          if (e.target.closest('[data-open="edit-plan"]')) { renderEditPlanRows(); }
+        });
+
+        document.getElementById("lim-cat-select").addEventListener("change", function () { openLimitSheet(this.value, true); });
+        document.getElementById("lim-mode").addEventListener("fable:change", function (e) {
+          document.getElementById("lim-field").classList.toggle("hidden", e.detail === "none");
+        });
+        document.getElementById("lim-save").addEventListener("click", function () {
+          var c = CATS.find(function (x) { return x.name === editingCatName; });
+          var noCap = document.querySelector('#lim-mode button[data-value="none"]').getAttribute("aria-pressed") === "true";
+          if (c) c.cap = noCap ? 0 : parseNum(document.getElementById("lim-amt").value);
+          render();
+          window.fableClose();
+          window.fableToast(c.name + (c.cap ? " cap set to " + fmtWhole(c.cap) : " limit removed"));
+        });
+
+        document.getElementById("plan-income").addEventListener("input", updateEditPlanTotal);
+        document.getElementById("ep-cat-rows").addEventListener("input", updateEditPlanTotal);
+        document.getElementById("ep-copy").addEventListener("click", function () {
+          document.querySelectorAll("[data-ep-idx]").forEach(function (inp) {
+            var c = CATS[Number(inp.dataset.epIdx)];
+            inp.value = c.octCap ? "$" + Math.round(c.octCap / 100) : "";
+          });
+          updateEditPlanTotal();
+          window.fableToast("Copied October's limits into form");
+        });
+        document.getElementById("ep-save").addEventListener("click", function () {
+          expectedIncomeCents = parseNum(document.getElementById("plan-income").value) || expectedIncomeCents;
+          document.querySelectorAll("[data-ep-idx]").forEach(function (inp) {
+            CATS[Number(inp.dataset.epIdx)].cap = parseNum(inp.value);
+          });
+          render();
+          window.fableClose();
+          window.fableToast("Category caps saved");
+        });
+
+        document.getElementById("bgt-scope").addEventListener("click", function (e) {
+          var b = e.target.closest("button[data-value]");
+          if (!b) return;
+          curScope = normalizeScope(b.dataset.value);
+          render();
+        });
+        document.getElementById("bgt-filter-pills").addEventListener("click", function (e) {
+          var b = e.target.closest("button[data-filter]");
+          if (!b) return;
+          curFilter = b.dataset.filter;
+          render();
+        });
+        document.getElementById("bgt-sort").addEventListener("change", function () {
+          curSort = this.value;
+          render();
+        });
+        document.getElementById("bgt-prev").addEventListener("click", function () { curMonth = "oct"; render(); });
+        document.getElementById("bgt-next").addEventListener("click", function () { curMonth = "nov"; render(); });
+
+        if (params.get("sheet") === "edit-plan") renderEditPlanRows();
+        if (params.get("sheet") === "limit") openLimitSheet("Groceries", false);
+        render();
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en" data-state="data">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Assistant · Firecent</title>
+    <link rel="icon" href="assets/brand/favicon.svg" />
+    <link rel="stylesheet" href="assets/app.css" />
+    <script src="assets/proto.js"></script>
+  </head>
+  <body class="min-h-dvh bg-background text-foreground">
+    <div data-shell data-tab="assistant" data-nav="assistant"></div>
+
+    <div class="lg:pl-60">
+      <div class="relative mx-auto flex min-h-dvh max-w-[430px] flex-col pb-44 lg:max-w-[1160px] lg:px-8 lg:pb-8">
+        <!-- Mobile top bar -->
+        <header class="sticky top-0 z-20 flex h-14 items-center gap-1 border-b border-transparent bg-background/90 px-2 backdrop-blur lg:hidden">
+          <a id="asst-mob-back" href="assistant.html?view=new" class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Back to Assistant">
+            <i data-icon="chevron-left" class="size-[22px]"></i>
+          </a>
+          <h1 id="asst-mob-title" class="flex-1 truncate text-[17px] font-semibold tracking-[-0.01em]">Assistant</h1>
+          <button type="button" id="asst-mob-new" class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="New conversation">
+            <i data-icon="square-pen" class="size-5"></i>
+          </button>
+          <button type="button" data-open="threads" class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Conversation history">
+            <i data-icon="history" class="size-5"></i>
+          </button>
+        </header>
+
+        <!-- Desktop header -->
+        <header class="hidden items-center justify-between gap-4 pt-8 pb-4 lg:flex">
+          <div class="flex items-center gap-3">
+            <span class="grid size-10 place-items-center rounded-xl bg-primary/10 text-primary-text">
+              <i data-icon="firecent-mono" class="h-5 w-auto"></i>
+            </span>
+            <div>
+              <h1 class="text-[24px] leading-[32px] font-semibold tracking-[-0.02em]">Assistant</h1>
+              <p id="asst-desk-sub" class="text-[13px] text-muted-foreground">Reads Maya &amp; Daniel's accounts · Never edits balances without approval</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" id="asst-desk-new" class="flex h-10 items-center gap-1.5 rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground hover:opacity-95">
+              <i data-icon="plus" class="size-4"></i>New chat
+            </button>
+            <a href="notifications.html" class="relative grid size-10 place-items-center rounded-full hover:bg-accent" aria-label="Notifications, 2 unread">
+              <i data-icon="bell" class="size-[22px]"></i>
+              <span class="absolute top-2 right-2 size-2 rounded-full bg-primary ring-2 ring-background [html[data-state=empty]_&]:hidden" aria-hidden="true"></span>
+            </a>
+          </div>
+        </header>
+
+        <!-- ═══════════════════════════ WITH DATA ═══════════════════════════ -->
+        <div data-view="data" class="flex-1">
+          <div class="lg:grid lg:grid-cols-12 lg:items-start lg:gap-6">
+            <!-- Desktop Left Thread Sidebar -->
+            <aside class="hidden lg:col-span-4 lg:block">
+              <div class="sticky top-6 rounded-3xl border bg-card p-3">
+                <p class="px-2.5 pt-1 pb-2 text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">Conversations</p>
+                <ul id="asst-desk-threads" class="space-y-1"></ul>
+
+                <div id="asst-desk-noticed" class="mt-4 border-t pt-3">
+                  <p class="px-2.5 pb-2 text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">Noticed for you</p>
+                  <div class="space-y-2 px-1">
+                    <a href="budget.html" class="block rounded-2xl border bg-muted/40 p-3 hover:bg-accent/60">
+                      <div class="flex items-center justify-between gap-2 text-[12px]">
+                        <span class="font-semibold text-warning">79% of Groceries cap</span>
+                        <span class="num text-muted-foreground">18d left</span>
+                      </div>
+                      <p class="mt-1 text-[13px] text-foreground">$709.46 spent of $900.00 monthly limit.</p>
+                    </a>
+                    <button type="button" data-open-thread="t1" class="block w-full rounded-2xl border bg-muted/40 p-3 text-left hover:bg-accent/60">
+                      <div class="flex items-center justify-between gap-2 text-[12px]">
+                        <span class="font-semibold text-primary-text">1 pending proposal</span>
+                        <span class="num text-muted-foreground">~$61.24/mo</span>
+                      </div>
+                      <p class="mt-1 text-[13px] text-foreground">Chewy repeats every month on the 9th.</p>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </aside>
+
+            <!-- Main Column (New Chat Canvas OR Active Thread) -->
+            <div class="flex min-w-0 flex-1 flex-col px-5 pt-2 lg:col-span-8 lg:px-0 lg:pt-0">
+            <!-- PANEL A: NEW CHAT (?view=new) -->
+            <section id="asst-view-new" class="flex-1 space-y-6 pb-4">
+              <div class="pt-2 lg:rounded-3xl lg:border lg:bg-card lg:p-6">
+                <div class="flex items-center gap-3">
+                  <span class="grid size-11 place-items-center rounded-2xl bg-primary/10 text-primary-text">
+                    <i data-icon="firecent" class="size-6"></i>
+                  </span>
+                  <div>
+                    <h2 class="text-[20px] leading-[26px] font-semibold tracking-[-0.015em]">Hi Maya, ask anything</h2>
+                    <p id="asst-scope-hint" class="text-[13px] text-muted-foreground">Scoped to all 7 accounts · Maya &amp; Daniel · Nov 12, 2026</p>
+                  </div>
+                </div>
+
+                <!-- Proactive Noticed For You cards (Mobile + visible in New view) -->
+                <div class="mt-5 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                  <a href="budget.html" class="rounded-2xl border bg-card p-3.5 transition-colors hover:bg-accent/50 lg:bg-muted/35">
+                    <div class="flex items-center justify-between gap-2 text-[12px]">
+                      <span class="inline-flex items-center gap-1.5 font-semibold text-warning"><span class="size-2 rounded-full bg-amber-500"></span>Groceries pace</span>
+                      <span class="num text-muted-foreground">$190.54 left</span>
+                    </div>
+                    <p class="mt-1.5 text-[14px] font-medium">79% of your $900 cap used</p>
+                    <p class="mt-0.5 text-[12px] text-muted-foreground">6 trips through Nov 12 · 18 days remaining →</p>
+                  </a>
+
+                  <button type="button" data-open-thread="t1" class="rounded-2xl border bg-card p-3.5 text-left transition-colors hover:bg-accent/50 lg:bg-muted/35">
+                    <div class="flex items-center justify-between gap-2 text-[12px]">
+                      <span class="inline-flex items-center gap-1.5 font-semibold text-primary-text"><span class="size-2 rounded-full bg-primary"></span>Detected repeat</span>
+                      <span class="num text-muted-foreground">Proposal</span>
+                    </div>
+                    <p class="mt-1.5 text-[14px] font-medium">Chewy looks monthly (~$61.24)</p>
+                    <p class="mt-0.5 text-[12px] text-muted-foreground">Approve recurring Pets rule in Subscriptions thread →</p>
+                  </button>
+                </div>
+
+                <!-- Suggested prompt chips -->
+                <div class="mt-5">
+                  <p class="mb-2 text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">Try asking</p>
+                  <div class="flex flex-wrap gap-2">
+                    <button type="button" data-ask-prompt="Which subscriptions went up this year?" data-target-thread="t1" class="rounded-2xl border bg-card px-3.5 py-2 text-left text-[13px] font-medium hover:bg-accent lg:bg-background">Which subscriptions went up this year?</button>
+                    <button type="button" data-ask-prompt="How is November going so far?" data-target-thread="t2" class="rounded-2xl border bg-card px-3.5 py-2 text-left text-[13px] font-medium hover:bg-accent lg:bg-background">How is November going vs Oct?</button>
+                    <button type="button" data-ask-prompt="Import & reconcile my Amex CSV" data-target-thread="t3" class="rounded-2xl border bg-card px-3.5 py-2 text-left text-[13px] font-medium hover:bg-accent lg:bg-background">Amex statement import</button>
+                    <button type="button" data-ask-prompt="How much did we spend on Dining out this week?" class="rounded-2xl border bg-card px-3.5 py-2 text-left text-[13px] font-medium hover:bg-accent lg:bg-background">Dining out this week?</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Mobile Recent Threads List -->
+              <div class="lg:hidden">
+                <p class="mb-2 px-1 text-[12px] font-semibold uppercase tracking-wide text-muted-foreground">Recent conversations</p>
+                <div id="asst-mob-recent" class="divide-y overflow-hidden rounded-2xl border bg-card"></div>
+              </div>
+            </section>
+
+            <!-- PANEL B: ACTIVE THREAD (?view=thread) -->
+            <section id="asst-view-thread" class="hidden flex-1 flex-col justify-between">
+              <div class="rounded-3xl lg:border lg:bg-card lg:p-6">
+                <div class="mb-4 hidden items-center justify-between border-b pb-3 lg:flex">
+                  <div>
+                    <h2 id="asst-thread-heading" class="text-[17px] font-semibold">Subscriptions that went up</h2>
+                    <p id="asst-thread-meta" class="text-[12px] text-muted-foreground">Updated Nov 12 · 4 sources cited</p>
+                  </div>
+                  <span class="inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
+                    <i data-icon="shield-check" class="size-3.5"></i>Read-only unless you approve
+                  </span>
+                </div>
+
+                <div id="asst-messages" class="space-y-4"></div>
+              </div>
+            </section>
+
+            <!-- COMPOSER (sticky bottom on desktop, fixed above tab bar on mobile) -->
+            <div class="fixed inset-x-0 bottom-[74px] z-20 mx-auto max-w-[430px] px-4 pb-2 pt-1 lg:static lg:mx-0 lg:mt-4 lg:max-w-none lg:p-0">
+              <div class="rounded-2xl border bg-card/95 p-2 shadow-[0_12px_32px_-12px_rgb(11_18_32/0.22)] backdrop-blur lg:shadow-none">
+                <div id="asst-attach-bar" class="mb-1.5 hidden items-center justify-between rounded-xl bg-muted px-3 py-1.5 text-[12px]">
+                  <span class="inline-flex items-center gap-1.5 font-medium"><i data-icon="file-text" class="size-3.5 text-primary-text"></i>amex-nov-2026.csv · 14 KB</span>
+                  <button type="button" id="asst-remove-attach" class="text-muted-foreground hover:text-foreground" aria-label="Remove attachment"><i data-icon="x" class="size-3.5"></i></button>
+                </div>
+                <form id="asst-form" class="flex items-end gap-2">
+                  <button type="button" id="asst-attach-btn" class="grid size-10 shrink-0 place-items-center rounded-xl text-muted-foreground hover:bg-accent hover:text-foreground" aria-label="Attach statement or receipt">
+                    <i data-icon="paperclip" class="size-5"></i>
+                  </button>
+                  <input id="asst-input" type="text" placeholder="Ask about your spending, accounts, or bills…" class="h-10 min-w-0 flex-1 bg-transparent text-[14px] outline-none placeholder:text-muted-foreground" />
+                  <button type="submit" class="grid size-10 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground hover:opacity-95" aria-label="Send message">
+                    <i data-icon="send" class="size-4"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════ EMPTY ═══════════════════════════ -->
+        <div data-view="empty">
+          <div class="flex flex-col items-center px-8 py-14 text-center lg:py-24">
+            <span class="grid size-14 place-items-center rounded-2xl bg-primary/10 text-primary-text"><i data-icon="firecent-mono" class="h-6 w-auto"></i></span>
+            <h2 class="mt-4 text-[17px] font-semibold">Start your first conversation</h2>
+            <p class="mt-1.5 max-w-[300px] text-[14px] leading-[20px] text-muted-foreground">
+              Ask about monthly caps, price hikes, CSV imports, or who paid for what.
+            </p>
+            <div class="mt-5 flex flex-wrap justify-center gap-2">
+              <a href="assistant.html?view=thread" class="inline-flex h-11 items-center rounded-xl bg-primary px-4 text-[14px] font-semibold text-primary-foreground">Try sample question</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════ LOADING ═══════════════════════════ -->
+        <div data-view="loading" aria-busy="true">
+          <p class="sr-only" role="status">Assistant is thinking</p>
+          <div aria-hidden="true" class="space-y-4 px-5 pt-4 lg:px-0">
+            <div class="ml-auto h-10 w-60 rounded-2xl bg-primary/15"></div>
+            <div class="rounded-2xl border bg-card p-4 space-y-2.5">
+              <div class="sk h-4 w-48"></div>
+              <div class="sk h-4 w-full"></div>
+              <div class="sk h-4 w-3/4"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════ ERROR ═══════════════════════════ -->
+        <div data-view="error">
+          <div class="flex flex-col items-center px-8 py-12 text-center lg:py-24">
+            <span class="grid size-14 place-items-center rounded-2xl bg-muted"><i data-icon="cloud-off" class="size-6 text-muted-foreground"></i></span>
+            <h2 class="mt-4 text-[17px] font-semibold">We couldn't load this</h2>
+            <p class="mt-1.5 max-w-[280px] text-[14px] text-muted-foreground">Check your connection and try again. Nothing was changed.</p>
+            <div class="mt-5"><button type="button" class="flex h-11 items-center rounded-xl border bg-card px-4 text-[14px] font-semibold">Try again</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════ SHEET: MOBILE THREADS (?sheet=threads) ═══════════════════════════ -->
+    <div data-sheet-id="threads">
+      <div data-veil data-close class="fixed inset-0 z-40 bg-[#0b1220]/50"></div>
+      <div role="dialog" aria-modal="true" aria-labelledby="sh-th-title" class="fixed inset-x-0 bottom-0 z-50 mx-auto max-h-[85dvh] w-full max-w-[430px] overflow-y-auto rounded-t-3xl bg-card px-5 pt-3 pb-8 shadow-[0_24px_48px_-12px_rgb(11_18_32/0.28)]">
+        <div class="mx-auto mb-2 h-1 w-9 rounded-full bg-muted-foreground/25" aria-hidden="true"></div>
+        <div class="flex h-12 items-center justify-between">
+          <h2 id="sh-th-title" class="text-[17px] font-semibold">Conversations</h2>
+          <button type="button" data-close class="grid size-11 place-items-center rounded-full hover:bg-accent" aria-label="Close"><i data-icon="x" class="size-[22px]"></i></button>
+        </div>
+        <ul id="asst-sheet-threads" class="mt-1 divide-y rounded-2xl border"></ul>
+      </div>
+    </div>
+
+    <script src="assets/icons.js"></script>
+    <script>
+      (function () {
+        var params = new URLSearchParams(location.search);
+        var curView = params.get("view") === "thread" || params.get("thread") ? "thread" : "new";
+        var curThreadId = params.get("thread") || "t1";
+        var proposalState = "pending"; // pending | editing | approved | dismissed
+        var proposalAmt = "61.24";
+
+        var THREADS = {
+          t1: {
+            id: "t1",
+            title: "Subscriptions that went up",
+            sub: "3 price hikes · 1 proposal",
+            when: "Today",
+            messages: [
+              { role: "user", text: "Which subscriptions went up this year?" },
+              {
+                role: "assistant",
+                text: "Three recurring subscriptions on <strong>Sapphire Reserve</strong> increased in 2026, adding <strong>+$7.50/mo ($90/yr)</strong>:",
+                table: [
+                  { name: "Spotify Duo", was: "$16.99", now: "$18.99", delta: "+$2.00 · Nov 5" },
+                  { name: "Max", was: "$15.49", now: "$18.49", delta: "+$3.00 · Jun" },
+                  { name: "Netflix", was: "$12.99", now: "$15.49", delta: "+$2.50 · Jan" },
+                ],
+                source: { label: "4 Sapphire Reserve charges", href: "transactions.html?account=Sapphire+Reserve" },
+              },
+              {
+                role: "assistant",
+                text: "I also noticed <strong>Chewy</strong> charged $61.24 around the 9th for three straight months without a recurring rule.",
+                proposal: {
+                  title: "Add Chewy to Recurring",
+                  detail: "Joint Checking · Pets · Every month on the 9th",
+                  amt: "61.24",
+                },
+              },
+            ],
+          },
+          t2: {
+            id: "t2",
+            title: "November so far",
+            sub: "+$1,312.86 kept · Day 12 of 30",
+            when: "Yesterday",
+            messages: [
+              { role: "user", text: "How is November going so far?" },
+              {
+                role: "assistant",
+                text: "Through Nov 12, you brought in <strong>$6,125.00</strong> and spent <strong>$4,812.14</strong>, leaving <strong>+$1,312.86 net saved</strong> (21.4% rate). 4 categories are above the 40% month pace line:",
+                table: [
+                  { name: "Entertainment", was: "Cap $250", now: "$212.09", delta: "85% used" },
+                  { name: "Transport", was: "Cap $300", now: "$250.20", delta: "83% used" },
+                  { name: "Groceries", was: "Cap $900", now: "$709.46", delta: "79% used" },
+                  { name: "Dining out", was: "Cap $450", now: "$313.69", delta: "70% used" },
+                ],
+                source: { label: "Open Category budget", href: "budget.html" },
+              },
+            ],
+          },
+          t3: {
+            id: "t3",
+            title: "Amex statement import",
+            sub: "3 imported · 1 duplicate skipped",
+            when: "Nov 10",
+            messages: [
+              { role: "user", text: "Attached amex-nov-2026.csv — match these against Amex Gold." },
+              {
+                role: "assistant",
+                text: "Checked 4 lines from <code>amex-nov-2026.csv</code> against Amex Gold (·· 1008). <strong>3 new transactions</strong> matched their categories and <strong>1 duplicate</strong> (Glossier $38.00 on Nov 3) was skipped cleanly.",
+                table: [
+                  { name: "McNally Jackson", was: "Shopping", now: "$25.31", delta: "Nov 12" },
+                  { name: "Blue Bottle", was: "Dining out", now: "$6.75", delta: "Nov 11" },
+                  { name: "Kindle", was: "Entertainment", now: "$12.99", delta: "Nov 10" },
+                ],
+                source: { label: "View Amex Gold transactions", href: "transactions.html?account=Amex+Gold" },
+              },
+            ],
+          },
+        };
+
+        function renderThreadLists() {
+          var list = Object.values(THREADS);
+          document.getElementById("asst-desk-threads").innerHTML = list.map(function (t) {
+            var active = curView === "thread" && curThreadId === t.id;
+            return '<li><button type="button" data-open-thread="' + t.id + '" class="flex w-full items-start justify-between gap-2 rounded-2xl px-3 py-2.5 text-left transition-colors ' +
+              (active ? "bg-accent text-foreground" : "hover:bg-accent/60") + '">' +
+              '<div class="min-w-0 flex-1"><p class="truncate text-[14px] font-medium">' + t.title + '</p><p class="truncate text-[12px] text-muted-foreground">' + t.sub + "</p></div>" +
+              '<span class="shrink-0 text-[11px] text-muted-foreground">' + t.when + "</span></button></li>";
+          }).join("");
+
+          var small = list.map(function (t) {
+            return '<li><button type="button" data-open-thread="' + t.id + '" data-close class="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left hover:bg-accent/60">' +
+              '<div class="min-w-0 flex-1"><p class="truncate font-medium">' + t.title + '</p><p class="truncate text-[12px] text-muted-foreground">' + t.sub + "</p></div>" +
+              '<span class="text-[12px] text-muted-foreground">' + t.when + "</span></button></li>";
+          }).join("");
+          document.getElementById("asst-mob-recent").innerHTML = small;
+          document.getElementById("asst-sheet-threads").innerHTML = small;
+        }
+
+        function renderProposal(p) {
+          if (proposalState === "dismissed") {
+            return '<div class="mt-3 flex items-center justify-between rounded-2xl border border-dashed bg-muted/40 px-3.5 py-2.5 text-[13px] text-muted-foreground">' +
+              '<span>Dismissed Chewy proposal</span><button type="button" id="prop-undo" class="font-semibold text-primary-text hover:underline">Undo</button></div>';
+          }
+          if (proposalState === "approved") {
+            return '<div class="mt-3 flex items-center justify-between rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-3 text-[13px]">' +
+              '<span class="inline-flex items-center gap-2 font-medium text-positive"><i data-icon="check" class="size-4"></i>Added to Recurring · Chewy $' + proposalAmt + '/mo</span>' +
+              '<button type="button" id="prop-undo" class="font-semibold text-primary-text hover:underline">Undo</button></div>';
+          }
+          if (proposalState === "editing") {
+            return '<div class="mt-3 rounded-2xl border bg-background p-3.5 space-y-3">' +
+              '<p class="text-[13px] font-semibold">Edit recurring rule</p>' +
+              '<div class="grid grid-cols-2 gap-2">' +
+              '<input id="prop-edit-amt" type="number" step="0.01" value="' + proposalAmt + '" class="num h-10 rounded-xl border bg-card px-3 text-[14px] font-semibold outline-none focus:border-primary" />' +
+              '<select class="h-10 rounded-xl border bg-card px-2.5 text-[13px]"><option>Pets</option><option>Groceries</option></select>' +
+              "</div>" +
+              '<div class="flex gap-2">' +
+              '<button type="button" id="prop-save-approve" class="h-9 flex-1 rounded-xl bg-primary px-3 text-[13px] font-semibold text-primary-foreground">Save &amp; approve</button>' +
+              '<button type="button" id="prop-cancel-edit" class="h-9 rounded-xl border px-3 text-[13px] font-medium">Cancel</button>' +
+              "</div></div>";
+          }
+          return '<div class="mt-3 rounded-2xl border bg-background p-3.5">' +
+            '<div class="flex items-start justify-between gap-2">' +
+            '<div><p class="font-semibold">' + p.title + '</p><p class="mt-0.5 text-[12px] text-muted-foreground">' + p.detail + "</p></div>" +
+            '<span class="num rounded-lg bg-brand-gray px-2 py-0.5 text-[13px] font-semibold text-brand-gray-foreground">$' + proposalAmt + "</span></div>" +
+            '<div class="mt-3 flex flex-wrap gap-2">' +
+            '<button type="button" id="prop-approve" class="h-9 rounded-xl bg-primary px-3.5 text-[13px] font-semibold text-primary-foreground hover:opacity-95">Approve</button>' +
+            '<button type="button" id="prop-edit" class="h-9 rounded-xl border px-3 text-[13px] font-medium hover:bg-accent">Edit</button>' +
+            '<button type="button" id="prop-dismiss" class="h-9 rounded-xl px-3 text-[13px] font-medium text-muted-foreground hover:bg-accent hover:text-foreground">Dismiss</button>' +
+            "</div></div>";
+        }
+
+        function renderView() {
+          renderThreadLists();
+          var th = THREADS[curThreadId] || THREADS.t1;
+          var newSec = document.getElementById("asst-view-new");
+          var thrSec = document.getElementById("asst-view-thread");
+          var backBtn = document.getElementById("asst-mob-back");
+
+          var deskNoticed = document.getElementById("asst-desk-noticed");
+
+          if (curView === "new") {
+            newSec.classList.remove("hidden");
+            thrSec.classList.add("hidden");
+            if (deskNoticed) deskNoticed.classList.add("hidden");
+            document.getElementById("asst-mob-title").textContent = "Assistant";
+            backBtn.classList.add("hidden");
+          } else {
+            newSec.classList.add("hidden");
+            thrSec.classList.remove("hidden");
+            thrSec.classList.add("flex");
+            if (deskNoticed) deskNoticed.classList.remove("hidden");
+            document.getElementById("asst-mob-title").textContent = th.title;
+            backBtn.classList.remove("hidden");
+            document.getElementById("asst-thread-heading").textContent = th.title;
+            document.getElementById("asst-thread-meta").textContent = th.when + " · " + th.sub;
+
+            document.getElementById("asst-messages").innerHTML = th.messages.map(function (m) {
+              if (m.role === "user") {
+                return '<div class="flex justify-end"><div class="max-w-[85%] rounded-2xl rounded-br-sm bg-primary px-4 py-2.5 text-[14px] text-primary-foreground">' + m.text + "</div></div>";
+              }
+              var tbl = m.table
+                ? '<div class="mt-3 overflow-hidden rounded-xl border bg-background"><table class="w-full text-[12px] sm:text-[13px]"><tbody class="divide-y">' +
+                  m.table.map(function (r) {
+                    return '<tr><td class="py-2 pl-3 pr-2 font-medium">' + r.name + '</td><td class="num whitespace-nowrap py-2 pr-2 text-muted-foreground">' + r.was + '</td><td class="num whitespace-nowrap py-2 pr-2 font-semibold">' + r.now + '</td><td class="whitespace-nowrap py-2 pr-3 text-right text-[11px] font-medium text-warning sm:text-[12px]">' + r.delta + "</td></tr>";
+                  }).join("") +
+                  "</tbody></table></div>"
+                : "";
+              var src = m.source
+                ? '<div class="mt-3"><a href="' + m.source.href + '" class="inline-flex h-8 items-center gap-1.5 rounded-full border bg-background px-3 text-[12px] font-semibold text-primary-text hover:bg-accent"><i data-icon="arrow-up-right" class="size-3.5"></i>' + m.source.label + "</a></div>"
+                : "";
+              var prop = m.proposal ? renderProposal(m.proposal) : "";
+
+              return '<div class="flex items-start gap-2.5">' +
+                '<span class="grid size-8 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary-text"><i data-icon="firecent-mono" class="h-4 w-auto"></i></span>' +
+                '<div class="min-w-0 flex-1 rounded-2xl rounded-tl-sm border bg-card p-3.5 text-[14px] leading-[20px] lg:bg-muted/35">' +
+                '<p>' + m.text + "</p>" + tbl + src + prop + "</div></div>";
+            }).join("");
+          }
+
+          if (window.fableIcons) window.fableIcons(document.body);
+        }
+
+        document.addEventListener("click", function (e) {
+          var ot = e.target.closest("[data-open-thread]");
+          if (ot) {
+            curThreadId = ot.dataset.openThread;
+            curView = "thread";
+            renderView();
+            return;
+          }
+          var ap = e.target.closest("[data-ask-prompt]");
+          if (ap) {
+            if (ap.dataset.targetThread) {
+              curThreadId = ap.dataset.targetThread;
+            } else {
+              THREADS.t2.messages.push({ role: "user", text: ap.dataset.askPrompt });
+              THREADS.t2.messages.push({ role: "assistant", text: "You spent <strong>$313.69</strong> on Dining out in November across 8 trips (70% of your $450 monthly cap), including $41.24 at DoorDash today." });
+              curThreadId = "t2";
+            }
+            curView = "thread";
+            renderView();
+            return;
+          }
+          if (e.target.id === "prop-approve") {
+            proposalState = "approved";
+            renderView();
+            if (window.fableToast) window.fableToast("Added Chewy ($" + proposalAmt + "/mo) to Recurring");
+          } else if (e.target.id === "prop-edit") {
+            proposalState = "editing";
+            renderView();
+          } else if (e.target.id === "prop-cancel-edit") {
+            proposalState = "pending";
+            renderView();
+          } else if (e.target.id === "prop-save-approve") {
+            var inp = document.getElementById("prop-edit-amt");
+            if (inp && inp.value) proposalAmt = Number(inp.value).toFixed(2);
+            proposalState = "approved";
+            renderView();
+            if (window.fableToast) window.fableToast("Saved Chewy $" + proposalAmt + "/mo to Recurring");
+          } else if (e.target.id === "prop-dismiss") {
+            proposalState = "dismissed";
+            renderView();
+          } else if (e.target.id === "prop-undo") {
+            proposalState = "pending";
+            renderView();
+          }
+        });
+
+        ["asst-mob-new", "asst-desk-new", "asst-mob-back"].forEach(function (id) {
+          document.getElementById(id).addEventListener("click", function (e) {
+            e.preventDefault();
+            curView = "new";
+            renderView();
+          });
+        });
+
+        document.getElementById("asst-attach-btn").addEventListener("click", function () {
+          var bar = document.getElementById("asst-attach-bar");
+          bar.classList.remove("hidden");
+          bar.classList.add("flex");
+        });
+        document.getElementById("asst-remove-attach").addEventListener("click", function () {
+          var bar = document.getElementById("asst-attach-bar");
+          bar.classList.add("hidden");
+          bar.classList.remove("flex");
+        });
+
+        document.getElementById("asst-form").addEventListener("submit", function (e) {
+          e.preventDefault();
+          var inp = document.getElementById("asst-input");
+          var val = inp.value.trim();
+          var hasAtt = !document.getElementById("asst-attach-bar").classList.contains("hidden");
+          if (!val && !hasAtt) return;
+          var msg = val || "Analyze attached statement";
+          THREADS[curThreadId].messages.push({ role: "user", text: (hasAtt ? "📎 amex-nov-2026.csv · " : "") + msg });
+          THREADS[curThreadId].messages.push({
+            role: "assistant",
+            text: "Based on Maya &amp; Daniel's Nov 12 books, your Net balance is <strong>$36,398.47</strong> and you have <strong>$1,263.00</strong> remaining across your 12 monthly category caps ($70.17/day for 18 days left).",
+            source: { label: "View Category budget", href: "budget.html" },
+          });
+          inp.value = "";
+          document.getElementById("asst-attach-bar").classList.add("hidden");
+          document.getElementById("asst-attach-bar").classList.remove("flex");
+          curView = "thread";
+          renderView();
+        });
+
+        renderView();
+      })();
+    </script>
+  </body>
+</html>
