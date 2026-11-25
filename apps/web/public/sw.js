@@ -16,7 +16,7 @@ self.addEventListener("push", (event) => {
     body: "",
     url: "/",
     tag: "firecent-notification",
-    badge: "/splash/app-icons/notification-badge-96.png?v=2",
+    badge: "/splash/app-icons/notification-badge-96.png?v=3",
   };
 
   try {
@@ -26,10 +26,22 @@ self.addEventListener("push", (event) => {
     payload.body = event.data.text();
   }
 
+  // Android Chrome draws a gray fallback monogram ("F") on the right when `icon`
+  // is omitted. Passing a 1x1 transparent PNG on Android keeps the notification
+  // clean (badge-only like native apps), while desktop keeps the full app icon.
+  const isAndroid =
+    typeof self.navigator !== "undefined" &&
+    /Android/i.test(self.navigator.userAgent || "");
+  const icon =
+    payload.icon ||
+    (isAndroid
+      ? "/splash/app-icons/notification-transparent.png"
+      : "/splash/app-icons/app_dark_180.png");
+
   event.waitUntil(
     self.registration.showNotification(payload.title, {
       body: payload.body,
-      ...(payload.icon ? { icon: payload.icon } : {}),
+      icon,
       badge: payload.badge,
       tag: payload.tag,
       renotify: true,
