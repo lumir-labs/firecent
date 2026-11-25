@@ -24,6 +24,19 @@ const withNextIntl = createNextIntlPlugin({
   },
 });
 
+const umamiOrigin = (() => {
+  const raw = (
+    process.env.UMAMI_URL ??
+    process.env.NEXT_PUBLIC_UMAMI_URL ??
+    "https://analytics.lumirlabs.com"
+  ).trim();
+  try {
+    return new URL(raw).origin;
+  } catch {
+    return "https://analytics.lumirlabs.com";
+  }
+})();
+
 const nextConfig: NextConfig = {
   // Docker/Dokploy: genera un servidor autocontenido en .next/standalone
   // (solo los archivos que realmente usa la app, no todo node_modules).
@@ -78,7 +91,7 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com",
+              `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com ${umamiOrigin}`,
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https:",
               "font-src 'self' data: https:",

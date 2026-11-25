@@ -8,6 +8,7 @@ import { Inter } from "next/font/google";
 import { routing, type Locale } from "@/i18n/routing";
 import { isLocale } from "@/i18n/utils";
 import { Toaster } from "@/components/ui/sonner";
+import { CookieNotice } from "@/components/common/cookie-notice";
 import { PwaInstallBootstrap } from "@/components/common/pwa-install-card";
 import { ThemeProvider } from "@/providers/theme-provider";
 
@@ -23,6 +24,38 @@ const inter = Inter({
 // so this stays on the public domain even in local dev.
 const SITE_URL = "https://firecent.app";
 const SITE_NAME = "firecent";
+
+const DEFAULT_PROD_UMAMI_URL = "https://analytics.lumirlabs.com/script.js";
+const DEFAULT_PROD_UMAMI_WEBSITE_ID = "8d9af1d7-26ee-4ce5-9a27-62aaa8297d15";
+
+function resolveUmamiConfig(): {
+  readonly scriptSrc: string | null;
+  readonly websiteId: string | null;
+} {
+  const isProd = process.env.NODE_ENV === "production";
+  const rawUrl = (
+    process.env.UMAMI_URL ??
+    process.env.NEXT_PUBLIC_UMAMI_URL ??
+    (isProd ? DEFAULT_PROD_UMAMI_URL : "")
+  )
+    .trim()
+    .replace(/\/+$/, "");
+
+  const websiteId =
+    (
+      process.env.UMAMI_WEBSITE_ID ??
+      process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID ??
+      (isProd ? DEFAULT_PROD_UMAMI_WEBSITE_ID : "")
+    ).trim() || null;
+
+  const scriptSrc = rawUrl
+    ? rawUrl.endsWith(".js")
+      ? rawUrl
+      : `${rawUrl}/script.js`
+    : null;
+
+  return { scriptSrc, websiteId };
+}
 // English is the default image (also used by the static splash at `/`);
 // Spanish routes get their own copy.
 const OG_IMAGE_PATHS: Record<Locale, string> = {
@@ -191,6 +224,8 @@ export default async function LocaleLayout({ children }: Props) {
 
   const messages = await getMessages();
   const tSeo = await getTranslations({ locale: localeValue, namespace: "Seo" });
+  const { scriptSrc: umamiScriptSrc, websiteId: umamiWebsiteId } =
+    resolveUmamiConfig();
   // Escape `<` so message text can never close the <script> tag.
   const jsonLd = JSON.stringify(
     siteJsonLd(tSeo("description"), tSeo("slogan"), localeValue),
@@ -218,6 +253,10 @@ export default async function LocaleLayout({ children }: Props) {
             <PwaInstallBootstrap />
             <Toaster richColors />
             {children}
+            <CookieNotice
+              umamiScriptSrc={umamiScriptSrc ?? undefined}
+              umamiWebsiteId={umamiWebsiteId ?? undefined}
+            />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

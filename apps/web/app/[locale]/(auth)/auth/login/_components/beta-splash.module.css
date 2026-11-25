@@ -1,0 +1,294 @@
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: #0b1220;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0px);
+  transition:
+    opacity 0.48s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.48s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.48s ease;
+}
+
+.root.exiting {
+  opacity: 0;
+  transform: scale(1.025);
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+.stage,
+.fx {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.fx {
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 55%,
+    rgba(5, 8, 16, 0.55) 100%
+  );
+}
+
+/* ---------- Intro Animations ---------- */
+.glowA,
+.glowB,
+.logoGlow {
+  opacity: 0;
+}
+
+.play .glowA {
+  animation: bsFadeIn 2.4s 0.1s ease-out forwards;
+}
+
+.play .glowB {
+  animation: bsFadeIn 2.4s 0.4s ease-out forwards;
+}
+
+.flameTop,
+.flameBottom {
+  transform-box: fill-box;
+  opacity: 0;
+}
+
+.flameTop {
+  transform-origin: 2% 100%;
+}
+
+.flameBottom {
+  transform-origin: 22% 100%;
+}
+
+.play .flameTop {
+  animation: bsFlamePop 1.1s 0.7s cubic-bezier(0.2, 1.4, 0.4, 1) forwards;
+}
+
+.play .flameBottom {
+  animation: bsFlamePop 1.1s 0.95s cubic-bezier(0.2, 1.4, 0.4, 1) forwards;
+}
+
+.flameWrap {
+  transform-box: fill-box;
+  transform-origin: 30% 100%;
+  transition: transform 0.5s cubic-bezier(0.2, 1.3, 0.4, 1);
+  cursor: pointer;
+}
+
+.flameWrap.hover {
+  transform: scale(1.06) rotate(-2deg);
+}
+
+.flameWrap.flare {
+  animation: bsFlare 0.7s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+
+.play .logoGlow {
+  animation:
+    bsFadeIn 1.6s 1s ease-out forwards,
+    bsBreathe 4s 2.6s ease-in-out infinite;
+}
+
+.revealRect {
+  transform: translateX(0);
+}
+
+.play .revealRect {
+  animation: bsReveal 1.5s 1.3s cubic-bezier(0.65, 0, 0.25, 1) forwards;
+}
+
+.wordmark {
+  opacity: 0;
+  transform: translateX(-24px);
+}
+
+.play .wordmark {
+  animation: bsSlideIn 1.5s 1.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.shine {
+  transform: translateX(-500px);
+}
+
+.play .shine {
+  animation: bsShine 6s 3s cubic-bezier(0.5, 0, 0.3, 1) infinite;
+}
+
+@keyframes bsFadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bsBreathe {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@keyframes bsFlamePop {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) rotate(-25deg);
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes bsFlare {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.18) rotate(-4deg);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes bsReveal {
+  to {
+    transform: translateX(1600px);
+  }
+}
+
+@keyframes bsSlideIn {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bsShine {
+  0% {
+    transform: translateX(-500px);
+  }
+  35%,
+  100% {
+    transform: translateX(1900px);
+  }
+}
+
+/* ---------- Primary Enter CTA (Original dark-glass gradient border pill) ---------- */
+.cta {
+  position: fixed;
+  left: 50%;
+  top: calc(50% + clamp(84px, 13vh, 150px));
+  z-index: 10;
+  transform: translate(-50%, 8px);
+  opacity: 0;
+  pointer-events: none;
+  height: 48px;
+  padding: 0 22px 0 26px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: #f4f2ff;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(rgba(14, 20, 38, 0.82), rgba(14, 20, 38, 0.82)) padding-box,
+    linear-gradient(120deg, #ffa64f, #ff3f3a 40%, #7c5cff 80%, #e9e3ff)
+      border-box;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 32px -12px rgba(255, 122, 61, 0.55);
+  cursor: pointer;
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.25s;
+  -webkit-font-smoothing: antialiased;
+}
+
+.cta:hover {
+  box-shadow:
+    0 12px 40px -10px rgba(255, 122, 61, 0.75),
+    0 0 24px -8px rgba(124, 92, 255, 0.55);
+}
+
+.cta:focus-visible {
+  outline: 2px solid #ffa64f;
+  outline-offset: 4px;
+}
+
+.cta svg {
+  opacity: 0.85;
+  transition: transform 0.2s;
+}
+
+.cta:hover svg {
+  transform: translateX(3px);
+}
+
+.cta.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+}
+
+.cta.show:active {
+  transform: translate(-50%, 1px) scale(0.98);
+}
+
+.cta.aligned {
+  transform: translate(0, 8px);
+}
+
+.cta.aligned.show {
+  transform: translate(0, 0);
+}
+
+.cta.aligned.show:active {
+  transform: translate(0, 1px) scale(0.98);
+}
+
+@media (max-width: 480px) {
+  .cta {
+    top: auto;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 12vh);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .play * {
+    animation-duration: 0.01s !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  .root,
+  .cta {
+    transition-duration: 0.01s;
+  }
+}

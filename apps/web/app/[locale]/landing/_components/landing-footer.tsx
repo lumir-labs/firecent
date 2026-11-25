@@ -1,6 +1,7 @@
 import { Sparkles } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
+import { CookiePreferencesButton } from "@/components/common/cookie-notice";
 import { Separator } from "@/components/ui/separator";
 
 import { getTranslations } from "next-intl/server";
@@ -84,7 +85,11 @@ export async function LandingFooter() {
         </div>
         <Separator className="my-8" />
         <div className="flex flex-col items-center justify-between gap-3 text-xs text-muted-foreground sm:flex-row">
-          <p>© {new Date().getFullYear()} {tCommon("appName")} · {t("footer.rights")}</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 sm:justify-start">
+            <p>© {new Date().getFullYear()} {tCommon("appName")} · {t("footer.rights")}</p>
+            <span aria-hidden>·</span>
+            <CookiePreferencesButton />
+          </div>
           <p>{t("footer.madeWith")}</p>
         </div>
       </div>

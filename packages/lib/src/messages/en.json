@@ -188,7 +188,12 @@
     },
     "useAnotherEmail": "Use a different email",
     "rememberMe": "Remember me",
-    "securityNotice": "Your data is encrypted and always secure."
+    "securityNotice": "Your data is encrypted and always secure.",
+    "betaSplash": {
+      "badge": "Beta",
+      "enterButton": "Enter",
+      "stageLabel": "firecent Beta: Your money, clear. Your goals, on fire."
+    }
   },
   "Admin": {
     "roleSwitcher": {
@@ -945,7 +950,24 @@
     "privacyBody": "This is a boilerplate template. Replace it with your real notice before processing user data.",
     "termsTitle": "Terms (template)",
     "termsBody": "This is a boilerplate template. Replace it with your real terms before operating.",
-    "companyPlaceholder": "[YOUR COMPANY]"
+    "companyPlaceholder": "[YOUR COMPANY]",
+    "cookieBanner": {
+      "ariaLabel": "Cookie preferences",
+      "title": "Help us improve firecent",
+      "body": "We use essential cookies for sign-in, theme, and language preferences. If you allow it, we also measure aggregated visits and usage with no ad tracking.",
+      "learnMore": "Privacy Policy",
+      "accept": "Allow analytics",
+      "reject": "Essential only",
+      "managePrefs": "View & change preferences",
+      "prefsTitle": "Cookie preferences",
+      "essentialTitle": "Essential cookies",
+      "alwaysOn": "Always on",
+      "essentialDesc": "Required for sign-in sessions, language preference, and storing your cookie choice.",
+      "analyticsTitle": "Analytics",
+      "analyticsDesc": "Aggregated visit and usage stats to help us improve firecent. Never loaded unless you allow it.",
+      "savePrefs": "Save preferences",
+      "close": "Close cookie preferences"
+    }
   },
   "Seo": {
     "title": "firecent | Personal and shared finances, with clear goals",
