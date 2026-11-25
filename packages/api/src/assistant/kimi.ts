@@ -1,7 +1,11 @@
+import http from "node:http";
+import https from "node:https";
 import "@app/env";
 
 const DEFAULT_INVOKE_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
 const DEFAULT_MODEL = "moonshotai/kimi-k3.1-pro";
+/** 10 minutes default per-request timeout (Kimi reasoning + large statements can take several minutes). */
+export const DEFAULT_KIMI_TIMEOUT_MS = 10 * 60 * 1000;
 
 export type KimiContentPart =
   | { type: "text"; text: string }
@@ -73,15 +77,119 @@ function getKimiConfig() {
   if (!apiKey) {
     throw new Error("NVIDIA_API_KEY is not configured in environment");
   }
+  const envTimeout = Number(process.env.AI_TIMEOUT_MS);
+  const defaultTimeoutMs =
+    Number.isFinite(envTimeout) && envTimeout >= 30_000
+      ? Math.floor(envTimeout)
+      : DEFAULT_KIMI_TIMEOUT_MS;
   return {
     apiKey,
     invokeUrl: process.env.NVIDIA_API_URL?.trim() || DEFAULT_INVOKE_URL,
     model: process.env.AI_MODEL?.trim() || DEFAULT_MODEL,
+    defaultTimeoutMs,
   };
 }
 
 /**
- * Streams a chat completion from NVIDIA NIM (Kimi K3.1 Pro) using native `fetch`.
+ * Opens a streaming HTTPS/HTTP POST request using Node's native `http`/`https`
+ * module instead of undici `fetch`, avoiding undici's hard-coded 5-minute
+ * `headersTimeout`/`bodyTimeout` limits on long-running (up to 10+ min) Kimi calls.
+ */
+function openSseRequest(opts: {
+  url: string;
+  headers: Record<string, string>;
+  body: string;
+  timeoutMs: number;
+  signal: AbortSignal;
+}): Promise<http.IncomingMessage> {
+  return new Promise((resolve, reject) => {
+    if (opts.signal.aborted) {
+      reject(
+        opts.signal.reason instanceof Error
+          ? opts.signal.reason
+          : new DOMException("The operation was aborted.", "AbortError"),
+      );
+      return;
+    }
+
+    const parsedUrl = new URL(opts.url);
+    const transport = parsedUrl.protocol === "http:" ? http : https;
+    const payload = Buffer.from(opts.body, "utf8");
+
+    let settled = false;
+    const req = transport.request(
+      parsedUrl,
+      {
+        method: "POST",
+        headers: {
+          ...opts.headers,
+          "Content-Length": String(payload.byteLength),
+        },
+        timeout: opts.timeoutMs,
+      },
+      (res) => {
+        res.setTimeout(opts.timeoutMs, () => {
+          res.destroy(
+            new DOMException(
+              `Kimi response stream timed out after ${Math.round(opts.timeoutMs / 1000)}s`,
+              "TimeoutError",
+            ),
+          );
+        });
+        settled = true;
+        resolve(res);
+      },
+    );
+
+    const onAbort = () => {
+      const reason =
+        opts.signal.reason instanceof Error
+          ? opts.signal.reason
+          : new DOMException("The operation was aborted.", "AbortError");
+      req.destroy(reason);
+      if (!settled) {
+        settled = true;
+        reject(reason);
+      }
+    };
+
+    opts.signal.addEventListener("abort", onAbort, { once: true });
+
+    req.on("socket", (socket) => {
+      socket.setKeepAlive(true, 15_000);
+    });
+
+    req.on("timeout", () => {
+      const err = new DOMException(
+        `Kimi request timed out after ${Math.round(opts.timeoutMs / 1000)}s`,
+        "TimeoutError",
+      );
+      req.destroy(err);
+      if (!settled) {
+        settled = true;
+        reject(err);
+      }
+    });
+
+    req.on("error", (err) => {
+      opts.signal.removeEventListener("abort", onAbort);
+      if (!settled) {
+        settled = true;
+        reject(err);
+      }
+    });
+
+    req.on("close", () => {
+      opts.signal.removeEventListener("abort", onAbort);
+    });
+
+    req.end(payload);
+  });
+}
+
+/**
+ * Streams a chat completion from NVIDIA NIM (Kimi K3.1 Pro) over native Node
+ * `https` with a 10-minute default timeout (bypassing undici's 5-min ceiling).
  * Collects streamed text deltas, reasoning_content, tool_calls, and usage stats.
  */
 export async function streamKimiCompletion(opts: {
@@ -95,7 +203,8 @@ export async function streamKimiCompletion(opts: {
   signal?: AbortSignal;
   callbacks?: KimiStreamCallbacks;
 }): Promise<KimiCompletionResult> {
-  const { apiKey, invokeUrl, model } = getKimiConfig();
+  const { apiKey, invokeUrl, model, defaultTimeoutMs } = getKimiConfig();
+  const timeoutMs = opts.timeoutMs ?? defaultTimeoutMs;
 
   const body: Record<string, unknown> = {
     model,
@@ -114,34 +223,56 @@ export async function streamKimiCompletion(opts: {
     body.tool_choice = opts.toolChoice ?? "auto";
   }
 
-  const timeoutSignal = AbortSignal.timeout(opts.timeoutMs ?? 240_000);
+  const timeoutSignal = AbortSignal.timeout(timeoutMs);
   const combinedSignal = opts.signal
     ? AbortSignal.any([opts.signal, timeoutSignal])
     : timeoutSignal;
 
-  const res = await fetch(invokeUrl, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      Accept: "text/event-stream",
-    },
-    body: JSON.stringify(body),
-    signal: combinedSignal,
-  });
+  const openWithRetry = async () => {
+    const reqOpts = {
+      url: invokeUrl,
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        Accept: "text/event-stream",
+        "Accept-Encoding": "identity",
+      },
+      body: JSON.stringify(body),
+      timeoutMs,
+      signal: combinedSignal,
+    };
+    try {
+      return await openSseRequest(reqOpts);
+    } catch (err) {
+      const code = (err as { code?: string } | null)?.code;
+      const isTransientSocketErr =
+        code === "ECONNRESET" ||
+        code === "EPIPE" ||
+        code === "ECONNABORTED" ||
+        code === "ETIMEDOUT";
+      if (!isTransientSocketErr || combinedSignal.aborted) {
+        throw err;
+      }
+      await new Promise((r) => setTimeout(r, 1500));
+      return await openSseRequest(reqOpts);
+    }
+  };
 
-  if (!res.ok) {
-    const errText = await res.text().catch(() => "");
+  const res = await openWithRetry();
+
+  const statusCode = res.statusCode ?? 0;
+  if (statusCode < 200 || statusCode >= 300) {
+    const errChunks: Buffer[] = [];
+    for await (const chunk of res) {
+      errChunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+      if (Buffer.concat(errChunks).byteLength >= 1024) break;
+    }
+    const errText = Buffer.concat(errChunks).toString("utf8");
     throw new Error(
-      `Kimi API error (${res.status}): ${errText.slice(0, 400) || res.statusText}`,
+      `Kimi API error (${statusCode}): ${errText.slice(0, 400) || res.statusMessage || "Request failed"}`,
     );
   }
 
-  if (!res.body) {
-    throw new Error("Kimi API returned empty response body");
-  }
-
-  const reader = res.body.getReader();
   const decoder = new TextDecoder();
 
   let buffer = "";
@@ -285,20 +416,36 @@ export async function streamKimiCompletion(opts: {
     }
   };
 
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    buffer += decoder.decode(value, { stream: true });
-    let nlIdx = buffer.indexOf("\n");
-    while (nlIdx !== -1) {
-      const line = buffer.slice(0, nlIdx);
-      buffer = buffer.slice(nlIdx + 1);
-      processLine(line);
-      nlIdx = buffer.indexOf("\n");
+  const abortStream = () => {
+    const reason =
+      combinedSignal.reason instanceof Error
+        ? combinedSignal.reason
+        : new DOMException("The operation was aborted.", "AbortError");
+    res.destroy(reason);
+  };
+  combinedSignal.addEventListener("abort", abortStream, { once: true });
+
+  try {
+    for await (const rawChunk of res) {
+      const value =
+        typeof rawChunk === "string"
+          ? Buffer.from(rawChunk, "utf8")
+          : (rawChunk as Buffer);
+      buffer += decoder.decode(value, { stream: true });
+      let nlIdx = buffer.indexOf("\n");
+      while (nlIdx !== -1) {
+        const line = buffer.slice(0, nlIdx);
+        buffer = buffer.slice(nlIdx + 1);
+        processLine(line);
+        nlIdx = buffer.indexOf("\n");
+      }
     }
-  }
-  if (buffer.trim()) {
-    processLine(buffer);
+    buffer += decoder.decode();
+    if (buffer.trim()) {
+      processLine(buffer);
+    }
+  } finally {
+    combinedSignal.removeEventListener("abort", abortStream);
   }
 
   const toolCalls: KimiToolCall[] = [...toolCallsByIndex.entries()]

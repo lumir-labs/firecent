@@ -112,14 +112,14 @@ export function pushRunEvent(
   }
 }
 
-/** Marks a run finished and schedules cleanup after 45s so late reconnections still get `done`. */
+/** Marks a run finished and schedules cleanup after 120s so late reconnections still get `done`. */
 export function scheduleRunCleanup(run: ActiveAssistantRun): void {
   setTimeout(() => {
     const current = activeRuns.get(run.threadId);
     if (current?.runId === run.runId) {
       activeRuns.delete(run.threadId);
     }
-  }, 45_000);
+  }, 120_000);
 }
 
 /** Returns an active run if it belongs to `(orgId, userId)` and is still running or recently finished. */

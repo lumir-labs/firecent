@@ -996,16 +996,22 @@ export async function startDetachedAssistantTurn(opts: {
         emit: (evt) => pushRunEvent(run, evt),
       });
     } catch (err) {
+      const isTimeout = err instanceof Error && err.name === "TimeoutError";
       const isAbort =
-        run.abortController.signal.aborted ||
-        (err instanceof Error && err.name === "AbortError");
-      const msg = isAbort
+        !isTimeout &&
+        (run.abortController.signal.aborted ||
+          (err instanceof Error && err.name === "AbortError"));
+      const msg = isTimeout
         ? locale === "es"
-          ? "Consulta detenida."
-          : "Request stopped."
-        : err instanceof Error
-          ? err.message
-          : "Assistant request failed";
+          ? "La consulta superó el tiempo máximo de 10 minutos. Intenta de nuevo."
+          : "The request exceeded the 10-minute timeout. Please try again."
+        : isAbort
+          ? locale === "es"
+            ? "Consulta detenida."
+            : "Request stopped."
+          : err instanceof Error
+            ? err.message
+            : "Assistant request failed";
       pushRunEvent(run, { type: "error", message: msg });
     } finally {
       scheduleRunCleanup(run);

@@ -8,7 +8,7 @@ import { preparedAttachmentSchema } from "@app/api/assistant-types";
 import { getServerSession, resolveSessionOrgId } from "@/lib/auth";
 
 export const runtime = "nodejs";
-export const maxDuration = 300;
+export const maxDuration = 660;
 
 const chatRequestSchema = z.object({
   threadId: z.string().min(1).nullish(),

@@ -386,104 +386,165 @@ export function AssistantView() {
       res: Response,
       initialThreadId: string | null,
       initialStartedAt: number,
+      signal: AbortSignal,
     ) => {
-      if (!res.ok || !res.body) {
-        const errJson = await res.json().catch(() => null);
-        throw new Error(
-          (errJson as { error?: string } | null)?.error || `HTTP ${res.status}`,
-        );
-      }
+      const readOneStream = async (
+        streamRes: Response,
+        curThreadId: string | null,
+        isReconnect: boolean,
+      ): Promise<{ threadId: string | null; completed: boolean }> => {
+        if (!streamRes.ok || !streamRes.body) {
+          const errJson = await streamRes.json().catch(() => null);
+          throw new Error(
+            (errJson as { error?: string } | null)?.error ||
+              `HTTP ${streamRes.status}`,
+          );
+        }
 
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = "";
-      let resolvedThreadId = initialThreadId;
+        if (isReconnect) {
+          // Server replays full accumulated content & UI blocks on reconnect
+          setStreamingAssistant((prev) => ({
+            content: "",
+            uiBlocks: [],
+            steps: prev?.steps ?? [],
+            startedAt: prev?.startedAt ?? initialStartedAt,
+          }));
+        }
 
-      const handleEventLine = (rawLine: string) => {
-        const line = rawLine.trim();
-        if (!line.startsWith("data:")) return;
-        const jsonStr = line.slice(5).trim();
-        if (!jsonStr) return;
+        const reader = streamRes.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+        let resolvedThreadId = curThreadId;
+        let completed = false;
 
-        let evt:
-          | { type: "thread"; threadId: string; title: string }
-          | { type: "status"; phase: string; label: string }
-          | { type: "trace_step"; step: AssistantTraceStep }
-          | { type: "text_delta"; delta: string }
-          | { type: "ui_block"; block: AssistantUiBlock }
-          | { type: "done"; threadId: string; messageId: string }
-          | { type: "already_done"; threadId: string }
-          | { type: "error"; message: string };
+        const handleEventLine = (rawLine: string) => {
+          const line = rawLine.trim();
+          if (!line.startsWith("data:")) return;
+          const jsonStr = line.slice(5).trim();
+          if (!jsonStr) return;
+
+          let evt:
+            | { type: "thread"; threadId: string; title: string }
+            | { type: "status"; phase: string; label: string }
+            | { type: "trace_step"; step: AssistantTraceStep }
+            | { type: "text_delta"; delta: string }
+            | { type: "ui_block"; block: AssistantUiBlock }
+            | { type: "done"; threadId: string; messageId: string }
+            | { type: "already_done"; threadId: string }
+            | { type: "error"; message: string };
+
+          try {
+            evt = JSON.parse(jsonStr);
+          } catch {
+            return;
+          }
+
+          if (evt.type === "thread") {
+            resolvedThreadId = evt.threadId;
+            setActiveThreadId(evt.threadId);
+            void utils.assistant.listThreads.invalidate();
+          } else if (evt.type === "status") {
+            setStreamStatus(evt.label);
+          } else if (evt.type === "trace_step") {
+            const incoming = evt.step;
+            setStreamingAssistant((prev) => {
+              const curSteps = prev?.steps ?? [];
+              const idx = curSteps.findIndex((s) => s.id === incoming.id);
+              const nextSteps =
+                idx >= 0
+                  ? curSteps.map((s, i) => (i === idx ? incoming : s))
+                  : [...curSteps, incoming];
+              return {
+                content: prev?.content ?? "",
+                uiBlocks: prev?.uiBlocks ?? [],
+                steps: nextSteps,
+                startedAt: prev?.startedAt ?? initialStartedAt,
+              };
+            });
+          } else if (evt.type === "text_delta") {
+            setStreamStatus(null);
+            setStreamingAssistant((prev) => ({
+              content: (prev?.content ?? "") + evt.delta,
+              uiBlocks: prev?.uiBlocks ?? [],
+              steps: prev?.steps ?? [],
+              startedAt: prev?.startedAt ?? initialStartedAt,
+            }));
+          } else if (evt.type === "ui_block") {
+            setStreamingAssistant((prev) => ({
+              content: prev?.content ?? "",
+              uiBlocks: [...(prev?.uiBlocks ?? []), evt.block],
+              steps: prev?.steps ?? [],
+              startedAt: prev?.startedAt ?? initialStartedAt,
+            }));
+          } else if (evt.type === "error") {
+            completed = true;
+            toast.error(evt.message);
+          } else if (evt.type === "done" || evt.type === "already_done") {
+            resolvedThreadId = evt.threadId;
+            completed = true;
+          }
+        };
 
         try {
-          evt = JSON.parse(jsonStr);
-        } catch {
-          return;
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            let nl = buffer.indexOf("\n");
+            while (nl !== -1) {
+              handleEventLine(buffer.slice(0, nl));
+              buffer = buffer.slice(nl + 1);
+              nl = buffer.indexOf("\n");
+            }
+          }
+          if (buffer.trim()) handleEventLine(buffer);
+        } catch (err) {
+          // If the user didn't abort and we know the threadId, let the outer loop
+          // transparently reconnect to the detached server run (e.g. proxy/mobile drop).
+          if (signal.aborted || !resolvedThreadId) {
+            throw err;
+          }
         }
 
-        if (evt.type === "thread") {
-          resolvedThreadId = evt.threadId;
-          setActiveThreadId(evt.threadId);
-          void utils.assistant.listThreads.invalidate();
-        } else if (evt.type === "status") {
-          setStreamStatus(evt.label);
-        } else if (evt.type === "trace_step") {
-          const incoming = evt.step;
-          setStreamingAssistant((prev) => {
-            const curSteps = prev?.steps ?? [];
-            const idx = curSteps.findIndex((s) => s.id === incoming.id);
-            const nextSteps =
-              idx >= 0
-                ? curSteps.map((s, i) => (i === idx ? incoming : s))
-                : [...curSteps, incoming];
-            return {
-              content: prev?.content ?? "",
-              uiBlocks: prev?.uiBlocks ?? [],
-              steps: nextSteps,
-              startedAt: prev?.startedAt ?? initialStartedAt,
-            };
-          });
-        } else if (evt.type === "text_delta") {
-          setStreamStatus(null);
-          setStreamingAssistant((prev) => ({
-            content: (prev?.content ?? "") + evt.delta,
-            uiBlocks: prev?.uiBlocks ?? [],
-            steps: prev?.steps ?? [],
-            startedAt: prev?.startedAt ?? initialStartedAt,
-          }));
-        } else if (evt.type === "ui_block") {
-          setStreamingAssistant((prev) => ({
-            content: prev?.content ?? "",
-            uiBlocks: [...(prev?.uiBlocks ?? []), evt.block],
-            steps: prev?.steps ?? [],
-            startedAt: prev?.startedAt ?? initialStartedAt,
-          }));
-        } else if (evt.type === "error") {
-          toast.error(evt.message);
-        } else if (evt.type === "done" || evt.type === "already_done") {
-          resolvedThreadId = evt.threadId;
-        }
+        return { threadId: resolvedThreadId, completed };
       };
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        buffer += decoder.decode(value, { stream: true });
-        let nl = buffer.indexOf("\n");
-        while (nl !== -1) {
-          handleEventLine(buffer.slice(0, nl));
-          buffer = buffer.slice(nl + 1);
-          nl = buffer.indexOf("\n");
+      let state = await readOneStream(res, initialThreadId, false);
+
+      // Transparent reconnect loop for long-running (up to 10m) runs when a proxy
+      // or mobile network drops an open SSE socket before `done` arrives.
+      let reconnects = 0;
+      while (
+        !state.completed &&
+        state.threadId &&
+        !signal.aborted &&
+        reconnects < 20
+      ) {
+        reconnects += 1;
+        await new Promise((r) => setTimeout(r, 1500));
+        if (signal.aborted) break;
+        try {
+          const nextRes = await fetch(
+            `/api/assistant/stream?threadId=${encodeURIComponent(state.threadId)}`,
+            {
+              method: "GET",
+              credentials: "include",
+              signal,
+            },
+          );
+          state = await readOneStream(nextRes, state.threadId, true);
+        } catch (err) {
+          if (signal.aborted) throw err;
+          if (reconnects >= 20) throw err;
         }
       }
-      if (buffer.trim()) handleEventLine(buffer);
 
-      if (resolvedThreadId) {
-        setActiveThreadId(resolvedThreadId);
+      if (state.threadId) {
+        setActiveThreadId(state.threadId);
         await Promise.all([
           utils.assistant.listThreads.invalidate(),
           utils.assistant.getThread.invalidate({
-            threadId: resolvedThreadId,
+            threadId: state.threadId,
             locale,
           }),
         ]);
@@ -527,7 +588,7 @@ export function AssistantView() {
           steps: [],
           startedAt: startTs,
         });
-        await consumeSseResponse(res, runningThreadId, startTs);
+        await consumeSseResponse(res, runningThreadId, startTs, controller.signal);
       } catch (err) {
         if ((err as { name?: string })?.name !== "AbortError") {
           toast.error(err instanceof Error ? err.message : t("sendError"));
@@ -604,7 +665,7 @@ export function AssistantView() {
           }),
         });
 
-        await consumeSseResponse(res, activeThreadId, nowTs);
+        await consumeSseResponse(res, activeThreadId, nowTs, controller.signal);
       } catch (err) {
         if ((err as { name?: string })?.name !== "AbortError") {
           toast.error(err instanceof Error ? err.message : t("sendError"));

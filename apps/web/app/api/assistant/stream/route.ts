@@ -6,7 +6,7 @@ import {
 import { getServerSession, resolveSessionOrgId } from "@/lib/auth";
 
 export const runtime = "nodejs";
-export const maxDuration = 300;
+export const maxDuration = 660;
 
 /**
  * Attaches any device (desktop, mobile, or reopened tab) to an in-flight
