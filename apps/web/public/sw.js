@@ -38,15 +38,34 @@ self.addEventListener("push", (event) => {
       ? "/splash/app-icons/notification-transparent.png"
       : "/splash/app-icons/app_dark_180.png");
 
+  const badge = payload.badge || "/splash/app-icons/notification-badge-96.png?v=3";
+  const entries =
+    Array.isArray(payload.notifications) && payload.notifications.length > 0
+      ? payload.notifications
+      : [
+          {
+            title: payload.title,
+            body: payload.body,
+            url: payload.url,
+            tag: payload.tag,
+            silent: false,
+          },
+        ];
+
   event.waitUntil(
-    self.registration.showNotification(payload.title, {
-      body: payload.body,
-      icon,
-      badge: payload.badge,
-      tag: payload.tag,
-      renotify: true,
-      data: { url: payload.url || "/" },
-    }),
+    Promise.all(
+      entries.map((entry, idx) => {
+        const isSilent = Boolean(entry.silent);
+        return self.registration.showNotification(entry.title || "Firecent", {
+          body: entry.body || "",
+          icon,
+          badge,
+          tag: entry.tag || payload.tag || `firecent-notification-${idx}`,
+          ...(isSilent ? { silent: true } : { renotify: true }),
+          data: { url: entry.url || payload.url || "/" },
+        });
+      }),
+    ),
   );
 });
 

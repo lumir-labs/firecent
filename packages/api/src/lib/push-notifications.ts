@@ -941,12 +941,92 @@ async function runWithConcurrency<T>(
   await Promise.all(runners);
 }
 
+export type PushNotificationEntry = {
+  title: string;
+  body: string;
+  url: string;
+  tag?: string;
+  silent?: boolean;
+};
+
 export type PushPayload = {
   title: string;
   body: string;
   url: string;
   tag?: string;
+  /** Optional list of individual notifications rendered from a single Web Push. */
+  notifications?: PushNotificationEntry[];
 };
+
+const MAX_INDIVIDUAL_NOTIFICATIONS = 4;
+
+/**
+ * Converts a PendingDigest into a single Web Push payload that renders one
+ * clean notification per pending item (up to 4 + 1 overflow summary), with
+ * only the first notification chiming (`silent: true` on 2nd+) and direct
+ * deep-links to each item's screen. Top-level fields stay populated as a
+ * fallback for older Service Workers.
+ */
+export function buildPushPayloadFromDigest(
+  digest: PendingDigest,
+  locale: string,
+): PushPayload {
+  const isEn = locale === "en";
+  const localePrefix = isEn ? "/en" : "/es";
+
+  if (digest.items.length <= 1) {
+    return {
+      title: digest.title,
+      body: digest.body,
+      url: digest.url,
+      tag: digest.tag,
+      notifications: [
+        {
+          title: digest.title,
+          body: digest.body,
+          url: digest.url,
+          tag: digest.items[0] ? `firecent-${digest.items[0].id}` : digest.tag,
+          silent: false,
+        },
+      ],
+    };
+  }
+
+  const shown = digest.items.slice(0, MAX_INDIVIDUAL_NOTIFICATIONS);
+  const overflow = digest.items.slice(MAX_INDIVIDUAL_NOTIFICATIONS);
+
+  const notifications: PushNotificationEntry[] = shown.map((item, idx) => ({
+    title: item.title,
+    body: item.subtitle,
+    url: `${localePrefix}${item.href}`,
+    tag: `firecent-${item.id}`,
+    silent: idx > 0,
+  }));
+
+  if (overflow.length > 0) {
+    const names = overflow
+      .slice(0, 3)
+      .map((i) => i.title)
+      .join(" · ");
+    notifications.push({
+      title: isEn
+        ? `+${overflow.length} more pending`
+        : `+${overflow.length} pendientes más`,
+      body: names,
+      url: `${localePrefix}/notifications`,
+      tag: "firecent-daily-overflow",
+      silent: true,
+    });
+  }
+
+  return {
+    title: digest.title,
+    body: digest.body,
+    url: digest.url,
+    tag: digest.tag,
+    notifications,
+  };
+}
 
 export async function sendPushToSubscriptions(
   subscriptions: {
@@ -971,6 +1051,7 @@ export async function sendPushToSubscriptions(
     url: payload.url,
     tag: payload.tag ?? "firecent-notification",
     badge: "/splash/app-icons/notification-badge-96.png?v=3",
+    ...(payload.notifications ? { notifications: payload.notifications } : {}),
   });
 
   await runWithConcurrency(subscriptions, PUSH_CONCURRENCY, async (sub) => {
@@ -1218,12 +1299,10 @@ export async function dispatchDueDailyNotifications(
         const shouldSend = digest.items.length > 0 || !pref.quietIfEmpty;
         if (!shouldSend) return;
 
-        const res = await sendPushToSubscriptions(subs, {
-          title: digest.title,
-          body: digest.body,
-          url: digest.url,
-          tag: digest.tag,
-        });
+        const res = await sendPushToSubscriptions(
+          subs,
+          buildPushPayloadFromDigest(digest, pref.locale),
+        );
         pushesSent += res.sent;
         pushesFailed += res.failed;
         subscriptionsPruned += res.pruned;

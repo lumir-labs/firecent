@@ -2,6 +2,7 @@ import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { db } from "@app/db";
 import {
+  buildPushPayloadFromDigest,
   buildUserDigestPreview,
   computeNextRunAt,
   getLocalDateParts,
@@ -398,9 +399,10 @@ export const notificationsRouter = router({
           locale,
         });
         if (digest.items.length > 0) {
-          title = digest.title;
-          body = digest.body;
-          url = digest.url;
+          return sendPushToSubscriptions(
+            subs,
+            buildPushPayloadFromDigest(digest, locale),
+          );
         }
       }
 
