@@ -1875,5 +1875,83 @@
       "appliedToast": "Imported {count} transactions in batch",
       "applyError": "Failed to import batch"
     }
+  },
+  "Notifications": {
+    "title": "Notifications",
+    "subtitle": "Daily summary of your upcoming payments and reminders.",
+    "preview": {
+      "sectionTitle": "Pending right now",
+      "count": "{count} pending",
+      "emptyTitle": "All caught up",
+      "emptyDesc": "No upcoming payments or reminders in the next {days} days.",
+      "kinds": {
+        "card_payment": "Card",
+        "card_cutoff": "Cutoff",
+        "recurring": "Recurring",
+        "debt": "Debt",
+        "installment": "Installments"
+      }
+    },
+    "device": {
+      "sectionTitle": "This device",
+      "activeTitle": "Push notifications active on this device",
+      "activeDesc": "You'll get your daily summary even when the app is closed.",
+      "inactiveTitle": "Enable push notifications",
+      "inactiveDesc": "Allow PWA alerts so you never miss card due dates or cutoffs.",
+      "enableCta": "Enable on this device",
+      "enabling": "Enabling…",
+      "disableCta": "Turn off here",
+      "testCta": "Send test",
+      "testing": "Sending…",
+      "enabledToast": "Notifications enabled on this device",
+      "disabledToast": "Device disconnected",
+      "testSentToast": "Test notification sent ({count} device(s))",
+      "testNoneToast": "Could not deliver to any device",
+      "permissionDeniedTitle": "Permission blocked by browser",
+      "permissionDeniedDesc": "Enable notifications for this site in your browser or OS settings and try again.",
+      "iosTitle": "Install Firecent to enable iOS alerts",
+      "iosDesc": "On iPhone/iPad, tap Share in Safari and choose \"Add to Home Screen\". Then open the installed app to enable notifications.",
+      "unsupportedTitle": "Web Push not supported here",
+      "unsupportedDesc": "This browser doesn't support background push notifications. Try Chrome, Edge, Firefox, or an installed Safari PWA.",
+      "insecureTitle": "Requires secure connection (HTTPS)",
+      "insecureDesc": "Push notifications only work over HTTPS or localhost.",
+      "notConfiguredTitle": "VAPID keys missing on server",
+      "notConfiguredDesc": "Set VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY in your server environment variables to deliver push alerts. You can still save your preferences."
+    },
+    "schedule": {
+      "sectionTitle": "Daily schedule",
+      "enabledLabel": "Daily automatic summary",
+      "enabledDesc": "Sends one daily notification at your preferred time",
+      "timeLabel": "Delivery time",
+      "advanceLabel": "Remind ahead of time",
+      "advanceSameDay": "Same day",
+      "advanceDays": "{days, plural, one {# day ahead} other {# days ahead}}",
+      "timezoneLabel": "Timezone",
+      "quietLabel": "Only notify when something is pending",
+      "quietDesc": "Stay quiet on days with no upcoming bills or due dates",
+      "nextRun": "Next scheduled summary: {when}",
+      "savedToast": "Preferences saved"
+    },
+    "types": {
+      "sectionTitle": "What to notify about",
+      "cardPayments": "Credit card payments",
+      "cardPaymentsDesc": "Upcoming due dates with estimated statement balance",
+      "cardCutoffs": "Card statement cutoffs",
+      "cardCutoffsDesc": "Reminder when your billing cycle closes",
+      "recurrings": "Recurring transactions",
+      "recurringsDesc": "Upcoming or pending scheduled bills and income",
+      "debts": "Debts & receivables",
+      "debtsDesc": "Loans with an upcoming payback deadline",
+      "installments": "Installment plans",
+      "installmentsDesc": "Monthly summary of active installment purchases"
+    },
+    "devices": {
+      "sectionTitle": "Connected devices",
+      "empty": "No devices subscribed yet.",
+      "thisDevice": "This device",
+      "remove": "Remove device",
+      "removedToast": "Device removed",
+      "lastActive": "Last sent: {when}"
+    }
   }
 }

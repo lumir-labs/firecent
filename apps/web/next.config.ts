@@ -30,7 +30,7 @@ const nextConfig: NextConfig = {
   output: "standalone",
   // Monorepo: rastrear dependencias desde la raíz (node_modules hoisted de bun).
   outputFileTracingRoot: path.resolve(import.meta.dirname ?? ".", "..", ".."),
-  serverExternalPackages: ["pg", "@prisma/adapter-pg", "@prisma/client"],
+  serverExternalPackages: ["pg", "@prisma/adapter-pg", "@prisma/client", "web-push"],
   /* config options here */
   allowedDevOrigins: ["192.168.1.46"],
   images: {
@@ -44,6 +44,23 @@ const nextConfig: NextConfig = {
   async headers() {
     // Hardening baseline for the boilerplate (adjust the CSP to your domains).
     return [
+      {
+        source: "/sw.js",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "application/javascript; charset=utf-8",
+          },
+          {
+            key: "Cache-Control",
+            value: "no-cache, no-store, must-revalidate",
+          },
+          {
+            key: "Service-Worker-Allowed",
+            value: "/",
+          },
+        ],
+      },
       {
         source: "/:path*",
         headers: [

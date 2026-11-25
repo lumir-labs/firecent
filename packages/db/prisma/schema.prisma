@@ -108,9 +108,11 @@ model User {
   roles            Role[]        @relation("RoleToUser")
   createdApiKeys     ApiKey[]
   twoFactors         TwoFactor[]
-  bankAccounts       BankAccount[]
-  assistantThreads   AssistantThread[]
-  assistantProposals AssistantProposal[]
+  bankAccounts           BankAccount[]
+  assistantThreads       AssistantThread[]
+  assistantProposals     AssistantProposal[]
+  pushSubscriptions      PushSubscription[]
+  notificationPreference NotificationPreference?
 }
 
 model Session {
@@ -432,8 +434,9 @@ model Organization {
   debts              Debt[]
   budgets            Budget[]
   recurrings         Recurring[]
-  assistantThreads   AssistantThread[]
-  assistantProposals AssistantProposal[]
+  assistantThreads        AssistantThread[]
+  assistantProposals      AssistantProposal[]
+  notificationPreferences NotificationPreference[]
 
   @@map("organization")
 }
@@ -712,4 +715,60 @@ model AssistantProposal {
   @@index([organizationId, userId, status])
   @@index([threadId, status])
   @@map("assistant_proposal")
+}
+
+// ── Firecent: PWA Web Push Notifications ─────────────────────────────────
+
+model NotificationPreference {
+  id                 String    @id @default(uuid(7))
+  userId             String    @unique
+  organizationId     String?   @db.Uuid
+  enabled            Boolean   @default(false)
+  /** Daily delivery time in 24h local "HH:MM" format (e.g. "08:00"). */
+  dailyTime          String    @default("08:00")
+  /** IANA timezone identifier (e.g. "America/El_Salvador"). */
+  timezone           String    @default("America/El_Salvador")
+  /** Preferred notification copy language ("es" | "en"). */
+  locale             String    @default("es")
+  /** Days ahead to warn about upcoming card payments, recurrings, and debts. */
+  advanceDays        Int       @default(3)
+  notifyCardPayments Boolean   @default(true)
+  notifyCardCutoffs  Boolean   @default(true)
+  notifyRecurrings   Boolean   @default(true)
+  notifyDebts        Boolean   @default(true)
+  notifyInstallments Boolean   @default(false)
+  /** Skip push delivery on days when there are zero pending items. */
+  quietIfEmpty       Boolean   @default(true)
+  /** Indexed UTC timestamp of the next scheduled delivery for O(log N) cron queries. */
+  nextRunAt          DateTime?
+  /** Local "YYYY-MM-DD" of the last sent daily digest (idempotency guard). */
+  lastSentDate       String?
+  lastSentAt         DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  @@index([enabled, nextRunAt])
+  @@map("notification_preference")
+}
+
+model PushSubscription {
+  id           String    @id @default(uuid(7))
+  userId       String
+  endpoint     String    @unique
+  p256dh       String
+  auth         String
+  userAgent    String?
+  deviceLabel  String?
+  lastUsedAt   DateTime?
+  failureCount Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("push_subscription")
 }

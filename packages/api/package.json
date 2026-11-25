@@ -12,7 +12,8 @@
     "./roles": "./src/roles.ts",
     "./constants": "./src/api-keys/constants.ts",
     "./assistant-types": "./src/assistant/types.ts",
-    "./assistant": "./src/assistant/orchestrator.ts"
+    "./assistant": "./src/assistant/orchestrator.ts",
+    "./push-notifications": "./src/lib/push-notifications.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
@@ -23,9 +24,11 @@
     "@trpc/client": "^11.18.0",
     "@trpc/react-query": "^11.18.0",
     "@trpc/server": "^11.18.0",
+    "web-push": "^4.0.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@types/web-push": "^3.6.4",
     "typescript": "^5"
   },
   "peerDependencies": {

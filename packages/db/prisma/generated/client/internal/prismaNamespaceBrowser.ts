@@ -78,7 +78,9 @@ export const ModelName = {
   RecurringOccurrence: 'RecurringOccurrence',
   AssistantThread: 'AssistantThread',
   AssistantMessage: 'AssistantMessage',
-  AssistantProposal: 'AssistantProposal'
+  AssistantProposal: 'AssistantProposal',
+  NotificationPreference: 'NotificationPreference',
+  PushSubscription: 'PushSubscription'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -598,6 +600,48 @@ export const AssistantProposalScalarFieldEnum = {
 } as const
 
 export type AssistantProposalScalarFieldEnum = (typeof AssistantProposalScalarFieldEnum)[keyof typeof AssistantProposalScalarFieldEnum]
+
+
+export const NotificationPreferenceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  organizationId: 'organizationId',
+  enabled: 'enabled',
+  dailyTime: 'dailyTime',
+  timezone: 'timezone',
+  locale: 'locale',
+  advanceDays: 'advanceDays',
+  notifyCardPayments: 'notifyCardPayments',
+  notifyCardCutoffs: 'notifyCardCutoffs',
+  notifyRecurrings: 'notifyRecurrings',
+  notifyDebts: 'notifyDebts',
+  notifyInstallments: 'notifyInstallments',
+  quietIfEmpty: 'quietIfEmpty',
+  nextRunAt: 'nextRunAt',
+  lastSentDate: 'lastSentDate',
+  lastSentAt: 'lastSentAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NotificationPreferenceScalarFieldEnum = (typeof NotificationPreferenceScalarFieldEnum)[keyof typeof NotificationPreferenceScalarFieldEnum]
+
+
+export const PushSubscriptionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  endpoint: 'endpoint',
+  p256dh: 'p256dh',
+  auth: 'auth',
+  userAgent: 'userAgent',
+  deviceLabel: 'deviceLabel',
+  lastUsedAt: 'lastUsedAt',
+  failureCount: 'failureCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PushSubscriptionScalarFieldEnum = (typeof PushSubscriptionScalarFieldEnum)[keyof typeof PushSubscriptionScalarFieldEnum]
 
 
 export const SortOrder = {

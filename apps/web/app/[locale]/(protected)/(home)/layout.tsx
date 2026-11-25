@@ -13,6 +13,7 @@ import { ShellProvider } from "./_components/shell/shell-context";
 import { AppSidebar } from "./_components/shell/app-sidebar";
 import { MobileTopBar } from "./_components/shell/mobile-top-bar";
 import { MobileTabBar } from "./_components/shell/mobile-tab-bar";
+import { ServiceWorkerRegistrar } from "./_components/shell/sw-registrar";
 
 export async function generateMetadata(): Promise<Metadata> {
   const tNav = await getTranslations("Nav");
@@ -63,6 +64,7 @@ export default async function Layout({
         user={shellUser}
         canAccessAdmin={canAccessAdmin}
       >
+        <ServiceWorkerRegistrar />
         <div className="flex min-h-dvh w-full overflow-x-clip bg-background text-foreground lg:h-dvh lg:overflow-hidden">
           <AppSidebar user={shellUser} canAccessAdmin={canAccessAdmin} />
           <div

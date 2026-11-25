@@ -1875,5 +1875,83 @@
       "appliedToast": "Se importaron {count} transacciones en lote",
       "applyError": "No se pudo importar el lote"
     }
+  },
+  "Notifications": {
+    "title": "Notificaciones",
+    "subtitle": "Resumen diario de tus pagos y pendientes en tu dispositivo.",
+    "preview": {
+      "sectionTitle": "Pendientes actuales",
+      "count": "{count} pendientes",
+      "emptyTitle": "Todo al día",
+      "emptyDesc": "No tienes pagos ni recordatorios próximos en los siguientes {days} días.",
+      "kinds": {
+        "card_payment": "Tarjeta",
+        "card_cutoff": "Corte",
+        "recurring": "Recurrente",
+        "debt": "Deuda",
+        "installment": "Plazos"
+      }
+    },
+    "device": {
+      "sectionTitle": "Este dispositivo",
+      "activeTitle": "Notificaciones activas en este dispositivo",
+      "activeDesc": "Recibirás tu aviso diario incluso cuando la app esté cerrada.",
+      "inactiveTitle": "Activa las notificaciones push",
+      "inactiveDesc": "Permite avisos en esta PWA para no olvidar fechas de pago ni cortes.",
+      "enableCta": "Activar en este dispositivo",
+      "enabling": "Activando…",
+      "disableCta": "Desactivar aquí",
+      "testCta": "Enviar prueba",
+      "testing": "Enviando…",
+      "enabledToast": "Notificaciones activadas en este dispositivo",
+      "disabledToast": "Dispositivo desconectado",
+      "testSentToast": "Notificación de prueba enviada ({count} disp.)",
+      "testNoneToast": "No se pudo entregar a ningún dispositivo",
+      "permissionDeniedTitle": "Permiso bloqueado en el navegador",
+      "permissionDeniedDesc": "Habilita las notificaciones para este sitio en la configuración de tu navegador o sistema y vuelve a intentar.",
+      "iosTitle": "Instala Firecent para activar avisos en iOS",
+      "iosDesc": "En iPhone/iPad, toca el botón Compartir de Safari y elige «Agregar a pantalla de inicio». Luego abre la app instalada para activar las notificaciones.",
+      "unsupportedTitle": "Navegador sin soporte de Web Push",
+      "unsupportedDesc": "Este navegador no soporta notificaciones push en segundo plano. Prueba abrir Firecent desde Chrome, Edge, Firefox o Safari instalado como PWA.",
+      "insecureTitle": "Requiere conexión segura (HTTPS)",
+      "insecureDesc": "Las notificaciones push solo funcionan sobre HTTPS o localhost.",
+      "notConfiguredTitle": "Faltan llaves VAPID en el servidor",
+      "notConfiguredDesc": "Configura VAPID_PUBLIC_KEY y VAPID_PRIVATE_KEY en las variables de entorno del servidor para enviar notificaciones push. Ya puedes guardar tus preferencias."
+    },
+    "schedule": {
+      "sectionTitle": "Horario diario",
+      "enabledLabel": "Resumen diario automático",
+      "enabledDesc": "Envía una sola notificación al día a tu hora preferida",
+      "timeLabel": "Hora de envío",
+      "advanceLabel": "Avisar con anticipación",
+      "advanceSameDay": "El mismo día",
+      "advanceDays": "{days, plural, one {# día antes} other {# días antes}}",
+      "timezoneLabel": "Zona horaria",
+      "quietLabel": "Solo avisar si hay pendientes",
+      "quietDesc": "Silenciar el resumen en días sin pagos ni vencimientos",
+      "nextRun": "Próximo resumen programado: {when}",
+      "savedToast": "Preferencias guardadas"
+    },
+    "types": {
+      "sectionTitle": "Qué quieres recibir",
+      "cardPayments": "Pagos de tarjetas",
+      "cardPaymentsDesc": "Fechas límite de pago con monto de contado estimado",
+      "cardCutoffs": "Fechas de corte",
+      "cardCutoffsDesc": "Recordatorio cuando cierra el ciclo de tu tarjeta",
+      "recurrings": "Movimientos recurrentes",
+      "recurringsDesc": "Pagos e ingresos programados próximos o pendientes",
+      "debts": "Deudas y cobros",
+      "debtsDesc": "Préstamos con fecha de vencimiento cercana",
+      "installments": "Cuotas a plazos",
+      "installmentsDesc": "Resumen mensual de tus compras a plazos activas"
+    },
+    "devices": {
+      "sectionTitle": "Dispositivos conectados",
+      "empty": "Aún no tienes dispositivos suscritos.",
+      "thisDevice": "Este dispositivo",
+      "remove": "Quitar dispositivo",
+      "removedToast": "Dispositivo eliminado",
+      "lastActive": "Último envío: {when}"
+    }
   }
 }

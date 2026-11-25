@@ -272,6 +272,8 @@ export type UserWhereInput = {
   bankAccounts?: Prisma.BankAccountListRelationFilter
   assistantThreads?: Prisma.AssistantThreadListRelationFilter
   assistantProposals?: Prisma.AssistantProposalListRelationFilter
+  pushSubscriptions?: Prisma.PushSubscriptionListRelationFilter
+  notificationPreference?: Prisma.XOR<Prisma.NotificationPreferenceNullableScalarRelationFilter, Prisma.NotificationPreferenceWhereInput> | null
 }
 
 export type UserOrderByWithRelationInput = {
@@ -300,6 +302,8 @@ export type UserOrderByWithRelationInput = {
   bankAccounts?: Prisma.BankAccountOrderByRelationAggregateInput
   assistantThreads?: Prisma.AssistantThreadOrderByRelationAggregateInput
   assistantProposals?: Prisma.AssistantProposalOrderByRelationAggregateInput
+  pushSubscriptions?: Prisma.PushSubscriptionOrderByRelationAggregateInput
+  notificationPreference?: Prisma.NotificationPreferenceOrderByWithRelationInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -331,6 +335,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   bankAccounts?: Prisma.BankAccountListRelationFilter
   assistantThreads?: Prisma.AssistantThreadListRelationFilter
   assistantProposals?: Prisma.AssistantProposalListRelationFilter
+  pushSubscriptions?: Prisma.PushSubscriptionListRelationFilter
+  notificationPreference?: Prisma.XOR<Prisma.NotificationPreferenceNullableScalarRelationFilter, Prisma.NotificationPreferenceWhereInput> | null
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -401,6 +407,8 @@ export type UserCreateInput = {
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -429,6 +437,8 @@ export type UserUncheckedCreateInput = {
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -457,6 +467,8 @@ export type UserUpdateInput = {
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -485,6 +497,8 @@ export type UserUncheckedUpdateInput = {
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -778,6 +792,34 @@ export type UserUpdateOneRequiredWithoutAssistantProposalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAssistantProposalsInput, Prisma.UserUpdateWithoutAssistantProposalsInput>, Prisma.UserUncheckedUpdateWithoutAssistantProposalsInput>
 }
 
+export type UserCreateNestedOneWithoutNotificationPreferenceInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationPreferenceInput, Prisma.UserUncheckedCreateWithoutNotificationPreferenceInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationPreferenceInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutNotificationPreferenceNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationPreferenceInput, Prisma.UserUncheckedCreateWithoutNotificationPreferenceInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationPreferenceInput
+  upsert?: Prisma.UserUpsertWithoutNotificationPreferenceInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotificationPreferenceInput, Prisma.UserUpdateWithoutNotificationPreferenceInput>, Prisma.UserUncheckedUpdateWithoutNotificationPreferenceInput>
+}
+
+export type UserCreateNestedOneWithoutPushSubscriptionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPushSubscriptionsInput, Prisma.UserUncheckedCreateWithoutPushSubscriptionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPushSubscriptionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPushSubscriptionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPushSubscriptionsInput, Prisma.UserUncheckedCreateWithoutPushSubscriptionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPushSubscriptionsInput
+  upsert?: Prisma.UserUpsertWithoutPushSubscriptionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPushSubscriptionsInput, Prisma.UserUpdateWithoutPushSubscriptionsInput>, Prisma.UserUncheckedUpdateWithoutPushSubscriptionsInput>
+}
+
 export type UserCreateWithoutRolesInput = {
   id?: string
   email: string
@@ -803,6 +845,8 @@ export type UserCreateWithoutRolesInput = {
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRolesInput = {
@@ -830,6 +874,8 @@ export type UserUncheckedCreateWithoutRolesInput = {
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRolesInput = {
@@ -899,6 +945,8 @@ export type UserCreateWithoutSessionsInput = {
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -926,6 +974,8 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -969,6 +1019,8 @@ export type UserUpdateWithoutSessionsInput = {
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -996,6 +1048,8 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -1023,6 +1077,8 @@ export type UserCreateWithoutAccountsInput = {
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -1050,6 +1106,8 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -1093,6 +1151,8 @@ export type UserUpdateWithoutAccountsInput = {
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -1120,6 +1180,8 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutBankAccountsInput = {
@@ -1147,6 +1209,8 @@ export type UserCreateWithoutBankAccountsInput = {
   twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutBankAccountsInput = {
@@ -1174,6 +1238,8 @@ export type UserUncheckedCreateWithoutBankAccountsInput = {
   twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutBankAccountsInput = {
@@ -1217,6 +1283,8 @@ export type UserUpdateWithoutBankAccountsInput = {
   twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBankAccountsInput = {
@@ -1244,6 +1312,8 @@ export type UserUncheckedUpdateWithoutBankAccountsInput = {
   twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMembershipsInput = {
@@ -1271,6 +1341,8 @@ export type UserCreateWithoutMembershipsInput = {
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -1298,6 +1370,8 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -1341,6 +1415,8 @@ export type UserUpdateWithoutMembershipsInput = {
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -1368,6 +1444,8 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSentInvitationsInput = {
@@ -1395,6 +1473,8 @@ export type UserCreateWithoutSentInvitationsInput = {
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSentInvitationsInput = {
@@ -1422,6 +1502,8 @@ export type UserUncheckedCreateWithoutSentInvitationsInput = {
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSentInvitationsInput = {
@@ -1465,6 +1547,8 @@ export type UserUpdateWithoutSentInvitationsInput = {
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSentInvitationsInput = {
@@ -1492,6 +1576,8 @@ export type UserUncheckedUpdateWithoutSentInvitationsInput = {
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedApiKeysInput = {
@@ -1519,6 +1605,8 @@ export type UserCreateWithoutCreatedApiKeysInput = {
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedApiKeysInput = {
@@ -1546,6 +1634,8 @@ export type UserUncheckedCreateWithoutCreatedApiKeysInput = {
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedApiKeysInput = {
@@ -1589,6 +1679,8 @@ export type UserUpdateWithoutCreatedApiKeysInput = {
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedApiKeysInput = {
@@ -1616,6 +1708,8 @@ export type UserUncheckedUpdateWithoutCreatedApiKeysInput = {
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTwoFactorsInput = {
@@ -1643,6 +1737,8 @@ export type UserCreateWithoutTwoFactorsInput = {
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTwoFactorsInput = {
@@ -1670,6 +1766,8 @@ export type UserUncheckedCreateWithoutTwoFactorsInput = {
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTwoFactorsInput = {
@@ -1713,6 +1811,8 @@ export type UserUpdateWithoutTwoFactorsInput = {
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTwoFactorsInput = {
@@ -1740,6 +1840,8 @@ export type UserUncheckedUpdateWithoutTwoFactorsInput = {
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAssistantThreadsInput = {
@@ -1767,6 +1869,8 @@ export type UserCreateWithoutAssistantThreadsInput = {
   twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAssistantThreadsInput = {
@@ -1794,6 +1898,8 @@ export type UserUncheckedCreateWithoutAssistantThreadsInput = {
   twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
   assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAssistantThreadsInput = {
@@ -1837,6 +1943,8 @@ export type UserUpdateWithoutAssistantThreadsInput = {
   twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssistantThreadsInput = {
@@ -1864,6 +1972,8 @@ export type UserUncheckedUpdateWithoutAssistantThreadsInput = {
   twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAssistantProposalsInput = {
@@ -1891,6 +2001,8 @@ export type UserCreateWithoutAssistantProposalsInput = {
   twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAssistantProposalsInput = {
@@ -1918,6 +2030,8 @@ export type UserUncheckedCreateWithoutAssistantProposalsInput = {
   twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
   assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAssistantProposalsInput = {
@@ -1961,6 +2075,8 @@ export type UserUpdateWithoutAssistantProposalsInput = {
   twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssistantProposalsInput = {
@@ -1988,6 +2104,272 @@ export type UserUncheckedUpdateWithoutAssistantProposalsInput = {
   twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+}
+
+export type UserCreateWithoutNotificationPreferenceInput = {
+  id?: string
+  email: string
+  name?: string | null
+  firstName?: string | null
+  middleName?: string | null
+  lastName?: string | null
+  lastName2?: string | null
+  isOnboarded?: boolean
+  emailVerified?: boolean
+  pwdReset?: boolean
+  image?: string | null
+  twoFactorEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sentInvitations?: Prisma.InvitationCreateNestedManyWithoutInviterInput
+  memberships?: Prisma.MemberCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  roles?: Prisma.RoleCreateNestedManyWithoutUsersInput
+  createdApiKeys?: Prisma.ApiKeyCreateNestedManyWithoutCreatedByInput
+  twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
+  bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutNotificationPreferenceInput = {
+  id?: string
+  email: string
+  name?: string | null
+  firstName?: string | null
+  middleName?: string | null
+  lastName?: string | null
+  lastName2?: string | null
+  isOnboarded?: boolean
+  emailVerified?: boolean
+  pwdReset?: boolean
+  image?: string | null
+  twoFactorEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sentInvitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutInviterInput
+  memberships?: Prisma.MemberUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutUsersInput
+  createdApiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
+  twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
+  bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutNotificationPreferenceInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationPreferenceInput, Prisma.UserUncheckedCreateWithoutNotificationPreferenceInput>
+}
+
+export type UserUpsertWithoutNotificationPreferenceInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutNotificationPreferenceInput, Prisma.UserUncheckedUpdateWithoutNotificationPreferenceInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationPreferenceInput, Prisma.UserUncheckedCreateWithoutNotificationPreferenceInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutNotificationPreferenceInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutNotificationPreferenceInput, Prisma.UserUncheckedUpdateWithoutNotificationPreferenceInput>
+}
+
+export type UserUpdateWithoutNotificationPreferenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnboarded?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pwdReset?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sentInvitations?: Prisma.InvitationUpdateManyWithoutInviterNestedInput
+  memberships?: Prisma.MemberUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutUsersNestedInput
+  createdApiKeys?: Prisma.ApiKeyUpdateManyWithoutCreatedByNestedInput
+  twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
+  bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutNotificationPreferenceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnboarded?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pwdReset?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sentInvitations?: Prisma.InvitationUncheckedUpdateManyWithoutInviterNestedInput
+  memberships?: Prisma.MemberUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutUsersNestedInput
+  createdApiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
+  twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
+  bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutPushSubscriptionsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  firstName?: string | null
+  middleName?: string | null
+  lastName?: string | null
+  lastName2?: string | null
+  isOnboarded?: boolean
+  emailVerified?: boolean
+  pwdReset?: boolean
+  image?: string | null
+  twoFactorEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sentInvitations?: Prisma.InvitationCreateNestedManyWithoutInviterInput
+  memberships?: Prisma.MemberCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  roles?: Prisma.RoleCreateNestedManyWithoutUsersInput
+  createdApiKeys?: Prisma.ApiKeyCreateNestedManyWithoutCreatedByInput
+  twoFactors?: Prisma.TwoFactorCreateNestedManyWithoutUserInput
+  bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
+  id?: string
+  email: string
+  name?: string | null
+  firstName?: string | null
+  middleName?: string | null
+  lastName?: string | null
+  lastName2?: string | null
+  isOnboarded?: boolean
+  emailVerified?: boolean
+  pwdReset?: boolean
+  image?: string | null
+  twoFactorEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sentInvitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutInviterInput
+  memberships?: Prisma.MemberUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutUsersInput
+  createdApiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
+  twoFactors?: Prisma.TwoFactorUncheckedCreateNestedManyWithoutUserInput
+  bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutUserInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutUserInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutPushSubscriptionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPushSubscriptionsInput, Prisma.UserUncheckedCreateWithoutPushSubscriptionsInput>
+}
+
+export type UserUpsertWithoutPushSubscriptionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPushSubscriptionsInput, Prisma.UserUncheckedUpdateWithoutPushSubscriptionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPushSubscriptionsInput, Prisma.UserUncheckedCreateWithoutPushSubscriptionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPushSubscriptionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPushSubscriptionsInput, Prisma.UserUncheckedUpdateWithoutPushSubscriptionsInput>
+}
+
+export type UserUpdateWithoutPushSubscriptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnboarded?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pwdReset?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sentInvitations?: Prisma.InvitationUpdateManyWithoutInviterNestedInput
+  memberships?: Prisma.MemberUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutUsersNestedInput
+  createdApiKeys?: Prisma.ApiKeyUpdateManyWithoutCreatedByNestedInput
+  twoFactors?: Prisma.TwoFactorUpdateManyWithoutUserNestedInput
+  bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnboarded?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pwdReset?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  twoFactorEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sentInvitations?: Prisma.InvitationUncheckedUpdateManyWithoutInviterNestedInput
+  memberships?: Prisma.MemberUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutUsersNestedInput
+  createdApiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
+  twoFactors?: Prisma.TwoFactorUncheckedUpdateManyWithoutUserNestedInput
+  bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUpdateWithoutRolesInput = {
@@ -2015,6 +2397,8 @@ export type UserUpdateWithoutRolesInput = {
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRolesInput = {
@@ -2042,6 +2426,8 @@ export type UserUncheckedUpdateWithoutRolesInput = {
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutUserNestedInput
   assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutUserNestedInput
   assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutRolesInput = {
@@ -2078,6 +2464,7 @@ export type UserCountOutputType = {
   bankAccounts: number
   assistantThreads: number
   assistantProposals: number
+  pushSubscriptions: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2091,6 +2478,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   bankAccounts?: boolean | UserCountOutputTypeCountBankAccountsArgs
   assistantThreads?: boolean | UserCountOutputTypeCountAssistantThreadsArgs
   assistantProposals?: boolean | UserCountOutputTypeCountAssistantProposalsArgs
+  pushSubscriptions?: boolean | UserCountOutputTypeCountPushSubscriptionsArgs
 }
 
 /**
@@ -2173,6 +2561,13 @@ export type UserCountOutputTypeCountAssistantProposalsArgs<ExtArgs extends runti
   where?: Prisma.AssistantProposalWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPushSubscriptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PushSubscriptionWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2200,6 +2595,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   bankAccounts?: boolean | Prisma.User$bankAccountsArgs<ExtArgs>
   assistantThreads?: boolean | Prisma.User$assistantThreadsArgs<ExtArgs>
   assistantProposals?: boolean | Prisma.User$assistantProposalsArgs<ExtArgs>
+  pushSubscriptions?: boolean | Prisma.User$pushSubscriptionsArgs<ExtArgs>
+  notificationPreference?: boolean | Prisma.User$notificationPreferenceArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -2269,6 +2666,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   bankAccounts?: boolean | Prisma.User$bankAccountsArgs<ExtArgs>
   assistantThreads?: boolean | Prisma.User$assistantThreadsArgs<ExtArgs>
   assistantProposals?: boolean | Prisma.User$assistantProposalsArgs<ExtArgs>
+  pushSubscriptions?: boolean | Prisma.User$pushSubscriptionsArgs<ExtArgs>
+  notificationPreference?: boolean | Prisma.User$notificationPreferenceArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -2287,6 +2686,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     bankAccounts: Prisma.$BankAccountPayload<ExtArgs>[]
     assistantThreads: Prisma.$AssistantThreadPayload<ExtArgs>[]
     assistantProposals: Prisma.$AssistantProposalPayload<ExtArgs>[]
+    pushSubscriptions: Prisma.$PushSubscriptionPayload<ExtArgs>[]
+    notificationPreference: Prisma.$NotificationPreferencePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2708,6 +3109,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   bankAccounts<T extends Prisma.User$bankAccountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$bankAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BankAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   assistantThreads<T extends Prisma.User$assistantThreadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$assistantThreadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssistantThreadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   assistantProposals<T extends Prisma.User$assistantProposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$assistantProposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssistantProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  pushSubscriptions<T extends Prisma.User$pushSubscriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$pushSubscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PushSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notificationPreference<T extends Prisma.User$notificationPreferenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationPreferenceArgs<ExtArgs>>): Prisma.Prisma__NotificationPreferenceClient<runtime.Types.Result.GetResult<Prisma.$NotificationPreferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3382,6 +3785,49 @@ export type User$assistantProposalsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.AssistantProposalScalarFieldEnum | Prisma.AssistantProposalScalarFieldEnum[]
+}
+
+/**
+ * User.pushSubscriptions
+ */
+export type User$pushSubscriptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PushSubscription
+   */
+  select?: Prisma.PushSubscriptionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PushSubscription
+   */
+  omit?: Prisma.PushSubscriptionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PushSubscriptionInclude<ExtArgs> | null
+  where?: Prisma.PushSubscriptionWhereInput
+  orderBy?: Prisma.PushSubscriptionOrderByWithRelationInput | Prisma.PushSubscriptionOrderByWithRelationInput[]
+  cursor?: Prisma.PushSubscriptionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PushSubscriptionScalarFieldEnum | Prisma.PushSubscriptionScalarFieldEnum[]
+}
+
+/**
+ * User.notificationPreference
+ */
+export type User$notificationPreferenceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the NotificationPreference
+   */
+  select?: Prisma.NotificationPreferenceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the NotificationPreference
+   */
+  omit?: Prisma.NotificationPreferenceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificationPreferenceInclude<ExtArgs> | null
+  where?: Prisma.NotificationPreferenceWhereInput
 }
 
 /**

@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import {
+  Bell,
   Building2,
   CreditCard,
   KeyRound,
@@ -62,6 +63,11 @@ export default async function SettingsPage() {
       <section className="flex flex-col gap-3">
         <SectionHeader title={t("settings.accountSection")} />
         <Card variant="plain" className="divide-y overflow-hidden">
+          <NavRow
+            icon={Bell}
+            label={t("nav.notifications")}
+            href="/notifications"
+          />
           <NavRow
             icon={UserIcon}
             label={t("userMenu.profile")}

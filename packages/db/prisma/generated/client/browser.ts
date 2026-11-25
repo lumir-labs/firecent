@@ -158,3 +158,13 @@ export type AssistantMessage = Prisma.AssistantMessageModel
  * 
  */
 export type AssistantProposal = Prisma.AssistantProposalModel
+/**
+ * Model NotificationPreference
+ * 
+ */
+export type NotificationPreference = Prisma.NotificationPreferenceModel
+/**
+ * Model PushSubscription
+ * 
+ */
+export type PushSubscription = Prisma.PushSubscriptionModel

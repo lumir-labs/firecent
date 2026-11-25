@@ -8,6 +8,7 @@ import { dashboardRouter } from "./routers/dashboard";
 import { debtsRouter } from "./routers/debts";
 import { healthRouter } from "./routers/health";
 import { labelsRouter } from "./routers/labels";
+import { notificationsRouter } from "./routers/notifications";
 import { recordsRouter } from "./routers/records";
 import { recurringRouter } from "./routers/recurring";
 import { usersRouter } from "./routers/users";
@@ -22,6 +23,7 @@ export const appRouter = router({
   debts: debtsRouter,
   health: healthRouter,
   labels: labelsRouter,
+  notifications: notificationsRouter,
   records: recordsRouter,
   recurring: recurringRouter,
   users: usersRouter,
