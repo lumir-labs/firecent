@@ -15,14 +15,53 @@ const PUSH_CONCURRENCY = 20;
 let vapidInitialized = false;
 let dispatchInProgress = false;
 
+function stripWrappingQuotes(value: string | undefined): string {
+  const trimmed = value?.trim() ?? "";
+  if (
+    trimmed.length >= 2 &&
+    ((trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+      (trimmed.startsWith("'") && trimmed.endsWith("'")))
+  ) {
+    return trimmed.slice(1, -1).trim();
+  }
+  return trimmed;
+}
+
+export function normalizeVapidSubject(raw: string | undefined): string {
+  const fallback = "mailto:hello@firecent.app";
+  let candidate = stripWrappingQuotes(raw);
+  if (!candidate) return fallback;
+
+  if (!/^(mailto:|https?:\/\/)/i.test(candidate)) {
+    candidate = candidate.includes("@")
+      ? `mailto:${candidate}`
+      : `https://${candidate}`;
+  } else if (/^http:\/\//i.test(candidate)) {
+    candidate = candidate.replace(/^http:\/\//i, "https://");
+  }
+
+  try {
+    const parsed = new URL(candidate);
+    if (
+      (parsed.protocol === "mailto:" || parsed.protocol === "https:") &&
+      parsed.hostname !== "localhost"
+    ) {
+      return candidate;
+    }
+  } catch {
+    // fall through to safe default
+  }
+  return fallback;
+}
+
 export function getVapidConfig(): {
   publicKey: string;
   privateKey: string;
   subject: string;
 } | null {
-  const publicKey = process.env.VAPID_PUBLIC_KEY?.trim();
-  const privateKey = process.env.VAPID_PRIVATE_KEY?.trim();
-  const subject = process.env.VAPID_SUBJECT?.trim() || "mailto:hello@firecent.app";
+  const publicKey = stripWrappingQuotes(process.env.VAPID_PUBLIC_KEY);
+  const privateKey = stripWrappingQuotes(process.env.VAPID_PRIVATE_KEY);
+  const subject = normalizeVapidSubject(process.env.VAPID_SUBJECT);
   if (!publicKey || !privateKey) return null;
   return { publicKey, privateKey, subject };
 }
