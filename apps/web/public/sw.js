@@ -17,7 +17,7 @@ self.addEventListener("push", (event) => {
     url: "/",
     tag: "firecent-notification",
     icon: "/splash/app-icons/app_dark_180.png",
-    badge: "/splash/app-icons/favicon_64.png",
+    badge: "/splash/app-icons/notification-badge-96.png",
   };
 
   try {

@@ -971,7 +971,7 @@ export async function sendPushToSubscriptions(
     url: payload.url,
     tag: payload.tag ?? "firecent-notification",
     icon: "/splash/app-icons/app_dark_180.png",
-    badge: "/splash/app-icons/favicon_64.png",
+    badge: "/splash/app-icons/notification-badge-96.png",
   });
 
   await runWithConcurrency(subscriptions, PUSH_CONCURRENCY, async (sub) => {
