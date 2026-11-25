@@ -28,11 +28,13 @@ import {
   Money,
   formatMoneyText,
   localizeCategoryName,
+  resolveTransferFlow,
 } from "@/components/finance";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ResponsiveSheet } from "@/components/ui/responsive-sheet";
+import { Skeleton } from "@/components/ui/skeleton";
 import { firecentToast } from "@/components/ui/sonner";
 import { Toggle } from "@/components/ui/toggle";
 import { cn } from "@/lib/utils";
@@ -112,6 +114,7 @@ export function AddTransactionSheet({
     >
       {open ? (
         <AddTransactionBody
+          key={editRecordId ?? "new"}
           defaultAccountId={defaultAccountId}
           editRecordId={editRecordId}
           onClose={() => onOpenChange(false)}
@@ -232,14 +235,37 @@ function AddTransactionBody({
   const catLabel = (c: { name: string; nameEn?: string | null; nameEs?: string | null }) =>
     localizeCategoryName(c, locale);
 
-  // Hydrate edit mode once
+  // Hydrate edit mode once (always resolving true From -> To direction for transfers)
   useEffect(() => {
     if (!editRecordId || !existing.data || hydratedEdit) return;
     const r = existing.data;
-    setType(r.transfer ? "TRANSFER" : r.type);
-    setAmountStr(Math.abs(r.amount).toFixed(2));
-    setAccountId(r.account.id);
-    setTransferAccountId(r.transferAccount?.id ?? null);
+    const isRecTransfer = r.transfer || r.type === "TRANSFER";
+
+    if (isRecTransfer) {
+      setType("TRANSFER");
+      if (r.transferPair) {
+        setAccountId(r.transferPair.fromAccount.id);
+        setTransferAccountId(r.transferPair.toAccount.id);
+        setAmountStr(r.transferPair.fromAmount.toFixed(2));
+        if (
+          r.transferPair.fromAccount.currency !==
+          r.transferPair.toAccount.currency
+        ) {
+          setReceiveAmountStr(r.transferPair.toAmount.toFixed(2));
+        }
+      } else {
+        const flow = resolveTransferFlow(r.amount, r.account, r.transferAccount);
+        setAccountId(flow.from?.id ?? null);
+        setTransferAccountId(flow.to?.id ?? null);
+        setAmountStr(Math.abs(r.amount).toFixed(2));
+      }
+    } else {
+      setType(r.type);
+      setAmountStr(Math.abs(r.amount).toFixed(2));
+      setAccountId(r.account.id);
+      setTransferAccountId(null);
+    }
+
     setCategoryId(r.category?.id ?? null);
     setPayeeName(r.payee?.name ?? "");
     setNote(r.note ?? "");
@@ -289,16 +315,44 @@ function AddTransactionBody({
     categories,
   ]);
 
-  // Default transfer destination when switching to TRANSFER
+  // Default transfer destination when creating a new transfer (never overwrite edit hydration)
   useEffect(() => {
-    if (type !== "TRANSFER" || transferAccountId !== null || accounts.length < 2)
+    if (
+      editRecordId ||
+      type !== "TRANSFER" ||
+      transferAccountId !== null ||
+      accounts.length < 2
+    ) {
       return;
+    }
     const other = accounts.find((a) => a.id !== accountId);
     if (other) setTransferAccountId(other.id);
-  }, [type, transferAccountId, accountId, accounts]);
+  }, [editRecordId, type, transferAccountId, accountId, accounts]);
 
-  const activeAccount = accounts.find((a) => a.id === accountId) ?? accounts[0];
-  const destAccount = accounts.find((a) => a.id === transferAccountId);
+  // Include archived accounts referenced by the record being edited so edit never silently falls back to accounts[0]
+  const knownAccounts = useMemo(() => {
+    const extra = [
+      existing.data?.account,
+      existing.data?.transferAccount,
+      existing.data?.transferPair?.fromAccount,
+      existing.data?.transferPair?.toAccount,
+    ].filter((a): a is NonNullable<typeof a> => Boolean(a));
+    if (extra.length === 0) return accounts;
+    const seen = new Set(accounts.map((a) => a.id));
+    const merged = [...accounts];
+    for (const acc of extra) {
+      if (!seen.has(acc.id)) {
+        seen.add(acc.id);
+        merged.push(acc);
+      }
+    }
+    return merged;
+  }, [accounts, existing.data]);
+
+  const activeAccount =
+    knownAccounts.find((a) => a.id === accountId) ??
+    (!editRecordId ? accounts[0] : undefined);
+  const destAccount = knownAccounts.find((a) => a.id === transferAccountId);
   const currency = activeAccount?.currency ?? "USD";
   const crossCurrency =
     type === "TRANSFER" &&
@@ -325,6 +379,7 @@ function AddTransactionBody({
   const invalidateAll = async () => {
     await Promise.all([
       utils.records.list.invalidate(),
+      utils.records.get.invalidate(),
       utils.records.monthSummary.invalidate(),
       utils.records.suggestions.invalidate(),
       utils.accounts.list.invalidate(),
@@ -464,6 +519,22 @@ function AddTransactionBody({
       recordTime: recordTime || null,
       labelIds: selectedLabels,
     });
+  }
+
+  // Avoid rendering stale defaults (like accounts[0]) before an edited record has hydrated
+  if (editRecordId && !hydratedEdit) {
+    return (
+      <div className="flex flex-col gap-4 px-5 pt-2">
+        <div className="grid grid-cols-3 gap-2">
+          <Skeleton className="h-13 rounded-xl" />
+          <Skeleton className="h-13 rounded-xl" />
+          <Skeleton className="h-13 rounded-xl" />
+        </div>
+        <Skeleton className="mx-auto h-10 w-36 rounded-xl" />
+        <Skeleton className="h-28 w-full rounded-2xl" />
+        <Skeleton className="h-10 w-full rounded-xl" />
+      </div>
+    );
   }
 
   // ── Category picker subview (Parent → Subcategories + inline "+ New category") ──
@@ -726,8 +797,17 @@ function AddTransactionBody({
                 key={acc.id}
                 type="button"
                 onClick={() => {
-                  if (targetIsFrom) setAccountId(acc.id);
-                  else setTransferAccountId(acc.id);
+                  if (targetIsFrom) {
+                    if (isTransfer && acc.id === transferAccountId) {
+                      setTransferAccountId(accountId);
+                    }
+                    setAccountId(acc.id);
+                  } else {
+                    if (isTransfer && acc.id === accountId) {
+                      setAccountId(transferAccountId);
+                    }
+                    setTransferAccountId(acc.id);
+                  }
                   closeSubview();
                 }}
                 className="flex min-h-13 items-center justify-between gap-3 px-3.5 py-2.5 text-left transition-colors hover:bg-accent"
@@ -811,6 +891,14 @@ function AddTransactionBody({
                 if (type !== value) {
                   setType(value);
                   setCategoryId(null);
+                  if (
+                    value === "TRANSFER" &&
+                    transferAccountId === null &&
+                    accounts.length >= 2
+                  ) {
+                    const other = accounts.find((a) => a.id !== accountId);
+                    if (other) setTransferAccountId(other.id);
+                  }
                 }
               }}
               className={cn(

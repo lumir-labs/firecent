@@ -124,8 +124,10 @@ const recordSelect = {
       spendingNature: true,
     },
   },
-  account: { select: { id: true, name: true, color: true, currency: true } },
-  transferAccount: { select: { id: true, name: true, color: true, currency: true } },
+  account: { select: { id: true, name: true, color: true, currency: true, type: true } },
+  transferAccount: {
+    select: { id: true, name: true, color: true, currency: true, type: true },
+  },
   labels: { select: { id: true, name: true, color: true } },
 } as const;
 
@@ -518,6 +520,52 @@ export const recordsRouter = router({
           ? (r.spendingNature ?? r.category?.spendingNature ?? null)
           : null;
 
+      let transferPair: {
+        fromAccount: typeof r.account;
+        toAccount: typeof r.account;
+        fromAmount: number;
+        toAmount: number;
+      } | null = null;
+
+      if (r.transfer && r.transferGroupId) {
+        const pair = await db.record.findMany({
+          where: {
+            organizationId: orgId,
+            transferGroupId: r.transferGroupId,
+            deletedAt: null,
+          },
+          select: {
+            id: true,
+            amount: true,
+            account: {
+              select: { id: true, name: true, color: true, currency: true, type: true },
+            },
+            transferAccount: {
+              select: { id: true, name: true, color: true, currency: true, type: true },
+            },
+          },
+        });
+        const exitLeg = pair.find((p) => p.amount < 0) ?? null;
+        const entryLeg =
+          pair.find((p) => p.amount > 0 && p.id !== exitLeg?.id) ??
+          pair.find((p) => p.id !== exitLeg?.id) ??
+          null;
+        const fromAcc = exitLeg?.account ?? entryLeg?.transferAccount ?? null;
+        const toAcc = entryLeg?.account ?? exitLeg?.transferAccount ?? null;
+        if (fromAcc && toAcc) {
+          transferPair = {
+            fromAccount: fromAcc,
+            toAccount: toAcc,
+            fromAmount:
+              Math.abs(exitLeg?.amount ?? entryLeg?.amount ?? r.amount) /
+              MINOR_UNIT,
+            toAmount:
+              Math.abs(entryLeg?.amount ?? exitLeg?.amount ?? r.amount) /
+              MINOR_UNIT,
+          };
+        }
+      }
+
       return {
         id: r.id,
         type: r.type,
@@ -535,6 +583,7 @@ export const recordsRouter = router({
         category: r.category,
         account: r.account,
         transferAccount: r.transferAccount,
+        transferPair,
         labels: r.labels,
       };
     }),
@@ -895,56 +944,107 @@ export const recordsRouter = router({
             ? new Date(`1970-01-01T${input.recordTime}:00.000Z`)
             : null;
 
-      // Transfer pair update in one transaction (D6)
-      if (existing.transfer && existing.transferGroupId) {
+      const nextType = input.type ?? (existing.transfer ? "TRANSFER" : existing.type);
+      const absMinor =
+        input.amount != null ? input.amount : Math.abs(existing.amount);
+
+      // 1) Paired transfer stays a transfer: update both legs atomically (D6)
+      if (existing.transfer && existing.transferGroupId && nextType === "TRANSFER") {
         const pair = await db.record.findMany({
           where: {
             organizationId: orgId,
             transferGroupId: existing.transferGroupId,
             deletedAt: null,
           },
+          include: { labels: { select: { id: true } } },
         });
         const exit = pair.find((r) => r.amount < 0) ?? existing;
         const entry = pair.find((r) => r.id !== exit.id);
 
         const nextFrom = input.accountId ?? exit.accountId;
-        const nextTo = input.transferAccountId ?? exit.transferAccountId ?? entry?.accountId;
-        const nextExitAmount = input.amount != null ? -input.amount : exit.amount;
+        const nextTo =
+          input.transferAccountId ?? exit.transferAccountId ?? entry?.accountId ?? null;
+        if (!nextTo || nextTo === nextFrom) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Destination account must differ from source account",
+          });
+        }
+        const validAccounts = await db.bankAccount.count({
+          where: {
+            id: { in: [nextFrom, nextTo] },
+            organizationId: orgId,
+            deletedAt: null,
+          },
+        });
+        if (validAccounts !== 2) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid reference" });
+        }
+
+        const nextExitAmount = -absMinor;
         const nextEntryAmount =
           input.receiveAmount != null
             ? input.receiveAmount
             : input.amount != null
               ? input.amount
-              : entry?.amount ?? Math.abs(exit.amount);
+              : entry
+                ? Math.abs(entry.amount)
+                : absMinor;
+
+        const sharedMeta = {
+          ...(input.note !== undefined ? { note: input.note || null } : {}),
+          ...(nextDate ? { recordDate: nextDate } : {}),
+          ...(nextTime !== undefined ? { recordTime: nextTime } : {}),
+          ...(input.paymentType ? { paymentType: input.paymentType } : {}),
+          ...(labelUpdate ? { labels: labelUpdate } : {}),
+          updatedBy: userId,
+        };
 
         await db.$transaction(async (tx) => {
           await tx.record.update({
             where: { id: exit.id },
             data: {
+              type: "TRANSFER",
+              transfer: true,
               accountId: nextFrom,
-              transferAccountId: nextTo ?? null,
+              transferAccountId: nextTo,
               amount: nextExitAmount,
-              ...(input.note !== undefined ? { note: input.note || null } : {}),
-              ...(nextDate ? { recordDate: nextDate } : {}),
-              ...(nextTime ? { recordTime: nextTime } : {}),
-              ...(input.paymentType ? { paymentType: input.paymentType } : {}),
-              ...(labelUpdate ? { labels: labelUpdate } : {}),
-              updatedBy: userId,
+              ...sharedMeta,
             },
           });
-          if (entry && nextTo) {
+          if (entry) {
             await tx.record.update({
               where: { id: entry.id },
               data: {
+                type: "TRANSFER",
+                transfer: true,
                 accountId: nextTo,
                 transferAccountId: nextFrom,
                 amount: nextEntryAmount,
-                ...(input.note !== undefined ? { note: input.note || null } : {}),
-                ...(nextDate ? { recordDate: nextDate } : {}),
-                ...(nextTime ? { recordTime: nextTime } : {}),
-                ...(input.paymentType ? { paymentType: input.paymentType } : {}),
-                ...(labelUpdate ? { labels: labelUpdate } : {}),
-                updatedBy: userId,
+                ...sharedMeta,
+              },
+            });
+          } else {
+            const labelConnectIds =
+              input.labelIds ??
+              (pair.find((p) => p.id === exit.id)?.labels.map((l) => l.id) ?? []);
+            await tx.record.create({
+              data: {
+                organizationId: orgId,
+                type: "TRANSFER",
+                transfer: true,
+                transferGroupId: existing.transferGroupId,
+                accountId: nextTo,
+                transferAccountId: nextFrom,
+                amount: nextEntryAmount,
+                paymentType: input.paymentType ?? exit.paymentType,
+                note: input.note !== undefined ? input.note || null : exit.note,
+                recordDate: nextDate ?? exit.recordDate,
+                recordTime: nextTime !== undefined ? nextTime : exit.recordTime,
+                createdBy: userId,
+                ...(labelConnectIds.length > 0
+                  ? { labels: { connect: labelConnectIds.map((id) => ({ id })) } }
+                  : {}),
               },
             });
           }
@@ -952,9 +1052,112 @@ export const recordsRouter = router({
         return { id: existing.id };
       }
 
-      const nextType = input.type ?? existing.type;
-      const absMinor =
-        input.amount != null ? input.amount : Math.abs(existing.amount);
+      // 2) Converting an unpaired transfer or Expense/Income into a paired Transfer
+      if (nextType === "TRANSFER") {
+        const defaultFrom =
+          existing.transfer && existing.amount >= 0
+            ? existing.transferAccountId
+            : existing.accountId;
+        const defaultTo =
+          existing.transfer && existing.amount >= 0
+            ? existing.accountId
+            : existing.transferAccountId;
+        const nextFrom = input.accountId ?? defaultFrom;
+        const nextTo = input.transferAccountId ?? defaultTo;
+
+        if (nextFrom && nextTo && nextFrom !== nextTo) {
+          const validAccounts = await db.bankAccount.count({
+            where: {
+              id: { in: [nextFrom, nextTo] },
+              organizationId: orgId,
+              deletedAt: null,
+            },
+          });
+          if (validAccounts !== 2) {
+            throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid reference" });
+          }
+
+          const existingWithLabels =
+            input.labelIds === undefined
+              ? await db.record.findFirst({
+                  where: { id: existing.id },
+                  select: { labels: { select: { id: true } } },
+                })
+              : null;
+          const entryLabelIds =
+            input.labelIds ??
+            existingWithLabels?.labels.map((l) => l.id) ??
+            [];
+          const entryAmount = input.receiveAmount ?? absMinor;
+
+          await db.$transaction(async (tx) => {
+            await tx.record.update({
+              where: { id: existing.id },
+              data: {
+                type: "TRANSFER",
+                transfer: true,
+                transferGroupId: existing.id,
+                accountId: nextFrom,
+                transferAccountId: nextTo,
+                categoryId: null,
+                payeeId: null,
+                spendingNature: null,
+                amount: -absMinor,
+                ...(input.note !== undefined ? { note: input.note || null } : {}),
+                ...(nextDate ? { recordDate: nextDate } : {}),
+                ...(nextTime !== undefined ? { recordTime: nextTime } : {}),
+                ...(input.paymentType ? { paymentType: input.paymentType } : {}),
+                ...(labelUpdate ? { labels: labelUpdate } : {}),
+                updatedBy: userId,
+              },
+            });
+            await tx.record.create({
+              data: {
+                organizationId: orgId,
+                type: "TRANSFER",
+                transfer: true,
+                transferGroupId: existing.id,
+                accountId: nextTo,
+                transferAccountId: nextFrom,
+                amount: entryAmount,
+                paymentType: input.paymentType ?? existing.paymentType,
+                note: input.note !== undefined ? input.note || null : existing.note,
+                recordDate: nextDate ?? existing.recordDate,
+                recordTime: nextTime !== undefined ? nextTime : existing.recordTime,
+                createdBy: userId,
+                ...(entryLabelIds.length > 0
+                  ? { labels: { connect: entryLabelIds.map((id) => ({ id })) } }
+                  : {}),
+              },
+            });
+          });
+          return { id: existing.id };
+        }
+
+        // Unpaired transfer edited without pairing a second account: preserve sign
+        const preservedSign = existing.amount < 0 ? -absMinor : absMinor;
+        await db.record.update({
+          where: { id: existing.id },
+          data: {
+            type: "TRANSFER",
+            transfer: true,
+            amount: preservedSign,
+            ...(input.accountId !== undefined ? { accountId: input.accountId } : {}),
+            ...(input.transferAccountId !== undefined
+              ? { transferAccountId: input.transferAccountId }
+              : {}),
+            ...(input.note !== undefined ? { note: input.note || null } : {}),
+            ...(nextDate ? { recordDate: nextDate } : {}),
+            ...(nextTime !== undefined ? { recordTime: nextTime } : {}),
+            ...(input.paymentType ? { paymentType: input.paymentType } : {}),
+            ...(labelUpdate ? { labels: labelUpdate } : {}),
+            updatedBy: userId,
+          },
+        });
+        return { id: existing.id };
+      }
+
+      // 3) Regular Expense / Income (including converting a Transfer -> Expense/Income)
       const signedMinor = nextType === "EXPENSE" ? -absMinor : absMinor;
 
       const resolvedPayeeId =
@@ -962,24 +1165,41 @@ export const recordsRouter = router({
           ? await resolvePayeeId(orgId, userId, input.payeeId, input.payeeName)
           : undefined;
 
-      await db.record.update({
-        where: { id: existing.id },
-        data: {
-          type: nextType,
-          amount: signedMinor,
-          ...(input.accountId !== undefined ? { accountId: input.accountId } : {}),
-          ...(input.categoryId !== undefined ? { categoryId: input.categoryId } : {}),
-          ...(resolvedPayeeId !== undefined ? { payeeId: resolvedPayeeId } : {}),
-          ...(input.spendingNature !== undefined
-            ? { spendingNature: input.spendingNature }
-            : {}),
-          ...(input.note !== undefined ? { note: input.note || null } : {}),
-          ...(nextDate ? { recordDate: nextDate } : {}),
-          ...(nextTime ? { recordTime: nextTime } : {}),
-          ...(input.paymentType ? { paymentType: input.paymentType } : {}),
-          ...(labelUpdate ? { labels: labelUpdate } : {}),
-          updatedBy: userId,
-        },
+      await db.$transaction(async (tx) => {
+        if (existing.transfer && existing.transferGroupId) {
+          await tx.record.updateMany({
+            where: {
+              organizationId: orgId,
+              transferGroupId: existing.transferGroupId,
+              id: { not: existing.id },
+              deletedAt: null,
+            },
+            data: { deletedAt: new Date(), deletedBy: userId },
+          });
+        }
+
+        await tx.record.update({
+          where: { id: existing.id },
+          data: {
+            type: nextType,
+            transfer: false,
+            transferGroupId: null,
+            transferAccountId: null,
+            amount: signedMinor,
+            ...(input.accountId !== undefined ? { accountId: input.accountId } : {}),
+            ...(input.categoryId !== undefined ? { categoryId: input.categoryId } : {}),
+            ...(resolvedPayeeId !== undefined ? { payeeId: resolvedPayeeId } : {}),
+            ...(input.spendingNature !== undefined
+              ? { spendingNature: input.spendingNature }
+              : {}),
+            ...(input.note !== undefined ? { note: input.note || null } : {}),
+            ...(nextDate ? { recordDate: nextDate } : {}),
+            ...(nextTime !== undefined ? { recordTime: nextTime } : {}),
+            ...(input.paymentType ? { paymentType: input.paymentType } : {}),
+            ...(labelUpdate ? { labels: labelUpdate } : {}),
+            updatedBy: userId,
+          },
+        });
       });
       return { id: existing.id };
     }),

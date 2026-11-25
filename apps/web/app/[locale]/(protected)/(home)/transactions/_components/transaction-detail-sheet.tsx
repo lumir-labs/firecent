@@ -83,7 +83,13 @@ export function TransactionDetailSheet({
   const isTransfer = Boolean(r && (r.transfer || r.type === "TRANSFER"));
   const flow =
     r && isTransfer
-      ? resolveTransferFlow(r.amount, r.account, r.transferAccount)
+      ? r.transferPair
+        ? {
+            from: r.transferPair.fromAccount,
+            to: r.transferPair.toAccount,
+            direction: (r.amount < 0 ? "out" : "in") as "out" | "in",
+          }
+        : resolveTransferFlow(r.amount, r.account, r.transferAccount)
       : null;
   const localizedCat = r?.category
     ? localizeCategoryName(r.category, locale)
@@ -93,11 +99,27 @@ export function TransactionDetailSheet({
     if (!r) return;
     const today = new Date().toISOString().slice(0, 10);
     const nowTime = new Date().toISOString().slice(11, 16);
+    const fromId = isTransfer
+      ? (r.transferPair?.fromAccount.id ?? flow?.from?.id ?? r.account.id)
+      : r.account.id;
+    const toId = isTransfer
+      ? (r.transferPair?.toAccount.id ?? flow?.to?.id ?? r.transferAccount?.id ?? null)
+      : null;
+    const fromAmount = isTransfer && r.transferPair
+      ? r.transferPair.fromAmount
+      : Math.abs(r.amount);
+    const toAmount =
+      isTransfer &&
+      r.transferPair &&
+      r.transferPair.fromAccount.currency !== r.transferPair.toAccount.currency
+        ? r.transferPair.toAmount
+        : null;
     duplicateMutation.mutate({
-      type: r.transfer ? "TRANSFER" : r.type,
-      amount: Math.round(Math.abs(r.amount) * 100),
-      accountId: r.account.id,
-      transferAccountId: r.transferAccount?.id ?? null,
+      type: isTransfer ? "TRANSFER" : r.type,
+      amount: Math.round(fromAmount * 100),
+      receiveAmount: toAmount != null ? Math.round(toAmount * 100) : null,
+      accountId: fromId,
+      transferAccountId: toId,
       categoryId: r.category?.id ?? null,
       payeeId: r.payee?.id ?? null,
       spendingNature: r.spendingNature,
