@@ -30,6 +30,7 @@ const DEFAULT_PROD_UMAMI_WEBSITE_ID = "8d9af1d7-26ee-4ce5-9a27-62aaa8297d15";
 
 function resolveUmamiConfig(): {
   readonly scriptSrc: string | null;
+  readonly recorderSrc: string | null;
   readonly websiteId: string | null;
 } {
   const isProd = process.env.NODE_ENV === "production";
@@ -54,7 +55,23 @@ function resolveUmamiConfig(): {
       : `${rawUrl}/script.js`
     : null;
 
-  return { scriptSrc, websiteId };
+  const rawRecorderUrl = (
+    process.env.UMAMI_RECORDER_URL ??
+    process.env.NEXT_PUBLIC_UMAMI_RECORDER_URL ??
+    ""
+  )
+    .trim()
+    .replace(/\/+$/, "");
+
+  const recorderSrc = rawRecorderUrl
+    ? rawRecorderUrl.endsWith(".js")
+      ? rawRecorderUrl
+      : `${rawRecorderUrl}/recorder.js`
+    : scriptSrc
+      ? scriptSrc.replace(/\/[^/]+\.js$/, "/recorder.js")
+      : null;
+
+  return { scriptSrc, recorderSrc, websiteId };
 }
 // English is the default image (also used by the static splash at `/`);
 // Spanish routes get their own copy.
@@ -224,8 +241,11 @@ export default async function LocaleLayout({ children }: Props) {
 
   const messages = await getMessages();
   const tSeo = await getTranslations({ locale: localeValue, namespace: "Seo" });
-  const { scriptSrc: umamiScriptSrc, websiteId: umamiWebsiteId } =
-    resolveUmamiConfig();
+  const {
+    scriptSrc: umamiScriptSrc,
+    recorderSrc: umamiRecorderSrc,
+    websiteId: umamiWebsiteId,
+  } = resolveUmamiConfig();
   // Escape `<` so message text can never close the <script> tag.
   const jsonLd = JSON.stringify(
     siteJsonLd(tSeo("description"), tSeo("slogan"), localeValue),
@@ -255,6 +275,7 @@ export default async function LocaleLayout({ children }: Props) {
             {children}
             <CookieNotice
               umamiScriptSrc={umamiScriptSrc ?? undefined}
+              umamiRecorderSrc={umamiRecorderSrc ?? undefined}
               umamiWebsiteId={umamiWebsiteId ?? undefined}
             />
           </ThemeProvider>

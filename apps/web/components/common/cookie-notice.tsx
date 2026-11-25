@@ -19,6 +19,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 type CookieNoticeProps = {
   readonly umamiScriptSrc?: string;
+  readonly umamiRecorderSrc?: string;
   readonly umamiWebsiteId?: string;
 };
 
@@ -46,6 +47,7 @@ function getServerSnapshot(): string {
 
 export function CookieNotice({
   umamiScriptSrc,
+  umamiRecorderSrc,
   umamiWebsiteId,
 }: CookieNoticeProps) {
   const t = useTranslations("Legal.cookieBanner");
@@ -75,26 +77,34 @@ export function CookieNotice({
     };
   }, []);
 
-  // Dynamically load or remove Umami analytics strictly based on user consent
+  // Dynamically load or remove Umami analytics + recorder strictly based on user consent
   useEffect(() => {
-    if (!umamiScriptSrc || !umamiWebsiteId) return;
+    if (!umamiWebsiteId) return;
 
-    const existing = document.querySelector<HTMLScriptElement>(
-      `script[${UMAMI_SCRIPT_ATTR}="true"]`,
-    );
+    const scripts = [
+      { key: "tracker", src: umamiScriptSrc },
+      { key: "recorder", src: umamiRecorderSrc },
+    ] as const;
 
-    if (analyticsAllowed) {
-      if (existing) return;
-      const script = document.createElement("script");
-      script.src = umamiScriptSrc;
-      script.defer = true;
-      script.setAttribute("data-website-id", umamiWebsiteId);
-      script.setAttribute(UMAMI_SCRIPT_ATTR, "true");
-      document.head.appendChild(script);
-    } else if (existing) {
-      existing.remove();
+    for (const { key, src } of scripts) {
+      if (!src) continue;
+      const existing = document.querySelector<HTMLScriptElement>(
+        `script[${UMAMI_SCRIPT_ATTR}="${key}"]`,
+      );
+
+      if (analyticsAllowed) {
+        if (existing) continue;
+        const script = document.createElement("script");
+        script.src = src;
+        script.defer = true;
+        script.setAttribute("data-website-id", umamiWebsiteId);
+        script.setAttribute(UMAMI_SCRIPT_ATTR, key);
+        document.head.appendChild(script);
+      } else if (existing) {
+        existing.remove();
+      }
     }
-  }, [analyticsAllowed, umamiScriptSrc, umamiWebsiteId]);
+  }, [analyticsAllowed, umamiScriptSrc, umamiRecorderSrc, umamiWebsiteId]);
 
   if (!isHydrated) return null;
 
