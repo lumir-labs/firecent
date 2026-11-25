@@ -3,9 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Check, ChevronsUpDown, Loader2, Users } from "lucide-react";
+import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
 import {
   Popover,
   PopoverContent,
@@ -14,7 +19,6 @@ import {
 import { ResponsiveSheet } from "@/components/ui/responsive-sheet";
 import { firecentToast } from "@/components/ui/sonner";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { Link } from "@/i18n/navigation";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { useShell, type SwitcherSpace } from "./shell-context";
@@ -23,21 +27,49 @@ function initialOf(name: string) {
   return name.trim().charAt(0).toUpperCase() || "S";
 }
 
+function useSpaceSwitch(onComplete?: () => void) {
+  const t = useTranslations("Shell");
+  const router = useRouter();
+  const { spaces, activeSpace, activeSpaceId } = useShell();
+  const [busyId, setBusyId] = useState<string | null>(null);
+
+  async function selectSpace(nextId: string) {
+    if (nextId === activeSpaceId) {
+      onComplete?.();
+      return;
+    }
+    setBusyId(nextId);
+    try {
+      const { error } = await authClient.organization.setActive({
+        organizationId: nextId,
+      });
+      if (error) {
+        firecentToast(error.message || t("spaceSwitchError"));
+        return;
+      }
+      onComplete?.();
+      router.refresh();
+    } catch {
+      firecentToast(t("spaceSwitchError"));
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  return { spaces, activeSpace, activeSpaceId, busyId, selectSpace };
+}
+
 function SpaceList({
   spaces,
   activeId,
   busyId,
   onSelect,
-  onManage,
 }: {
   spaces: SwitcherSpace[];
   activeId: string | null;
   busyId: string | null;
   onSelect: (id: string) => void;
-  onManage: () => void;
 }) {
-  const t = useTranslations("Shell");
-
   return (
     <div className="flex flex-col gap-1">
       {spaces.map((space) => {
@@ -68,17 +100,65 @@ function SpaceList({
           </button>
         );
       })}
-      <div className="mt-1 border-t pt-1">
-        <Link
-          href="/organization"
-          onClick={onManage}
-          className="flex min-h-10 items-center gap-2.5 rounded-xl px-3 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-        >
-          <Users className="size-4 shrink-0" />
-          <span>{t("manageSpaces")}</span>
-        </Link>
-      </div>
     </div>
+  );
+}
+
+/**
+ * Compact Space switcher embedded inside the desktop user menu popover.
+ * Keeps space switching one click away without occupying the top of the sidebar.
+ */
+export function SpaceMenuGroup({ onSwitched }: { onSwitched?: () => void }) {
+  const t = useTranslations("Shell");
+  const { spaces, activeSpace, activeSpaceId, busyId, selectSpace } =
+    useSpaceSwitch(onSwitched);
+
+  if (!activeSpace) return null;
+
+  return (
+    <DropdownMenuGroup>
+      <DropdownMenuLabel className="px-2 py-1 text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
+        {t("spaces")}
+      </DropdownMenuLabel>
+      <div className="flex max-h-40 flex-col gap-0.5 overflow-y-auto overscroll-contain">
+        {spaces.map((space) => {
+          const selected = space.id === activeSpaceId;
+          const loading = busyId === space.id;
+          return (
+            <DropdownMenuItem
+              key={space.id}
+              closeOnClick={false}
+              disabled={busyId !== null}
+              onClick={() => void selectSpace(space.id)}
+              className={cn(
+                "min-h-9 rounded-xl px-2 py-1.5",
+                selected && "bg-primary/8 font-medium",
+              )}
+            >
+              <span
+                aria-hidden
+                className={cn(
+                  "grid size-6 shrink-0 place-items-center rounded-lg text-[11px] font-semibold",
+                  selected
+                    ? "bg-primary/15 text-primary-text"
+                    : "bg-muted text-muted-foreground",
+                )}
+              >
+                {initialOf(space.name)}
+              </span>
+              <span className="min-w-0 flex-1 truncate text-[13px] text-foreground">
+                {space.name}
+              </span>
+              {loading ? (
+                <Loader2 className="size-3.5 shrink-0 animate-spin text-muted-foreground" />
+              ) : selected ? (
+                <Check className="size-3.5 shrink-0 text-primary-text" />
+              ) : null}
+            </DropdownMenuItem>
+          );
+        })}
+      </div>
+    </DropdownMenuGroup>
   );
 }
 
@@ -92,36 +172,12 @@ export function SpaceSwitcher({
   variant?: "sidebar" | "mobile";
 }) {
   const t = useTranslations("Shell");
-  const router = useRouter();
   const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const { spaces, activeSpace, activeSpaceId } = useShell();
   const [open, setOpen] = useState(false);
-  const [busyId, setBusyId] = useState<string | null>(null);
+  const { spaces, activeSpace, activeSpaceId, busyId, selectSpace } =
+    useSpaceSwitch(() => setOpen(false));
 
   if (!activeSpace) return null;
-
-  async function handleSelect(nextId: string) {
-    if (nextId === activeSpaceId) {
-      setOpen(false);
-      return;
-    }
-    setBusyId(nextId);
-    try {
-      const { error } = await authClient.organization.setActive({
-        organizationId: nextId,
-      });
-      if (error) {
-        firecentToast(error.message || t("spaceSwitchError"));
-        return;
-      }
-      setOpen(false);
-      router.refresh();
-    } catch {
-      firecentToast(t("spaceSwitchError"));
-    } finally {
-      setBusyId(null);
-    }
-  }
 
   const triggerContent = (
     <>
@@ -155,8 +211,7 @@ export function SpaceSwitcher({
             spaces={spaces}
             activeId={activeSpaceId}
             busyId={busyId}
-            onSelect={handleSelect}
-            onManage={() => setOpen(false)}
+            onSelect={selectSpace}
           />
         </PopoverContent>
       </Popover>
@@ -184,8 +239,7 @@ export function SpaceSwitcher({
             spaces={spaces}
             activeId={activeSpaceId}
             busyId={busyId}
-            onSelect={handleSelect}
-            onManage={() => setOpen(false)}
+            onSelect={selectSpace}
           />
         </div>
       </ResponsiveSheet>

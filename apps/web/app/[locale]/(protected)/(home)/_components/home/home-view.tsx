@@ -19,7 +19,6 @@ import {
   Sparkline,
   StatPair,
   StateBlock,
-  StepList,
   TransactionRow,
   UpcomingRow,
   formatMoneyText,
@@ -31,8 +30,14 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@/i18n/navigation";
 import { useShell } from "../shell/shell-context";
+import { AccountFormSheet } from "../../accounts/_components/account-form-sheet";
 import { TransactionDetailSheet } from "../../transactions/_components/transaction-detail-sheet";
 import { CardCyclesTimeline } from "./card-cycles-timeline";
+import {
+  BlazeHomeSpotlight,
+  CreditCardSetupSpotlight,
+  HomeEmptyLaunchpad,
+} from "./home-spotlights";
 
 function getGreetingKey(): "morning" | "afternoon" | "evening" {
   const h = new Date().getHours();
@@ -53,6 +58,9 @@ export function HomeView({ userName }: { userName: string }) {
   const tShell = useTranslations("Shell");
   const { activeSpace, openAddTransaction } = useShell();
   const [detailId, setDetailId] = useState<number | null>(null);
+  const [accountSheetType, setAccountSheetType] = useState<
+    "CREDIT_CARD" | "CHECKING_ACCOUNT" | null
+  >(null);
 
   const month = currentMonthStr();
   const query = trpc.dashboard.home.useQuery({ month });
@@ -131,51 +139,11 @@ export function HomeView({ userName }: { userName: string }) {
 
       {/* Empty Space state */}
       {data.isEmpty ? (
-        <div className="flex flex-col gap-6">
-          <div className="rounded-3xl bg-hero p-6 text-hero-foreground">
-            <p className="text-[13px] text-hero-foreground/70">
-              {t("balanceLabel")}
-            </p>
-            <Money
-              value={0}
-              currency="USD"
-              size="hero"
-              tone="plain"
-              surface="hero"
-              dimCents
-              className="mt-1 opacity-75"
-            />
-          </div>
-
-          <section className="flex flex-col gap-3">
-            <SectionHeader title={t("onboarding.title")} />
-            <StepList
-              steps={[
-                {
-                  title: t("onboarding.step1Title"),
-                  body: t("onboarding.step1Body"),
-                  done: false,
-                  active: true,
-                  href: "/accounts",
-                },
-                {
-                  title: t("onboarding.step2Title"),
-                  body: t("onboarding.step2Body"),
-                  done: false,
-                  active: false,
-                  href: "/transactions",
-                },
-                {
-                  title: t("onboarding.step3Title"),
-                  body: t("onboarding.step3Body"),
-                  done: false,
-                  active: false,
-                  href: "/budget",
-                },
-              ]}
-            />
-          </section>
-        </div>
+        <HomeEmptyLaunchpad
+          greeting={greeting}
+          onAddCreditCard={() => setAccountSheetType("CREDIT_CARD")}
+          onAddAccount={() => setAccountSheetType("CHECKING_ACCOUNT")}
+        />
       ) : (
         <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
           {/* Left column (lg: 1–7): Balance Hero + Coming up */}
@@ -240,11 +208,15 @@ export function HomeView({ userName }: { userName: string }) {
               )}
             </Link>
 
-            {/* Credit cards cycle timeline (cutoff, payment due & estimated interest) */}
-            {data.cardTimeline.length > 0 && (
+            {/* Credit cards cycle timeline (or setup spotlight if no cards yet) */}
+            {data.cardTimeline.length > 0 ? (
               <CardCyclesTimeline
                 cards={data.cardTimeline}
                 primaryCurrency={primaryCurrency}
+              />
+            ) : (
+              <CreditCardSetupSpotlight
+                onAddCreditCard={() => setAccountSheetType("CREDIT_CARD")}
               />
             )}
 
@@ -379,6 +351,9 @@ export function HomeView({ userName }: { userName: string }) {
               </Card>
             </section>
 
+            {/* Blaze AI quick entry (only until the user starts their first chat) */}
+            {!data.hasAssistantThreads && <BlazeHomeSpotlight />}
+
             {/* Recent activity (Desktop) */}
             <section className="hidden flex-col gap-3 lg:flex">
               <SectionHeader
@@ -437,6 +412,14 @@ export function HomeView({ userName }: { userName: string }) {
       <TransactionDetailSheet
         recordId={detailId}
         onClose={() => setDetailId(null)}
+      />
+
+      <AccountFormSheet
+        open={accountSheetType !== null}
+        onOpenChange={(open) => {
+          if (!open) setAccountSheetType(null);
+        }}
+        defaultType={accountSheetType ?? "CHECKING_ACCOUNT"}
       />
     </div>
   );

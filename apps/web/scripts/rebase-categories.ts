@@ -1,6 +1,6 @@
 import "@app/env";
 import { db } from "@app/db";
-import { DEFAULT_SYSTEM_CATEGORIES } from "@app/api";
+import { seedDefaultCategories } from "@app/api";
 
 /**
  * Safe, idempotent category rebase for non-demo Spaces:
@@ -45,50 +45,10 @@ async function main() {
         data: { deletedAt: new Date() },
       });
 
-      let createdParents = 0;
-      let createdChildren = 0;
-
-      for (const cat of DEFAULT_SYSTEM_CATEGORIES) {
-        const parent = await tx.category.create({
-          data: {
-            organizationId: org.id,
-            name: cat.nameEn,
-            nameEn: cat.nameEn,
-            nameEs: cat.nameEs,
-            isSystem: true,
-            icon: cat.icon,
-            color: cat.color,
-            type: cat.type,
-            spendingNature: cat.type === "EXPENSE" ? (cat.spendingNature ?? "NECESITO") : null,
-          },
-          select: { id: true },
-        });
-        createdParents += 1;
-
-        for (const sub of cat.children ?? []) {
-          await tx.category.create({
-            data: {
-              organizationId: org.id,
-              parentId: parent.id,
-              name: sub.nameEn,
-              nameEn: sub.nameEn,
-              nameEs: sub.nameEs,
-              isSystem: true,
-              icon: sub.icon,
-              color: cat.color,
-              type: cat.type,
-              spendingNature:
-                cat.type === "EXPENSE"
-                  ? (sub.spendingNature ?? cat.spendingNature ?? "NECESITO")
-                  : null,
-            },
-          });
-          createdChildren += 1;
-        }
-      }
+      const seeded = await seedDefaultCategories(tx, org.id);
 
       console.log(
-        `[ok] ${org.name}: soft-deleted ${softDeleted.count} legacy categories; created ${createdParents} parents + ${createdChildren} subcategories.`,
+        `[ok] ${org.name}: soft-deleted ${softDeleted.count} legacy categories; created ${seeded.parents} parents + ${seeded.children} subcategories.`,
       );
     });
   }

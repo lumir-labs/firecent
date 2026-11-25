@@ -33,11 +33,11 @@ export default async function Layout({
 
   const sessionPermissions = session?.user?.permissions || [];
   const hasAdminAccess =
-    sessionPermissions.includes(p.dashboard.basic.key) ||
     sessionPermissions.includes(p.roles.menu.key) ||
     sessionPermissions.includes(p.permissions.menu.key) ||
     sessionPermissions.includes(p.users.menu.key) ||
-    sessionPermissions.includes(p.organizations.menu.key);
+    sessionPermissions.includes(p.organizations.menu.key) ||
+    sessionPermissions.includes(p.waitlist.menu.key);
 
   if (!hasAdminAccess) {
     return <Redirect href="/" />;

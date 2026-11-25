@@ -40,6 +40,7 @@ export const ROLE_DEFINITIONS: readonly RoleDefinition[] = [
     label: "User",
     description: "Base access: dashboard, organization and API keys",
     permissions: [
+      p.dashboard.basic.key,
       p.apikeys.menu.key,
       p.apikeys.list.key,
       p.apikeys.create.key,

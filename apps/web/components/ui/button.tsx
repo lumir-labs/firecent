@@ -7,7 +7,8 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default:
+          "border-0 bg-linear-to-b from-[color-mix(in_oklch,var(--primary),white_15%)] to-primary text-primary-foreground ring ring-[color-mix(in_oklch,var(--primary),black_10%)] shadow-[inset_0_1px_0_0_color-mix(in_oklch,var(--primary),white_30%)] hover:from-[color-mix(in_oklch,var(--primary),white_30%)]",
         gradient:
           "border-0 bg-gradient-to-r from-[#5E54F0] via-[#7C5CFF] to-[#FF6B3D] text-white shadow-sm hover:opacity-95 hover:shadow-md active:scale-[0.98] transition-all",
         outline:

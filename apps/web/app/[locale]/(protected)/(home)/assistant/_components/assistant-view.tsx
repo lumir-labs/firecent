@@ -33,6 +33,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 import { trpc } from "@app/api/client";
+import { AI_ASSISTANT_NAME } from "@app/lib";
 import type {
   AssistantTraceStep,
   AssistantUiBlock,
@@ -40,7 +41,7 @@ import type {
   StoredAttachmentMeta,
   TokenUsageSummary,
 } from "@app/api/assistant-types";
-import { FirecentMark } from "@/components/finance";
+import { BlazeIcon } from "@/components/finance";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ResponsiveSheet } from "@/components/ui/responsive-sheet";
@@ -274,7 +275,10 @@ export function AssistantView() {
       if (activeThreadId === vars.threadId) {
         setActiveThreadId(null);
       }
-      await utils.assistant.listThreads.invalidate();
+      await Promise.all([
+        utils.assistant.listThreads.invalidate(),
+        utils.dashboard.home.invalidate(),
+      ]);
       toast.success(t("threadDeleted"));
     },
   });
@@ -443,6 +447,7 @@ export function AssistantView() {
             resolvedThreadId = evt.threadId;
             setActiveThreadId(evt.threadId);
             void utils.assistant.listThreads.invalidate();
+            void utils.dashboard.home.invalidate();
           } else if (evt.type === "status") {
             setStreamStatus(evt.label);
           } else if (evt.type === "trace_step") {
@@ -847,12 +852,12 @@ export function AssistantView() {
       <header className="sticky top-0 z-20 flex h-14 items-center justify-between gap-2 bg-background/90 px-4 backdrop-blur lg:hidden">
         <div className="flex min-w-0 items-center gap-2">
           <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-assistant text-assistant-accent ring-1 ring-assistant-border">
-            <FirecentMark className="h-4" />
+            <BlazeIcon className="size-[18px]" />
           </span>
           <h1 className="truncate text-[17px] font-semibold">
             {isInThread && threadQuery.data?.title
               ? threadQuery.data.title
-              : t("title")}
+              : t("title", { aiName: AI_ASSISTANT_NAME })}
           </h1>
         </div>
         <div className="flex items-center gap-1">
@@ -881,11 +886,11 @@ export function AssistantView() {
       <header className="hidden items-center justify-between gap-4 pt-6 pb-4 lg:flex">
         <div className="flex items-center gap-3">
           <span className="grid size-10 place-items-center rounded-xl border border-assistant-border bg-assistant">
-            <FirecentMark className="h-5" />
+            <BlazeIcon className="size-5" />
           </span>
           <div>
             <h1 className="text-[24px] leading-[32px] font-semibold tracking-[-0.02em]">
-              {t("title")}
+              {t("title", { aiName: AI_ASSISTANT_NAME })}
             </h1>
             <p className="text-[13px] text-muted-foreground">{t("subtitle")}</p>
           </div>
@@ -948,11 +953,11 @@ export function AssistantView() {
               <div className="rounded-3xl border bg-card p-5 sm:p-6">
                 <div className="flex items-center gap-3">
                   <span className="grid size-11 shrink-0 place-items-center rounded-2xl border border-assistant-border bg-assistant">
-                    <FirecentMark className="h-6" />
+                    <BlazeIcon className="size-6" />
                   </span>
                   <div>
                     <h2 className="text-[19px] font-semibold tracking-[-0.015em]">
-                      {t("welcomeTitle")}
+                      {t("welcomeTitle", { aiName: AI_ASSISTANT_NAME })}
                     </h2>
                     <p className="text-[13px] text-muted-foreground">
                       {t("welcomeSubtitle")}
@@ -1033,7 +1038,8 @@ export function AssistantView() {
                 <div className="mb-4 hidden items-center justify-between border-b pb-3 lg:flex">
                   <div className="min-w-0">
                     <h2 className="truncate text-[16px] font-semibold">
-                      {threadQuery.data?.title ?? t("title")}
+                      {threadQuery.data?.title ??
+                        t("title", { aiName: AI_ASSISTANT_NAME })}
                     </h2>
                     <p className="mt-0.5 flex items-center gap-1.5 text-[12px] text-muted-foreground">
                       <Lock className="size-3" />
@@ -1093,7 +1099,7 @@ export function AssistantView() {
                               isLiveMsg && "animate-pulse",
                             )}
                           >
-                            <FirecentMark className="h-4" />
+                            <BlazeIcon className="size-[18px]" />
                           </span>
                           <div className="min-w-0 flex-1 text-[14px] leading-[22px] text-foreground">
                             <AgentTraceInline
@@ -1283,7 +1289,9 @@ export function AssistantView() {
                   onKeyDown={handleKeyDown}
                   onPaste={handlePaste}
                   disabled={streaming}
-                  placeholder={t("composerPlaceholder")}
+                  placeholder={t("composerPlaceholder", {
+                    aiName: AI_ASSISTANT_NAME,
+                  })}
                   className="max-h-32 min-h-10 min-w-0 flex-1 resize-none overflow-hidden bg-transparent py-2 text-[15px] leading-6 outline-none placeholder:truncate placeholder:text-muted-foreground sm:text-[14px]"
                 />
 

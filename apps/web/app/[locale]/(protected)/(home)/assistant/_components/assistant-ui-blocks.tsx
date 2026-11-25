@@ -21,7 +21,7 @@ import type {
   AssistantUiBlock,
   ReconciliationSummary,
 } from "@app/api/assistant-types";
-import { AccountSwatch, FirecentMark, Money } from "@/components/finance";
+import { AccountSwatch, BlazeIcon, Money } from "@/components/finance";
 import type { AccountType } from "@/components/finance";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
@@ -93,7 +93,7 @@ export function AssistantUiBlocks({
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <p className="flex items-center gap-1.5 text-[12px] font-semibold text-assistant-accent">
-                    <FirecentMark className="h-4" />
+                    <BlazeIcon className="size-4" />
                     {t("blocks.accountPickerEyebrow")}
                   </p>
                   <h3 className="mt-1 text-[15px] font-semibold text-foreground">

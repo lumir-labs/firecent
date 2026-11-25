@@ -1,3 +1,5 @@
+import type { Prisma, PrismaClient } from "@app/db";
+
 export type DefaultSubcategory = {
   nameEn: string;
   nameEs: string;
@@ -16,8 +18,8 @@ export type DefaultCategory = {
 };
 
 /**
- * Canonical bilingual system categories (EN + ES).
- * Clean, modern hierarchy designed for fast daily entry without bloat.
+ * Canonical bilingual system categories (EN + ES) seeded into every new Space.
+ * Clean, generalized hierarchy designed for fast daily entry without bloat.
  * `spendingNature` defaults power Analytics automatically without forcing
  * users to think about Owe/Need/Want on every screen.
  */
@@ -46,7 +48,7 @@ export const DEFAULT_SYSTEM_CATEGORIES: DefaultCategory[] = [
     spendingNature: "DEBO",
     children: [
       { nameEn: "Rent & Mortgage", nameEs: "Renta / Hipoteca", icon: "home", spendingNature: "DEBO" },
-      { nameEn: "Utilities", nameEs: "Servicios (agua, luz)", icon: "zap", spendingNature: "NECESITO" },
+      { nameEn: "Utilities", nameEs: "Servicios básicos", icon: "zap", spendingNature: "NECESITO" },
       { nameEn: "Internet & Phone", nameEs: "Internet y teléfono", icon: "wifi", spendingNature: "NECESITO" },
       { nameEn: "Home Maintenance", nameEs: "Mantenimiento hogar", icon: "wrench", spendingNature: "NECESITO" },
     ],
@@ -59,10 +61,10 @@ export const DEFAULT_SYSTEM_CATEGORIES: DefaultCategory[] = [
     type: "EXPENSE",
     spendingNature: "NECESITO",
     children: [
-      { nameEn: "Fuel", nameEs: "Gasolina", icon: "fuel", spendingNature: "NECESITO" },
-      { nameEn: "Rideshare & Transit", nameEs: "Uber y transporte", icon: "bus", spendingNature: "NECESITO" },
-      { nameEn: "Parking & Tolls", nameEs: "Estacionamiento", icon: "parking-circle", spendingNature: "NECESITO" },
-      { nameEn: "Car Maintenance", nameEs: "Mantenimiento auto", icon: "wrench", spendingNature: "DEBO" },
+      { nameEn: "Fuel", nameEs: "Combustible", icon: "fuel", spendingNature: "NECESITO" },
+      { nameEn: "Transit & Rideshare", nameEs: "Transporte público y taxi", icon: "bus", spendingNature: "NECESITO" },
+      { nameEn: "Parking & Tolls", nameEs: "Estacionamiento y peajes", icon: "parking-circle", spendingNature: "NECESITO" },
+      { nameEn: "Vehicle Maintenance", nameEs: "Mantenimiento vehículo", icon: "wrench", spendingNature: "DEBO" },
     ],
   },
   {
@@ -86,9 +88,9 @@ export const DEFAULT_SYSTEM_CATEGORIES: DefaultCategory[] = [
     type: "EXPENSE",
     spendingNature: "QUIERO",
     children: [
-      { nameEn: "Clothing", nameEs: "Ropa y calzado", icon: "shirt", spendingNature: "QUIERO" },
+      { nameEn: "Clothing & Shoes", nameEs: "Ropa y calzado", icon: "shirt", spendingNature: "QUIERO" },
       { nameEn: "Electronics", nameEs: "Tecnología", icon: "smartphone", spendingNature: "QUIERO" },
-      { nameEn: "Home Goods", nameEs: "Artículos hogar", icon: "sofa", spendingNature: "NECESITO" },
+      { nameEn: "Home Goods", nameEs: "Artículos del hogar", icon: "sofa", spendingNature: "NECESITO" },
     ],
   },
   {
@@ -101,6 +103,7 @@ export const DEFAULT_SYSTEM_CATEGORIES: DefaultCategory[] = [
     children: [
       { nameEn: "Subscriptions", nameEs: "Suscripciones", icon: "tv", spendingNature: "QUIERO" },
       { nameEn: "Outings & Events", nameEs: "Salidas y eventos", icon: "ticket", spendingNature: "QUIERO" },
+      { nameEn: "Hobbies & Games", nameEs: "Hobbies y juegos", icon: "gamepad-2", spendingNature: "QUIERO" },
       { nameEn: "Travel", nameEs: "Viajes", icon: "plane", spendingNature: "QUIERO" },
     ],
   },
@@ -108,7 +111,7 @@ export const DEFAULT_SYSTEM_CATEGORIES: DefaultCategory[] = [
     nameEn: "Financial & Debt",
     nameEs: "Finanzas y deudas",
     icon: "landmark",
-    color: "#475569",
+    color: "#ef4444",
     type: "EXPENSE",
     spendingNature: "DEBO",
     children: [
@@ -116,11 +119,12 @@ export const DEFAULT_SYSTEM_CATEGORIES: DefaultCategory[] = [
       { nameEn: "Insurance", nameEs: "Seguros", icon: "shield", spendingNature: "DEBO" },
       { nameEn: "Fees & Interest", nameEs: "Comisiones e intereses", icon: "percent", spendingNature: "DEBO" },
       { nameEn: "Taxes", nameEs: "Impuestos", icon: "receipt", spendingNature: "DEBO" },
+      { nameEn: "Savings & Investments", nameEs: "Ahorro e inversiones", icon: "piggy-bank", spendingNature: "NECESITO" },
     ],
   },
   {
-    nameEn: "Family & Giving",
-    nameEs: "Familia y aportes",
+    nameEn: "Family & Personal",
+    nameEs: "Familia y personal",
     icon: "gift",
     color: "#eab308",
     type: "EXPENSE",
@@ -128,8 +132,10 @@ export const DEFAULT_SYSTEM_CATEGORIES: DefaultCategory[] = [
     children: [
       { nameEn: "Gifts", nameEs: "Regalos", icon: "gift", spendingNature: "QUIERO" },
       { nameEn: "Family Support", nameEs: "Apoyo familiar", icon: "users", spendingNature: "NECESITO" },
-      { nameEn: "Donations & Tithe", nameEs: "Donaciones y diezmo", icon: "heart-handshake", spendingNature: "DEBO" },
+      { nameEn: "Kids & Childcare", nameEs: "Hijos y cuidado", icon: "baby", spendingNature: "NECESITO" },
+      { nameEn: "Pets", nameEs: "Mascotas", icon: "paw-print", spendingNature: "NECESITO" },
       { nameEn: "Education", nameEs: "Educación", icon: "graduation-cap", spendingNature: "NECESITO" },
+      { nameEn: "Donations", nameEs: "Donaciones", icon: "heart-handshake", spendingNature: "QUIERO" },
     ],
   },
   {
@@ -150,8 +156,8 @@ export const DEFAULT_SYSTEM_CATEGORIES: DefaultCategory[] = [
     type: "INCOME",
   },
   {
-    nameEn: "Freelance & Business",
-    nameEs: "Negocio / Freelance",
+    nameEn: "Business & Freelance",
+    nameEs: "Negocio y freelance",
     icon: "laptop",
     color: "#0d9488",
     type: "INCOME",
@@ -161,6 +167,20 @@ export const DEFAULT_SYSTEM_CATEGORIES: DefaultCategory[] = [
     nameEs: "Inversiones e intereses",
     icon: "trending-up",
     color: "#047857",
+    type: "INCOME",
+  },
+  {
+    nameEn: "Bonuses & Gifts",
+    nameEs: "Bonos y regalos",
+    icon: "gift",
+    color: "#14b8a6",
+    type: "INCOME",
+  },
+  {
+    nameEn: "Sales & Rentals",
+    nameEs: "Ventas y alquileres",
+    icon: "store",
+    color: "#22c55e",
     type: "INCOME",
   },
   {
@@ -178,6 +198,109 @@ export const DEFAULT_SYSTEM_CATEGORIES: DefaultCategory[] = [
     type: "INCOME",
   },
 ];
+
+export type CategorySeedDb =
+  | Pick<PrismaClient, "category">
+  | Pick<Prisma.TransactionClient, "category">;
+
+export type SeedDefaultCategoriesOptions = {
+  createdBy?: string | null;
+  categories?: readonly DefaultCategory[];
+  /**
+   * When false (default), skips seeding if the organization already has any
+   * active (`deletedAt: null`) category. Keeps seeding idempotent across
+   * retries, hooks, and backfill scripts.
+   */
+  force?: boolean;
+};
+
+export type SeedDefaultCategoriesResult = {
+  seeded: boolean;
+  parents: number;
+  children: number;
+};
+
+/**
+ * Seeds the canonical bilingual system categories & subcategories for a Space.
+ * Uses two batched writes (`createManyAndReturn` + `createMany`) so it stays
+ * fast and atomic inside an organization-creation transaction.
+ */
+export async function seedDefaultCategories(
+  tx: CategorySeedDb,
+  organizationId: string,
+  options: SeedDefaultCategoriesOptions = {},
+): Promise<SeedDefaultCategoriesResult> {
+  const {
+    createdBy = null,
+    categories = DEFAULT_SYSTEM_CATEGORIES,
+    force = false,
+  } = options;
+
+  if (!force) {
+    const existing = await tx.category.count({
+      where: { organizationId, deletedAt: null },
+    });
+    if (existing > 0) {
+      return { seeded: false, parents: 0, children: 0 };
+    }
+  }
+
+  if (categories.length === 0) {
+    return { seeded: true, parents: 0, children: 0 };
+  }
+
+  const createdParents = await tx.category.createManyAndReturn({
+    data: categories.map((cat) => ({
+      organizationId,
+      name: cat.nameEn,
+      nameEn: cat.nameEn,
+      nameEs: cat.nameEs,
+      isSystem: true,
+      icon: cat.icon,
+      color: cat.color,
+      type: cat.type,
+      spendingNature:
+        cat.type === "EXPENSE" ? (cat.spendingNature ?? "NECESITO") : null,
+      createdBy,
+    })),
+    select: { id: true, name: true },
+  });
+
+  const parentIdByName = new Map(createdParents.map((p) => [p.name, p.id]));
+
+  const childRows = categories.flatMap((cat) => {
+    const parentId = parentIdByName.get(cat.nameEn);
+    if (!parentId || !cat.children?.length) return [];
+    return cat.children.map((sub) => ({
+      organizationId,
+      parentId,
+      name: sub.nameEn,
+      nameEn: sub.nameEn,
+      nameEs: sub.nameEs,
+      isSystem: true,
+      icon: sub.icon,
+      color: cat.color,
+      type: cat.type,
+      spendingNature:
+        cat.type === "EXPENSE"
+          ? (sub.spendingNature ?? cat.spendingNature ?? "NECESITO")
+          : null,
+      createdBy,
+    }));
+  });
+
+  let childrenCount = 0;
+  if (childRows.length > 0) {
+    const res = await tx.category.createMany({ data: childRows });
+    childrenCount = res.count;
+  }
+
+  return {
+    seeded: true,
+    parents: createdParents.length,
+    children: childrenCount,
+  };
+}
 
 /** Resolve a category's display name for the active locale ("en" | "es"). */
 export function localizeCategoryName(

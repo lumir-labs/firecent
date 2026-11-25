@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { p } from "@app/api/permissions";
 
+import { PwaInstallCard } from "@/components/common/pwa-install-card";
 import { NavRow, PageHeader, SectionHeader } from "@/components/finance";
 import { Card } from "@/components/ui/card";
 import { getServerSession } from "@/lib/auth";
@@ -29,6 +30,8 @@ export default async function SettingsPage() {
   return (
     <div className="flex flex-col gap-6 px-5 pt-2 lg:px-0">
       <PageHeader title={t("nav.settings")} className="px-0" />
+
+      <PwaInstallCard variant="settings" />
 
       <section className="flex flex-col gap-3">
         <SectionHeader title={t("settings.spaceSection")} />

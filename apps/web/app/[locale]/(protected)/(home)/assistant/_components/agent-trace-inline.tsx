@@ -30,7 +30,7 @@ export type AgentTraceInlineProps = {
 
 /**
  * Single-line collapsible agent activity indicator rendered inline next to the
- * assistant flame. Updates live as Kimi thinks, streams tool calls, and
+ * assistant flame. Updates live as the AI thinks, streams tool calls, and
  * reconciles with the DB, and expands to inspect every step + tool used.
  */
 export function AgentTraceInline({

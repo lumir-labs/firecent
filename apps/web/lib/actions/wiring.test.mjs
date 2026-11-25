@@ -31,6 +31,29 @@ test("createOrganizationOnboarding sets the active org", () => {
   assert.ok(src.includes("setActiveOrganization"));
 });
 
+test("every Space creation path seeds default categories", () => {
+  const orgActions = read("apps/web/lib/actions/organization.ts");
+  for (const fnName of [
+    "export async function createOrganization(",
+    "export async function adminCreateOrganization(",
+    "export async function createOrganizationOnboarding(",
+  ]) {
+    const start = orgActions.indexOf(fnName);
+    assert.ok(start !== -1, `missing ${fnName}`);
+    const nextExport = orgActions.indexOf("export async function ", start + fnName.length);
+    const body = nextExport === -1 ? orgActions.slice(start) : orgActions.slice(start, nextExport);
+    assert.ok(
+      body.includes("seedDefaultCategories("),
+      `${fnName} must call seedDefaultCategories`,
+    );
+  }
+  const auth = read("apps/web/lib/auth.ts");
+  assert.ok(
+    auth.includes("afterCreateOrganization") && auth.includes("seedDefaultCategories("),
+    "auth.ts organization plugin must seed default categories on afterCreateOrganization",
+  );
+});
+
 test("hasApiKeyScope is deny-by-default", () => {
   const src = read("packages/api/src/api-keys/service.ts");
   assert.ok(src.includes("if (context.scopes.length === 0) return false"));
@@ -240,4 +263,17 @@ test("mobile home renders account + chart, no debug widgets", () => {
   assert.ok(src.includes("users.getOwn"));
   assert.ok(!src.includes("Stackgoat 🚀"));
   assert.ok(!src.includes("trpc.health.check"));
+});
+
+test("new users get dashboard:basic while /admin stays admin-only", () => {
+  const roles = read("packages/api/src/roles.ts");
+  assert.ok(
+    roles.includes("p.dashboard.basic.key"),
+    "ROLE_USER must include p.dashboard.basic.key so new users can access Home",
+  );
+  const adminLayout = read("apps/web/app/[locale]/(protected)/admin/layout.tsx");
+  assert.ok(
+    !adminLayout.includes("p.dashboard.basic"),
+    "/admin layout must not grant access based on p.dashboard.basic",
+  );
 });

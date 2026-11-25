@@ -13,6 +13,7 @@ import { createAuthMiddleware } from "better-auth/api";
 import { deleteSessionCookie } from "better-auth/cookies";
 import { generateRandomString } from "better-auth/crypto";
 import { ROLE_USER } from "@app/api/roles";
+import { seedDefaultCategories } from "@app/api";
 import { ensureRole } from "./roles";
 import { magicLinkBackoff } from "./magic-link-backoff";
 import {
@@ -227,6 +228,14 @@ export const auth = betterAuth({
   plugins: [
     expo(),
     organization({
+      organizationHooks: {
+        // Seed canonical default categories when a Space is created directly
+        // through better-auth's organization API (e.g. authClient.organization.create).
+        // Idempotent: skips if categories were already seeded inside a server action.
+        afterCreateOrganization: async ({ organization: org, user }) => {
+          await seedDefaultCategories(db, org.id, { createdBy: user.id });
+        },
+      },
       // Email invitations (item 2): the plugin creates the Invitation and
       // calls this hook to send the link. Without SMTP it only works locally
       // (logMailToConsole); in production without SMTP an error is thrown,

@@ -6,6 +6,7 @@ import { headers } from "next/headers";
 import { validate } from "./validations";
 import { validatePermission } from "./permissions";
 import { p } from "@app/api/permissions";
+import { seedDefaultCategories } from "@app/api";
 import type { GetCurrentOrganizationResult } from "@app/lib";
 import { resolveActiveOrg } from "./org-guard";
 
@@ -83,6 +84,7 @@ export async function createOrganization(
           role: "owner",
         },
       });
+      await seedDefaultCategories(tx, org.id, { createdBy: userId });
       return org;
     });
     return { data: organization };
@@ -120,6 +122,7 @@ export async function adminCreateOrganization(
           role: "owner",
         },
       });
+      await seedDefaultCategories(tx, org.id, { createdBy: userId });
       return org;
     });
     return { data: organization };
@@ -165,7 +168,10 @@ export async function createOrganizationOnboarding(
         },
       });
 
-      // 3. Mark the user as onboarded
+      // 3. Seed canonical bilingual default categories for the new Space
+      await seedDefaultCategories(tx, org.id, { createdBy: session.user.id });
+
+      // 4. Mark the user as onboarded
       await tx.user.update({
         where: { email: session.user.email },
         data: {

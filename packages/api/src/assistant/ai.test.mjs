@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import http from "node:http";
 import { describe, test } from "node:test";
-import { DEFAULT_KIMI_TIMEOUT_MS, streamKimiCompletion } from "./kimi.ts";
+import { DEFAULT_AI_TIMEOUT_MS, streamAiCompletion } from "./ai.ts";
 
-describe("Kimi native HTTP/HTTPS SSE client", () => {
+describe("AI native HTTP/HTTPS SSE client", () => {
   test("defaults to 10-minute timeout", () => {
-    assert.equal(DEFAULT_KIMI_TIMEOUT_MS, 600_000);
+    assert.equal(DEFAULT_AI_TIMEOUT_MS, 600_000);
   });
 
   test("streams reasoning, text, tool_calls, and enforces custom timeout", async () => {
@@ -42,7 +42,7 @@ describe("Kimi native HTTP/HTTPS SSE client", () => {
 
     try {
       process.env.NVIDIA_API_URL = `http://127.0.0.1:${port}/fast`;
-      const result = await streamKimiCompletion({
+      const result = await streamAiCompletion({
         messages: [{ role: "user", content: "hi" }],
         timeoutMs: 5_000,
       });
@@ -55,7 +55,7 @@ describe("Kimi native HTTP/HTTPS SSE client", () => {
       process.env.NVIDIA_API_URL = `http://127.0.0.1:${port}/slow`;
       await assert.rejects(
         () =>
-          streamKimiCompletion({
+          streamAiCompletion({
             messages: [{ role: "user", content: "slow" }],
             timeoutMs: 120,
           }),

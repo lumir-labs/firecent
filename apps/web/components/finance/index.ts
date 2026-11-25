@@ -32,6 +32,8 @@ export { AssistantCard, AssistantCardSkeleton } from "./assistant-card";
 export type { AssistantAction, AssistantCardProps } from "./assistant-card";
 export { FirecentMark } from "./firecent-mark";
 export type { FirecentMarkProps } from "./firecent-mark";
+export { BlazeIcon } from "./blaze-icon";
+export type { BlazeIconProps } from "./blaze-icon";
 export { StepList, StepListSkeleton } from "./step-list";
 export type { Step, StepListProps } from "./step-list";
 export { PageHeader, PageHeaderSkeleton } from "./page-header";

@@ -29,7 +29,7 @@ export async function getDashboardStats(): Promise<{
   data?: DashboardStats;
   error?: string;
 }> {
-  const { hasPermission } = await validatePermission(p.dashboard.basic);
+  const { hasPermission } = await validatePermission(p.users.menu);
   if (!hasPermission) {
     console.log("[❌getDashboardStats] No permission to view dashboard");
     return { error: "No permission to view dashboard" };
@@ -55,7 +55,7 @@ export async function listRecentOrganizations(): Promise<{
   data?: RecentOrganization[];
   error?: string;
 }> {
-  const { hasPermission } = await validatePermission(p.dashboard.basic);
+  const { hasPermission } = await validatePermission(p.users.menu);
   if (!hasPermission) {
     console.log("[❌listRecentOrganizations] No permission to view dashboard");
     return { data: [], error: "No permission to view dashboard" };

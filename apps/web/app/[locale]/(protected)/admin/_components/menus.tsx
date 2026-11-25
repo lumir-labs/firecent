@@ -71,7 +71,7 @@ export const getFullMenu = (notifications?: {
         title: "menu.dashboard",
         path: "/admin/dashboard",
         icon: <HugeiconsIcon icon={DashboardBrowsingIcon} size={18} />,
-        requiredPermission: p.dashboard.basic,
+        requiredPermission: p.users.menu,
       },
     ],
   },

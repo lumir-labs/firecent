@@ -34,6 +34,7 @@ import {
   DayHeaderSkeleton,
   FieldRow,
   FieldRowSkeleton,
+  BlazeIcon,
   FirecentMark,
   LoadingRegion,
   Money,
@@ -283,6 +284,15 @@ function Samples() {
           <FirecentMark variant="mono" className="h-10" />
           <FirecentMark variant="mono" className="h-5 text-muted-foreground" />
           <FirecentMark variant="logo" className="h-8" title="Firecent" />
+        </div>
+      </Block>
+
+      <Block label="BlazeIcon · color / mono (AI assistant mark)">
+        <div className="flex items-center gap-6">
+          <BlazeIcon className="size-10" title="Blaze" />
+          <BlazeIcon className="size-[18px]" />
+          <BlazeIcon variant="mono" className="size-10 text-assistant-accent" />
+          <BlazeIcon variant="mono" className="size-5 text-muted-foreground" />
         </div>
       </Block>
 

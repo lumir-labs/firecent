@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { Drawer as DrawerPrimitive } from "vaul";
 
 import { trpc } from "@app/api/client";
+import { AI_ASSISTANT_NAME } from "@app/lib";
 import {
   computeProposalRunningBalances,
   recomputeReconciliationSummary,
@@ -1312,7 +1313,7 @@ export function StatementReviewSheet({
                             {row.categorySource === "AI" && (
                               <span className="ml-1 inline-flex items-center gap-1 text-[11px] text-muted-foreground">
                                 <Sparkles className="size-3" />
-                                {t("review.fromAi")}
+                                {t("review.fromAi", { aiName: AI_ASSISTANT_NAME })}
                               </span>
                             )}
                           </div>

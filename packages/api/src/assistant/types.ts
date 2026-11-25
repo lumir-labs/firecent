@@ -1,5 +1,8 @@
 import z from "zod";
 
+/** Global brand name for Firecent's AI assistant (single source of truth). */
+export const AI_ASSISTANT_NAME = "Blaze" as const;
+
 export const preparedAttachmentSchema = z.object({
   name: z.string().trim().min(1).max(200),
   mimeType: z.string().trim().min(1).max(120),

@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   ArrowLeftRight,
   ChartNoAxesColumnIncreasing,
   ChartPie,
+  ChevronsUpDown,
   HandCoins,
   House,
   LogOut,
@@ -16,7 +18,8 @@ import {
   Wallet,
 } from "lucide-react";
 
-import { FirecentMark } from "@/components/finance";
+import { AI_ASSISTANT_NAME } from "@app/lib";
+import { BlazeIcon, FirecentMark } from "@/components/finance";
 import ThemeSwitcher from "@/components/common/theme-switcher";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -25,7 +28,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -33,7 +35,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { useShell } from "./shell-context";
-import { SpaceSwitcher } from "./space-switcher";
+import { SpaceMenuGroup } from "./space-switcher";
 
 export type ShellUser = {
   id: string;
@@ -66,9 +68,11 @@ export function AppSidebar({
 }) {
   const t = useTranslations("Shell");
   const pathname = usePathname();
-  const { openAddTransaction } = useShell();
+  const { openAddTransaction, activeSpace } = useShell();
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const initial = (user.name || user.email || "U").trim().charAt(0).toUpperCase();
+  const assistantActive = isRouteActive(pathname, "/assistant");
 
   async function handleSignOut() {
     await authClient.signOut({
@@ -85,9 +89,15 @@ export function AppSidebar({
       aria-label={t("navigation")}
       className="hidden h-full w-60 shrink-0 flex-col border-r bg-sidebar px-3 py-4 lg:flex"
     >
-      {/* Space selector (E1) */}
-      <div className="mb-3">
-        <SpaceSwitcher variant="sidebar" />
+      {/* Brand header */}
+      <div className="mb-4 px-2">
+        <Link
+          href="/"
+          aria-label="Firecent"
+          className="inline-flex h-9 items-center rounded-xl text-foreground transition-opacity hover:opacity-85"
+        >
+          <FirecentMark variant="logo" className="h-8 w-auto" />
+        </Link>
       </div>
 
       {/* Primary violet CTA (SPEC §2.2 — the one violet action) */}
@@ -127,16 +137,21 @@ export function AppSidebar({
 
         <Link
           href="/assistant"
-          aria-current={isRouteActive(pathname, "/assistant") ? "page" : undefined}
+          aria-current={assistantActive ? "page" : undefined}
           className={cn(
-            "flex h-10 items-center gap-3 rounded-xl px-3 text-[14px] font-medium transition-colors",
-            isRouteActive(pathname, "/assistant")
-              ? "bg-assistant text-assistant-accent"
-              : "text-sidebar-foreground/80 hover:bg-accent hover:text-sidebar-foreground",
+            "group flex h-10 items-center gap-3 rounded-xl px-3 text-[14px] font-medium transition-colors",
+            assistantActive
+              ? "bg-assistant text-assistant-accent ring-1 ring-assistant-border/80"
+              : "text-sidebar-foreground/85 hover:bg-assistant/75 hover:text-assistant-accent",
           )}
         >
-          <FirecentMark variant="color" className="size-[18px] shrink-0" />
-          <span className="truncate">{t("nav.assistant")}</span>
+          <BlazeIcon
+            variant="color"
+            className="size-[18px] shrink-0 transition-transform duration-200 group-hover:scale-105"
+          />
+          <span className="truncate">
+            {t("nav.assistant", { aiName: AI_ASSISTANT_NAME })}
+          </span>
         </Link>
       </nav>
 
@@ -164,14 +179,14 @@ export function AppSidebar({
           <span className="truncate">{t("nav.settings")}</span>
         </Link>
 
-        <DropdownMenu>
+        <DropdownMenu open={userMenuOpen} onOpenChange={setUserMenuOpen}>
           <DropdownMenuTrigger
             render={
               <button
                 type="button"
-                className="flex h-11 w-full items-center gap-2.5 rounded-xl px-2 text-left transition-colors hover:bg-accent"
+                className="flex h-12 w-full items-center gap-2.5 rounded-xl px-2 text-left transition-colors hover:bg-accent"
               >
-                <Avatar size="md" color="PURPLE">
+                <Avatar size="md" color="PURPLE" className="shrink-0">
                   <AvatarImage src={user.image || ""} />
                   <AvatarFallback>{initial}</AvatarFallback>
                 </Avatar>
@@ -179,35 +194,91 @@ export function AppSidebar({
                   <p className="truncate text-[13px] font-semibold text-foreground">
                     {user.name || user.email}
                   </p>
-                  <p className="truncate text-[12px] text-muted-foreground">
-                    {user.email}
-                  </p>
+                  {activeSpace ? (
+                    <p className="flex items-center gap-1.5 truncate text-[12px] text-muted-foreground">
+                      <span
+                        aria-hidden
+                        className="size-1.5 shrink-0 rounded-full bg-primary"
+                      />
+                      <span className="truncate">{activeSpace.name}</span>
+                    </p>
+                  ) : (
+                    <p className="truncate text-[12px] text-muted-foreground">
+                      {user.email}
+                    </p>
+                  )}
                 </div>
+                <ChevronsUpDown
+                  className="size-4 shrink-0 text-muted-foreground"
+                  aria-hidden
+                />
               </button>
             }
           />
-          <DropdownMenuContent side="top" align="start" sideOffset={8} className="w-56">
+          <DropdownMenuContent
+            side="top"
+            align="start"
+            sideOffset={8}
+            className="w-64 rounded-2xl p-1.5"
+          >
+            {/* User identity header */}
+            <div className="px-2 py-1.5">
+              <p className="truncate text-[13px] font-semibold text-foreground">
+                {user.name || user.email}
+              </p>
+              <p className="truncate text-[12px] text-muted-foreground">
+                {user.email}
+              </p>
+            </div>
+
+            {activeSpace && (
+              <>
+                <DropdownMenuSeparator className="my-1.5" />
+                <SpaceMenuGroup onSwitched={() => setUserMenuOpen(false)} />
+              </>
+            )}
+
+            <DropdownMenuSeparator className="my-1.5" />
+
+            <div className="px-1 py-0.5">
+              <ThemeSwitcher variant="compact" />
+            </div>
+
+            <DropdownMenuSeparator className="my-1.5" />
+
             <DropdownMenuGroup>
-              <DropdownMenuLabel>{user.name || user.email}</DropdownMenuLabel>
-              <ThemeSwitcher variant="long" />
-              <DropdownMenuSeparator />
-              <DropdownMenuItem render={<Link href="/profile" />}>
+              <DropdownMenuItem
+                render={<Link href="/profile" />}
+                className="min-h-9 rounded-xl px-2"
+              >
                 <UserIcon className="size-4" />
                 <span>{t("userMenu.profile")}</span>
               </DropdownMenuItem>
-              <DropdownMenuItem render={<Link href="/settings" />}>
+              <DropdownMenuItem
+                render={<Link href="/settings" />}
+                className="min-h-9 rounded-xl px-2"
+              >
                 <Settings className="size-4" />
                 <span>{t("nav.settings")}</span>
               </DropdownMenuItem>
               {canAccessAdmin && (
-                <DropdownMenuItem render={<Link href="/admin" />}>
+                <DropdownMenuItem
+                  render={<Link href="/admin" />}
+                  className="min-h-9 rounded-xl px-2"
+                >
                   <Shield className="size-4" />
                   <span>{t("userMenu.admin")}</span>
                 </DropdownMenuItem>
               )}
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleSignOut}>
+
+            <DropdownMenuSeparator className="my-1.5" />
+
+            <DropdownMenuItem
+              variant="destructive"
+              onClick={handleSignOut}
+              className="min-h-9 rounded-xl px-2"
+            >
               <LogOut className="size-4" />
               <span>{t("userMenu.signOut")}</span>
             </DropdownMenuItem>

@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { motion } from "motion/react";
 
+import { PwaInstallCard } from "@/components/common/pwa-install-card";
 import { SuccessCelebrationIllustration } from "./onboarding-illustrations";
 
 export function StepSuccess() {
@@ -36,6 +37,15 @@ export function StepSuccess() {
         <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed pt-1">
           {t("description")}
         </p>
+      </motion.div>
+
+      <motion.div
+        initial={{ y: 12, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.25, duration: 0.3 }}
+        className="w-full max-w-md"
+      >
+        <PwaInstallCard variant="onboarding" />
       </motion.div>
     </div>
   );

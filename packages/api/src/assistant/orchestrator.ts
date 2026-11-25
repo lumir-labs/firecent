@@ -1,11 +1,11 @@
 import { randomUUID } from "node:crypto";
 import { db, type Prisma } from "@app/db";
 import {
-  streamKimiCompletion,
-  type KimiContentPart,
-  type KimiMessage,
-  type KimiToolDefinition,
-} from "./kimi";
+  streamAiCompletion,
+  type AiContentPart,
+  type AiMessage,
+  type AiToolDefinition,
+} from "./ai";
 import {
   auditStatementInternalMath,
   rankAccountCandidates,
@@ -24,6 +24,7 @@ import {
   type AssistantStreamEvent,
 } from "./run-manager";
 import {
+  AI_ASSISTANT_NAME,
   rawStatementExtractSchema,
   recomputeReconciliationSummary,
   type AssistantTraceStep,
@@ -49,10 +50,10 @@ export {
 const MINOR_UNIT = 100;
 
 /**
- * Static system prompt kept IDENTICAL across requests so NVIDIA NIM / Kimi
+ * Static system prompt kept IDENTICAL across requests so the AI provider
  * maximizes prompt-cache hits (`prompt_tokens_details.cached_tokens`).
  */
-const STATIC_SYSTEM_PROMPT = `You are Firecent's personal finance AI assistant.
+const STATIC_SYSTEM_PROMPT = `You are ${AI_ASSISTANT_NAME}, Firecent's personal finance AI assistant.
 Core rules:
 - You NEVER directly modify balances or insert records without user approval. Every statement import goes through \`stage_statement_extraction\` which generates an interactive approval proposal.
 - CRITICAL EFFICIENCY RULE: NEVER do mental arithmetic, add numbers, or verify totals in your reasoning! Do NOT sum charges or payments in your head — just transcribe every row cleanly and pass \`statementTotalCharges\` and \`statementTotalCredits\` (if printed in the statement summary) to \`stage_statement_extraction\`. The server's deterministic integer-cent engine verifies every sum in <1ms and will tell you immediately if a row was missed.
@@ -85,7 +86,7 @@ General finance Q&A rules:
 - Use \`get_financial_overview\`, \`query_transactions\`, or \`list_unmatched_transfers\` (each runs in batch and returns pre-computed totals/breakdowns so you never need mental math).
 - If the user asks you to move real money or pay a bank bill, remind them Firecent records finances and does not move money at their bank.`;
 
-const TOOLS: KimiToolDefinition[] = [
+const TOOLS: AiToolDefinition[] = [
   {
     type: "function",
     function: {
@@ -477,7 +478,7 @@ function buildCompactContextBlock(opts: {
 function buildUserContentWithAttachments(
   userText: string,
   attachments: PreparedAttachment[],
-): string | KimiContentPart[] {
+): string | AiContentPart[] {
   const hasImages = attachments.some(
     (a) => a.images && a.images.length > 0,
   );
@@ -501,7 +502,7 @@ function buildUserContentWithAttachments(
     return combinedText;
   }
 
-  const parts: KimiContentPart[] = [{ type: "text", text: combinedText }];
+  const parts: AiContentPart[] = [{ type: "text", text: combinedText }];
   for (const att of attachments) {
     for (const imgUrl of att.images ?? []) {
       parts.push({ type: "image_url", image_url: { url: imgUrl } });
@@ -898,7 +899,7 @@ export async function reconcileProposalWithLiveDb(opts: {
  * Starts an assistant turn DETACHED from the HTTP request lifecycle:
  * - Immediately creates/resolves the thread and persists the USER message so it
  *   is visible across all devices (phone -> desktop) right away.
- * - Runs Kimi + tools in the background on the server; closing the browser or
+ * - Runs the AI + tools in the background on the server; closing the browser or
  *   locking the phone will NEVER abort the job.
  * - Any device can attach/resume via `GET /api/assistant/stream?threadId=...`.
  */
@@ -1030,7 +1031,7 @@ export async function startDetachedAssistantTurn(opts: {
  * Main streaming agent loop:
  * 1. Persists thread + user message (storing compact metadata, never multi-MB blobs).
  * 2. Loads compact org snapshot + recent thread history (capped to keep tokens tiny).
- * 3. Calls Kimi with native streaming + tool execution (max 3 tool rounds).
+ * 3. Calls the AI with native streaming + tool execution (max 3 tool rounds).
  * 4. Emits real-time SSE events (status, text deltas, interactive UI blocks).
  * 5. Persists final assistant message + token usage.
  */
@@ -1204,7 +1205,7 @@ export async function runAssistantTurn(opts: {
   // Build chronological history (excluding the just-inserted current user msg so we attach files cleanly)
   const priorHistory = recentMsgs.slice(1).reverse();
 
-  const messages: KimiMessage[] = [
+  const messages: AiMessage[] = [
     { role: "system", content: STATIC_SYSTEM_PROMPT },
     { role: "user", content: `[SPACE_CONTEXT]\n${contextBlock}` },
     {
@@ -1255,19 +1256,19 @@ export async function runAssistantTurn(opts: {
 
   for (let round = 0; round < 3; round++) {
     const roundStart = Date.now();
-    const thinkStepId = `kimi-${round}`;
+    const thinkStepId = `ai-${round}`;
     const thinkLabel =
       round === 0 && attachments.length > 0
         ? es
-          ? "Kimi analizando el estado de cuenta"
-          : "Kimi analyzing statement"
+          ? `${AI_ASSISTANT_NAME} analizando el estado de cuenta`
+          : `${AI_ASSISTANT_NAME} analyzing statement`
         : round === 0
           ? es
-            ? "Kimi razonando consulta"
-            : "Kimi reasoning"
+            ? `${AI_ASSISTANT_NAME} razonando consulta`
+            : `${AI_ASSISTANT_NAME} reasoning`
           : es
-            ? "Kimi redactando respuesta"
-            : "Kimi composing answer";
+            ? `${AI_ASSISTANT_NAME} redactando respuesta`
+            : `${AI_ASSISTANT_NAME} composing answer`;
 
     upsertStep({
       id: thinkStepId,
@@ -1317,7 +1318,7 @@ export async function runAssistantTurn(opts: {
         : normalized;
     };
 
-    const result = await streamKimiCompletion({
+    const result = await streamAiCompletion({
       messages,
       tools: TOOLS,
       toolChoice: round < 2 ? "auto" : "none",
@@ -1563,7 +1564,7 @@ export async function runAssistantTurn(opts: {
 
   totalUsage.steps = traceSteps;
 
-  // Fallback text if Kimi returned only tool calls with no trailing text
+  // Fallback text if the AI returned only tool calls with no trailing text
   if (!finalAssistantText) {
     const stmtBlock = uiBlocks.find((b) => b.type === "statement_proposal");
     const pickerBlock = uiBlocks.find((b) => b.type === "account_picker");
@@ -1686,7 +1687,7 @@ async function executeAssistantTool(ctx: {
 
     // Server-side deterministic math audit on round 0: if printed statement totals
     // differ from the extracted rows (e.g. a missed $17.99 payment or duplicated line),
-    // ask Kimi to fix ONLY the affected section before creating the UI proposal!
+    // ask the AI to fix ONLY the affected section before creating the UI proposal!
     const targetAcc = resolvedAccountId
       ? ctx.snapshot.accounts.find((a) => a.id === resolvedAccountId)
       : null;

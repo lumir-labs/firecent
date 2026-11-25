@@ -8,6 +8,7 @@ import { Inter } from "next/font/google";
 import { routing, type Locale } from "@/i18n/routing";
 import { isLocale } from "@/i18n/utils";
 import { Toaster } from "@/components/ui/sonner";
+import { PwaInstallBootstrap } from "@/components/common/pwa-install-card";
 import { ThemeProvider } from "@/providers/theme-provider";
 
 import "../globals.css";
@@ -214,6 +215,7 @@ export default async function LocaleLayout({ children }: Props) {
             enableSystem
             disableTransitionOnChange
           >
+            <PwaInstallBootstrap />
             <Toaster richColors />
             {children}
           </ThemeProvider>

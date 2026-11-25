@@ -25,7 +25,7 @@ export default async function Page() {
   const tDashboard = await getTranslations("Dashboard");
   const tNav = await getTranslations("Nav");
 
-  const { hasPermission } = await validatePermission(p.dashboard.basic);
+  const { hasPermission } = await validatePermission(p.users.menu);
   if (!hasPermission) {
     return (
       <AccessAlert

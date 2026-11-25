@@ -3,7 +3,8 @@
 import { useTranslations } from "next-intl";
 import { ArrowLeftRight, House, Menu, Plus } from "lucide-react";
 
-import { FirecentMark } from "@/components/finance";
+import { AI_ASSISTANT_NAME } from "@app/lib";
+import { BlazeIcon } from "@/components/finance";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { useShell } from "./shell-context";
@@ -95,14 +96,15 @@ export function MobileTabBar() {
 
         <Link
           href="/assistant"
+          aria-label={t("nav.assistant", { aiName: AI_ASSISTANT_NAME })}
           aria-current={assistantActive ? "page" : undefined}
           className={tabClass(assistantActive)}
         >
-          <FirecentMark
+          <BlazeIcon
             variant={assistantActive ? "color" : "mono"}
             className="size-[22px]"
           />
-          <span>{t("nav.assistant")}</span>
+          <span>{t("nav.assistantShort", { aiName: AI_ASSISTANT_NAME })}</span>
         </Link>
 
         <button

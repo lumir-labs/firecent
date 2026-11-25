@@ -4,14 +4,14 @@ import "@app/env";
 
 const DEFAULT_INVOKE_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
 const DEFAULT_MODEL = "moonshotai/kimi-k3.1-pro";
-/** 10 minutes default per-request timeout (Kimi reasoning + large statements can take several minutes). */
-export const DEFAULT_KIMI_TIMEOUT_MS = 10 * 60 * 1000;
+/** 10 minutes default per-request timeout (AI reasoning + large statements can take several minutes). */
+export const DEFAULT_AI_TIMEOUT_MS = 10 * 60 * 1000;
 
-export type KimiContentPart =
+export type AiContentPart =
   | { type: "text"; text: string }
   | { type: "image_url"; image_url: { url: string } };
 
-export type KimiToolCall = {
+export type AiToolCall = {
   id: string;
   type: "function";
   function: {
@@ -20,14 +20,14 @@ export type KimiToolCall = {
   };
 };
 
-export type KimiMessage =
+export type AiMessage =
   | { role: "system"; content: string }
-  | { role: "user"; content: string | KimiContentPart[] }
+  | { role: "user"; content: string | AiContentPart[] }
   | {
       role: "assistant";
       content: string | null;
       reasoning_content?: string | null;
-      tool_calls?: KimiToolCall[];
+      tool_calls?: AiToolCall[];
     }
   | {
       role: "tool";
@@ -36,7 +36,7 @@ export type KimiMessage =
       content: string;
     };
 
-export type KimiToolDefinition = {
+export type AiToolDefinition = {
   type: "function";
   function: {
     name: string;
@@ -45,7 +45,7 @@ export type KimiToolDefinition = {
   };
 };
 
-export type KimiUsage = {
+export type AiUsage = {
   promptTokens: number;
   completionTokens: number;
   cachedTokens: number;
@@ -53,15 +53,15 @@ export type KimiUsage = {
   totalTokens: number;
 };
 
-export type KimiCompletionResult = {
+export type AiCompletionResult = {
   content: string;
   reasoningContent: string | null;
-  toolCalls: KimiToolCall[];
+  toolCalls: AiToolCall[];
   finishReason: string | null;
-  usage: KimiUsage;
+  usage: AiUsage;
 };
 
-export type KimiStreamCallbacks = {
+export type AiStreamCallbacks = {
   onTextDelta?: (delta: string) => void;
   onReasoningDelta?: (delta: string) => void;
   onToolCallStarted?: (name: string) => void;
@@ -72,7 +72,7 @@ export type KimiStreamCallbacks = {
   }) => void;
 };
 
-function getKimiConfig() {
+function getAiConfig() {
   const apiKey = process.env.NVIDIA_API_KEY?.trim();
   if (!apiKey) {
     throw new Error("NVIDIA_API_KEY is not configured in environment");
@@ -81,7 +81,7 @@ function getKimiConfig() {
   const defaultTimeoutMs =
     Number.isFinite(envTimeout) && envTimeout >= 30_000
       ? Math.floor(envTimeout)
-      : DEFAULT_KIMI_TIMEOUT_MS;
+      : DEFAULT_AI_TIMEOUT_MS;
   return {
     apiKey,
     invokeUrl: process.env.NVIDIA_API_URL?.trim() || DEFAULT_INVOKE_URL,
@@ -93,7 +93,7 @@ function getKimiConfig() {
 /**
  * Opens a streaming HTTPS/HTTP POST request using Node's native `http`/`https`
  * module instead of undici `fetch`, avoiding undici's hard-coded 5-minute
- * `headersTimeout`/`bodyTimeout` limits on long-running (up to 10+ min) Kimi calls.
+ * `headersTimeout`/`bodyTimeout` limits on long-running (up to 10+ min) AI calls.
  */
 function openSseRequest(opts: {
   url: string;
@@ -131,7 +131,7 @@ function openSseRequest(opts: {
         res.setTimeout(opts.timeoutMs, () => {
           res.destroy(
             new DOMException(
-              `Kimi response stream timed out after ${Math.round(opts.timeoutMs / 1000)}s`,
+              `AI response stream timed out after ${Math.round(opts.timeoutMs / 1000)}s`,
               "TimeoutError",
             ),
           );
@@ -161,7 +161,7 @@ function openSseRequest(opts: {
 
     req.on("timeout", () => {
       const err = new DOMException(
-        `Kimi request timed out after ${Math.round(opts.timeoutMs / 1000)}s`,
+        `AI request timed out after ${Math.round(opts.timeoutMs / 1000)}s`,
         "TimeoutError",
       );
       req.destroy(err);
@@ -188,22 +188,23 @@ function openSseRequest(opts: {
 }
 
 /**
- * Streams a chat completion from NVIDIA NIM (Kimi K3.1 Pro) over native Node
- * `https` with a 10-minute default timeout (bypassing undici's 5-min ceiling).
- * Collects streamed text deltas, reasoning_content, tool_calls, and usage stats.
+ * Streams a chat completion from the configured OpenAI-compatible AI endpoint
+ * over native Node `https` with a 10-minute default timeout (bypassing undici's
+ * 5-min ceiling). Collects streamed text deltas, reasoning_content, tool_calls,
+ * and usage stats.
  */
-export async function streamKimiCompletion(opts: {
-  messages: KimiMessage[];
-  tools?: KimiToolDefinition[];
+export async function streamAiCompletion(opts: {
+  messages: AiMessage[];
+  tools?: AiToolDefinition[];
   toolChoice?: "auto" | "none" | { type: "function"; function: { name: string } };
   maxTokens?: number;
   reasoningEffort?: "low" | "medium" | "high";
   temperature?: number;
   timeoutMs?: number;
   signal?: AbortSignal;
-  callbacks?: KimiStreamCallbacks;
-}): Promise<KimiCompletionResult> {
-  const { apiKey, invokeUrl, model, defaultTimeoutMs } = getKimiConfig();
+  callbacks?: AiStreamCallbacks;
+}): Promise<AiCompletionResult> {
+  const { apiKey, invokeUrl, model, defaultTimeoutMs } = getAiConfig();
   const timeoutMs = opts.timeoutMs ?? defaultTimeoutMs;
 
   const body: Record<string, unknown> = {
@@ -269,7 +270,7 @@ export async function streamKimiCompletion(opts: {
     }
     const errText = Buffer.concat(errChunks).toString("utf8");
     throw new Error(
-      `Kimi API error (${statusCode}): ${errText.slice(0, 400) || res.statusMessage || "Request failed"}`,
+      `AI API error (${statusCode}): ${errText.slice(0, 400) || res.statusMessage || "Request failed"}`,
     );
   }
 
@@ -292,7 +293,7 @@ export async function streamKimiCompletion(opts: {
     }
   >();
 
-  const usage: KimiUsage = {
+  const usage: AiUsage = {
     promptTokens: 0,
     completionTokens: 0,
     cachedTokens: 0,
@@ -448,7 +449,7 @@ export async function streamKimiCompletion(opts: {
     combinedSignal.removeEventListener("abort", abortStream);
   }
 
-  const toolCalls: KimiToolCall[] = [...toolCallsByIndex.entries()]
+  const toolCalls: AiToolCall[] = [...toolCallsByIndex.entries()]
     .sort((a, b) => a[0] - b[0])
     .map(([, entry]) => ({
       id: entry.id,

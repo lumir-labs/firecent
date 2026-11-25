@@ -179,39 +179,49 @@ export const dashboardRouter = router({
       const pace = Math.min(1, Math.max(0, currentDay / daysInMonth));
       const daysLeft = Math.max(0, daysInMonth - currentDay);
 
-      const accounts = await db.bankAccount.findMany({
-        where: {
-          organizationId: orgId,
-          deletedAt: null,
-          archived: false,
-          isActive: true,
-        },
-        select: {
-          id: true,
-          name: true,
-          type: true,
-          currency: true,
-          color: true,
-          accountNumber: true,
-          creditLimit: true,
-          interestRate: true,
-          excludeFromStats: true,
-          paymentDay: true,
-          paymentDayType: true,
-          paymentEveryDays: true,
-          paymentAnchorDate: true,
-          cutoffDay: true,
-          cutoffDayType: true,
-          cutoffEveryDays: true,
-          cutoffAnchorDate: true,
-        },
-      });
+      const [accounts, assistantThreadCount] = await Promise.all([
+        db.bankAccount.findMany({
+          where: {
+            organizationId: orgId,
+            deletedAt: null,
+            archived: false,
+            isActive: true,
+          },
+          select: {
+            id: true,
+            name: true,
+            type: true,
+            currency: true,
+            color: true,
+            accountNumber: true,
+            creditLimit: true,
+            interestRate: true,
+            excludeFromStats: true,
+            paymentDay: true,
+            paymentDayType: true,
+            paymentEveryDays: true,
+            paymentAnchorDate: true,
+            cutoffDay: true,
+            cutoffDayType: true,
+            cutoffEveryDays: true,
+            cutoffAnchorDate: true,
+          },
+        }),
+        db.assistantThread.count({
+          where: {
+            organizationId: orgId,
+            userId,
+            deletedAt: null,
+          },
+        }),
+      ]);
 
       if (accounts.length === 0) {
         return {
           isEmpty: true,
           month: monthStr,
           hasRecords: false,
+          hasAssistantThreads: assistantThreadCount > 0,
           balance: null,
           change: 0,
           trend: [] as { label: string; value: number }[],
@@ -799,6 +809,7 @@ export const dashboardRouter = router({
         isEmpty: false,
         month: monthStr,
         hasRecords: recordCount > 0,
+        hasAssistantThreads: assistantThreadCount > 0,
         balance: {
           currency: primaryCurrency,
           amount: primaryTotalMinor / MINOR_UNIT,

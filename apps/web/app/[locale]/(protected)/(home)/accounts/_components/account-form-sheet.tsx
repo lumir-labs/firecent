@@ -176,11 +176,13 @@ export function AccountFormSheet({
   open,
   onOpenChange,
   account,
+  defaultType,
   onSaved,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   account?: EditableAccount | null;
+  defaultType?: CreatableType;
   onSaved?: (id: number) => void;
 }) {
   const locale = useLocale();
@@ -251,10 +253,11 @@ export function AccountFormSheet({
       );
       setExcludeFromStats(account.excludeFromStats);
     } else {
+      const initialType: CreatableType = defaultType ?? "CHECKING_ACCOUNT";
       setName("");
-      setType("CHECKING_ACCOUNT");
+      setType(initialType);
       setCurrency("USD");
-      setColor("indigo");
+      setColor(initialType === "CREDIT_CARD" ? "obsidian" : "indigo");
       setAccountNumber("");
       setCurrentBalance("");
       setCreditLimit("");
@@ -269,7 +272,7 @@ export function AccountFormSheet({
       setInterestRate("");
       setExcludeFromStats(false);
     }
-  }, [open, account]);
+  }, [open, account, defaultType]);
 
   const invalidate = async () => {
     await Promise.all([

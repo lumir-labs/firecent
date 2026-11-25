@@ -213,7 +213,7 @@ async function parsePdfFile(
     };
   }
 
-  // Scanned / image-only PDF: rasterize pages to compact JPEGs for Kimi Vision
+  // Scanned / image-only PDF: rasterize pages to compact JPEGs for AI vision
   const images: string[] = [];
   const pagesToRender = Math.min(numPages, MAX_PDF_IMAGE_PAGES);
 

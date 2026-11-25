@@ -444,7 +444,7 @@ export function matchPayeeDeterministic(
   payeeName: string | null;
   matchKind: ReconciledRow["payeeMatchKind"];
 } {
-  // 0. Direct validated payeeId from Kimi (when org top payees were provided in context)
+  // 0. Direct validated payeeId from the AI (when org top payees were provided in context)
   if (suggestedPayeeId) {
     const byId = payees.find((p) => p.id === suggestedPayeeId);
     if (byId) {

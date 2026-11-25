@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
-import { FirecentMark } from "./firecent-mark";
+import { BlazeIcon } from "./blaze-icon";
 
 export type AssistantAction = {
   label: string;
@@ -77,7 +77,7 @@ export function AssistantCard({
           dismissible && "pr-10",
         )}
       >
-        <FirecentMark className="h-5" />
+        <BlazeIcon className="size-5" />
         {eyebrow}
       </p>
       <h2
