@@ -16,8 +16,7 @@ self.addEventListener("push", (event) => {
     body: "",
     url: "/",
     tag: "firecent-notification",
-    icon: "/splash/app-icons/app_dark_180.png",
-    badge: "/splash/app-icons/notification-badge-96.png",
+    badge: "/splash/app-icons/notification-badge-96.png?v=2",
   };
 
   try {
@@ -30,7 +29,7 @@ self.addEventListener("push", (event) => {
   event.waitUntil(
     self.registration.showNotification(payload.title, {
       body: payload.body,
-      icon: payload.icon,
+      ...(payload.icon ? { icon: payload.icon } : {}),
       badge: payload.badge,
       tag: payload.tag,
       renotify: true,

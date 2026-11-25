@@ -780,7 +780,7 @@ function buildDigestFromBatch(
   if (items.length === 0) {
     return {
       items: [],
-      title: isEn ? "Firecent · All caught up" : "Firecent · Todo al día",
+      title: isEn ? "All caught up" : "Todo al día",
       body: isEn
         ? "No upcoming payments or reminders for today."
         : "No tienes pagos ni recordatorios pendientes para hoy.",
@@ -793,7 +793,7 @@ function buildDigestFromBatch(
     const only = items[0]!;
     return {
       items,
-      title: `Firecent · ${only.title}`,
+      title: only.title,
       body: only.subtitle,
       url: `${localePrefix}${only.href}`,
       tag: "firecent-daily-digest",
@@ -815,8 +815,8 @@ function buildDigestFromBatch(
   return {
     items,
     title: isEn
-      ? `Firecent · ${items.length} pending reminders`
-      : `Firecent · ${items.length} pendientes hoy`,
+      ? `${items.length} pending reminders`
+      : `${items.length} pendientes hoy`,
     body: `${topTwo}${suffix}`,
     url: `${localePrefix}/notifications`,
     tag: "firecent-daily-digest",
@@ -970,8 +970,7 @@ export async function sendPushToSubscriptions(
     body: payload.body,
     url: payload.url,
     tag: payload.tag ?? "firecent-notification",
-    icon: "/splash/app-icons/app_dark_180.png",
-    badge: "/splash/app-icons/notification-badge-96.png",
+    badge: "/splash/app-icons/notification-badge-96.png?v=2",
   });
 
   await runWithConcurrency(subscriptions, PUSH_CONCURRENCY, async (sub) => {

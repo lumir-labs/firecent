@@ -375,8 +375,8 @@ export const notificationsRouter = router({
 
       let title =
         locale === "en"
-          ? "Firecent · Notifications active"
-          : "Firecent · Notificaciones activas";
+          ? "Notifications active"
+          : "Notificaciones activas";
       let body =
         locale === "en"
           ? "You'll get your daily pending summary right on time."
