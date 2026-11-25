@@ -243,6 +243,7 @@ export type OrganizationWhereInput = {
   apiKeys?: Prisma.ApiKeyListRelationFilter
   labels?: Prisma.LabelListRelationFilter
   bankAccounts?: Prisma.BankAccountListRelationFilter
+  cardInstallments?: Prisma.CardInstallmentListRelationFilter
   categories?: Prisma.CategoryListRelationFilter
   payees?: Prisma.PayeeListRelationFilter
   envelopes?: Prisma.EnvelopeListRelationFilter
@@ -272,6 +273,7 @@ export type OrganizationOrderByWithRelationInput = {
   apiKeys?: Prisma.ApiKeyOrderByRelationAggregateInput
   labels?: Prisma.LabelOrderByRelationAggregateInput
   bankAccounts?: Prisma.BankAccountOrderByRelationAggregateInput
+  cardInstallments?: Prisma.CardInstallmentOrderByRelationAggregateInput
   categories?: Prisma.CategoryOrderByRelationAggregateInput
   payees?: Prisma.PayeeOrderByRelationAggregateInput
   envelopes?: Prisma.EnvelopeOrderByRelationAggregateInput
@@ -304,6 +306,7 @@ export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
   apiKeys?: Prisma.ApiKeyListRelationFilter
   labels?: Prisma.LabelListRelationFilter
   bankAccounts?: Prisma.BankAccountListRelationFilter
+  cardInstallments?: Prisma.CardInstallmentListRelationFilter
   categories?: Prisma.CategoryListRelationFilter
   payees?: Prisma.PayeeListRelationFilter
   envelopes?: Prisma.EnvelopeListRelationFilter
@@ -369,6 +372,7 @@ export type OrganizationCreateInput = {
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeCreateNestedManyWithoutOrganizationInput
@@ -398,6 +402,7 @@ export type OrganizationUncheckedCreateInput = {
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelUncheckedCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeUncheckedCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeUncheckedCreateNestedManyWithoutOrganizationInput
@@ -427,6 +432,7 @@ export type OrganizationUpdateInput = {
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUpdateManyWithoutOrganizationNestedInput
@@ -456,6 +462,7 @@ export type OrganizationUncheckedUpdateInput = {
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUncheckedUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUncheckedUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -574,6 +581,20 @@ export type OrganizationUpdateOneRequiredWithoutBankAccountsNestedInput = {
   upsert?: Prisma.OrganizationUpsertWithoutBankAccountsInput
   connect?: Prisma.OrganizationWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutBankAccountsInput, Prisma.OrganizationUpdateWithoutBankAccountsInput>, Prisma.OrganizationUncheckedUpdateWithoutBankAccountsInput>
+}
+
+export type OrganizationCreateNestedOneWithoutCardInstallmentsInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutCardInstallmentsInput, Prisma.OrganizationUncheckedCreateWithoutCardInstallmentsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutCardInstallmentsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+}
+
+export type OrganizationUpdateOneRequiredWithoutCardInstallmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.OrganizationCreateWithoutCardInstallmentsInput, Prisma.OrganizationUncheckedCreateWithoutCardInstallmentsInput>
+  connectOrCreate?: Prisma.OrganizationCreateOrConnectWithoutCardInstallmentsInput
+  upsert?: Prisma.OrganizationUpsertWithoutCardInstallmentsInput
+  connect?: Prisma.OrganizationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrganizationUpdateToOneWithWhereWithoutCardInstallmentsInput, Prisma.OrganizationUpdateWithoutCardInstallmentsInput>, Prisma.OrganizationUncheckedUpdateWithoutCardInstallmentsInput>
 }
 
 export type OrganizationCreateNestedOneWithoutCategoriesInput = {
@@ -775,6 +796,7 @@ export type OrganizationCreateWithoutBankAccountsInput = {
   members?: Prisma.MemberCreateNestedManyWithoutOrganizationInput
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeCreateNestedManyWithoutOrganizationInput
@@ -803,6 +825,7 @@ export type OrganizationUncheckedCreateWithoutBankAccountsInput = {
   members?: Prisma.MemberUncheckedCreateNestedManyWithoutOrganizationInput
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelUncheckedCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeUncheckedCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeUncheckedCreateNestedManyWithoutOrganizationInput
@@ -847,6 +870,7 @@ export type OrganizationUpdateWithoutBankAccountsInput = {
   members?: Prisma.MemberUpdateManyWithoutOrganizationNestedInput
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUpdateManyWithoutOrganizationNestedInput
@@ -875,6 +899,139 @@ export type OrganizationUncheckedUpdateWithoutBankAccountsInput = {
   members?: Prisma.MemberUncheckedUpdateManyWithoutOrganizationNestedInput
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUncheckedUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
+  categories?: Prisma.CategoryUncheckedUpdateManyWithoutOrganizationNestedInput
+  payees?: Prisma.PayeeUncheckedUpdateManyWithoutOrganizationNestedInput
+  envelopes?: Prisma.EnvelopeUncheckedUpdateManyWithoutOrganizationNestedInput
+  records?: Prisma.RecordUncheckedUpdateManyWithoutOrganizationNestedInput
+  debts?: Prisma.DebtUncheckedUpdateManyWithoutOrganizationNestedInput
+  budgets?: Prisma.BudgetUncheckedUpdateManyWithoutOrganizationNestedInput
+  recurrings?: Prisma.RecurringUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationCreateWithoutCardInstallmentsInput = {
+  id?: string
+  name: string
+  slug?: string | null
+  logo?: string | null
+  description?: string | null
+  metadata?: string | null
+  createdBy?: string | null
+  updatedBy?: string | null
+  deletedBy?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  invitations?: Prisma.InvitationCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.MemberCreateNestedManyWithoutOrganizationInput
+  apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
+  labels?: Prisma.LabelCreateNestedManyWithoutOrganizationInput
+  bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutOrganizationInput
+  categories?: Prisma.CategoryCreateNestedManyWithoutOrganizationInput
+  payees?: Prisma.PayeeCreateNestedManyWithoutOrganizationInput
+  envelopes?: Prisma.EnvelopeCreateNestedManyWithoutOrganizationInput
+  records?: Prisma.RecordCreateNestedManyWithoutOrganizationInput
+  debts?: Prisma.DebtCreateNestedManyWithoutOrganizationInput
+  budgets?: Prisma.BudgetCreateNestedManyWithoutOrganizationInput
+  recurrings?: Prisma.RecurringCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationUncheckedCreateWithoutCardInstallmentsInput = {
+  id?: string
+  name: string
+  slug?: string | null
+  logo?: string | null
+  description?: string | null
+  metadata?: string | null
+  createdBy?: string | null
+  updatedBy?: string | null
+  deletedBy?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  invitations?: Prisma.InvitationUncheckedCreateNestedManyWithoutOrganizationInput
+  members?: Prisma.MemberUncheckedCreateNestedManyWithoutOrganizationInput
+  apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
+  labels?: Prisma.LabelUncheckedCreateNestedManyWithoutOrganizationInput
+  bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutOrganizationInput
+  payees?: Prisma.PayeeUncheckedCreateNestedManyWithoutOrganizationInput
+  envelopes?: Prisma.EnvelopeUncheckedCreateNestedManyWithoutOrganizationInput
+  records?: Prisma.RecordUncheckedCreateNestedManyWithoutOrganizationInput
+  debts?: Prisma.DebtUncheckedCreateNestedManyWithoutOrganizationInput
+  budgets?: Prisma.BudgetUncheckedCreateNestedManyWithoutOrganizationInput
+  recurrings?: Prisma.RecurringUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantThreads?: Prisma.AssistantThreadUncheckedCreateNestedManyWithoutOrganizationInput
+  assistantProposals?: Prisma.AssistantProposalUncheckedCreateNestedManyWithoutOrganizationInput
+}
+
+export type OrganizationCreateOrConnectWithoutCardInstallmentsInput = {
+  where: Prisma.OrganizationWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutCardInstallmentsInput, Prisma.OrganizationUncheckedCreateWithoutCardInstallmentsInput>
+}
+
+export type OrganizationUpsertWithoutCardInstallmentsInput = {
+  update: Prisma.XOR<Prisma.OrganizationUpdateWithoutCardInstallmentsInput, Prisma.OrganizationUncheckedUpdateWithoutCardInstallmentsInput>
+  create: Prisma.XOR<Prisma.OrganizationCreateWithoutCardInstallmentsInput, Prisma.OrganizationUncheckedCreateWithoutCardInstallmentsInput>
+  where?: Prisma.OrganizationWhereInput
+}
+
+export type OrganizationUpdateToOneWithWhereWithoutCardInstallmentsInput = {
+  where?: Prisma.OrganizationWhereInput
+  data: Prisma.XOR<Prisma.OrganizationUpdateWithoutCardInstallmentsInput, Prisma.OrganizationUncheckedUpdateWithoutCardInstallmentsInput>
+}
+
+export type OrganizationUpdateWithoutCardInstallmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  invitations?: Prisma.InvitationUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.MemberUpdateManyWithoutOrganizationNestedInput
+  apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
+  labels?: Prisma.LabelUpdateManyWithoutOrganizationNestedInput
+  bankAccounts?: Prisma.BankAccountUpdateManyWithoutOrganizationNestedInput
+  categories?: Prisma.CategoryUpdateManyWithoutOrganizationNestedInput
+  payees?: Prisma.PayeeUpdateManyWithoutOrganizationNestedInput
+  envelopes?: Prisma.EnvelopeUpdateManyWithoutOrganizationNestedInput
+  records?: Prisma.RecordUpdateManyWithoutOrganizationNestedInput
+  debts?: Prisma.DebtUpdateManyWithoutOrganizationNestedInput
+  budgets?: Prisma.BudgetUpdateManyWithoutOrganizationNestedInput
+  recurrings?: Prisma.RecurringUpdateManyWithoutOrganizationNestedInput
+  assistantThreads?: Prisma.AssistantThreadUpdateManyWithoutOrganizationNestedInput
+  assistantProposals?: Prisma.AssistantProposalUpdateManyWithoutOrganizationNestedInput
+}
+
+export type OrganizationUncheckedUpdateWithoutCardInstallmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  invitations?: Prisma.InvitationUncheckedUpdateManyWithoutOrganizationNestedInput
+  members?: Prisma.MemberUncheckedUpdateManyWithoutOrganizationNestedInput
+  apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
+  labels?: Prisma.LabelUncheckedUpdateManyWithoutOrganizationNestedInput
+  bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUncheckedUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -904,6 +1061,7 @@ export type OrganizationCreateWithoutCategoriesInput = {
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeCreateNestedManyWithoutOrganizationInput
   records?: Prisma.RecordCreateNestedManyWithoutOrganizationInput
@@ -932,6 +1090,7 @@ export type OrganizationUncheckedCreateWithoutCategoriesInput = {
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelUncheckedCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeUncheckedCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeUncheckedCreateNestedManyWithoutOrganizationInput
   records?: Prisma.RecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -976,6 +1135,7 @@ export type OrganizationUpdateWithoutCategoriesInput = {
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUpdateManyWithoutOrganizationNestedInput
   records?: Prisma.RecordUpdateManyWithoutOrganizationNestedInput
@@ -1004,6 +1164,7 @@ export type OrganizationUncheckedUpdateWithoutCategoriesInput = {
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUncheckedUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUncheckedUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUncheckedUpdateManyWithoutOrganizationNestedInput
   records?: Prisma.RecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1032,6 +1193,7 @@ export type OrganizationCreateWithoutPayeesInput = {
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeCreateNestedManyWithoutOrganizationInput
   records?: Prisma.RecordCreateNestedManyWithoutOrganizationInput
@@ -1060,6 +1222,7 @@ export type OrganizationUncheckedCreateWithoutPayeesInput = {
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelUncheckedCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeUncheckedCreateNestedManyWithoutOrganizationInput
   records?: Prisma.RecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1104,6 +1267,7 @@ export type OrganizationUpdateWithoutPayeesInput = {
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUpdateManyWithoutOrganizationNestedInput
   records?: Prisma.RecordUpdateManyWithoutOrganizationNestedInput
@@ -1132,6 +1296,7 @@ export type OrganizationUncheckedUpdateWithoutPayeesInput = {
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUncheckedUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUncheckedUpdateManyWithoutOrganizationNestedInput
   records?: Prisma.RecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1160,6 +1325,7 @@ export type OrganizationCreateWithoutEnvelopesInput = {
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeCreateNestedManyWithoutOrganizationInput
   records?: Prisma.RecordCreateNestedManyWithoutOrganizationInput
@@ -1188,6 +1354,7 @@ export type OrganizationUncheckedCreateWithoutEnvelopesInput = {
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelUncheckedCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeUncheckedCreateNestedManyWithoutOrganizationInput
   records?: Prisma.RecordUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1232,6 +1399,7 @@ export type OrganizationUpdateWithoutEnvelopesInput = {
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUpdateManyWithoutOrganizationNestedInput
   records?: Prisma.RecordUpdateManyWithoutOrganizationNestedInput
@@ -1260,6 +1428,7 @@ export type OrganizationUncheckedUpdateWithoutEnvelopesInput = {
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUncheckedUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUncheckedUpdateManyWithoutOrganizationNestedInput
   records?: Prisma.RecordUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1288,6 +1457,7 @@ export type OrganizationCreateWithoutRecordsInput = {
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeCreateNestedManyWithoutOrganizationInput
@@ -1316,6 +1486,7 @@ export type OrganizationUncheckedCreateWithoutRecordsInput = {
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelUncheckedCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeUncheckedCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1360,6 +1531,7 @@ export type OrganizationUpdateWithoutRecordsInput = {
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUpdateManyWithoutOrganizationNestedInput
@@ -1388,6 +1560,7 @@ export type OrganizationUncheckedUpdateWithoutRecordsInput = {
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUncheckedUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUncheckedUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1416,6 +1589,7 @@ export type OrganizationCreateWithoutDebtsInput = {
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeCreateNestedManyWithoutOrganizationInput
@@ -1444,6 +1618,7 @@ export type OrganizationUncheckedCreateWithoutDebtsInput = {
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelUncheckedCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeUncheckedCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1488,6 +1663,7 @@ export type OrganizationUpdateWithoutDebtsInput = {
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUpdateManyWithoutOrganizationNestedInput
@@ -1516,6 +1692,7 @@ export type OrganizationUncheckedUpdateWithoutDebtsInput = {
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUncheckedUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUncheckedUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1543,6 +1720,7 @@ export type OrganizationCreateWithoutLabelsInput = {
   members?: Prisma.MemberCreateNestedManyWithoutOrganizationInput
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeCreateNestedManyWithoutOrganizationInput
@@ -1571,6 +1749,7 @@ export type OrganizationUncheckedCreateWithoutLabelsInput = {
   members?: Prisma.MemberUncheckedCreateNestedManyWithoutOrganizationInput
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeUncheckedCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1615,6 +1794,7 @@ export type OrganizationUpdateWithoutLabelsInput = {
   members?: Prisma.MemberUpdateManyWithoutOrganizationNestedInput
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUpdateManyWithoutOrganizationNestedInput
@@ -1643,6 +1823,7 @@ export type OrganizationUncheckedUpdateWithoutLabelsInput = {
   members?: Prisma.MemberUncheckedUpdateManyWithoutOrganizationNestedInput
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUncheckedUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1671,6 +1852,7 @@ export type OrganizationCreateWithoutMembersInput = {
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeCreateNestedManyWithoutOrganizationInput
@@ -1699,6 +1881,7 @@ export type OrganizationUncheckedCreateWithoutMembersInput = {
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelUncheckedCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeUncheckedCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1743,6 +1926,7 @@ export type OrganizationUpdateWithoutMembersInput = {
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUpdateManyWithoutOrganizationNestedInput
@@ -1771,6 +1955,7 @@ export type OrganizationUncheckedUpdateWithoutMembersInput = {
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUncheckedUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUncheckedUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1799,6 +1984,7 @@ export type OrganizationCreateWithoutInvitationsInput = {
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeCreateNestedManyWithoutOrganizationInput
@@ -1827,6 +2013,7 @@ export type OrganizationUncheckedCreateWithoutInvitationsInput = {
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelUncheckedCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeUncheckedCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1871,6 +2058,7 @@ export type OrganizationUpdateWithoutInvitationsInput = {
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUpdateManyWithoutOrganizationNestedInput
@@ -1899,6 +2087,7 @@ export type OrganizationUncheckedUpdateWithoutInvitationsInput = {
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUncheckedUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUncheckedUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -1927,6 +2116,7 @@ export type OrganizationCreateWithoutApiKeysInput = {
   members?: Prisma.MemberCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeCreateNestedManyWithoutOrganizationInput
@@ -1955,6 +2145,7 @@ export type OrganizationUncheckedCreateWithoutApiKeysInput = {
   members?: Prisma.MemberUncheckedCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelUncheckedCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeUncheckedCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeUncheckedCreateNestedManyWithoutOrganizationInput
@@ -1999,6 +2190,7 @@ export type OrganizationUpdateWithoutApiKeysInput = {
   members?: Prisma.MemberUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUpdateManyWithoutOrganizationNestedInput
@@ -2027,6 +2219,7 @@ export type OrganizationUncheckedUpdateWithoutApiKeysInput = {
   members?: Prisma.MemberUncheckedUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUncheckedUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUncheckedUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2056,6 +2249,7 @@ export type OrganizationCreateWithoutBudgetsInput = {
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeCreateNestedManyWithoutOrganizationInput
@@ -2084,6 +2278,7 @@ export type OrganizationUncheckedCreateWithoutBudgetsInput = {
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelUncheckedCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeUncheckedCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2128,6 +2323,7 @@ export type OrganizationUpdateWithoutBudgetsInput = {
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUpdateManyWithoutOrganizationNestedInput
@@ -2156,6 +2352,7 @@ export type OrganizationUncheckedUpdateWithoutBudgetsInput = {
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUncheckedUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUncheckedUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2184,6 +2381,7 @@ export type OrganizationCreateWithoutRecurringsInput = {
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeCreateNestedManyWithoutOrganizationInput
@@ -2212,6 +2410,7 @@ export type OrganizationUncheckedCreateWithoutRecurringsInput = {
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelUncheckedCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeUncheckedCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2256,6 +2455,7 @@ export type OrganizationUpdateWithoutRecurringsInput = {
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUpdateManyWithoutOrganizationNestedInput
@@ -2284,6 +2484,7 @@ export type OrganizationUncheckedUpdateWithoutRecurringsInput = {
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUncheckedUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUncheckedUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2312,6 +2513,7 @@ export type OrganizationCreateWithoutAssistantThreadsInput = {
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeCreateNestedManyWithoutOrganizationInput
@@ -2340,6 +2542,7 @@ export type OrganizationUncheckedCreateWithoutAssistantThreadsInput = {
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelUncheckedCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeUncheckedCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2384,6 +2587,7 @@ export type OrganizationUpdateWithoutAssistantThreadsInput = {
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUpdateManyWithoutOrganizationNestedInput
@@ -2412,6 +2616,7 @@ export type OrganizationUncheckedUpdateWithoutAssistantThreadsInput = {
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUncheckedUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUncheckedUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2440,6 +2645,7 @@ export type OrganizationCreateWithoutAssistantProposalsInput = {
   apiKeys?: Prisma.ApiKeyCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeCreateNestedManyWithoutOrganizationInput
@@ -2468,6 +2674,7 @@ export type OrganizationUncheckedCreateWithoutAssistantProposalsInput = {
   apiKeys?: Prisma.ApiKeyUncheckedCreateNestedManyWithoutOrganizationInput
   labels?: Prisma.LabelUncheckedCreateNestedManyWithoutOrganizationInput
   bankAccounts?: Prisma.BankAccountUncheckedCreateNestedManyWithoutOrganizationInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutOrganizationInput
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutOrganizationInput
   payees?: Prisma.PayeeUncheckedCreateNestedManyWithoutOrganizationInput
   envelopes?: Prisma.EnvelopeUncheckedCreateNestedManyWithoutOrganizationInput
@@ -2512,6 +2719,7 @@ export type OrganizationUpdateWithoutAssistantProposalsInput = {
   apiKeys?: Prisma.ApiKeyUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUpdateManyWithoutOrganizationNestedInput
@@ -2540,6 +2748,7 @@ export type OrganizationUncheckedUpdateWithoutAssistantProposalsInput = {
   apiKeys?: Prisma.ApiKeyUncheckedUpdateManyWithoutOrganizationNestedInput
   labels?: Prisma.LabelUncheckedUpdateManyWithoutOrganizationNestedInput
   bankAccounts?: Prisma.BankAccountUncheckedUpdateManyWithoutOrganizationNestedInput
+  cardInstallments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutOrganizationNestedInput
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutOrganizationNestedInput
   payees?: Prisma.PayeeUncheckedUpdateManyWithoutOrganizationNestedInput
   envelopes?: Prisma.EnvelopeUncheckedUpdateManyWithoutOrganizationNestedInput
@@ -2561,6 +2770,7 @@ export type OrganizationCountOutputType = {
   apiKeys: number
   labels: number
   bankAccounts: number
+  cardInstallments: number
   categories: number
   payees: number
   envelopes: number
@@ -2578,6 +2788,7 @@ export type OrganizationCountOutputTypeSelect<ExtArgs extends runtime.Types.Exte
   apiKeys?: boolean | OrganizationCountOutputTypeCountApiKeysArgs
   labels?: boolean | OrganizationCountOutputTypeCountLabelsArgs
   bankAccounts?: boolean | OrganizationCountOutputTypeCountBankAccountsArgs
+  cardInstallments?: boolean | OrganizationCountOutputTypeCountCardInstallmentsArgs
   categories?: boolean | OrganizationCountOutputTypeCountCategoriesArgs
   payees?: boolean | OrganizationCountOutputTypeCountPayeesArgs
   envelopes?: boolean | OrganizationCountOutputTypeCountEnvelopesArgs
@@ -2632,6 +2843,13 @@ export type OrganizationCountOutputTypeCountLabelsArgs<ExtArgs extends runtime.T
  */
 export type OrganizationCountOutputTypeCountBankAccountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.BankAccountWhereInput
+}
+
+/**
+ * OrganizationCountOutputType without action
+ */
+export type OrganizationCountOutputTypeCountCardInstallmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CardInstallmentWhereInput
 }
 
 /**
@@ -2716,6 +2934,7 @@ export type OrganizationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   apiKeys?: boolean | Prisma.Organization$apiKeysArgs<ExtArgs>
   labels?: boolean | Prisma.Organization$labelsArgs<ExtArgs>
   bankAccounts?: boolean | Prisma.Organization$bankAccountsArgs<ExtArgs>
+  cardInstallments?: boolean | Prisma.Organization$cardInstallmentsArgs<ExtArgs>
   categories?: boolean | Prisma.Organization$categoriesArgs<ExtArgs>
   payees?: boolean | Prisma.Organization$payeesArgs<ExtArgs>
   envelopes?: boolean | Prisma.Organization$envelopesArgs<ExtArgs>
@@ -2780,6 +2999,7 @@ export type OrganizationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   apiKeys?: boolean | Prisma.Organization$apiKeysArgs<ExtArgs>
   labels?: boolean | Prisma.Organization$labelsArgs<ExtArgs>
   bankAccounts?: boolean | Prisma.Organization$bankAccountsArgs<ExtArgs>
+  cardInstallments?: boolean | Prisma.Organization$cardInstallmentsArgs<ExtArgs>
   categories?: boolean | Prisma.Organization$categoriesArgs<ExtArgs>
   payees?: boolean | Prisma.Organization$payeesArgs<ExtArgs>
   envelopes?: boolean | Prisma.Organization$envelopesArgs<ExtArgs>
@@ -2802,6 +3022,7 @@ export type $OrganizationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     apiKeys: Prisma.$ApiKeyPayload<ExtArgs>[]
     labels: Prisma.$LabelPayload<ExtArgs>[]
     bankAccounts: Prisma.$BankAccountPayload<ExtArgs>[]
+    cardInstallments: Prisma.$CardInstallmentPayload<ExtArgs>[]
     categories: Prisma.$CategoryPayload<ExtArgs>[]
     payees: Prisma.$PayeePayload<ExtArgs>[]
     envelopes: Prisma.$EnvelopePayload<ExtArgs>[]
@@ -3224,6 +3445,7 @@ export interface Prisma__OrganizationClient<T, Null = never, ExtArgs extends run
   apiKeys<T extends Prisma.Organization$apiKeysArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$apiKeysArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApiKeyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   labels<T extends Prisma.Organization$labelsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$labelsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   bankAccounts<T extends Prisma.Organization$bankAccountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$bankAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BankAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  cardInstallments<T extends Prisma.Organization$cardInstallmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$cardInstallmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CardInstallmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   categories<T extends Prisma.Organization$categoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$categoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payees<T extends Prisma.Organization$payeesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$payeesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PayeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   envelopes<T extends Prisma.Organization$envelopesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Organization$envelopesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EnvelopePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3784,6 +4006,30 @@ export type Organization$bankAccountsArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.BankAccountScalarFieldEnum | Prisma.BankAccountScalarFieldEnum[]
+}
+
+/**
+ * Organization.cardInstallments
+ */
+export type Organization$cardInstallmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CardInstallment
+   */
+  select?: Prisma.CardInstallmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CardInstallment
+   */
+  omit?: Prisma.CardInstallmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CardInstallmentInclude<ExtArgs> | null
+  where?: Prisma.CardInstallmentWhereInput
+  orderBy?: Prisma.CardInstallmentOrderByWithRelationInput | Prisma.CardInstallmentOrderByWithRelationInput[]
+  cursor?: Prisma.CardInstallmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CardInstallmentScalarFieldEnum | Prisma.CardInstallmentScalarFieldEnum[]
 }
 
 /**

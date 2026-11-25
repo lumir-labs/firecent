@@ -218,8 +218,8 @@ const ICONS = {
 
 /**
  * Compact account visual badge:
- * - Credit cards (or any account with a metallic finish) render a sleek mini card
- *   with its brushed-metal / tonal gradient and tiny chip bar.
+ * - Credit & debit cards (or any account with a metallic finish) render a sleek
+ *   mini card with its brushed-metal / tonal gradient and tiny chip bar.
  * - Bank/savings/cash accounts render a crisp rounded tile with their color accent.
  */
 export function AccountSwatch({
@@ -235,7 +235,10 @@ export function AccountSwatch({
 }) {
   const finish = resolveAccountFinish(color);
   const Icon = ICONS[type] ?? Wallet;
-  const asMiniCard = type === "CREDIT_CARD" || finish?.kind === "metallic";
+  const asMiniCard =
+    type === "CREDIT_CARD" ||
+    type === "CHECKING_ACCOUNT" ||
+    finish?.kind === "metallic";
 
   if (asMiniCard) {
     const bg =

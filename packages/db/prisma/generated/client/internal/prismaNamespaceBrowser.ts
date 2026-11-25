@@ -58,6 +58,7 @@ export const ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   BankAccount: 'BankAccount',
+  CardInstallment: 'CardInstallment',
   Category: 'Category',
   Payee: 'Payee',
   Envelope: 'Envelope',
@@ -208,6 +209,11 @@ export const BankAccountScalarFieldEnum = {
   paymentDayType: 'paymentDayType',
   paymentDay: 'paymentDay',
   paymentEveryDays: 'paymentEveryDays',
+  paymentAnchorDate: 'paymentAnchorDate',
+  cutoffDayType: 'cutoffDayType',
+  cutoffDay: 'cutoffDay',
+  cutoffEveryDays: 'cutoffEveryDays',
+  cutoffAnchorDate: 'cutoffAnchorDate',
   displayCreditMode: 'displayCreditMode',
   interestRate: 'interestRate',
   createdBy: 'createdBy',
@@ -219,6 +225,29 @@ export const BankAccountScalarFieldEnum = {
 } as const
 
 export type BankAccountScalarFieldEnum = (typeof BankAccountScalarFieldEnum)[keyof typeof BankAccountScalarFieldEnum]
+
+
+export const CardInstallmentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  accountId: 'accountId',
+  title: 'title',
+  totalAmount: 'totalAmount',
+  totalInstallments: 'totalInstallments',
+  paidInstallments: 'paidInstallments',
+  monthlyAmount: 'monthlyAmount',
+  interestRate: 'interestRate',
+  startDate: 'startDate',
+  includedInBalance: 'includedInBalance',
+  note: 'note',
+  createdBy: 'createdBy',
+  updatedBy: 'updatedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type CardInstallmentScalarFieldEnum = (typeof CardInstallmentScalarFieldEnum)[keyof typeof CardInstallmentScalarFieldEnum]
 
 
 export const CategoryScalarFieldEnum = {

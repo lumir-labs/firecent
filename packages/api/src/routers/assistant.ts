@@ -16,8 +16,10 @@ import {
 import {
   recomputeReconciliationSummary,
   type AssistantUiBlock,
+  type ExistingPeriodRecord,
   type ProposalPayload,
   type ReconciledRow,
+  type RunningBalanceLedger,
   type StoredAttachmentMeta,
   type TokenUsageSummary,
 } from "../assistant/types";
@@ -86,6 +88,7 @@ const reconciledRowInputSchema = z.object({
     .nullable()
     .default(null),
   transferAccountId: z.number().int().positive().nullable().default(null),
+  statementRunningBalanceMinor: z.number().int().nullable().optional(),
 });
 
 export const assistantRouter = router({
@@ -524,6 +527,119 @@ export const assistantRouter = router({
         }
       }
 
+      // Build exact running-balance ledger for this account across the statement window
+      // (2 tiny indexed queries; works immediately for both new and already-saved proposals!)
+      let runningBalanceLedger: RunningBalanceLedger | null = null;
+      const finalRows = payload.rows ?? [];
+      if (proposal.accountId && finalRows.length > 0) {
+        const sortedRowDates = finalRows.map((r) => r.date).sort();
+        const minRowDate = sortedRowDates[0]!;
+        const maxRowDate = sortedRowDates[sortedRowDates.length - 1]!;
+        const periodStartDate =
+          payload.summary?.statementPeriodFrom &&
+          payload.summary.statementPeriodFrom < minRowDate
+            ? payload.summary.statementPeriodFrom
+            : minRowDate;
+        const periodEndDate = payload.summary?.statementPeriodTo ?? maxRowDate;
+
+        const duplicateIds = finalRows
+          .filter((r) => r.isDuplicate && r.duplicateRecordId != null)
+          .map((r) => r.duplicateRecordId!);
+
+        // If proposal was already applied (read-only view), exclude its own created rows
+        // so the running balance preview doesn't double-count them.
+        const excludedAppliedIds =
+          proposal.status === "APPLIED"
+            ? [
+                ...(payload.appliedMeta?.createdRecordIds ?? []),
+                ...(payload.appliedMeta?.adjustmentRecordId != null
+                  ? [payload.appliedMeta.adjustmentRecordId]
+                  : []),
+              ]
+            : [];
+
+        const startDateObj = new Date(`${periodStartDate}T00:00:00.000Z`);
+        const endDateObj = new Date(`${periodEndDate}T00:00:00.000Z`);
+        const notAppliedFilter =
+          excludedAppliedIds.length > 0
+            ? { id: { notIn: excludedAppliedIds } }
+            : {};
+
+        const [periodRecordsRaw, beforeAgg] = await Promise.all([
+          db.record.findMany({
+            where: {
+              organizationId: orgId,
+              accountId: proposal.accountId,
+              deletedAt: null,
+              ...notAppliedFilter,
+              AND: [
+                {
+                  OR: [{ recordDate: { lte: endDateObj } }, { recordDate: null }],
+                },
+                {
+                  OR: [
+                    { recordDate: { gte: startDateObj } },
+                    ...(duplicateIds.length > 0
+                      ? [{ id: { in: duplicateIds } }]
+                      : []),
+                  ],
+                },
+              ],
+            },
+            orderBy: [
+              { recordDate: "asc" },
+              { recordTime: "asc" },
+              { id: "asc" },
+            ],
+            select: {
+              id: true,
+              amount: true,
+              recordDate: true,
+              recordTime: true,
+              note: true,
+              transfer: true,
+              payee: { select: { name: true } },
+            },
+          }),
+          db.record.aggregate({
+            where: {
+              organizationId: orgId,
+              accountId: proposal.accountId,
+              deletedAt: null,
+              ...notAppliedFilter,
+              ...(duplicateIds.length > 0
+                ? { id: { notIn: [...excludedAppliedIds, ...duplicateIds] } }
+                : {}),
+              OR: [
+                { recordDate: { lt: startDateObj } },
+                { recordDate: null },
+              ],
+            },
+            _sum: { amount: true },
+          }),
+        ]);
+
+        const periodRecords: ExistingPeriodRecord[] = periodRecordsRaw.map(
+          (r) => ({
+            id: r.id,
+            date: r.recordDate
+              ? r.recordDate.toISOString().slice(0, 10)
+              : periodStartDate,
+            time: r.recordTime ? r.recordTime.toISOString().slice(11, 16) : null,
+            amountMinor: r.amount,
+            label: r.payee?.name || r.note || "—",
+            transfer: r.transfer,
+          }),
+        );
+
+        runningBalanceLedger = {
+          openingDbBalanceMinor: beforeAgg._sum.amount ?? 0,
+          periodStartDate,
+          periodEndDate,
+          periodRecords,
+        };
+      }
+
       return {
         id: proposal.id,
         threadId: proposal.threadId,
@@ -533,7 +649,8 @@ export const assistantRouter = router({
         appliedAt: proposal.appliedAt ? proposal.appliedAt.toISOString() : null,
         appliedMeta: payload.appliedMeta ?? null,
         summary: payload.summary,
-        rows: payload.rows ?? [],
+        rows: finalRows,
+        runningBalanceLedger,
         options: {
           accounts,
           categories,

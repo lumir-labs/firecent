@@ -48,6 +48,8 @@ export function TransactionDetailSheet({
       utils.accounts.get.invalidate(),
       utils.dashboard.home.invalidate(),
       utils.dashboard.netWorth.invalidate(),
+      utils.assistant.getProposal.invalidate(),
+      utils.assistant.getThread.invalidate(),
     ]);
   };
 

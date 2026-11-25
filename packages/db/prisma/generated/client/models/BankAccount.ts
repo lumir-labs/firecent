@@ -34,6 +34,8 @@ export type BankAccountAvgAggregateOutputType = {
   creditLimit: number | null
   paymentDay: number | null
   paymentEveryDays: number | null
+  cutoffDay: number | null
+  cutoffEveryDays: number | null
   interestRate: number | null
 }
 
@@ -45,6 +47,8 @@ export type BankAccountSumAggregateOutputType = {
   creditLimit: number | null
   paymentDay: number | null
   paymentEveryDays: number | null
+  cutoffDay: number | null
+  cutoffEveryDays: number | null
   interestRate: number | null
 }
 
@@ -68,6 +72,11 @@ export type BankAccountMinAggregateOutputType = {
   paymentDayType: $Enums.PaymentDayType | null
   paymentDay: number | null
   paymentEveryDays: number | null
+  paymentAnchorDate: Date | null
+  cutoffDayType: $Enums.PaymentDayType | null
+  cutoffDay: number | null
+  cutoffEveryDays: number | null
+  cutoffAnchorDate: Date | null
   displayCreditMode: $Enums.DisplayCreditMode | null
   interestRate: number | null
   createdBy: string | null
@@ -98,6 +107,11 @@ export type BankAccountMaxAggregateOutputType = {
   paymentDayType: $Enums.PaymentDayType | null
   paymentDay: number | null
   paymentEveryDays: number | null
+  paymentAnchorDate: Date | null
+  cutoffDayType: $Enums.PaymentDayType | null
+  cutoffDay: number | null
+  cutoffEveryDays: number | null
+  cutoffAnchorDate: Date | null
   displayCreditMode: $Enums.DisplayCreditMode | null
   interestRate: number | null
   createdBy: string | null
@@ -128,6 +142,11 @@ export type BankAccountCountAggregateOutputType = {
   paymentDayType: number
   paymentDay: number
   paymentEveryDays: number
+  paymentAnchorDate: number
+  cutoffDayType: number
+  cutoffDay: number
+  cutoffEveryDays: number
+  cutoffAnchorDate: number
   displayCreditMode: number
   interestRate: number
   createdBy: number
@@ -148,6 +167,8 @@ export type BankAccountAvgAggregateInputType = {
   creditLimit?: true
   paymentDay?: true
   paymentEveryDays?: true
+  cutoffDay?: true
+  cutoffEveryDays?: true
   interestRate?: true
 }
 
@@ -159,6 +180,8 @@ export type BankAccountSumAggregateInputType = {
   creditLimit?: true
   paymentDay?: true
   paymentEveryDays?: true
+  cutoffDay?: true
+  cutoffEveryDays?: true
   interestRate?: true
 }
 
@@ -182,6 +205,11 @@ export type BankAccountMinAggregateInputType = {
   paymentDayType?: true
   paymentDay?: true
   paymentEveryDays?: true
+  paymentAnchorDate?: true
+  cutoffDayType?: true
+  cutoffDay?: true
+  cutoffEveryDays?: true
+  cutoffAnchorDate?: true
   displayCreditMode?: true
   interestRate?: true
   createdBy?: true
@@ -212,6 +240,11 @@ export type BankAccountMaxAggregateInputType = {
   paymentDayType?: true
   paymentDay?: true
   paymentEveryDays?: true
+  paymentAnchorDate?: true
+  cutoffDayType?: true
+  cutoffDay?: true
+  cutoffEveryDays?: true
+  cutoffAnchorDate?: true
   displayCreditMode?: true
   interestRate?: true
   createdBy?: true
@@ -242,6 +275,11 @@ export type BankAccountCountAggregateInputType = {
   paymentDayType?: true
   paymentDay?: true
   paymentEveryDays?: true
+  paymentAnchorDate?: true
+  cutoffDayType?: true
+  cutoffDay?: true
+  cutoffEveryDays?: true
+  cutoffAnchorDate?: true
   displayCreditMode?: true
   interestRate?: true
   createdBy?: true
@@ -359,6 +397,11 @@ export type BankAccountGroupByOutputType = {
   paymentDayType: $Enums.PaymentDayType | null
   paymentDay: number | null
   paymentEveryDays: number | null
+  paymentAnchorDate: Date | null
+  cutoffDayType: $Enums.PaymentDayType | null
+  cutoffDay: number | null
+  cutoffEveryDays: number | null
+  cutoffAnchorDate: Date | null
   displayCreditMode: $Enums.DisplayCreditMode | null
   interestRate: number | null
   createdBy: string | null
@@ -412,6 +455,11 @@ export type BankAccountWhereInput = {
   paymentDayType?: Prisma.EnumPaymentDayTypeNullableFilter<"BankAccount"> | $Enums.PaymentDayType | null
   paymentDay?: Prisma.IntNullableFilter<"BankAccount"> | number | null
   paymentEveryDays?: Prisma.IntNullableFilter<"BankAccount"> | number | null
+  paymentAnchorDate?: Prisma.DateTimeNullableFilter<"BankAccount"> | Date | string | null
+  cutoffDayType?: Prisma.EnumPaymentDayTypeNullableFilter<"BankAccount"> | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.IntNullableFilter<"BankAccount"> | number | null
+  cutoffEveryDays?: Prisma.IntNullableFilter<"BankAccount"> | number | null
+  cutoffAnchorDate?: Prisma.DateTimeNullableFilter<"BankAccount"> | Date | string | null
   displayCreditMode?: Prisma.EnumDisplayCreditModeNullableFilter<"BankAccount"> | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.FloatNullableFilter<"BankAccount"> | number | null
   createdBy?: Prisma.StringNullableFilter<"BankAccount"> | string | null
@@ -425,6 +473,7 @@ export type BankAccountWhereInput = {
   records?: Prisma.RecordListRelationFilter
   transferRecords?: Prisma.RecordListRelationFilter
   debtsFrom?: Prisma.DebtListRelationFilter
+  installments?: Prisma.CardInstallmentListRelationFilter
 }
 
 export type BankAccountOrderByWithRelationInput = {
@@ -447,6 +496,11 @@ export type BankAccountOrderByWithRelationInput = {
   paymentDayType?: Prisma.SortOrderInput | Prisma.SortOrder
   paymentDay?: Prisma.SortOrderInput | Prisma.SortOrder
   paymentEveryDays?: Prisma.SortOrderInput | Prisma.SortOrder
+  paymentAnchorDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  cutoffDayType?: Prisma.SortOrderInput | Prisma.SortOrder
+  cutoffDay?: Prisma.SortOrderInput | Prisma.SortOrder
+  cutoffEveryDays?: Prisma.SortOrderInput | Prisma.SortOrder
+  cutoffAnchorDate?: Prisma.SortOrderInput | Prisma.SortOrder
   displayCreditMode?: Prisma.SortOrderInput | Prisma.SortOrder
   interestRate?: Prisma.SortOrderInput | Prisma.SortOrder
   createdBy?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -460,6 +514,7 @@ export type BankAccountOrderByWithRelationInput = {
   records?: Prisma.RecordOrderByRelationAggregateInput
   transferRecords?: Prisma.RecordOrderByRelationAggregateInput
   debtsFrom?: Prisma.DebtOrderByRelationAggregateInput
+  installments?: Prisma.CardInstallmentOrderByRelationAggregateInput
 }
 
 export type BankAccountWhereUniqueInput = Prisma.AtLeast<{
@@ -486,6 +541,11 @@ export type BankAccountWhereUniqueInput = Prisma.AtLeast<{
   paymentDayType?: Prisma.EnumPaymentDayTypeNullableFilter<"BankAccount"> | $Enums.PaymentDayType | null
   paymentDay?: Prisma.IntNullableFilter<"BankAccount"> | number | null
   paymentEveryDays?: Prisma.IntNullableFilter<"BankAccount"> | number | null
+  paymentAnchorDate?: Prisma.DateTimeNullableFilter<"BankAccount"> | Date | string | null
+  cutoffDayType?: Prisma.EnumPaymentDayTypeNullableFilter<"BankAccount"> | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.IntNullableFilter<"BankAccount"> | number | null
+  cutoffEveryDays?: Prisma.IntNullableFilter<"BankAccount"> | number | null
+  cutoffAnchorDate?: Prisma.DateTimeNullableFilter<"BankAccount"> | Date | string | null
   displayCreditMode?: Prisma.EnumDisplayCreditModeNullableFilter<"BankAccount"> | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.FloatNullableFilter<"BankAccount"> | number | null
   createdBy?: Prisma.StringNullableFilter<"BankAccount"> | string | null
@@ -499,6 +559,7 @@ export type BankAccountWhereUniqueInput = Prisma.AtLeast<{
   records?: Prisma.RecordListRelationFilter
   transferRecords?: Prisma.RecordListRelationFilter
   debtsFrom?: Prisma.DebtListRelationFilter
+  installments?: Prisma.CardInstallmentListRelationFilter
 }, "id" | "organizationId_name">
 
 export type BankAccountOrderByWithAggregationInput = {
@@ -521,6 +582,11 @@ export type BankAccountOrderByWithAggregationInput = {
   paymentDayType?: Prisma.SortOrderInput | Prisma.SortOrder
   paymentDay?: Prisma.SortOrderInput | Prisma.SortOrder
   paymentEveryDays?: Prisma.SortOrderInput | Prisma.SortOrder
+  paymentAnchorDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  cutoffDayType?: Prisma.SortOrderInput | Prisma.SortOrder
+  cutoffDay?: Prisma.SortOrderInput | Prisma.SortOrder
+  cutoffEveryDays?: Prisma.SortOrderInput | Prisma.SortOrder
+  cutoffAnchorDate?: Prisma.SortOrderInput | Prisma.SortOrder
   displayCreditMode?: Prisma.SortOrderInput | Prisma.SortOrder
   interestRate?: Prisma.SortOrderInput | Prisma.SortOrder
   createdBy?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -559,6 +625,11 @@ export type BankAccountScalarWhereWithAggregatesInput = {
   paymentDayType?: Prisma.EnumPaymentDayTypeNullableWithAggregatesFilter<"BankAccount"> | $Enums.PaymentDayType | null
   paymentDay?: Prisma.IntNullableWithAggregatesFilter<"BankAccount"> | number | null
   paymentEveryDays?: Prisma.IntNullableWithAggregatesFilter<"BankAccount"> | number | null
+  paymentAnchorDate?: Prisma.DateTimeNullableWithAggregatesFilter<"BankAccount"> | Date | string | null
+  cutoffDayType?: Prisma.EnumPaymentDayTypeNullableWithAggregatesFilter<"BankAccount"> | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.IntNullableWithAggregatesFilter<"BankAccount"> | number | null
+  cutoffEveryDays?: Prisma.IntNullableWithAggregatesFilter<"BankAccount"> | number | null
+  cutoffAnchorDate?: Prisma.DateTimeNullableWithAggregatesFilter<"BankAccount"> | Date | string | null
   displayCreditMode?: Prisma.EnumDisplayCreditModeNullableWithAggregatesFilter<"BankAccount"> | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.FloatNullableWithAggregatesFilter<"BankAccount"> | number | null
   createdBy?: Prisma.StringNullableWithAggregatesFilter<"BankAccount"> | string | null
@@ -586,6 +657,11 @@ export type BankAccountCreateInput = {
   paymentDayType?: $Enums.PaymentDayType | null
   paymentDay?: number | null
   paymentEveryDays?: number | null
+  paymentAnchorDate?: Date | string | null
+  cutoffDayType?: $Enums.PaymentDayType | null
+  cutoffDay?: number | null
+  cutoffEveryDays?: number | null
+  cutoffAnchorDate?: Date | string | null
   displayCreditMode?: $Enums.DisplayCreditMode | null
   interestRate?: number | null
   createdBy?: string | null
@@ -599,6 +675,7 @@ export type BankAccountCreateInput = {
   records?: Prisma.RecordCreateNestedManyWithoutAccountInput
   transferRecords?: Prisma.RecordCreateNestedManyWithoutTransferAccountInput
   debtsFrom?: Prisma.DebtCreateNestedManyWithoutAccountInput
+  installments?: Prisma.CardInstallmentCreateNestedManyWithoutAccountInput
 }
 
 export type BankAccountUncheckedCreateInput = {
@@ -621,6 +698,11 @@ export type BankAccountUncheckedCreateInput = {
   paymentDayType?: $Enums.PaymentDayType | null
   paymentDay?: number | null
   paymentEveryDays?: number | null
+  paymentAnchorDate?: Date | string | null
+  cutoffDayType?: $Enums.PaymentDayType | null
+  cutoffDay?: number | null
+  cutoffEveryDays?: number | null
+  cutoffAnchorDate?: Date | string | null
   displayCreditMode?: $Enums.DisplayCreditMode | null
   interestRate?: number | null
   createdBy?: string | null
@@ -632,6 +714,7 @@ export type BankAccountUncheckedCreateInput = {
   records?: Prisma.RecordUncheckedCreateNestedManyWithoutAccountInput
   transferRecords?: Prisma.RecordUncheckedCreateNestedManyWithoutTransferAccountInput
   debtsFrom?: Prisma.DebtUncheckedCreateNestedManyWithoutAccountInput
+  installments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutAccountInput
 }
 
 export type BankAccountUpdateInput = {
@@ -651,6 +734,11 @@ export type BankAccountUpdateInput = {
   paymentDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
   paymentDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   paymentEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cutoffDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   displayCreditMode?: Prisma.NullableEnumDisplayCreditModeFieldUpdateOperationsInput | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -664,6 +752,7 @@ export type BankAccountUpdateInput = {
   records?: Prisma.RecordUpdateManyWithoutAccountNestedInput
   transferRecords?: Prisma.RecordUpdateManyWithoutTransferAccountNestedInput
   debtsFrom?: Prisma.DebtUpdateManyWithoutAccountNestedInput
+  installments?: Prisma.CardInstallmentUpdateManyWithoutAccountNestedInput
 }
 
 export type BankAccountUncheckedUpdateInput = {
@@ -686,6 +775,11 @@ export type BankAccountUncheckedUpdateInput = {
   paymentDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
   paymentDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   paymentEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cutoffDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   displayCreditMode?: Prisma.NullableEnumDisplayCreditModeFieldUpdateOperationsInput | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -697,6 +791,7 @@ export type BankAccountUncheckedUpdateInput = {
   records?: Prisma.RecordUncheckedUpdateManyWithoutAccountNestedInput
   transferRecords?: Prisma.RecordUncheckedUpdateManyWithoutTransferAccountNestedInput
   debtsFrom?: Prisma.DebtUncheckedUpdateManyWithoutAccountNestedInput
+  installments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutAccountNestedInput
 }
 
 export type BankAccountCreateManyInput = {
@@ -719,6 +814,11 @@ export type BankAccountCreateManyInput = {
   paymentDayType?: $Enums.PaymentDayType | null
   paymentDay?: number | null
   paymentEveryDays?: number | null
+  paymentAnchorDate?: Date | string | null
+  cutoffDayType?: $Enums.PaymentDayType | null
+  cutoffDay?: number | null
+  cutoffEveryDays?: number | null
+  cutoffAnchorDate?: Date | string | null
   displayCreditMode?: $Enums.DisplayCreditMode | null
   interestRate?: number | null
   createdBy?: string | null
@@ -746,6 +846,11 @@ export type BankAccountUpdateManyMutationInput = {
   paymentDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
   paymentDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   paymentEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cutoffDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   displayCreditMode?: Prisma.NullableEnumDisplayCreditModeFieldUpdateOperationsInput | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -776,6 +881,11 @@ export type BankAccountUncheckedUpdateManyInput = {
   paymentDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
   paymentDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   paymentEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cutoffDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   displayCreditMode?: Prisma.NullableEnumDisplayCreditModeFieldUpdateOperationsInput | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -821,6 +931,11 @@ export type BankAccountCountOrderByAggregateInput = {
   paymentDayType?: Prisma.SortOrder
   paymentDay?: Prisma.SortOrder
   paymentEveryDays?: Prisma.SortOrder
+  paymentAnchorDate?: Prisma.SortOrder
+  cutoffDayType?: Prisma.SortOrder
+  cutoffDay?: Prisma.SortOrder
+  cutoffEveryDays?: Prisma.SortOrder
+  cutoffAnchorDate?: Prisma.SortOrder
   displayCreditMode?: Prisma.SortOrder
   interestRate?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
@@ -839,6 +954,8 @@ export type BankAccountAvgOrderByAggregateInput = {
   creditLimit?: Prisma.SortOrder
   paymentDay?: Prisma.SortOrder
   paymentEveryDays?: Prisma.SortOrder
+  cutoffDay?: Prisma.SortOrder
+  cutoffEveryDays?: Prisma.SortOrder
   interestRate?: Prisma.SortOrder
 }
 
@@ -862,6 +979,11 @@ export type BankAccountMaxOrderByAggregateInput = {
   paymentDayType?: Prisma.SortOrder
   paymentDay?: Prisma.SortOrder
   paymentEveryDays?: Prisma.SortOrder
+  paymentAnchorDate?: Prisma.SortOrder
+  cutoffDayType?: Prisma.SortOrder
+  cutoffDay?: Prisma.SortOrder
+  cutoffEveryDays?: Prisma.SortOrder
+  cutoffAnchorDate?: Prisma.SortOrder
   displayCreditMode?: Prisma.SortOrder
   interestRate?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
@@ -892,6 +1014,11 @@ export type BankAccountMinOrderByAggregateInput = {
   paymentDayType?: Prisma.SortOrder
   paymentDay?: Prisma.SortOrder
   paymentEveryDays?: Prisma.SortOrder
+  paymentAnchorDate?: Prisma.SortOrder
+  cutoffDayType?: Prisma.SortOrder
+  cutoffDay?: Prisma.SortOrder
+  cutoffEveryDays?: Prisma.SortOrder
+  cutoffAnchorDate?: Prisma.SortOrder
   displayCreditMode?: Prisma.SortOrder
   interestRate?: Prisma.SortOrder
   createdBy?: Prisma.SortOrder
@@ -910,6 +1037,8 @@ export type BankAccountSumOrderByAggregateInput = {
   creditLimit?: Prisma.SortOrder
   paymentDay?: Prisma.SortOrder
   paymentEveryDays?: Prisma.SortOrder
+  cutoffDay?: Prisma.SortOrder
+  cutoffEveryDays?: Prisma.SortOrder
   interestRate?: Prisma.SortOrder
 }
 
@@ -999,6 +1128,20 @@ export type NullableFloatFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type BankAccountCreateNestedOneWithoutInstallmentsInput = {
+  create?: Prisma.XOR<Prisma.BankAccountCreateWithoutInstallmentsInput, Prisma.BankAccountUncheckedCreateWithoutInstallmentsInput>
+  connectOrCreate?: Prisma.BankAccountCreateOrConnectWithoutInstallmentsInput
+  connect?: Prisma.BankAccountWhereUniqueInput
+}
+
+export type BankAccountUpdateOneRequiredWithoutInstallmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.BankAccountCreateWithoutInstallmentsInput, Prisma.BankAccountUncheckedCreateWithoutInstallmentsInput>
+  connectOrCreate?: Prisma.BankAccountCreateOrConnectWithoutInstallmentsInput
+  upsert?: Prisma.BankAccountUpsertWithoutInstallmentsInput
+  connect?: Prisma.BankAccountWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BankAccountUpdateToOneWithWhereWithoutInstallmentsInput, Prisma.BankAccountUpdateWithoutInstallmentsInput>, Prisma.BankAccountUncheckedUpdateWithoutInstallmentsInput>
 }
 
 export type BankAccountCreateNestedOneWithoutRecordsInput = {
@@ -1106,6 +1249,11 @@ export type BankAccountCreateWithoutUserInput = {
   paymentDayType?: $Enums.PaymentDayType | null
   paymentDay?: number | null
   paymentEveryDays?: number | null
+  paymentAnchorDate?: Date | string | null
+  cutoffDayType?: $Enums.PaymentDayType | null
+  cutoffDay?: number | null
+  cutoffEveryDays?: number | null
+  cutoffAnchorDate?: Date | string | null
   displayCreditMode?: $Enums.DisplayCreditMode | null
   interestRate?: number | null
   createdBy?: string | null
@@ -1118,6 +1266,7 @@ export type BankAccountCreateWithoutUserInput = {
   records?: Prisma.RecordCreateNestedManyWithoutAccountInput
   transferRecords?: Prisma.RecordCreateNestedManyWithoutTransferAccountInput
   debtsFrom?: Prisma.DebtCreateNestedManyWithoutAccountInput
+  installments?: Prisma.CardInstallmentCreateNestedManyWithoutAccountInput
 }
 
 export type BankAccountUncheckedCreateWithoutUserInput = {
@@ -1139,6 +1288,11 @@ export type BankAccountUncheckedCreateWithoutUserInput = {
   paymentDayType?: $Enums.PaymentDayType | null
   paymentDay?: number | null
   paymentEveryDays?: number | null
+  paymentAnchorDate?: Date | string | null
+  cutoffDayType?: $Enums.PaymentDayType | null
+  cutoffDay?: number | null
+  cutoffEveryDays?: number | null
+  cutoffAnchorDate?: Date | string | null
   displayCreditMode?: $Enums.DisplayCreditMode | null
   interestRate?: number | null
   createdBy?: string | null
@@ -1150,6 +1304,7 @@ export type BankAccountUncheckedCreateWithoutUserInput = {
   records?: Prisma.RecordUncheckedCreateNestedManyWithoutAccountInput
   transferRecords?: Prisma.RecordUncheckedCreateNestedManyWithoutTransferAccountInput
   debtsFrom?: Prisma.DebtUncheckedCreateNestedManyWithoutAccountInput
+  installments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutAccountInput
 }
 
 export type BankAccountCreateOrConnectWithoutUserInput = {
@@ -1201,6 +1356,11 @@ export type BankAccountScalarWhereInput = {
   paymentDayType?: Prisma.EnumPaymentDayTypeNullableFilter<"BankAccount"> | $Enums.PaymentDayType | null
   paymentDay?: Prisma.IntNullableFilter<"BankAccount"> | number | null
   paymentEveryDays?: Prisma.IntNullableFilter<"BankAccount"> | number | null
+  paymentAnchorDate?: Prisma.DateTimeNullableFilter<"BankAccount"> | Date | string | null
+  cutoffDayType?: Prisma.EnumPaymentDayTypeNullableFilter<"BankAccount"> | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.IntNullableFilter<"BankAccount"> | number | null
+  cutoffEveryDays?: Prisma.IntNullableFilter<"BankAccount"> | number | null
+  cutoffAnchorDate?: Prisma.DateTimeNullableFilter<"BankAccount"> | Date | string | null
   displayCreditMode?: Prisma.EnumDisplayCreditModeNullableFilter<"BankAccount"> | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.FloatNullableFilter<"BankAccount"> | number | null
   createdBy?: Prisma.StringNullableFilter<"BankAccount"> | string | null
@@ -1209,6 +1369,172 @@ export type BankAccountScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"BankAccount"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BankAccount"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"BankAccount"> | Date | string | null
+}
+
+export type BankAccountCreateWithoutInstallmentsInput = {
+  name: string
+  description?: string | null
+  type?: $Enums.AccountType
+  currency?: string
+  color?: string | null
+  balance?: number
+  balanceDisplay?: number
+  accountNumber?: string | null
+  position?: number
+  excludeFromStats?: boolean
+  isActive?: boolean
+  archived?: boolean
+  creditLimit?: number | null
+  paymentDayType?: $Enums.PaymentDayType | null
+  paymentDay?: number | null
+  paymentEveryDays?: number | null
+  paymentAnchorDate?: Date | string | null
+  cutoffDayType?: $Enums.PaymentDayType | null
+  cutoffDay?: number | null
+  cutoffEveryDays?: number | null
+  cutoffAnchorDate?: Date | string | null
+  displayCreditMode?: $Enums.DisplayCreditMode | null
+  interestRate?: number | null
+  createdBy?: string | null
+  updatedBy?: string | null
+  deletedBy?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  organization: Prisma.OrganizationCreateNestedOneWithoutBankAccountsInput
+  user: Prisma.UserCreateNestedOneWithoutBankAccountsInput
+  records?: Prisma.RecordCreateNestedManyWithoutAccountInput
+  transferRecords?: Prisma.RecordCreateNestedManyWithoutTransferAccountInput
+  debtsFrom?: Prisma.DebtCreateNestedManyWithoutAccountInput
+}
+
+export type BankAccountUncheckedCreateWithoutInstallmentsInput = {
+  id?: number
+  organizationId: string
+  userId: string
+  name: string
+  description?: string | null
+  type?: $Enums.AccountType
+  currency?: string
+  color?: string | null
+  balance?: number
+  balanceDisplay?: number
+  accountNumber?: string | null
+  position?: number
+  excludeFromStats?: boolean
+  isActive?: boolean
+  archived?: boolean
+  creditLimit?: number | null
+  paymentDayType?: $Enums.PaymentDayType | null
+  paymentDay?: number | null
+  paymentEveryDays?: number | null
+  paymentAnchorDate?: Date | string | null
+  cutoffDayType?: $Enums.PaymentDayType | null
+  cutoffDay?: number | null
+  cutoffEveryDays?: number | null
+  cutoffAnchorDate?: Date | string | null
+  displayCreditMode?: $Enums.DisplayCreditMode | null
+  interestRate?: number | null
+  createdBy?: string | null
+  updatedBy?: string | null
+  deletedBy?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  records?: Prisma.RecordUncheckedCreateNestedManyWithoutAccountInput
+  transferRecords?: Prisma.RecordUncheckedCreateNestedManyWithoutTransferAccountInput
+  debtsFrom?: Prisma.DebtUncheckedCreateNestedManyWithoutAccountInput
+}
+
+export type BankAccountCreateOrConnectWithoutInstallmentsInput = {
+  where: Prisma.BankAccountWhereUniqueInput
+  create: Prisma.XOR<Prisma.BankAccountCreateWithoutInstallmentsInput, Prisma.BankAccountUncheckedCreateWithoutInstallmentsInput>
+}
+
+export type BankAccountUpsertWithoutInstallmentsInput = {
+  update: Prisma.XOR<Prisma.BankAccountUpdateWithoutInstallmentsInput, Prisma.BankAccountUncheckedUpdateWithoutInstallmentsInput>
+  create: Prisma.XOR<Prisma.BankAccountCreateWithoutInstallmentsInput, Prisma.BankAccountUncheckedCreateWithoutInstallmentsInput>
+  where?: Prisma.BankAccountWhereInput
+}
+
+export type BankAccountUpdateToOneWithWhereWithoutInstallmentsInput = {
+  where?: Prisma.BankAccountWhereInput
+  data: Prisma.XOR<Prisma.BankAccountUpdateWithoutInstallmentsInput, Prisma.BankAccountUncheckedUpdateWithoutInstallmentsInput>
+}
+
+export type BankAccountUpdateWithoutInstallmentsInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  balance?: Prisma.IntFieldUpdateOperationsInput | number
+  balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  paymentDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cutoffDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  displayCreditMode?: Prisma.NullableEnumDisplayCreditModeFieldUpdateOperationsInput | $Enums.DisplayCreditMode | null
+  interestRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  organization?: Prisma.OrganizationUpdateOneRequiredWithoutBankAccountsNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutBankAccountsNestedInput
+  records?: Prisma.RecordUpdateManyWithoutAccountNestedInput
+  transferRecords?: Prisma.RecordUpdateManyWithoutTransferAccountNestedInput
+  debtsFrom?: Prisma.DebtUpdateManyWithoutAccountNestedInput
+}
+
+export type BankAccountUncheckedUpdateWithoutInstallmentsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  organizationId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  balance?: Prisma.IntFieldUpdateOperationsInput | number
+  balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
+  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  position?: Prisma.IntFieldUpdateOperationsInput | number
+  excludeFromStats?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditLimit?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  paymentDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cutoffDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  displayCreditMode?: Prisma.NullableEnumDisplayCreditModeFieldUpdateOperationsInput | $Enums.DisplayCreditMode | null
+  interestRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  records?: Prisma.RecordUncheckedUpdateManyWithoutAccountNestedInput
+  transferRecords?: Prisma.RecordUncheckedUpdateManyWithoutTransferAccountNestedInput
+  debtsFrom?: Prisma.DebtUncheckedUpdateManyWithoutAccountNestedInput
 }
 
 export type BankAccountCreateWithoutRecordsInput = {
@@ -1228,6 +1554,11 @@ export type BankAccountCreateWithoutRecordsInput = {
   paymentDayType?: $Enums.PaymentDayType | null
   paymentDay?: number | null
   paymentEveryDays?: number | null
+  paymentAnchorDate?: Date | string | null
+  cutoffDayType?: $Enums.PaymentDayType | null
+  cutoffDay?: number | null
+  cutoffEveryDays?: number | null
+  cutoffAnchorDate?: Date | string | null
   displayCreditMode?: $Enums.DisplayCreditMode | null
   interestRate?: number | null
   createdBy?: string | null
@@ -1240,6 +1571,7 @@ export type BankAccountCreateWithoutRecordsInput = {
   user: Prisma.UserCreateNestedOneWithoutBankAccountsInput
   transferRecords?: Prisma.RecordCreateNestedManyWithoutTransferAccountInput
   debtsFrom?: Prisma.DebtCreateNestedManyWithoutAccountInput
+  installments?: Prisma.CardInstallmentCreateNestedManyWithoutAccountInput
 }
 
 export type BankAccountUncheckedCreateWithoutRecordsInput = {
@@ -1262,6 +1594,11 @@ export type BankAccountUncheckedCreateWithoutRecordsInput = {
   paymentDayType?: $Enums.PaymentDayType | null
   paymentDay?: number | null
   paymentEveryDays?: number | null
+  paymentAnchorDate?: Date | string | null
+  cutoffDayType?: $Enums.PaymentDayType | null
+  cutoffDay?: number | null
+  cutoffEveryDays?: number | null
+  cutoffAnchorDate?: Date | string | null
   displayCreditMode?: $Enums.DisplayCreditMode | null
   interestRate?: number | null
   createdBy?: string | null
@@ -1272,6 +1609,7 @@ export type BankAccountUncheckedCreateWithoutRecordsInput = {
   deletedAt?: Date | string | null
   transferRecords?: Prisma.RecordUncheckedCreateNestedManyWithoutTransferAccountInput
   debtsFrom?: Prisma.DebtUncheckedCreateNestedManyWithoutAccountInput
+  installments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutAccountInput
 }
 
 export type BankAccountCreateOrConnectWithoutRecordsInput = {
@@ -1296,6 +1634,11 @@ export type BankAccountCreateWithoutTransferRecordsInput = {
   paymentDayType?: $Enums.PaymentDayType | null
   paymentDay?: number | null
   paymentEveryDays?: number | null
+  paymentAnchorDate?: Date | string | null
+  cutoffDayType?: $Enums.PaymentDayType | null
+  cutoffDay?: number | null
+  cutoffEveryDays?: number | null
+  cutoffAnchorDate?: Date | string | null
   displayCreditMode?: $Enums.DisplayCreditMode | null
   interestRate?: number | null
   createdBy?: string | null
@@ -1308,6 +1651,7 @@ export type BankAccountCreateWithoutTransferRecordsInput = {
   user: Prisma.UserCreateNestedOneWithoutBankAccountsInput
   records?: Prisma.RecordCreateNestedManyWithoutAccountInput
   debtsFrom?: Prisma.DebtCreateNestedManyWithoutAccountInput
+  installments?: Prisma.CardInstallmentCreateNestedManyWithoutAccountInput
 }
 
 export type BankAccountUncheckedCreateWithoutTransferRecordsInput = {
@@ -1330,6 +1674,11 @@ export type BankAccountUncheckedCreateWithoutTransferRecordsInput = {
   paymentDayType?: $Enums.PaymentDayType | null
   paymentDay?: number | null
   paymentEveryDays?: number | null
+  paymentAnchorDate?: Date | string | null
+  cutoffDayType?: $Enums.PaymentDayType | null
+  cutoffDay?: number | null
+  cutoffEveryDays?: number | null
+  cutoffAnchorDate?: Date | string | null
   displayCreditMode?: $Enums.DisplayCreditMode | null
   interestRate?: number | null
   createdBy?: string | null
@@ -1340,6 +1689,7 @@ export type BankAccountUncheckedCreateWithoutTransferRecordsInput = {
   deletedAt?: Date | string | null
   records?: Prisma.RecordUncheckedCreateNestedManyWithoutAccountInput
   debtsFrom?: Prisma.DebtUncheckedCreateNestedManyWithoutAccountInput
+  installments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutAccountInput
 }
 
 export type BankAccountCreateOrConnectWithoutTransferRecordsInput = {
@@ -1375,6 +1725,11 @@ export type BankAccountUpdateWithoutRecordsInput = {
   paymentDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
   paymentDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   paymentEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cutoffDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   displayCreditMode?: Prisma.NullableEnumDisplayCreditModeFieldUpdateOperationsInput | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1387,6 +1742,7 @@ export type BankAccountUpdateWithoutRecordsInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutBankAccountsNestedInput
   transferRecords?: Prisma.RecordUpdateManyWithoutTransferAccountNestedInput
   debtsFrom?: Prisma.DebtUpdateManyWithoutAccountNestedInput
+  installments?: Prisma.CardInstallmentUpdateManyWithoutAccountNestedInput
 }
 
 export type BankAccountUncheckedUpdateWithoutRecordsInput = {
@@ -1409,6 +1765,11 @@ export type BankAccountUncheckedUpdateWithoutRecordsInput = {
   paymentDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
   paymentDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   paymentEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cutoffDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   displayCreditMode?: Prisma.NullableEnumDisplayCreditModeFieldUpdateOperationsInput | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1419,6 +1780,7 @@ export type BankAccountUncheckedUpdateWithoutRecordsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   transferRecords?: Prisma.RecordUncheckedUpdateManyWithoutTransferAccountNestedInput
   debtsFrom?: Prisma.DebtUncheckedUpdateManyWithoutAccountNestedInput
+  installments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutAccountNestedInput
 }
 
 export type BankAccountUpsertWithoutTransferRecordsInput = {
@@ -1449,6 +1811,11 @@ export type BankAccountUpdateWithoutTransferRecordsInput = {
   paymentDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
   paymentDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   paymentEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cutoffDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   displayCreditMode?: Prisma.NullableEnumDisplayCreditModeFieldUpdateOperationsInput | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1461,6 +1828,7 @@ export type BankAccountUpdateWithoutTransferRecordsInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutBankAccountsNestedInput
   records?: Prisma.RecordUpdateManyWithoutAccountNestedInput
   debtsFrom?: Prisma.DebtUpdateManyWithoutAccountNestedInput
+  installments?: Prisma.CardInstallmentUpdateManyWithoutAccountNestedInput
 }
 
 export type BankAccountUncheckedUpdateWithoutTransferRecordsInput = {
@@ -1483,6 +1851,11 @@ export type BankAccountUncheckedUpdateWithoutTransferRecordsInput = {
   paymentDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
   paymentDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   paymentEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cutoffDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   displayCreditMode?: Prisma.NullableEnumDisplayCreditModeFieldUpdateOperationsInput | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1493,6 +1866,7 @@ export type BankAccountUncheckedUpdateWithoutTransferRecordsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   records?: Prisma.RecordUncheckedUpdateManyWithoutAccountNestedInput
   debtsFrom?: Prisma.DebtUncheckedUpdateManyWithoutAccountNestedInput
+  installments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutAccountNestedInput
 }
 
 export type BankAccountCreateWithoutDebtsFromInput = {
@@ -1512,6 +1886,11 @@ export type BankAccountCreateWithoutDebtsFromInput = {
   paymentDayType?: $Enums.PaymentDayType | null
   paymentDay?: number | null
   paymentEveryDays?: number | null
+  paymentAnchorDate?: Date | string | null
+  cutoffDayType?: $Enums.PaymentDayType | null
+  cutoffDay?: number | null
+  cutoffEveryDays?: number | null
+  cutoffAnchorDate?: Date | string | null
   displayCreditMode?: $Enums.DisplayCreditMode | null
   interestRate?: number | null
   createdBy?: string | null
@@ -1524,6 +1903,7 @@ export type BankAccountCreateWithoutDebtsFromInput = {
   user: Prisma.UserCreateNestedOneWithoutBankAccountsInput
   records?: Prisma.RecordCreateNestedManyWithoutAccountInput
   transferRecords?: Prisma.RecordCreateNestedManyWithoutTransferAccountInput
+  installments?: Prisma.CardInstallmentCreateNestedManyWithoutAccountInput
 }
 
 export type BankAccountUncheckedCreateWithoutDebtsFromInput = {
@@ -1546,6 +1926,11 @@ export type BankAccountUncheckedCreateWithoutDebtsFromInput = {
   paymentDayType?: $Enums.PaymentDayType | null
   paymentDay?: number | null
   paymentEveryDays?: number | null
+  paymentAnchorDate?: Date | string | null
+  cutoffDayType?: $Enums.PaymentDayType | null
+  cutoffDay?: number | null
+  cutoffEveryDays?: number | null
+  cutoffAnchorDate?: Date | string | null
   displayCreditMode?: $Enums.DisplayCreditMode | null
   interestRate?: number | null
   createdBy?: string | null
@@ -1556,6 +1941,7 @@ export type BankAccountUncheckedCreateWithoutDebtsFromInput = {
   deletedAt?: Date | string | null
   records?: Prisma.RecordUncheckedCreateNestedManyWithoutAccountInput
   transferRecords?: Prisma.RecordUncheckedCreateNestedManyWithoutTransferAccountInput
+  installments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutAccountInput
 }
 
 export type BankAccountCreateOrConnectWithoutDebtsFromInput = {
@@ -1591,6 +1977,11 @@ export type BankAccountUpdateWithoutDebtsFromInput = {
   paymentDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
   paymentDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   paymentEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cutoffDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   displayCreditMode?: Prisma.NullableEnumDisplayCreditModeFieldUpdateOperationsInput | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1603,6 +1994,7 @@ export type BankAccountUpdateWithoutDebtsFromInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutBankAccountsNestedInput
   records?: Prisma.RecordUpdateManyWithoutAccountNestedInput
   transferRecords?: Prisma.RecordUpdateManyWithoutTransferAccountNestedInput
+  installments?: Prisma.CardInstallmentUpdateManyWithoutAccountNestedInput
 }
 
 export type BankAccountUncheckedUpdateWithoutDebtsFromInput = {
@@ -1625,6 +2017,11 @@ export type BankAccountUncheckedUpdateWithoutDebtsFromInput = {
   paymentDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
   paymentDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   paymentEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cutoffDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   displayCreditMode?: Prisma.NullableEnumDisplayCreditModeFieldUpdateOperationsInput | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1635,6 +2032,7 @@ export type BankAccountUncheckedUpdateWithoutDebtsFromInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   records?: Prisma.RecordUncheckedUpdateManyWithoutAccountNestedInput
   transferRecords?: Prisma.RecordUncheckedUpdateManyWithoutTransferAccountNestedInput
+  installments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutAccountNestedInput
 }
 
 export type BankAccountCreateWithoutOrganizationInput = {
@@ -1654,6 +2052,11 @@ export type BankAccountCreateWithoutOrganizationInput = {
   paymentDayType?: $Enums.PaymentDayType | null
   paymentDay?: number | null
   paymentEveryDays?: number | null
+  paymentAnchorDate?: Date | string | null
+  cutoffDayType?: $Enums.PaymentDayType | null
+  cutoffDay?: number | null
+  cutoffEveryDays?: number | null
+  cutoffAnchorDate?: Date | string | null
   displayCreditMode?: $Enums.DisplayCreditMode | null
   interestRate?: number | null
   createdBy?: string | null
@@ -1666,6 +2069,7 @@ export type BankAccountCreateWithoutOrganizationInput = {
   records?: Prisma.RecordCreateNestedManyWithoutAccountInput
   transferRecords?: Prisma.RecordCreateNestedManyWithoutTransferAccountInput
   debtsFrom?: Prisma.DebtCreateNestedManyWithoutAccountInput
+  installments?: Prisma.CardInstallmentCreateNestedManyWithoutAccountInput
 }
 
 export type BankAccountUncheckedCreateWithoutOrganizationInput = {
@@ -1687,6 +2091,11 @@ export type BankAccountUncheckedCreateWithoutOrganizationInput = {
   paymentDayType?: $Enums.PaymentDayType | null
   paymentDay?: number | null
   paymentEveryDays?: number | null
+  paymentAnchorDate?: Date | string | null
+  cutoffDayType?: $Enums.PaymentDayType | null
+  cutoffDay?: number | null
+  cutoffEveryDays?: number | null
+  cutoffAnchorDate?: Date | string | null
   displayCreditMode?: $Enums.DisplayCreditMode | null
   interestRate?: number | null
   createdBy?: string | null
@@ -1698,6 +2107,7 @@ export type BankAccountUncheckedCreateWithoutOrganizationInput = {
   records?: Prisma.RecordUncheckedCreateNestedManyWithoutAccountInput
   transferRecords?: Prisma.RecordUncheckedCreateNestedManyWithoutTransferAccountInput
   debtsFrom?: Prisma.DebtUncheckedCreateNestedManyWithoutAccountInput
+  installments?: Prisma.CardInstallmentUncheckedCreateNestedManyWithoutAccountInput
 }
 
 export type BankAccountCreateOrConnectWithoutOrganizationInput = {
@@ -1745,6 +2155,11 @@ export type BankAccountCreateManyUserInput = {
   paymentDayType?: $Enums.PaymentDayType | null
   paymentDay?: number | null
   paymentEveryDays?: number | null
+  paymentAnchorDate?: Date | string | null
+  cutoffDayType?: $Enums.PaymentDayType | null
+  cutoffDay?: number | null
+  cutoffEveryDays?: number | null
+  cutoffAnchorDate?: Date | string | null
   displayCreditMode?: $Enums.DisplayCreditMode | null
   interestRate?: number | null
   createdBy?: string | null
@@ -1772,6 +2187,11 @@ export type BankAccountUpdateWithoutUserInput = {
   paymentDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
   paymentDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   paymentEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cutoffDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   displayCreditMode?: Prisma.NullableEnumDisplayCreditModeFieldUpdateOperationsInput | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1784,6 +2204,7 @@ export type BankAccountUpdateWithoutUserInput = {
   records?: Prisma.RecordUpdateManyWithoutAccountNestedInput
   transferRecords?: Prisma.RecordUpdateManyWithoutTransferAccountNestedInput
   debtsFrom?: Prisma.DebtUpdateManyWithoutAccountNestedInput
+  installments?: Prisma.CardInstallmentUpdateManyWithoutAccountNestedInput
 }
 
 export type BankAccountUncheckedUpdateWithoutUserInput = {
@@ -1805,6 +2226,11 @@ export type BankAccountUncheckedUpdateWithoutUserInput = {
   paymentDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
   paymentDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   paymentEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cutoffDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   displayCreditMode?: Prisma.NullableEnumDisplayCreditModeFieldUpdateOperationsInput | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1816,6 +2242,7 @@ export type BankAccountUncheckedUpdateWithoutUserInput = {
   records?: Prisma.RecordUncheckedUpdateManyWithoutAccountNestedInput
   transferRecords?: Prisma.RecordUncheckedUpdateManyWithoutTransferAccountNestedInput
   debtsFrom?: Prisma.DebtUncheckedUpdateManyWithoutAccountNestedInput
+  installments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutAccountNestedInput
 }
 
 export type BankAccountUncheckedUpdateManyWithoutUserInput = {
@@ -1837,6 +2264,11 @@ export type BankAccountUncheckedUpdateManyWithoutUserInput = {
   paymentDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
   paymentDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   paymentEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cutoffDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   displayCreditMode?: Prisma.NullableEnumDisplayCreditModeFieldUpdateOperationsInput | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1866,6 +2298,11 @@ export type BankAccountCreateManyOrganizationInput = {
   paymentDayType?: $Enums.PaymentDayType | null
   paymentDay?: number | null
   paymentEveryDays?: number | null
+  paymentAnchorDate?: Date | string | null
+  cutoffDayType?: $Enums.PaymentDayType | null
+  cutoffDay?: number | null
+  cutoffEveryDays?: number | null
+  cutoffAnchorDate?: Date | string | null
   displayCreditMode?: $Enums.DisplayCreditMode | null
   interestRate?: number | null
   createdBy?: string | null
@@ -1893,6 +2330,11 @@ export type BankAccountUpdateWithoutOrganizationInput = {
   paymentDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
   paymentDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   paymentEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cutoffDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   displayCreditMode?: Prisma.NullableEnumDisplayCreditModeFieldUpdateOperationsInput | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1905,6 +2347,7 @@ export type BankAccountUpdateWithoutOrganizationInput = {
   records?: Prisma.RecordUpdateManyWithoutAccountNestedInput
   transferRecords?: Prisma.RecordUpdateManyWithoutTransferAccountNestedInput
   debtsFrom?: Prisma.DebtUpdateManyWithoutAccountNestedInput
+  installments?: Prisma.CardInstallmentUpdateManyWithoutAccountNestedInput
 }
 
 export type BankAccountUncheckedUpdateWithoutOrganizationInput = {
@@ -1926,6 +2369,11 @@ export type BankAccountUncheckedUpdateWithoutOrganizationInput = {
   paymentDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
   paymentDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   paymentEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cutoffDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   displayCreditMode?: Prisma.NullableEnumDisplayCreditModeFieldUpdateOperationsInput | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1937,6 +2385,7 @@ export type BankAccountUncheckedUpdateWithoutOrganizationInput = {
   records?: Prisma.RecordUncheckedUpdateManyWithoutAccountNestedInput
   transferRecords?: Prisma.RecordUncheckedUpdateManyWithoutTransferAccountNestedInput
   debtsFrom?: Prisma.DebtUncheckedUpdateManyWithoutAccountNestedInput
+  installments?: Prisma.CardInstallmentUncheckedUpdateManyWithoutAccountNestedInput
 }
 
 export type BankAccountUncheckedUpdateManyWithoutOrganizationInput = {
@@ -1958,6 +2407,11 @@ export type BankAccountUncheckedUpdateManyWithoutOrganizationInput = {
   paymentDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
   paymentDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   paymentEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cutoffDayType?: Prisma.NullableEnumPaymentDayTypeFieldUpdateOperationsInput | $Enums.PaymentDayType | null
+  cutoffDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffEveryDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  cutoffAnchorDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   displayCreditMode?: Prisma.NullableEnumDisplayCreditModeFieldUpdateOperationsInput | $Enums.DisplayCreditMode | null
   interestRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1977,12 +2431,14 @@ export type BankAccountCountOutputType = {
   records: number
   transferRecords: number
   debtsFrom: number
+  installments: number
 }
 
 export type BankAccountCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   records?: boolean | BankAccountCountOutputTypeCountRecordsArgs
   transferRecords?: boolean | BankAccountCountOutputTypeCountTransferRecordsArgs
   debtsFrom?: boolean | BankAccountCountOutputTypeCountDebtsFromArgs
+  installments?: boolean | BankAccountCountOutputTypeCountInstallmentsArgs
 }
 
 /**
@@ -2016,6 +2472,13 @@ export type BankAccountCountOutputTypeCountDebtsFromArgs<ExtArgs extends runtime
   where?: Prisma.DebtWhereInput
 }
 
+/**
+ * BankAccountCountOutputType without action
+ */
+export type BankAccountCountOutputTypeCountInstallmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CardInstallmentWhereInput
+}
+
 
 export type BankAccountSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2037,6 +2500,11 @@ export type BankAccountSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   paymentDayType?: boolean
   paymentDay?: boolean
   paymentEveryDays?: boolean
+  paymentAnchorDate?: boolean
+  cutoffDayType?: boolean
+  cutoffDay?: boolean
+  cutoffEveryDays?: boolean
+  cutoffAnchorDate?: boolean
   displayCreditMode?: boolean
   interestRate?: boolean
   createdBy?: boolean
@@ -2050,6 +2518,7 @@ export type BankAccountSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   records?: boolean | Prisma.BankAccount$recordsArgs<ExtArgs>
   transferRecords?: boolean | Prisma.BankAccount$transferRecordsArgs<ExtArgs>
   debtsFrom?: boolean | Prisma.BankAccount$debtsFromArgs<ExtArgs>
+  installments?: boolean | Prisma.BankAccount$installmentsArgs<ExtArgs>
   _count?: boolean | Prisma.BankAccountCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["bankAccount"]>
 
@@ -2073,6 +2542,11 @@ export type BankAccountSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   paymentDayType?: boolean
   paymentDay?: boolean
   paymentEveryDays?: boolean
+  paymentAnchorDate?: boolean
+  cutoffDayType?: boolean
+  cutoffDay?: boolean
+  cutoffEveryDays?: boolean
+  cutoffAnchorDate?: boolean
   displayCreditMode?: boolean
   interestRate?: boolean
   createdBy?: boolean
@@ -2105,6 +2579,11 @@ export type BankAccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   paymentDayType?: boolean
   paymentDay?: boolean
   paymentEveryDays?: boolean
+  paymentAnchorDate?: boolean
+  cutoffDayType?: boolean
+  cutoffDay?: boolean
+  cutoffEveryDays?: boolean
+  cutoffAnchorDate?: boolean
   displayCreditMode?: boolean
   interestRate?: boolean
   createdBy?: boolean
@@ -2137,6 +2616,11 @@ export type BankAccountSelectScalar = {
   paymentDayType?: boolean
   paymentDay?: boolean
   paymentEveryDays?: boolean
+  paymentAnchorDate?: boolean
+  cutoffDayType?: boolean
+  cutoffDay?: boolean
+  cutoffEveryDays?: boolean
+  cutoffAnchorDate?: boolean
   displayCreditMode?: boolean
   interestRate?: boolean
   createdBy?: boolean
@@ -2147,13 +2631,14 @@ export type BankAccountSelectScalar = {
   deletedAt?: boolean
 }
 
-export type BankAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "userId" | "name" | "description" | "type" | "currency" | "color" | "balance" | "balanceDisplay" | "accountNumber" | "position" | "excludeFromStats" | "isActive" | "archived" | "creditLimit" | "paymentDayType" | "paymentDay" | "paymentEveryDays" | "displayCreditMode" | "interestRate" | "createdBy" | "updatedBy" | "deletedBy" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["bankAccount"]>
+export type BankAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "userId" | "name" | "description" | "type" | "currency" | "color" | "balance" | "balanceDisplay" | "accountNumber" | "position" | "excludeFromStats" | "isActive" | "archived" | "creditLimit" | "paymentDayType" | "paymentDay" | "paymentEveryDays" | "paymentAnchorDate" | "cutoffDayType" | "cutoffDay" | "cutoffEveryDays" | "cutoffAnchorDate" | "displayCreditMode" | "interestRate" | "createdBy" | "updatedBy" | "deletedBy" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["bankAccount"]>
 export type BankAccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   records?: boolean | Prisma.BankAccount$recordsArgs<ExtArgs>
   transferRecords?: boolean | Prisma.BankAccount$transferRecordsArgs<ExtArgs>
   debtsFrom?: boolean | Prisma.BankAccount$debtsFromArgs<ExtArgs>
+  installments?: boolean | Prisma.BankAccount$installmentsArgs<ExtArgs>
   _count?: boolean | Prisma.BankAccountCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type BankAccountIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2173,6 +2658,7 @@ export type $BankAccountPayload<ExtArgs extends runtime.Types.Extensions.Interna
     records: Prisma.$RecordPayload<ExtArgs>[]
     transferRecords: Prisma.$RecordPayload<ExtArgs>[]
     debtsFrom: Prisma.$DebtPayload<ExtArgs>[]
+    installments: Prisma.$CardInstallmentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -2194,6 +2680,11 @@ export type $BankAccountPayload<ExtArgs extends runtime.Types.Extensions.Interna
     paymentDayType: $Enums.PaymentDayType | null
     paymentDay: number | null
     paymentEveryDays: number | null
+    paymentAnchorDate: Date | null
+    cutoffDayType: $Enums.PaymentDayType | null
+    cutoffDay: number | null
+    cutoffEveryDays: number | null
+    cutoffAnchorDate: Date | null
     displayCreditMode: $Enums.DisplayCreditMode | null
     interestRate: number | null
     createdBy: string | null
@@ -2601,6 +3092,7 @@ export interface Prisma__BankAccountClient<T, Null = never, ExtArgs extends runt
   records<T extends Prisma.BankAccount$recordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BankAccount$recordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   transferRecords<T extends Prisma.BankAccount$transferRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BankAccount$transferRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   debtsFrom<T extends Prisma.BankAccount$debtsFromArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BankAccount$debtsFromArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DebtPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  installments<T extends Prisma.BankAccount$installmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BankAccount$installmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CardInstallmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2649,6 +3141,11 @@ export interface BankAccountFieldRefs {
   readonly paymentDayType: Prisma.FieldRef<"BankAccount", 'PaymentDayType'>
   readonly paymentDay: Prisma.FieldRef<"BankAccount", 'Int'>
   readonly paymentEveryDays: Prisma.FieldRef<"BankAccount", 'Int'>
+  readonly paymentAnchorDate: Prisma.FieldRef<"BankAccount", 'DateTime'>
+  readonly cutoffDayType: Prisma.FieldRef<"BankAccount", 'PaymentDayType'>
+  readonly cutoffDay: Prisma.FieldRef<"BankAccount", 'Int'>
+  readonly cutoffEveryDays: Prisma.FieldRef<"BankAccount", 'Int'>
+  readonly cutoffAnchorDate: Prisma.FieldRef<"BankAccount", 'DateTime'>
   readonly displayCreditMode: Prisma.FieldRef<"BankAccount", 'DisplayCreditMode'>
   readonly interestRate: Prisma.FieldRef<"BankAccount", 'Float'>
   readonly createdBy: Prisma.FieldRef<"BankAccount", 'String'>
@@ -3127,6 +3624,30 @@ export type BankAccount$debtsFromArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.DebtScalarFieldEnum | Prisma.DebtScalarFieldEnum[]
+}
+
+/**
+ * BankAccount.installments
+ */
+export type BankAccount$installmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CardInstallment
+   */
+  select?: Prisma.CardInstallmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CardInstallment
+   */
+  omit?: Prisma.CardInstallmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CardInstallmentInclude<ExtArgs> | null
+  where?: Prisma.CardInstallmentWhereInput
+  orderBy?: Prisma.CardInstallmentOrderByWithRelationInput | Prisma.CardInstallmentOrderByWithRelationInput[]
+  cursor?: Prisma.CardInstallmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CardInstallmentScalarFieldEnum | Prisma.CardInstallmentScalarFieldEnum[]
 }
 
 /**

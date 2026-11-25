@@ -175,6 +175,11 @@ const TOOLS: KimiToolDefinition[] = [
                   enum: ["DEBO", "NECESITO", "QUIERO", null],
                 },
                 note: { type: ["string", "null"] },
+                runningBalance: {
+                  type: ["number", "null"],
+                  description:
+                    "Printed running balance ('Saldo') after this row if shown on the statement (major units).",
+                },
               },
               required: ["date", "description", "amount", "direction", "type"],
             },

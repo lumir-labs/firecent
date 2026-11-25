@@ -77,6 +77,11 @@ export type Verification = Prisma.VerificationModel
  */
 export type BankAccount = Prisma.BankAccountModel
 /**
+ * Model CardInstallment
+ * 
+ */
+export type CardInstallment = Prisma.CardInstallmentModel
+/**
  * Model Category
  * 
  */

@@ -768,6 +768,16 @@ export function runDeterministicReconciliation(input: {
         }
       }
 
+      const sourceExtract = merged.orderedExtracts[sourceStatementIndex];
+      const statementRunningBalanceMinor =
+        tx.runningBalance != null
+          ? toFirecentSignedBalanceMinor(
+              tx.runningBalance,
+              input.account.type,
+              sourceExtract?.balanceConvention ?? "SIGNED",
+            )
+          : null;
+
       return {
         uid,
         selected: !isDuplicate,
@@ -797,6 +807,7 @@ export function runDeterministicReconciliation(input: {
         matchedTransferRecordId: matchedTransferInfo?.recordId ?? null,
         matchedTransferInfo,
         transferAccountId: null,
+        statementRunningBalanceMinor,
       };
     },
   );

@@ -182,6 +182,11 @@ model BankAccount {
   paymentDayType    PaymentDayType?    @default(MONTHLY_DAY)
   paymentDay        Int?
   paymentEveryDays  Int?
+  paymentAnchorDate DateTime?          @db.Date
+  cutoffDayType     PaymentDayType?    @default(MONTHLY_DAY)
+  cutoffDay         Int?
+  cutoffEveryDays   Int?
+  cutoffAnchorDate  DateTime?          @db.Date
   displayCreditMode DisplayCreditMode? @default(CREDIT_BALANCE)
   interestRate      Float?
   createdBy         String?
@@ -193,13 +198,44 @@ model BankAccount {
 
   organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  records         Record[]     @relation("RecordAccount")
-  transferRecords Record[]     @relation("RecordTransferAccount")
-  debtsFrom       Debt[]       @relation("DebtFromAccount")
+  records         Record[]          @relation("RecordAccount")
+  transferRecords Record[]          @relation("RecordTransferAccount")
+  debtsFrom       Debt[]            @relation("DebtFromAccount")
+  installments    CardInstallment[]
 
   @@unique([organizationId, name])
   @@index([organizationId])
   @@index([userId])
+}
+
+model CardInstallment {
+  id                Int       @id @default(autoincrement())
+  organizationId    String    @db.Uuid()
+  accountId         Int
+  title             String
+  /** Original purchase principal in minor units (cents). */
+  totalAmount       Int
+  totalInstallments Int
+  paidInstallments  Int       @default(0)
+  /** Fixed monthly quota in minor units (cents). */
+  monthlyAmount     Int
+  /** Annual interest rate % (0 = sin intereses / 0% plan). */
+  interestRate      Float     @default(0)
+  startDate         DateTime  @db.Date
+  /** True when remaining installment balance is already reflected in card debt/limit. */
+  includedInBalance Boolean   @default(true)
+  note              String?
+  createdBy         String?
+  updatedBy         String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  deletedAt         DateTime?
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  account      BankAccount  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([accountId])
 }
 
 model Category {
@@ -387,7 +423,8 @@ model Organization {
   members      Member[]
   apiKeys      ApiKey[]
   labels       Label[]
-  bankAccounts BankAccount[]
+  bankAccounts     BankAccount[]
+  cardInstallments CardInstallment[]
   categories   Category[]
   payees       Payee[]
   envelopes    Envelope[]

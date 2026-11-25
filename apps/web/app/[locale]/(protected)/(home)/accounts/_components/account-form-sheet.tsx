@@ -23,6 +23,8 @@ type CreatableType = "CHECKING_ACCOUNT" | "SAVINGS_ACCOUNT" | "CASH" | "CREDIT_C
 
 const CURRENCIES = ["USD", "MXN", "EUR", "CAD", "GBP", "COP", "ARS", "BRL"];
 
+type CycleType = "MONTHLY_DAY" | "EVERY_X_DAYS";
+
 export type EditableAccount = {
   id: number;
   name: string;
@@ -31,11 +33,144 @@ export type EditableAccount = {
   color: string | null;
   accountNumber: string | null;
   creditLimit: number | null;
+  paymentDayType?: CycleType | null;
   paymentDay: number | null;
+  paymentEveryDays?: number | null;
+  paymentAnchorDate?: string | null;
+  cutoffDayType?: CycleType | null;
+  cutoffDay?: number | null;
+  cutoffEveryDays?: number | null;
+  cutoffAnchorDate?: string | null;
   interestRate: number | null;
   displayCreditMode: "CREDIT_BALANCE" | "AVAILABLE_CREDIT";
   excludeFromStats: boolean;
 };
+
+function CardCycleEditor({
+  title,
+  dayType,
+  onDayTypeChange,
+  monthlyLabel,
+  everyXDaysLabel,
+  dayLabel,
+  dayPlaceholder,
+  dayValue,
+  onDayChange,
+  everyDaysLabel,
+  everyDaysValue,
+  onEveryDaysChange,
+  daysSuffix,
+  anchorLabel,
+  anchorValue,
+  onAnchorChange,
+  hint,
+}: {
+  title: string;
+  dayType: CycleType;
+  onDayTypeChange: (next: CycleType) => void;
+  monthlyLabel: string;
+  everyXDaysLabel: string;
+  dayLabel: string;
+  dayPlaceholder: string;
+  dayValue: string;
+  onDayChange: (v: string) => void;
+  everyDaysLabel: string;
+  everyDaysValue: string;
+  onEveryDaysChange: (v: string) => void;
+  daysSuffix: string;
+  anchorLabel: string;
+  anchorValue: string;
+  onAnchorChange: (v: string) => void;
+  hint: string;
+}) {
+  return (
+    <div className="flex flex-col gap-2 rounded-2xl border bg-muted/25 p-3">
+      <span className="text-[12px] font-medium text-muted-foreground">
+        {title}
+      </span>
+      <ToggleGroup
+        variant="segmented"
+        value={[dayType]}
+        onValueChange={(vals) => {
+          const next = vals[0] as CycleType | undefined;
+          if (next) {
+            onDayTypeChange(next);
+            if (next === "EVERY_X_DAYS" && !everyDaysValue) {
+              onEveryDaysChange("30");
+            }
+          }
+        }}
+        className="w-full"
+      >
+        <ToggleGroupItem value="MONTHLY_DAY" className="flex-1 text-[12px]">
+          {monthlyLabel}
+        </ToggleGroupItem>
+        <ToggleGroupItem value="EVERY_X_DAYS" className="flex-1 text-[12px]">
+          {everyXDaysLabel}
+        </ToggleGroupItem>
+      </ToggleGroup>
+
+      {dayType === "MONTHLY_DAY" ? (
+        <div className="flex flex-col gap-1">
+          <label className="text-[12px] font-medium text-muted-foreground">
+            {dayLabel}
+          </label>
+          <Input
+            size="touch"
+            type="number"
+            inputMode="numeric"
+            min="1"
+            max="31"
+            value={dayValue}
+            onChange={(e) => onDayChange(e.target.value)}
+            placeholder={dayPlaceholder}
+          />
+        </div>
+      ) : (
+        <div className="flex flex-col gap-1.5">
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="flex min-w-0 flex-col gap-1">
+              <label className="text-[12px] font-medium text-muted-foreground">
+                {everyDaysLabel}
+              </label>
+              <div className="relative">
+                <Input
+                  size="touch"
+                  type="number"
+                  inputMode="numeric"
+                  min="1"
+                  max="365"
+                  value={everyDaysValue}
+                  onChange={(e) => onEveryDaysChange(e.target.value)}
+                  placeholder="30"
+                  className="pr-12"
+                />
+                <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-[12.5px] text-muted-foreground">
+                  {daysSuffix}
+                </span>
+              </div>
+            </div>
+            <div className="flex min-w-0 flex-col gap-1">
+              <label className="text-[12px] font-medium text-muted-foreground">
+                {anchorLabel}
+              </label>
+              <Input
+                size="touch"
+                type="date"
+                value={anchorValue}
+                onChange={(e) => onAnchorChange(e.target.value)}
+                className="num min-w-0 text-[13px]"
+              />
+            </div>
+          </div>
+          <p className="text-[11.5px] leading-snug text-muted-foreground">
+            {hint}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function AccountFormSheet({
   open,
@@ -62,7 +197,14 @@ export function AccountFormSheet({
   const [accountNumber, setAccountNumber] = useState("");
   const [currentBalance, setCurrentBalance] = useState("");
   const [creditLimit, setCreditLimit] = useState("");
+  const [paymentDayType, setPaymentDayType] = useState<CycleType>("MONTHLY_DAY");
   const [paymentDay, setPaymentDay] = useState("");
+  const [paymentEveryDays, setPaymentEveryDays] = useState("");
+  const [paymentAnchorDate, setPaymentAnchorDate] = useState("");
+  const [cutoffDayType, setCutoffDayType] = useState<CycleType>("MONTHLY_DAY");
+  const [cutoffDay, setCutoffDay] = useState("");
+  const [cutoffEveryDays, setCutoffEveryDays] = useState("");
+  const [cutoffAnchorDate, setCutoffAnchorDate] = useState("");
   const [interestRate, setInterestRate] = useState("");
   const [excludeFromStats, setExcludeFromStats] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -84,7 +226,26 @@ export function AccountFormSheet({
       setAccountNumber(account.accountNumber ?? "");
       setCurrentBalance("");
       setCreditLimit(account.creditLimit != null ? String(account.creditLimit) : "");
+      setPaymentDayType(
+        account.paymentDayType === "EVERY_X_DAYS"
+          ? "EVERY_X_DAYS"
+          : "MONTHLY_DAY",
+      );
       setPaymentDay(account.paymentDay != null ? String(account.paymentDay) : "");
+      setPaymentEveryDays(
+        account.paymentEveryDays != null ? String(account.paymentEveryDays) : "",
+      );
+      setPaymentAnchorDate(account.paymentAnchorDate ?? "");
+      setCutoffDayType(
+        account.cutoffDayType === "EVERY_X_DAYS"
+          ? "EVERY_X_DAYS"
+          : "MONTHLY_DAY",
+      );
+      setCutoffDay(account.cutoffDay != null ? String(account.cutoffDay) : "");
+      setCutoffEveryDays(
+        account.cutoffEveryDays != null ? String(account.cutoffEveryDays) : "",
+      );
+      setCutoffAnchorDate(account.cutoffAnchorDate ?? "");
       setInterestRate(
         account.interestRate != null ? String(account.interestRate) : "",
       );
@@ -97,7 +258,14 @@ export function AccountFormSheet({
       setAccountNumber("");
       setCurrentBalance("");
       setCreditLimit("");
+      setPaymentDayType("MONTHLY_DAY");
       setPaymentDay("");
+      setPaymentEveryDays("30");
+      setPaymentAnchorDate("");
+      setCutoffDayType("MONTHLY_DAY");
+      setCutoffDay("");
+      setCutoffEveryDays("30");
+      setCutoffAnchorDate("");
       setInterestRate("");
       setExcludeFromStats(false);
     }
@@ -134,7 +302,7 @@ export function AccountFormSheet({
   });
 
   const isPending = createMutation.isPending || updateMutation.isPending;
-  const effectiveType = account ? account.type : type;
+  const effectiveType = type;
   const isCard = effectiveType === "CREDIT_CARD";
   const resolvedFinish = resolveAccountFinish(color);
   const isEs = locale.startsWith("es");
@@ -146,22 +314,76 @@ export function AccountFormSheet({
 
     const parsedLimit = Number.parseFloat(creditLimit);
     const parsedDay = Number.parseInt(paymentDay, 10);
+    const parsedEveryDays = Number.parseInt(paymentEveryDays, 10);
+    const parsedCutoffDay = Number.parseInt(cutoffDay, 10);
+    const parsedCutoffEveryDays = Number.parseInt(cutoffEveryDays, 10);
     const parsedApr = Number.parseFloat(interestRate);
+
+    const resolvedPaymentDay =
+      isCard &&
+      paymentDayType === "MONTHLY_DAY" &&
+      Number.isFinite(parsedDay) &&
+      parsedDay >= 1 &&
+      parsedDay <= 31
+        ? parsedDay
+        : null;
+    const resolvedEveryDays =
+      isCard &&
+      paymentDayType === "EVERY_X_DAYS" &&
+      Number.isFinite(parsedEveryDays) &&
+      parsedEveryDays >= 1 &&
+      parsedEveryDays <= 365
+        ? parsedEveryDays
+        : null;
+    const resolvedPaymentAnchor =
+      isCard &&
+      paymentDayType === "EVERY_X_DAYS" &&
+      /^\d{4}-\d{2}-\d{2}$/.test(paymentAnchorDate)
+        ? paymentAnchorDate
+        : null;
+
+    const resolvedCutoffDay =
+      isCard &&
+      cutoffDayType === "MONTHLY_DAY" &&
+      Number.isFinite(parsedCutoffDay) &&
+      parsedCutoffDay >= 1 &&
+      parsedCutoffDay <= 31
+        ? parsedCutoffDay
+        : null;
+    const resolvedCutoffEveryDays =
+      isCard &&
+      cutoffDayType === "EVERY_X_DAYS" &&
+      Number.isFinite(parsedCutoffEveryDays) &&
+      parsedCutoffEveryDays >= 1 &&
+      parsedCutoffEveryDays <= 365
+        ? parsedCutoffEveryDays
+        : null;
+    const resolvedCutoffAnchor =
+      isCard &&
+      cutoffDayType === "EVERY_X_DAYS" &&
+      /^\d{4}-\d{2}-\d{2}$/.test(cutoffAnchorDate)
+        ? cutoffAnchorDate
+        : null;
 
     if (account) {
       updateMutation.mutate({
         id: account.id,
         name: name.trim(),
+        type,
         color: color || null,
         accountNumber: accountNumber.trim() || null,
         creditLimit:
           isCard && Number.isFinite(parsedLimit) && parsedLimit > 0
             ? parsedLimit
             : null,
-        paymentDay:
-          isCard && Number.isFinite(parsedDay) && parsedDay >= 1 && parsedDay <= 31
-            ? parsedDay
-            : null,
+        paymentDayType: isCard ? paymentDayType : null,
+        paymentDay: resolvedPaymentDay,
+        paymentEveryDays: resolvedEveryDays,
+        paymentAnchorDate: resolvedPaymentAnchor,
+        cutoffDayType: isCard ? cutoffDayType : null,
+        cutoffDay: resolvedCutoffDay,
+        cutoffEveryDays: resolvedCutoffEveryDays,
+        cutoffAnchorDate: resolvedCutoffAnchor,
         interestRate:
           isCard && Number.isFinite(parsedApr) && parsedApr >= 0
             ? parsedApr
@@ -183,10 +405,14 @@ export function AccountFormSheet({
         isCard && Number.isFinite(parsedLimit) && parsedLimit > 0
           ? parsedLimit
           : null,
-      paymentDay:
-        isCard && Number.isFinite(parsedDay) && parsedDay >= 1 && parsedDay <= 31
-          ? parsedDay
-          : null,
+      paymentDayType: isCard ? paymentDayType : "MONTHLY_DAY",
+      paymentDay: resolvedPaymentDay,
+      paymentEveryDays: resolvedEveryDays,
+      paymentAnchorDate: resolvedPaymentAnchor,
+      cutoffDayType: isCard ? cutoffDayType : "MONTHLY_DAY",
+      cutoffDay: resolvedCutoffDay,
+      cutoffEveryDays: resolvedCutoffEveryDays,
+      cutoffAnchorDate: resolvedCutoffAnchor,
       interestRate:
         isCard && Number.isFinite(parsedApr) && parsedApr >= 0 ? parsedApr : null,
       excludeFromStats,
@@ -201,13 +427,11 @@ export function AccountFormSheet({
       closeLabel={tShell("close")}
       desktop="dialog"
     >
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 px-5">
-        {errorMsg && (
-          <Alert variant="notice-warning">
-            <AlertCircle className="size-4" />
-            <AlertDescription>{errorMsg}</AlertDescription>
-          </Alert>
-        )}
+      <form
+        noValidate
+        onSubmit={handleSubmit}
+        className="flex min-w-0 flex-col gap-4 overflow-x-hidden px-5"
+      >
 
         {/* Live compact preview card */}
         <div
@@ -250,7 +474,10 @@ export function AccountFormSheet({
           )}
         </div>
 
-        {!isEdit && (
+        <div className="flex flex-col gap-1.5">
+          <span className="text-[12px] font-medium text-muted-foreground">
+            {t("form.type")}
+          </span>
           <ToggleGroup
             variant="segmented"
             value={[type]}
@@ -258,7 +485,7 @@ export function AccountFormSheet({
               const next = vals[0] as CreatableType | undefined;
               if (next) {
                 setType(next);
-                if (next === "CREDIT_CARD" && color === "indigo") {
+                if (!isEdit && next === "CREDIT_CARD" && color === "indigo") {
                   setColor("gold");
                 }
               }
@@ -278,7 +505,7 @@ export function AccountFormSheet({
               {t("types.CREDIT_CARD")}
             </ToggleGroupItem>
           </ToggleGroup>
-        )}
+        </div>
 
         {/* Appearance: Metallic finishes + Bank colors + Custom */}
         <div className="flex flex-col gap-2">
@@ -413,51 +640,80 @@ export function AccountFormSheet({
         )}
 
         {isCard && (
-          <div className="grid grid-cols-3 gap-2.5">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-medium text-muted-foreground">
-                {t("form.creditLimit")}
-              </label>
-              <Input
-                size="touch"
-                type="number"
-                inputMode="decimal"
-                min="0"
-                step="0.01"
-                value={creditLimit}
-                onChange={(e) => setCreditLimit(e.target.value)}
-                placeholder="5000"
-              />
+          <div className="flex flex-col gap-3.5">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="flex min-w-0 flex-col gap-1.5">
+                <label className="text-[12px] font-medium text-muted-foreground">
+                  {t("form.creditLimit")}
+                </label>
+                <Input
+                  size="touch"
+                  type="number"
+                  inputMode="decimal"
+                  min="0"
+                  step="any"
+                  value={creditLimit}
+                  onChange={(e) => setCreditLimit(e.target.value)}
+                  placeholder="5000"
+                />
+              </div>
+              <div className="flex min-w-0 flex-col gap-1.5">
+                <label className="text-[12px] font-medium text-muted-foreground">
+                  {t("form.apr")}
+                </label>
+                <Input
+                  size="touch"
+                  type="number"
+                  inputMode="decimal"
+                  min="0"
+                  max="200"
+                  step="any"
+                  value={interestRate}
+                  onChange={(e) => setInterestRate(e.target.value)}
+                  placeholder="24.9"
+                />
+              </div>
             </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-medium text-muted-foreground">
-                {t("form.paymentDay")}
-              </label>
-              <Input
-                size="touch"
-                type="number"
-                min="1"
-                max="31"
-                value={paymentDay}
-                onChange={(e) => setPaymentDay(e.target.value)}
-                placeholder="15"
-              />
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[12px] font-medium text-muted-foreground">
-                {t("form.apr")}
-              </label>
-              <Input
-                size="touch"
-                type="number"
-                min="0"
-                max="200"
-                step="0.1"
-                value={interestRate}
-                onChange={(e) => setInterestRate(e.target.value)}
-                placeholder="24.9"
-              />
-            </div>
+
+            <CardCycleEditor
+              title={t("form.cutoffSchedule")}
+              dayType={cutoffDayType}
+              onDayTypeChange={setCutoffDayType}
+              monthlyLabel={t("form.monthlyDay")}
+              everyXDaysLabel={t("form.everyXDaysOption")}
+              dayLabel={t("form.cutoffDay")}
+              dayPlaceholder="20"
+              dayValue={cutoffDay}
+              onDayChange={setCutoffDay}
+              everyDaysLabel={t("form.paymentEveryDays")}
+              everyDaysValue={cutoffEveryDays}
+              onEveryDaysChange={setCutoffEveryDays}
+              daysSuffix={t("form.daysSuffix")}
+              anchorLabel={t("form.nextCutoffDate")}
+              anchorValue={cutoffAnchorDate}
+              onAnchorChange={setCutoffAnchorDate}
+              hint={t("form.everyXDaysHint")}
+            />
+
+            <CardCycleEditor
+              title={t("form.paymentSchedule")}
+              dayType={paymentDayType}
+              onDayTypeChange={setPaymentDayType}
+              monthlyLabel={t("form.monthlyDay")}
+              everyXDaysLabel={t("form.everyXDaysOption")}
+              dayLabel={t("form.paymentDay")}
+              dayPlaceholder="15"
+              dayValue={paymentDay}
+              onDayChange={setPaymentDay}
+              everyDaysLabel={t("form.paymentEveryDays")}
+              everyDaysValue={paymentEveryDays}
+              onEveryDaysChange={setPaymentEveryDays}
+              daysSuffix={t("form.daysSuffix")}
+              anchorLabel={t("form.nextPaymentDate")}
+              anchorValue={paymentAnchorDate}
+              onAnchorChange={setPaymentAnchorDate}
+              hint={t("form.everyXDaysHint")}
+            />
           </div>
         )}
 
@@ -473,6 +729,13 @@ export function AccountFormSheet({
             onCheckedChange={setExcludeFromStats}
           />
         </div>
+
+        {errorMsg && (
+          <Alert variant="notice-warning">
+            <AlertCircle className="size-4" />
+            <AlertDescription>{errorMsg}</AlertDescription>
+          </Alert>
+        )}
 
         <Button
           type="submit"

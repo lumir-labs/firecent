@@ -404,6 +404,7 @@ export const ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   BankAccount: 'BankAccount',
+  CardInstallment: 'CardInstallment',
   Category: 'Category',
   Payee: 'Payee',
   Envelope: 'Envelope',
@@ -439,7 +440,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "role" | "permission" | "user" | "session" | "account" | "verification" | "bankAccount" | "category" | "payee" | "envelope" | "record" | "debt" | "label" | "organization" | "member" | "invitation" | "apiKey" | "twoFactor" | "waitlist" | "budget" | "budgetNature" | "budgetCategory" | "recurring" | "recurringOccurrence" | "assistantThread" | "assistantMessage" | "assistantProposal"
+    modelProps: "role" | "permission" | "user" | "session" | "account" | "verification" | "bankAccount" | "cardInstallment" | "category" | "payee" | "envelope" | "record" | "debt" | "label" | "organization" | "member" | "invitation" | "apiKey" | "twoFactor" | "waitlist" | "budget" | "budgetNature" | "budgetCategory" | "recurring" | "recurringOccurrence" | "assistantThread" | "assistantMessage" | "assistantProposal"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -958,6 +959,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.BankAccountCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.BankAccountCountAggregateOutputType> | number
+        }
+      }
+    }
+    CardInstallment: {
+      payload: Prisma.$CardInstallmentPayload<ExtArgs>
+      fields: Prisma.CardInstallmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CardInstallmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardInstallmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CardInstallmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardInstallmentPayload>
+        }
+        findFirst: {
+          args: Prisma.CardInstallmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardInstallmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CardInstallmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardInstallmentPayload>
+        }
+        findMany: {
+          args: Prisma.CardInstallmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardInstallmentPayload>[]
+        }
+        create: {
+          args: Prisma.CardInstallmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardInstallmentPayload>
+        }
+        createMany: {
+          args: Prisma.CardInstallmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CardInstallmentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardInstallmentPayload>[]
+        }
+        delete: {
+          args: Prisma.CardInstallmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardInstallmentPayload>
+        }
+        update: {
+          args: Prisma.CardInstallmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardInstallmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.CardInstallmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CardInstallmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CardInstallmentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardInstallmentPayload>[]
+        }
+        upsert: {
+          args: Prisma.CardInstallmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CardInstallmentPayload>
+        }
+        aggregate: {
+          args: Prisma.CardInstallmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCardInstallment>
+        }
+        groupBy: {
+          args: Prisma.CardInstallmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CardInstallmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CardInstallmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CardInstallmentCountAggregateOutputType> | number
         }
       }
     }
@@ -2592,6 +2667,11 @@ export const BankAccountScalarFieldEnum = {
   paymentDayType: 'paymentDayType',
   paymentDay: 'paymentDay',
   paymentEveryDays: 'paymentEveryDays',
+  paymentAnchorDate: 'paymentAnchorDate',
+  cutoffDayType: 'cutoffDayType',
+  cutoffDay: 'cutoffDay',
+  cutoffEveryDays: 'cutoffEveryDays',
+  cutoffAnchorDate: 'cutoffAnchorDate',
   displayCreditMode: 'displayCreditMode',
   interestRate: 'interestRate',
   createdBy: 'createdBy',
@@ -2603,6 +2683,29 @@ export const BankAccountScalarFieldEnum = {
 } as const
 
 export type BankAccountScalarFieldEnum = (typeof BankAccountScalarFieldEnum)[keyof typeof BankAccountScalarFieldEnum]
+
+
+export const CardInstallmentScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  accountId: 'accountId',
+  title: 'title',
+  totalAmount: 'totalAmount',
+  totalInstallments: 'totalInstallments',
+  paidInstallments: 'paidInstallments',
+  monthlyAmount: 'monthlyAmount',
+  interestRate: 'interestRate',
+  startDate: 'startDate',
+  includedInBalance: 'includedInBalance',
+  note: 'note',
+  createdBy: 'createdBy',
+  updatedBy: 'updatedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
+} as const
+
+export type CardInstallmentScalarFieldEnum = (typeof CardInstallmentScalarFieldEnum)[keyof typeof CardInstallmentScalarFieldEnum]
 
 
 export const CategoryScalarFieldEnum = {
@@ -3439,6 +3542,7 @@ export type GlobalOmitConfig = {
   account?: Prisma.AccountOmit
   verification?: Prisma.VerificationOmit
   bankAccount?: Prisma.BankAccountOmit
+  cardInstallment?: Prisma.CardInstallmentOmit
   category?: Prisma.CategoryOmit
   payee?: Prisma.PayeeOmit
   envelope?: Prisma.EnvelopeOmit

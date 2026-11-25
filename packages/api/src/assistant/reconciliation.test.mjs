@@ -10,7 +10,10 @@ import {
   runDeterministicReconciliation,
   toFirecentSignedBalanceMinor,
 } from "./reconciliation.ts";
-import { recomputeReconciliationSummary } from "./types.ts";
+import {
+  computeProposalRunningBalances,
+  recomputeReconciliationSummary,
+} from "./types.ts";
 
 describe("Assistant reconciliation engine", () => {
   test("normalizes bank merchant strings and fuzzy-matches existing payees", () => {
@@ -336,6 +339,85 @@ describe("Assistant reconciliation engine", () => {
     assert.equal(exact.ok, true);
     assert.equal(exact.creditsDiffMinor, 0);
     assert.equal(exact.equationDiffMinor, 0);
+  });
+
+  test("computes exact chronological running balances with duplicates, unmatched DB rows, and live sign flips", () => {
+    const mkRow = (overrides) => ({
+      uid: "u",
+      selected: true,
+      sourceStatementIndex: 0,
+      date: "2026-10-23",
+      time: null,
+      type: "TRANSFER",
+      amountMinor: -10000,
+      description: "Row",
+      note: null,
+      payeeId: null,
+      payeeName: null,
+      payeeMatchKind: "NONE",
+      categoryId: null,
+      categoryName: null,
+      categorySource: "NONE",
+      spendingNature: null,
+      paymentType: "WEB_PAYMENT",
+      isDuplicate: false,
+      duplicateRecordId: null,
+      duplicateReason: null,
+      transferMode: "UNMATCHED",
+      matchedTransferRecordId: null,
+      matchedTransferInfo: null,
+      transferAccountId: null,
+      statementRunningBalanceMinor: null,
+      ...overrides,
+    });
+
+    // Display order is newest-first
+    const rows = [
+      mkRow({ uid: "r4", date: "2026-11-12", time: "15:20", amountMinor: -20000, selected: true }),
+      mkRow({ uid: "r3", date: "2026-11-07", time: "12:19", amountMinor: -307, selected: false, isDuplicate: true, duplicateRecordId: 501 }),
+      mkRow({ uid: "r2", date: "2026-10-28", time: "11:34", amountMinor: -640, selected: true }),
+      mkRow({ uid: "r1", date: "2026-10-25", time: "18:32", amountMinor: -3161, selected: false, isDuplicate: true, duplicateRecordId: 500 }),
+      mkRow({ uid: "r0", date: "2026-10-23", time: "08:26", amountMinor: -10000, selected: true, statementRunningBalanceMinor: 40000 }),
+    ];
+
+    const ledger = {
+      openingDbBalanceMinor: 50000,
+      periodStartDate: "2026-10-23",
+      periodEndDate: "2026-11-12",
+      periodRecords: [
+        { id: 500, date: "2026-10-25", time: "18:32", amountMinor: -3161, label: "PAGO TARJETA", transfer: true },
+        { id: 502, date: "2026-11-01", time: "09:00", amountMinor: 10000, label: "Extra DB entry", transfer: false },
+        { id: 501, date: "2026-11-07", time: "12:19", amountMinor: -307, label: "Transfer365", transfer: true },
+      ],
+    };
+
+    const res = computeProposalRunningBalances(rows, ledger, null);
+
+    // 50000 - 10000 = 40000
+    assert.equal(res.byUid.r0.projectedBalanceAfterMinor, 40000);
+    assert.equal(res.byUid.r0.statementBalanceAfterMinor, 40000);
+    // 40000 - 3161 (existing DB #500 counted once) = 36839
+    assert.equal(res.byUid.r1.projectedBalanceAfterMinor, 36839);
+    // 36839 - 640 = 36199
+    assert.equal(res.byUid.r2.projectedBalanceAfterMinor, 36199);
+    // Extra DB #502 (+10000 on Nov 1) + existing DB #501 (-307) = 45892
+    assert.equal(res.byUid.r3.projectedBalanceAfterMinor, 45892);
+    assert.equal(res.byUid.r3.extraDbCount, 1);
+    assert.equal(res.byUid.r3.extraDbDeltaMinor, 10000);
+    assert.equal(res.byUid.r3.extraDbRecords.length, 1);
+    assert.equal(res.byUid.r3.extraDbRecords[0].id, 502);
+    // 45892 - 20000 = 25892 (exact match to dbAtPeriodEnd + selectedDelta)
+    assert.equal(res.byUid.r4.projectedBalanceAfterMinor, 25892);
+    assert.equal(res.finalBalanceMinor, 25892);
+    assert.equal(res.unmatchedDbRecords.length, 1);
+    assert.equal(res.unmatchedDbNetMinor, 10000);
+
+    // Flipping transfer r4 from -$200 to +$200 shifts top running balance by +$400 immediately
+    const flippedRows = rows.map((r) =>
+      r.uid === "r4" ? { ...r, amountMinor: 20000 } : r,
+    );
+    const resFlipped = computeProposalRunningBalances(flippedRows, ledger, null);
+    assert.equal(resFlipped.byUid.r4.projectedBalanceAfterMinor, 65892);
   });
 });
 

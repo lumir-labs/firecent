@@ -70,6 +70,13 @@ export function AccountsView() {
                     ? t("dueToday")
                     : t("dueInDays", { days: String(acc.dueInDays) }),
                 );
+              } else if (
+                acc.paymentDayType === "EVERY_X_DAYS" &&
+                acc.paymentEveryDays
+              ) {
+                parts.push(
+                  t("everyXDays", { days: String(acc.paymentEveryDays) }),
+                );
               }
               if (acc.available != null) {
                 parts.push(

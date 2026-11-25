@@ -1,6 +1,11 @@
 import { TRPCError } from "@trpc/server";
 import z from "zod";
 import { db } from "@app/db";
+import {
+  computeLastCycleDate,
+  computeNextCycleDate,
+  summarizeCardInstallments,
+} from "../lib/card-cycle";
 import { p } from "../permissions";
 import { protectedProcedure, requirePermission, router } from "../trpc";
 
@@ -25,42 +30,6 @@ const homeInput = z.object({
     .regex(/^\d{4}-(0[1-9]|1[0-2])$/)
     .optional(),
 });
-
-function computeCardDue(paymentDay: number | null, now: Date) {
-  if (!paymentDay || paymentDay < 1 || paymentDay > 31) return null;
-  const todayUtc = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
-  );
-  const daysThisMonth = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0),
-  ).getUTCDate();
-  let target = new Date(
-    Date.UTC(
-      now.getUTCFullYear(),
-      now.getUTCMonth(),
-      Math.min(paymentDay, daysThisMonth),
-    ),
-  );
-  if (target < todayUtc) {
-    const nextMonthDays = new Date(
-      Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 2, 0),
-    ).getUTCDate();
-    target = new Date(
-      Date.UTC(
-        now.getUTCFullYear(),
-        now.getUTCMonth() + 1,
-        Math.min(paymentDay, nextMonthDays),
-      ),
-    );
-  }
-  const dueInDays = Math.round(
-    (target.getTime() - todayUtc.getTime()) / (1000 * 60 * 60 * 24),
-  );
-  return {
-    date: target.toISOString().slice(0, 10),
-    dueInDays,
-  };
-}
 
 export const dashboardRouter = router({
   netWorth: protectedProcedure
@@ -222,9 +191,19 @@ export const dashboardRouter = router({
           name: true,
           type: true,
           currency: true,
+          color: true,
+          accountNumber: true,
+          creditLimit: true,
+          interestRate: true,
           excludeFromStats: true,
           paymentDay: true,
           paymentDayType: true,
+          paymentEveryDays: true,
+          paymentAnchorDate: true,
+          cutoffDay: true,
+          cutoffDayType: true,
+          cutoffEveryDays: true,
+          cutoffAnchorDate: true,
         },
       });
 
@@ -260,8 +239,29 @@ export const dashboardRouter = router({
             date: string;
             title: string;
             amount: number;
+            minPayment: number;
+            isCashPayment: boolean;
             currency: string;
             dueInDays: number;
+          }[],
+          cardTimeline: [] as {
+            id: number;
+            name: string;
+            color: string | null;
+            accountNumber: string | null;
+            currency: string;
+            debt: number;
+            cashPayment: number | null;
+            creditLimit: number | null;
+            interestRate: number | null;
+            cycleDays: number;
+            estimatedInterest: number | null;
+            estimatedMinPayment: number;
+            installmentsMonthly: number;
+            nextCutoffDate: string | null;
+            cutoffInDays: number | null;
+            nextDueDate: string | null;
+            dueInDays: number | null;
           }[],
           recent: [] as {
             id: number;
@@ -528,26 +528,252 @@ export const dashboardRouter = router({
           spent: c.spentMinor / MINOR_UNIT,
         }));
 
-      // Upcoming (next 7 days): credit card payments due
-      const upcoming = accounts
-        .filter((a) => a.type === "CREDIT_CARD" && a.paymentDay != null)
+      // Compact timeline for all active credit cards (cutoff, due date, installments & estimated cycle interest)
+      const creditCards = accounts.filter((a) => a.type === "CREDIT_CARD");
+      const creditCardIds = creditCards.map((c) => c.id);
+
+      const rollingCardIds = creditCards
+        .filter(
+          (a) =>
+            a.paymentDayType === "EVERY_X_DAYS" &&
+            a.paymentEveryDays != null &&
+            !a.paymentAnchorDate,
+        )
+        .map((a) => a.id);
+
+      const [lastPayments, allInstallments] = await Promise.all([
+        rollingCardIds.length > 0
+          ? db.record.groupBy({
+              by: ["accountId"],
+              where: {
+                organizationId: orgId,
+                accountId: { in: rollingCardIds },
+                deletedAt: null,
+                amount: { gt: 0 },
+                recordDate: { not: null },
+              },
+              _max: { recordDate: true },
+            })
+          : Promise.resolve([]),
+        creditCardIds.length > 0
+          ? db.cardInstallment.findMany({
+              where: {
+                organizationId: orgId,
+                accountId: { in: creditCardIds },
+                deletedAt: null,
+              },
+              select: {
+                accountId: true,
+                totalAmount: true,
+                totalInstallments: true,
+                paidInstallments: true,
+                monthlyAmount: true,
+                interestRate: true,
+                includedInBalance: true,
+              },
+            })
+          : Promise.resolve([]),
+      ]);
+
+      const lastPaymentByCard = new Map<number, Date>();
+      for (const p of lastPayments) {
+        if (p._max.recordDate) {
+          lastPaymentByCard.set(p.accountId, p._max.recordDate);
+        }
+      }
+
+      const installmentsByCard = new Map<
+        number,
+        {
+          totalAmount: number;
+          totalInstallments: number;
+          paidInstallments: number;
+          monthlyAmount: number;
+          interestRate: number;
+          includedInBalance: boolean;
+        }[]
+      >();
+      for (const inst of allInstallments) {
+        const list = installmentsByCard.get(inst.accountId) ?? [];
+        list.push({
+          totalAmount: inst.totalAmount / MINOR_UNIT,
+          totalInstallments: inst.totalInstallments,
+          paidInstallments: inst.paidInstallments,
+          monthlyAmount: inst.monthlyAmount / MINOR_UNIT,
+          interestRate: inst.interestRate,
+          includedInBalance: inst.includedInBalance,
+        });
+        installmentsByCard.set(inst.accountId, list);
+      }
+
+      const lastCutoffByCard = new Map<number, Date>();
+      for (const card of creditCards) {
+        const lc = computeLastCycleDate(
+          card.cutoffDayType,
+          card.cutoffDay,
+          card.cutoffEveryDays,
+          card.cutoffAnchorDate,
+          now,
+        );
+        if (lc) lastCutoffByCard.set(card.id, lc);
+      }
+
+      const cardCutoffAggs = new Map<
+        number,
+        { owedAtCutoffMinor: number; paidSinceCutoffMinor: number }
+      >();
+      if (lastCutoffByCard.size > 0) {
+        const results = await Promise.all(
+          [...lastCutoffByCard.entries()].map(async ([cardId, lastCutoff]) => {
+            const [atCutoff, paidAfter] = await Promise.all([
+              db.record.aggregate({
+                where: {
+                  organizationId: orgId,
+                  accountId: cardId,
+                  deletedAt: null,
+                  OR: [{ recordDate: { lte: lastCutoff } }, { recordDate: null }],
+                },
+                _sum: { amount: true },
+              }),
+              db.record.aggregate({
+                where: {
+                  organizationId: orgId,
+                  accountId: cardId,
+                  deletedAt: null,
+                  amount: { gt: 0 },
+                  recordDate: { gt: lastCutoff },
+                },
+                _sum: { amount: true },
+              }),
+            ]);
+            return {
+              cardId,
+              owedAtCutoffMinor: Math.max(0, -(atCutoff._sum.amount ?? 0)),
+              paidSinceCutoffMinor: paidAfter._sum.amount ?? 0,
+            };
+          }),
+        );
+        for (const r of results) {
+          cardCutoffAggs.set(r.cardId, {
+            owedAtCutoffMinor: r.owedAtCutoffMinor,
+            paidSinceCutoffMinor: r.paidSinceCutoffMinor,
+          });
+        }
+      }
+
+      const cardTimeline = creditCards
         .map((card) => {
-          const due = computeCardDue(card.paymentDay, now);
-          if (!due || due.dueInDays > 7) return null;
           const balanceMinor = balanceByAccount.get(card.id) ?? 0;
-          const owed = Math.max(0, -balanceMinor) / MINOR_UNIT;
-          if (owed <= 0) return null;
+          const debtMinor = Math.max(0, -balanceMinor);
+          const debt = debtMinor / MINOR_UNIT;
+          const creditLimit =
+            card.creditLimit != null ? card.creditLimit / MINOR_UNIT : null;
+          const due = computeNextCycleDate(
+            card.paymentDayType,
+            card.paymentDay,
+            card.paymentEveryDays,
+            card.paymentAnchorDate,
+            lastPaymentByCard.get(card.id) ?? null,
+            now,
+          );
+          const cutoff = computeNextCycleDate(
+            card.cutoffDayType,
+            card.cutoffDay,
+            card.cutoffEveryDays,
+            card.cutoffAnchorDate,
+            null,
+            now,
+          );
+          const cycleDays =
+            card.paymentDayType === "EVERY_X_DAYS" && card.paymentEveryDays
+              ? card.paymentEveryDays
+              : card.cutoffDayType === "EVERY_X_DAYS" && card.cutoffEveryDays
+                ? card.cutoffEveryDays
+                : 30;
+
+          const instSummary = summarizeCardInstallments(
+            debt,
+            installmentsByCard.get(card.id) ?? [],
+          );
+          const cutoffAgg = cardCutoffAggs.get(card.id);
+          const cashPayment = cutoffAgg
+            ? Math.max(
+                0,
+                Math.min(
+                  debtMinor,
+                  cutoffAgg.owedAtCutoffMinor -
+                    cutoffAgg.paidSinceCutoffMinor -
+                    Math.round(instSummary.deferredInBalance * MINOR_UNIT),
+                ),
+              ) / MINOR_UNIT
+            : null;
+          const revDebt = instSummary.revolvingDebt;
+          const revInterest =
+            card.interestRate != null && card.interestRate > 0 && revDebt > 0
+              ? revDebt * (card.interestRate / 100) * (cycleDays / 365)
+              : 0;
+          const hasAnyRate =
+            (card.interestRate != null && card.interestRate > 0) ||
+            instSummary.monthlyInterest > 0;
+          const estimatedInterest = hasAnyRate
+            ? Math.round((revInterest + instSummary.monthlyInterest) * 100) / 100
+            : null;
+
+          // Standard local minimum payment: revolving (1/60 + interest, min $15) + full monthly installment quotas
+          const revolvingMin =
+            revDebt > 0
+              ? Math.min(revDebt, Math.max(15, revDebt / 60 + revInterest))
+              : 0;
+          const estimatedMinPayment =
+            Math.round((revolvingMin + instSummary.monthlyTotal) * 100) / 100;
+
           return {
-            id: `card-${card.id}`,
-            accountId: card.id,
-            date: due.date,
-            title: card.name,
-            amount: owed,
+            id: card.id,
+            name: card.name,
+            color: card.color,
+            accountNumber: card.accountNumber,
             currency: card.currency,
-            dueInDays: due.dueInDays,
+            debt,
+            cashPayment,
+            creditLimit,
+            interestRate: card.interestRate,
+            cycleDays,
+            estimatedInterest,
+            estimatedMinPayment,
+            installmentsMonthly: instSummary.monthlyTotal,
+            nextCutoffDate: cutoff.nextDate,
+            cutoffInDays: cutoff.inDays,
+            nextDueDate: due.nextDate,
+            dueInDays: due.inDays,
           };
         })
-        .filter((x): x is NonNullable<typeof x> => x !== null)
+        .sort((a, b) => {
+          const aSoonest = Math.min(a.dueInDays ?? 999, a.cutoffInDays ?? 999);
+          const bSoonest = Math.min(b.dueInDays ?? 999, b.cutoffInDays ?? 999);
+          if (aSoonest !== bSoonest) return aSoonest - bSoonest;
+          return b.debt - a.debt;
+        });
+
+      // Upcoming (next 7 days): derived directly from cardTimeline with exact cash payment + min payment
+      const upcoming = cardTimeline
+        .filter((card) => {
+          if (!card.nextDueDate || card.dueInDays == null || card.dueInDays > 7) {
+            return false;
+          }
+          const dueAmount = card.cashPayment ?? card.debt;
+          return dueAmount > 0;
+        })
+        .map((card) => ({
+          id: `card-${card.id}`,
+          accountId: card.id,
+          date: card.nextDueDate!,
+          title: card.name,
+          amount: card.cashPayment ?? card.debt,
+          minPayment: card.estimatedMinPayment,
+          isCashPayment: card.cashPayment != null,
+          currency: card.currency,
+          dueInDays: card.dueInDays!,
+        }))
         .sort((a, b) => a.dueInDays - b.dueInDays);
 
       const recent = recentRows.map((r) => ({
@@ -595,6 +821,7 @@ export const dashboardRouter = router({
           daysLeft,
         },
         upcoming,
+        cardTimeline,
         recent,
         insight: null,
       };

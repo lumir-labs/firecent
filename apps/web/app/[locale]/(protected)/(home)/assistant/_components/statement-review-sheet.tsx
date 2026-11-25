@@ -7,6 +7,10 @@ import {
   ArrowLeftRight,
   Check,
   CheckCircle2,
+  ChevronDown,
+  ChevronRight,
+  ChevronUp,
+  Database,
   Link2,
   Loader2,
   RefreshCw,
@@ -22,6 +26,7 @@ import { Drawer as DrawerPrimitive } from "vaul";
 
 import { trpc } from "@app/api/client";
 import {
+  computeProposalRunningBalances,
   recomputeReconciliationSummary,
   type ReconciledRow,
 } from "@app/api/assistant-types";
@@ -31,6 +36,7 @@ import {
   Money,
   NATURES,
   NatureSwatch,
+  formatMoneyText,
   localizeCategoryName,
 } from "@/components/finance";
 import type { AccountType, Nature } from "@/components/finance";
@@ -40,6 +46,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
+import { TransactionDetailSheet } from "../../transactions/_components/transaction-detail-sheet";
 
 const MINOR_UNIT = 100;
 
@@ -155,11 +162,32 @@ export function StatementReviewSheet({
       includeAdjustment: next,
     }));
 
+  const [expandedDbProposalId, setExpandedDbProposalId] = useState<
+    string | null
+  >(null);
+  const showUnmatchedDb = expandedDbProposalId === proposalId;
+
+  const [inspectRecordId, setInspectRecordId] = useState<number | null>(null);
+  const [expandedExtraRowUid, setExpandedExtraRowUid] = useState<string | null>(
+    null,
+  );
+  const activeInspectRecordId = open ? inspectRecordId : null;
+
   const baseSummary = query.data?.summary ?? null;
   const liveSummary = useMemo(() => {
     if (!baseSummary) return null;
     return recomputeReconciliationSummary(baseSummary, rows);
   }, [baseSummary, rows]);
+
+  const runningBalances = useMemo(
+    () =>
+      computeProposalRunningBalances(
+        rows,
+        query.data?.runningBalanceLedger,
+        liveSummary,
+      ),
+    [rows, query.data?.runningBalanceLedger, liveSummary],
+  );
 
   const applyMutation = trpc.assistant.applyProposal.useMutation({
     onSuccess: async (res) => {
@@ -284,6 +312,21 @@ export function StatementReviewSheet({
             matchedTransferRecordId: null,
             transferAccountId: null,
           }),
+    });
+  };
+
+  const handleFlipTransferDirection = (row: ReconciledRow) => {
+    if (isReadOnly) return;
+    updateRow(row.uid, {
+      amountMinor: -row.amountMinor,
+      // Reset any existing link bound to the opposite sign
+      ...(row.transferMode === "LINK_EXISTING"
+        ? {
+            transferMode: "UNMATCHED",
+            matchedTransferRecordId: null,
+            matchedTransferInfo: null,
+          }
+        : {}),
     });
   };
 
@@ -668,12 +711,138 @@ export function StatementReviewSheet({
               ))}
             </datalist>
 
+            {/* Unmatched DB records in this period (helps instantly pinpoint discrepancies!) */}
+            {runningBalances.unmatchedDbRecords.length > 0 && (
+              <div className="overflow-hidden rounded-xl border border-warning/30 bg-warning/5">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setExpandedDbProposalId(
+                      showUnmatchedDb ? null : proposalId,
+                    )
+                  }
+                  className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-[12px] transition-colors hover:bg-warning/10"
+                >
+                  <span className="flex min-w-0 items-center gap-2 font-medium text-foreground">
+                    <Database className="size-3.5 shrink-0 text-warning" />
+                    <span className="truncate">
+                      {t("review.unmatchedDbBanner", {
+                        count: String(
+                          runningBalances.unmatchedDbRecords.length,
+                        ),
+                      })}
+                    </span>
+                  </span>
+                  <span className="flex shrink-0 items-center gap-1.5">
+                    <span className="num rounded-full bg-warning/15 px-2 py-0.5 text-[11px] font-semibold text-warning">
+                      {runningBalances.unmatchedDbNetMinor > 0 ? "+" : ""}
+                      {formatMoneyText(
+                        locale,
+                        runningBalances.unmatchedDbNetMinor / MINOR_UNIT,
+                        currency,
+                        { tone: "plain" },
+                      )}
+                    </span>
+                    {showUnmatchedDb ? (
+                      <ChevronUp className="size-3.5 text-muted-foreground" />
+                    ) : (
+                      <ChevronDown className="size-3.5 text-muted-foreground" />
+                    )}
+                  </span>
+                </button>
+                {showUnmatchedDb && (
+                  <div className="border-t border-warning/20 bg-card/60 px-3 py-2">
+                    <p className="mb-2 text-[11px] text-muted-foreground">
+                      {t("review.unmatchedDbHint")}
+                    </p>
+                    <div className="max-h-44 divide-y overflow-y-auto rounded-lg border bg-card">
+                      {[...runningBalances.unmatchedDbRecords]
+                        .reverse()
+                        .map((rec) => (
+                          <button
+                            key={rec.id}
+                            type="button"
+                            onClick={() => setInspectRecordId(rec.id)}
+                            className="flex w-full items-center justify-between gap-2 px-2.5 py-1.5 text-left text-[12px] transition-colors hover:bg-accent/60"
+                          >
+                            <div className="flex min-w-0 items-center gap-2">
+                              <span className="num shrink-0 text-[11px] text-muted-foreground">
+                                {rec.date}
+                              </span>
+                              <span className="truncate font-medium text-foreground">
+                                {rec.label}
+                              </span>
+                            </div>
+                            <span className="flex shrink-0 items-center gap-1">
+                              <span
+                                className={cn(
+                                  "num font-semibold",
+                                  rec.amountMinor > 0
+                                    ? "text-positive"
+                                    : rec.amountMinor < 0
+                                      ? "text-destructive"
+                                      : "text-muted-foreground",
+                                )}
+                              >
+                                {rec.amountMinor > 0 ? "+" : ""}
+                                {formatMoneyText(
+                                  locale,
+                                  rec.amountMinor / MINOR_UNIT,
+                                  currency,
+                                  { tone: "plain" },
+                                )}
+                              </span>
+                              <ChevronRight className="size-3.5 text-muted-foreground" />
+                            </span>
+                          </button>
+                        ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {filteredRows.length === 0 ? (
               <p className="py-12 text-center text-[13px] text-muted-foreground">
                 {t("review.noMatchingRows")}
               </p>
             ) : (
               <div className="divide-y overflow-hidden rounded-2xl border bg-card">
+                {runningBalances.trailingDbCount > 0 && (
+                  <div className="flex items-center justify-between gap-2 bg-warning/5 px-3.5 py-2 text-[11.5px]">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (runningBalances.trailingDbRecords.length === 1) {
+                          setInspectRecordId(
+                            runningBalances.trailingDbRecords[0]!.id,
+                          );
+                        } else {
+                          setExpandedDbProposalId(proposalId);
+                        }
+                      }}
+                      className="flex items-center gap-1.5 text-left font-medium text-warning hover:underline"
+                    >
+                      <Database className="size-3 shrink-0" />
+                      <span>
+                        {t("review.trailingDbNotice", {
+                          count: String(runningBalances.trailingDbCount),
+                          delta: `${runningBalances.trailingDbDeltaMinor > 0 ? "+" : ""}${formatMoneyText(locale, runningBalances.trailingDbDeltaMinor / MINOR_UNIT, currency, { tone: "plain" })}`,
+                        })}
+                      </span>
+                      <ChevronRight className="size-3 shrink-0" />
+                    </button>
+                    <span className="num shrink-0 font-semibold text-foreground">
+                      {formatMoneyText(
+                        locale,
+                        runningBalances.finalBalanceMinor / MINOR_UNIT,
+                        currency,
+                        { tone: "plain" },
+                      )}
+                    </span>
+                  </div>
+                )}
+
                 {filteredRows.map((row) => {
                   const typeCats =
                     row.type === "INCOME"
@@ -698,6 +867,96 @@ export function StatementReviewSheet({
                       Math.sign(ot.amountMinor) === -Math.sign(row.amountMinor),
                   );
 
+                  const rowBalance = runningBalances.byUid[row.uid] ?? null;
+                  const stmtBalDiffMinor =
+                    rowBalance && rowBalance.statementBalanceAfterMinor != null
+                      ? rowBalance.projectedBalanceAfterMinor -
+                        rowBalance.statementBalanceAfterMinor
+                      : null;
+                  const hasStmtMismatch =
+                    stmtBalDiffMinor != null && stmtBalDiffMinor !== 0;
+
+                  const runningBalanceTitle = rowBalance
+                    ? [
+                        t("review.runningBalanceLabel"),
+                        rowBalance.statementBalanceAfterMinor != null
+                          ? t("review.statementBalanceLabel", {
+                              balance: formatMoneyText(
+                                locale,
+                                rowBalance.statementBalanceAfterMinor /
+                                  MINOR_UNIT,
+                                currency,
+                                { tone: "plain" },
+                              ),
+                            })
+                          : null,
+                        hasStmtMismatch
+                          ? t("review.statementBalanceDiff", {
+                              diff: `${stmtBalDiffMinor > 0 ? "+" : ""}${formatMoneyText(locale, stmtBalDiffMinor / MINOR_UNIT, currency, { tone: "plain" })}`,
+                            })
+                          : null,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")
+                    : undefined;
+
+                  const renderSignedAmount = () =>
+                    row.type === "TRANSFER" ? (
+                      <span className="num text-[15px] font-semibold whitespace-nowrap text-foreground/85">
+                        {row.amountMinor > 0 ? "+" : ""}
+                        {formatMoneyText(
+                          locale,
+                          row.amountMinor / MINOR_UNIT,
+                          currency,
+                          { tone: "plain" },
+                        )}
+                      </span>
+                    ) : (
+                      <Money
+                        value={row.amountMinor / MINOR_UNIT}
+                        currency={currency}
+                        kind={row.type}
+                        tone="movement"
+                        size="row"
+                        weight="semibold"
+                      />
+                    );
+
+                  const renderRunningBalanceLine = () =>
+                    rowBalance ? (
+                      <div className="mt-0.5 flex flex-col items-end">
+                        <span
+                          title={runningBalanceTitle}
+                          className={cn(
+                            "num text-[11.5px] leading-tight whitespace-nowrap",
+                            hasStmtMismatch
+                              ? "font-medium text-warning"
+                              : "text-muted-foreground/80",
+                          )}
+                        >
+                          {formatMoneyText(
+                            locale,
+                            rowBalance.projectedBalanceAfterMinor / MINOR_UNIT,
+                            currency,
+                            { tone: "plain" },
+                          )}
+                        </span>
+                        {hasStmtMismatch &&
+                          rowBalance.statementBalanceAfterMinor != null && (
+                            <span className="num text-[10.5px] leading-tight whitespace-nowrap text-warning/90">
+                              vs{" "}
+                              {formatMoneyText(
+                                locale,
+                                rowBalance.statementBalanceAfterMinor /
+                                  MINOR_UNIT,
+                                currency,
+                                { tone: "plain" },
+                              )}
+                            </span>
+                          )}
+                      </div>
+                    ) : null;
+
                   return (
                     <div
                       key={row.uid}
@@ -706,9 +965,9 @@ export function StatementReviewSheet({
                         !row.selected && "bg-muted/25 opacity-60",
                       )}
                     >
-                      {/* Checkbox + Date */}
-                      <div className="flex items-center justify-between gap-2 sm:pt-1">
-                        <div className="flex items-center gap-2.5">
+                      {/* Checkbox + Date/Time + Mobile Amount/Balance */}
+                      <div className="flex items-start justify-between gap-2 sm:pt-1">
+                        <div className="flex items-start gap-2.5">
                           <Checkbox
                             disabled={isReadOnly}
                             checked={row.selected}
@@ -716,21 +975,23 @@ export function StatementReviewSheet({
                               updateRow(row.uid, { selected: Boolean(v) })
                             }
                             aria-label={row.description}
+                            className="mt-0.5"
                           />
-                          <span className="num text-[12px] font-medium text-muted-foreground sm:w-20">
-                            {row.date}
-                          </span>
+                          <div className="sm:w-20">
+                            <span className="num block text-[12px] font-medium text-muted-foreground">
+                              {row.date}
+                            </span>
+                            {row.time && (
+                              <span className="num block text-[11px] text-muted-foreground/75">
+                                {row.time}
+                              </span>
+                            )}
+                          </div>
                         </div>
-                        {/* Mobile amount */}
-                        <div className="sm:hidden">
-                          <Money
-                            value={row.amountMinor / MINOR_UNIT}
-                            currency={currency}
-                            kind={row.type}
-                            tone="movement"
-                            size="row"
-                            weight="semibold"
-                          />
+                        {/* Mobile amount + live running balance */}
+                        <div className="text-right sm:hidden">
+                          {renderSignedAmount()}
+                          {renderRunningBalanceLine()}
                         </div>
                       </div>
 
@@ -741,12 +1002,24 @@ export function StatementReviewSheet({
                           <span className="text-[13px] font-semibold text-foreground">
                             {row.description}
                           </span>
-                          {row.isDuplicate && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
-                              <Check className="size-3" />
-                              {t("review.alreadyRecorded")}
-                            </span>
-                          )}
+                          {row.isDuplicate &&
+                            (row.duplicateRecordId != null ? (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setInspectRecordId(row.duplicateRecordId)
+                                }
+                                className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                              >
+                                <Check className="size-3" />
+                                {t("review.alreadyRecorded")}
+                              </button>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+                                <Check className="size-3" />
+                                {t("review.alreadyRecorded")}
+                              </span>
+                            ))}
                           {row.type !== "TRANSFER" &&
                             (row.payeeMatchKind === "EXACT" ||
                               row.payeeMatchKind === "FUZZY" ||
@@ -761,6 +1034,24 @@ export function StatementReviewSheet({
                                 {t("review.payeeNew")}
                               </span>
                             )}
+                          {row.type === "TRANSFER" && !isReadOnly && (
+                            <button
+                              type="button"
+                              onClick={() => handleFlipTransferDirection(row)}
+                              title={t("review.flipTransferDirection")}
+                              className={cn(
+                                "inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium transition-colors hover:bg-accent",
+                                row.amountMinor > 0
+                                  ? "border-positive/30 bg-positive/10 text-positive"
+                                  : "border-border bg-background text-muted-foreground",
+                              )}
+                            >
+                              <ArrowLeftRight className="size-2.5" />
+                              {row.amountMinor > 0
+                                ? t("review.transferInShort")
+                                : t("review.transferOutShort")}
+                            </button>
+                          )}
                           {row.type === "TRANSFER" &&
                             row.transferMode === "LINK_EXISTING" &&
                             row.matchedTransferInfo && (
@@ -779,7 +1070,87 @@ export function StatementReviewSheet({
                                 {t("review.unmatchedTransferBadge")}
                               </span>
                             )}
+                          {rowBalance && rowBalance.extraDbCount > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (rowBalance.extraDbRecords.length === 1) {
+                                  setInspectRecordId(
+                                    rowBalance.extraDbRecords[0]!.id,
+                                  );
+                                } else {
+                                  setExpandedExtraRowUid((cur) =>
+                                    cur === row.uid ? null : row.uid,
+                                  );
+                                }
+                              }}
+                              className="num inline-flex items-center gap-1 rounded-full bg-warning/15 px-2 py-0.5 text-[11px] font-medium text-warning transition-colors hover:bg-warning/25"
+                            >
+                              <Database className="size-2.5" />
+                              {t("review.extraDbBeforeRow", {
+                                count: String(rowBalance.extraDbCount),
+                                delta: `${rowBalance.extraDbDeltaMinor > 0 ? "+" : ""}${formatMoneyText(locale, rowBalance.extraDbDeltaMinor / MINOR_UNIT, currency, { tone: "plain" })}`,
+                              })}
+                              {rowBalance.extraDbRecords.length > 1 ? (
+                                expandedExtraRowUid === row.uid ? (
+                                  <ChevronUp className="size-3" />
+                                ) : (
+                                  <ChevronDown className="size-3" />
+                                )
+                              ) : (
+                                <ChevronRight className="size-3" />
+                              )}
+                            </button>
+                          )}
                         </div>
+
+                        {/* Inline picker when multiple unmatched Firecent DB records landed before this row */}
+                        {rowBalance &&
+                          rowBalance.extraDbRecords.length > 1 &&
+                          expandedExtraRowUid === row.uid && (
+                            <div className="divide-y overflow-hidden rounded-xl border border-warning/30 bg-warning/5">
+                              {[...rowBalance.extraDbRecords]
+                                .reverse()
+                                .map((rec) => (
+                                  <button
+                                    key={rec.id}
+                                    type="button"
+                                    onClick={() => setInspectRecordId(rec.id)}
+                                    className="flex w-full items-center justify-between gap-2 px-2.5 py-1.5 text-left text-[12px] transition-colors hover:bg-warning/15"
+                                  >
+                                    <div className="flex min-w-0 items-center gap-2">
+                                      <span className="num shrink-0 text-[11px] text-muted-foreground">
+                                        {rec.date}
+                                      </span>
+                                      <span className="truncate font-medium text-foreground">
+                                        {rec.label}
+                                      </span>
+                                    </div>
+                                    <span className="flex shrink-0 items-center gap-1">
+                                      <span
+                                        className={cn(
+                                          "num font-semibold",
+                                          rec.amountMinor > 0
+                                            ? "text-positive"
+                                            : rec.amountMinor < 0
+                                              ? "text-destructive"
+                                              : "text-muted-foreground",
+                                        )}
+                                      >
+                                        {rec.amountMinor > 0 ? "+" : ""}
+                                        {formatMoneyText(
+                                          locale,
+                                          rec.amountMinor / MINOR_UNIT,
+                                          currency,
+                                          { tone: "plain" },
+                                        )}
+                                      </span>
+                                      <ChevronRight className="size-3.5 text-muted-foreground" />
+                                    </span>
+                                  </button>
+                                ))}
+                            </div>
+                          )}
 
                         {/* Row 2: Inline controls grid */}
                         <div className="grid grid-cols-1 gap-2 sm:grid-cols-12">
@@ -948,25 +1319,59 @@ export function StatementReviewSheet({
                         )}
                       </div>
 
-                      {/* Desktop amount */}
+                      {/* Desktop amount + live running balance */}
                       <div className="hidden shrink-0 pt-0.5 text-right sm:block sm:w-28">
-                        <Money
-                          value={row.amountMinor / MINOR_UNIT}
-                          currency={currency}
-                          kind={row.type}
-                          tone="movement"
-                          size="row"
-                          weight="semibold"
-                        />
-                        {row.time && (
-                          <span className="num block text-[11px] text-muted-foreground">
-                            {row.time}
-                          </span>
-                        )}
+                        {renderSignedAmount()}
+                        {renderRunningBalanceLine()}
                       </div>
                     </div>
                   );
                 })}
+
+                {/* Opening balance anchor row at bottom of timeline */}
+                {rows.length > 0 && (
+                  <div className="flex flex-wrap items-center justify-between gap-2 bg-muted/35 px-3.5 py-2.5 text-[12px]">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-muted-foreground">
+                      <span className="font-medium">
+                        {t("review.openingBalanceRow", {
+                          date:
+                            query.data?.runningBalanceLedger?.periodStartDate ??
+                            rows[rows.length - 1]!.date,
+                        })}
+                      </span>
+                      {liveSummary.statementOpeningBalanceMinor != null && (
+                        <span
+                          className={cn(
+                            "num text-[11px]",
+                            liveSummary.statementOpeningBalanceMinor !==
+                              runningBalances.openingDbBalanceMinor
+                              ? "font-medium text-warning"
+                              : "text-positive",
+                          )}
+                        >
+                          ·{" "}
+                          {t("review.statementOpeningCompare", {
+                            balance: formatMoneyText(
+                              locale,
+                              liveSummary.statementOpeningBalanceMinor /
+                                MINOR_UNIT,
+                              currency,
+                              { tone: "plain" },
+                            ),
+                          })}
+                        </span>
+                      )}
+                    </div>
+                    <span className="num font-semibold text-foreground">
+                      {formatMoneyText(
+                        locale,
+                        runningBalances.openingDbBalanceMinor / MINOR_UNIT,
+                        currency,
+                        { tone: "plain" },
+                      )}
+                    </span>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -1050,71 +1455,84 @@ export function StatementReviewSheet({
     </div>
   );
 
+  const detailSheet = (
+    <TransactionDetailSheet
+      recordId={activeInspectRecordId}
+      onClose={() => setInspectRecordId(null)}
+    />
+  );
+
   if (isDesktop) {
     return (
-      <DialogPrimitive.Root
+      <>
+        <DialogPrimitive.Root
+          open={open}
+          onOpenChange={(next) => {
+            if (!next) onClose();
+          }}
+        >
+          <DialogPrimitive.Portal>
+            <DialogPrimitive.Backdrop className="fixed inset-0 z-[38] bg-[#0b1220]/50 transition-opacity duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0" />
+            <DialogPrimitive.Popup className="fixed top-1/2 left-1/2 z-[39] flex h-[88dvh] w-[min(980px,calc(100%-2rem))] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-3xl border bg-card text-card-foreground shadow-xl outline-none transition duration-200 data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0">
+              <div className="flex h-14 shrink-0 items-center justify-between gap-3 border-b px-6">
+                <DialogPrimitive.Title className="truncate text-[17px] font-semibold">
+                  {t("review.title")}
+                </DialogPrimitive.Title>
+                <DialogPrimitive.Close
+                  render={
+                    <Button
+                      variant="ghost"
+                      size="icon-touch"
+                      aria-label={t("review.close")}
+                    />
+                  }
+                >
+                  <X aria-hidden />
+                </DialogPrimitive.Close>
+              </div>
+              {content}
+            </DialogPrimitive.Popup>
+          </DialogPrimitive.Portal>
+        </DialogPrimitive.Root>
+        {detailSheet}
+      </>
+    );
+  }
+
+  return (
+    <>
+      <DrawerPrimitive.Root
         open={open}
         onOpenChange={(next) => {
           if (!next) onClose();
         }}
       >
-        <DialogPrimitive.Portal>
-          <DialogPrimitive.Backdrop className="fixed inset-0 z-40 bg-[#0b1220]/50 transition-opacity duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0" />
-          <DialogPrimitive.Popup className="fixed top-1/2 left-1/2 z-50 flex h-[88dvh] w-[min(980px,calc(100%-2rem))] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-3xl border bg-card text-card-foreground shadow-xl outline-none transition duration-200 data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0">
-            <div className="flex h-14 shrink-0 items-center justify-between gap-3 border-b px-6">
-              <DialogPrimitive.Title className="truncate text-[17px] font-semibold">
+        <DrawerPrimitive.Portal>
+          <DrawerPrimitive.Overlay className="fixed inset-0 z-[38] bg-[#0b1220]/50" />
+          <DrawerPrimitive.Content className="fixed inset-x-0 bottom-0 z-[39] mx-auto flex h-[94dvh] max-w-[560px] flex-col overflow-hidden rounded-t-3xl bg-card text-card-foreground shadow-xl outline-none">
+            <div
+              aria-hidden
+              className="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-muted-foreground/30"
+            />
+            <div className="flex h-12 shrink-0 items-center justify-between border-b px-4">
+              <DrawerPrimitive.Title className="truncate text-[16px] font-semibold">
                 {t("review.title")}
-              </DialogPrimitive.Title>
-              <DialogPrimitive.Close
-                render={
-                  <Button
-                    variant="ghost"
-                    size="icon-touch"
-                    aria-label={t("review.close")}
-                  />
-                }
-              >
-                <X aria-hidden />
-              </DialogPrimitive.Close>
+              </DrawerPrimitive.Title>
+              <DrawerPrimitive.Close asChild>
+                <Button
+                  variant="ghost"
+                  size="icon-touch"
+                  aria-label={t("review.close")}
+                >
+                  <X aria-hidden />
+                </Button>
+              </DrawerPrimitive.Close>
             </div>
             {content}
-          </DialogPrimitive.Popup>
-        </DialogPrimitive.Portal>
-      </DialogPrimitive.Root>
-    );
-  }
-
-  return (
-    <DrawerPrimitive.Root
-      open={open}
-      onOpenChange={(next) => {
-        if (!next) onClose();
-      }}
-    >
-      <DrawerPrimitive.Portal>
-        <DrawerPrimitive.Overlay className="fixed inset-0 z-40 bg-[#0b1220]/50" />
-        <DrawerPrimitive.Content className="fixed inset-x-0 bottom-0 z-50 mx-auto flex h-[94dvh] max-w-[560px] flex-col overflow-hidden rounded-t-3xl bg-card text-card-foreground shadow-xl outline-none">
-          <div
-            aria-hidden
-            className="mx-auto mt-2 h-1 w-9 shrink-0 rounded-full bg-muted-foreground/30"
-          />
-          <div className="flex h-12 shrink-0 items-center justify-between border-b px-4">
-            <DrawerPrimitive.Title className="truncate text-[16px] font-semibold">
-              {t("review.title")}
-            </DrawerPrimitive.Title>
-            <DrawerPrimitive.Close asChild>
-              <Button
-                variant="ghost"
-                size="icon-touch"
-                aria-label={t("review.close")}
-              >
-                <X aria-hidden />
-              </Button>
-            </DrawerPrimitive.Close>
-          </div>
-          {content}
-        </DrawerPrimitive.Content>
-      </DrawerPrimitive.Portal>
-    </DrawerPrimitive.Root>
+          </DrawerPrimitive.Content>
+        </DrawerPrimitive.Portal>
+      </DrawerPrimitive.Root>
+      {detailSheet}
+    </>
   );
 }

@@ -128,6 +128,52 @@ export type ReconciledRow = {
   matchedTransferRecordId: number | null;
   matchedTransferInfo: MatchedTransferInfo | null;
   transferAccountId: number | null;
+  /** Optional statement-printed running balance after this row (Firecent signed minor units). */
+  statementRunningBalanceMinor?: number | null;
+};
+
+export type ExistingPeriodRecord = {
+  id: number;
+  date: string;
+  time: string | null;
+  amountMinor: number;
+  label: string;
+  transfer: boolean;
+};
+
+export type RunningBalanceLedger = {
+  /** Exact Firecent DB balance strictly before `periodRecords` (including undated records). */
+  openingDbBalanceMinor: number;
+  /** Earliest date covered by this ledger window (YYYY-MM-DD). */
+  periodStartDate: string | null;
+  /** Latest date covered by this ledger window (YYYY-MM-DD). */
+  periodEndDate: string | null;
+  /** Existing DB records on this account within the statement window. */
+  periodRecords: ExistingPeriodRecord[];
+};
+
+export type RowRunningBalanceInfo = {
+  /** Projected Firecent account balance right after this row (minor units). */
+  projectedBalanceAfterMinor: number;
+  /** Statement-printed balance after this row, if extracted (signed minor units). */
+  statementBalanceAfterMinor: number | null;
+  /** Net delta of unmatched Firecent DB records that fell between the previous statement row and this row. */
+  extraDbDeltaMinor: number;
+  /** Count of unmatched Firecent DB records that fell right before this row. */
+  extraDbCount: number;
+  /** The exact unmatched Firecent DB records that fell right before this row. */
+  extraDbRecords: ExistingPeriodRecord[];
+};
+
+export type ProposalRunningBalancesResult = {
+  byUid: Record<string, RowRunningBalanceInfo>;
+  openingDbBalanceMinor: number;
+  unmatchedDbRecords: ExistingPeriodRecord[];
+  unmatchedDbNetMinor: number;
+  trailingDbDeltaMinor: number;
+  trailingDbCount: number;
+  trailingDbRecords: ExistingPeriodRecord[];
+  finalBalanceMinor: number;
 };
 
 export type StatementInternalAudit = {
@@ -338,5 +384,202 @@ export function recomputeReconciliationSummary(
     projectedCurrentBalanceMinor,
     discrepancyMinor,
     status,
+  };
+}
+
+/**
+ * Computes the exact projected Firecent running balance after every proposal row
+ * in chronological order (oldest -> newest), merging existing DB records in the
+ * statement window with currently selected proposal rows.
+ *
+ * Mathematical invariant:
+ *   openingDbBalanceMinor + sum(ledger.periodRecords) + selectedDeltaMinor
+ *     === dbBalanceAtPeriodEndMinor + selectedDeltaMinor
+ *     === finalBalanceMinor (projectedBalanceMinor)
+ */
+export function computeProposalRunningBalances(
+  rows: ReconciledRow[],
+  ledger: RunningBalanceLedger | null | undefined,
+  summary: ReconciliationSummary | null | undefined,
+): ProposalRunningBalancesResult {
+  if (rows.length === 0) {
+    const opening =
+      ledger?.openingDbBalanceMinor ?? summary?.dbBalanceAtPeriodEndMinor ?? 0;
+    return {
+      byUid: {},
+      openingDbBalanceMinor: opening,
+      unmatchedDbRecords: ledger?.periodRecords ?? [],
+      unmatchedDbNetMinor: (ledger?.periodRecords ?? []).reduce(
+        (acc, r) => acc + r.amountMinor,
+        0,
+      ),
+      trailingDbDeltaMinor: 0,
+      trailingDbCount: 0,
+      trailingDbRecords: [],
+      finalBalanceMinor: opening,
+    };
+  }
+
+  // Fallback when ledger isn't available yet: derive opening balance from summary
+  if (!ledger) {
+    const baseEnd = summary?.dbBalanceAtPeriodEndMinor ?? 0;
+    let running = baseEnd;
+    // Walk newest -> oldest backwards from projected end balance
+    const selectedTotal = rows.reduce(
+      (acc, r) => (r.selected ? acc + r.amountMinor : acc),
+      0,
+    );
+    running = baseEnd + selectedTotal;
+    const byUid: Record<string, RowRunningBalanceInfo> = {};
+    for (const row of rows) {
+      byUid[row.uid] = {
+        projectedBalanceAfterMinor: running,
+        statementBalanceAfterMinor: row.statementRunningBalanceMinor ?? null,
+        extraDbDeltaMinor: 0,
+        extraDbCount: 0,
+        extraDbRecords: [],
+      };
+      if (row.selected) {
+        running -= row.amountMinor;
+      }
+    }
+    return {
+      byUid,
+      openingDbBalanceMinor: running,
+      unmatchedDbRecords: [],
+      unmatchedDbNetMinor: 0,
+      trailingDbDeltaMinor: 0,
+      trailingDbCount: 0,
+      trailingDbRecords: [],
+      finalBalanceMinor: baseEnd + selectedTotal,
+    };
+  }
+
+  // Partition existing DB period records into:
+  // 1) Matched to a proposal duplicate row (anchored at that row's exact spot)
+  // 2) Unmatched DB records in Firecent during the period (merged chronologically)
+  const dbRecordById = new Map<number, ExistingPeriodRecord>();
+  for (const rec of ledger.periodRecords) {
+    dbRecordById.set(rec.id, rec);
+  }
+
+  const claimedDbIds = new Set<number>();
+  const rowAnchoredDb = new Map<string, ExistingPeriodRecord>();
+  for (const row of rows) {
+    if (
+      row.isDuplicate &&
+      row.duplicateRecordId != null &&
+      !claimedDbIds.has(row.duplicateRecordId)
+    ) {
+      const rec = dbRecordById.get(row.duplicateRecordId);
+      if (rec) {
+        claimedDbIds.add(rec.id);
+        rowAnchoredDb.set(row.uid, rec);
+      }
+    }
+  }
+
+  const unmatchedDbRecords = ledger.periodRecords.filter(
+    (rec) => !claimedDbIds.has(rec.id),
+  );
+  const unmatchedDbNetMinor = unmatchedDbRecords.reduce(
+    (acc, r) => acc + r.amountMinor,
+    0,
+  );
+
+  // Build unified chronological timeline (oldest -> newest).
+  // `rows` is displayed newest-first, so its chronological tie-breaker is `rows.length - 1 - idx`.
+  type TimelineEvent =
+    | {
+        kind: "db";
+        date: string;
+        time: string;
+        order: number;
+        rec: ExistingPeriodRecord;
+      }
+    | {
+        kind: "row";
+        date: string;
+        time: string;
+        order: number;
+        row: ReconciledRow;
+        anchoredDb: ExistingPeriodRecord | null;
+      };
+
+  const events: TimelineEvent[] = [];
+  for (const rec of unmatchedDbRecords) {
+    events.push({
+      kind: "db",
+      date: rec.date,
+      time: rec.time ?? "",
+      order: rec.id,
+      rec,
+    });
+  }
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i]!;
+    events.push({
+      kind: "row",
+      date: row.date,
+      time: row.time ?? "",
+      order: rows.length - 1 - i,
+      row,
+      anchoredDb: rowAnchoredDb.get(row.uid) ?? null,
+    });
+  }
+
+  events.sort((a, b) => {
+    const dCmp = a.date.localeCompare(b.date);
+    if (dCmp !== 0) return dCmp;
+    const tCmp = a.time.localeCompare(b.time);
+    if (tCmp !== 0) return tCmp;
+    if (a.kind !== b.kind) return a.kind === "db" ? -1 : 1;
+    return a.order - b.order;
+  });
+
+  let running = ledger.openingDbBalanceMinor;
+  let pendingExtraDbDelta = 0;
+  let pendingExtraDbCount = 0;
+  let pendingExtraDbRecords: ExistingPeriodRecord[] = [];
+  const byUid: Record<string, RowRunningBalanceInfo> = {};
+
+  for (const ev of events) {
+    if (ev.kind === "db") {
+      running += ev.rec.amountMinor;
+      pendingExtraDbDelta += ev.rec.amountMinor;
+      pendingExtraDbCount += 1;
+      pendingExtraDbRecords.push(ev.rec);
+    } else {
+      // Anchored DB record is already in Firecent (counted once whether selected or not).
+      if (ev.anchoredDb) {
+        running += ev.anchoredDb.amountMinor;
+      }
+      // Selected proposal row will be inserted into Firecent.
+      if (ev.row.selected) {
+        running += ev.row.amountMinor;
+      }
+      byUid[ev.row.uid] = {
+        projectedBalanceAfterMinor: running,
+        statementBalanceAfterMinor:
+          ev.row.statementRunningBalanceMinor ?? null,
+        extraDbDeltaMinor: pendingExtraDbDelta,
+        extraDbCount: pendingExtraDbCount,
+        extraDbRecords: pendingExtraDbRecords,
+      };
+      pendingExtraDbDelta = 0;
+      pendingExtraDbCount = 0;
+      pendingExtraDbRecords = [];
+    }
+  }
+
+  return {
+    byUid,
+    openingDbBalanceMinor: ledger.openingDbBalanceMinor,
+    unmatchedDbRecords,
+    unmatchedDbNetMinor,
+    trailingDbDeltaMinor: pendingExtraDbDelta,
+    trailingDbCount: pendingExtraDbCount,
+    trailingDbRecords: pendingExtraDbRecords,
+    finalBalanceMinor: running,
   };
 }

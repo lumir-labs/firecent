@@ -32,6 +32,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "@/i18n/navigation";
 import { useShell } from "../shell/shell-context";
 import { TransactionDetailSheet } from "../../transactions/_components/transaction-detail-sheet";
+import { CardCyclesTimeline } from "./card-cycles-timeline";
 
 function getGreetingKey(): "morning" | "afternoon" | "evening" {
   const h = new Date().getHours();
@@ -239,6 +240,14 @@ export function HomeView({ userName }: { userName: string }) {
               )}
             </Link>
 
+            {/* Credit cards cycle timeline (cutoff, payment due & estimated interest) */}
+            {data.cardTimeline.length > 0 && (
+              <CardCyclesTimeline
+                cards={data.cardTimeline}
+                primaryCurrency={primaryCurrency}
+              />
+            )}
+
             {/* Coming up (next 7 days) */}
             <section className="flex flex-col gap-3">
               <SectionHeader title={t("comingUp")} />
@@ -248,20 +257,33 @@ export function HomeView({ userName }: { userName: string }) {
                     {t("nothingDue")}
                   </p>
                 ) : (
-                  data.upcoming.map((item) => (
-                    <UpcomingRow
-                      key={item.id}
-                      date={item.date}
-                      title={item.title}
-                      amount={item.amount}
-                      currency={item.currency}
-                      kind="EXPENSE"
-                      subtitle={t("cardPayment")}
-                      mode="due"
-                      dueInDays={item.dueInDays}
-                      href={`/accounts/${item.accountId}`}
-                    />
-                  ))
+                  data.upcoming.map((item) => {
+                    const minText = formatMoneyText(
+                      locale,
+                      item.minPayment,
+                      item.currency,
+                      { tone: "plain" },
+                    );
+                    const subtitle =
+                      item.minPayment > 0
+                        ? t("upcomingMinOnly", { min: minText })
+                        : t("cardPayment");
+
+                    return (
+                      <UpcomingRow
+                        key={item.id}
+                        date={item.date}
+                        title={item.title}
+                        amount={item.amount}
+                        currency={item.currency}
+                        kind="EXPENSE"
+                        subtitle={subtitle}
+                        mode="due"
+                        dueInDays={item.dueInDays}
+                        href={`/accounts/${item.accountId}`}
+                      />
+                    );
+                  })
                 )}
               </Card>
             </section>

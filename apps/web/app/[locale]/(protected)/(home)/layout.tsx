@@ -63,11 +63,11 @@ export default async function Layout({
         user={shellUser}
         canAccessAdmin={canAccessAdmin}
       >
-        <div className="flex min-h-dvh w-full overflow-x-clip bg-background text-foreground">
+        <div className="flex min-h-dvh w-full overflow-x-clip bg-background text-foreground lg:h-dvh lg:overflow-hidden">
           <AppSidebar user={shellUser} canAccessAdmin={canAccessAdmin} />
           <div
             data-scroll-container
-            className="flex min-h-dvh min-w-0 flex-1 flex-col lg:h-dvh lg:overflow-y-auto"
+            className="flex min-h-dvh min-w-0 flex-1 flex-col lg:h-full lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain"
           >
             <MobileTopBar />
             <main className="mx-auto w-full max-w-[560px] flex-1 pb-28 lg:max-w-[1120px] lg:px-8 lg:pb-12">

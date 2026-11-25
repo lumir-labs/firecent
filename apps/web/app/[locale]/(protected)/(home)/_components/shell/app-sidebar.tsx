@@ -83,7 +83,7 @@ export function AppSidebar({
   return (
     <aside
       aria-label={t("navigation")}
-      className="hidden h-dvh w-60 shrink-0 flex-col border-r bg-sidebar px-3 py-4 lg:flex"
+      className="hidden h-full w-60 shrink-0 flex-col border-r bg-sidebar px-3 py-4 lg:flex"
     >
       {/* Space selector (E1) */}
       <div className="mb-3">
@@ -102,7 +102,7 @@ export function AppSidebar({
       </Button>
 
       {/* Main navigation */}
-      <nav className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto">
+      <nav className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto overscroll-contain">
         {PRIMARY_NAV.map(({ key, href, icon: Icon }) => {
           const active = isRouteActive(pathname, href);
           return (
