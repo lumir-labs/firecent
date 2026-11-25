@@ -9,6 +9,7 @@ import {
   CheckCircle2,
   Link2,
   Loader2,
+  RefreshCw,
   Search,
   Sparkles,
   Tag,
@@ -70,9 +71,23 @@ export function StatementReviewSheet({
   const open = Boolean(proposalId);
 
   const query = trpc.assistant.getProposal.useQuery(
-    { proposalId: proposalId ?? "" },
+    { proposalId: proposalId ?? "", locale: locale === "en" ? "en" : "es" },
     { enabled: Boolean(proposalId), staleTime: 0 },
   );
+
+  const reconcileMutation = trpc.assistant.reconcileProposal.useMutation({
+    onSuccess: async () => {
+      setDraft(null);
+      await Promise.all([
+        utils.assistant.getProposal.invalidate({
+          proposalId: proposalId ?? "",
+        }),
+        utils.assistant.getThread.invalidate(),
+      ]);
+      toast.success(t("blocks.refreshedToast"));
+    },
+    onError: (err) => toast.error(err.message),
+  });
 
   const [draft, setDraft] = useState<{
     proposalId: string;
@@ -363,63 +378,20 @@ export function StatementReviewSheet({
         </div>
       ) : (
         <>
-          {/* Sticky reconciliation summary strip */}
-          <div className="shrink-0 border-b bg-muted/30 px-4 py-3 sm:px-6">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2.5">
-                <AccountSwatch
-                  type={liveSummary.accountType as AccountType}
-                  color={liveSummary.accountColor}
-                  size="sm"
-                />
-                <div>
-                  <p className="text-[14px] font-semibold">
+          {/* Slim sticky live-balance bar (~44px tall so mobile has full scroll area) */}
+          <div className="flex shrink-0 items-center justify-between gap-2 border-b bg-muted/40 px-4 py-2 sm:px-6">
+            <div className="flex min-w-0 items-center gap-2">
+              <AccountSwatch
+                type={liveSummary.accountType as AccountType}
+                color={liveSummary.accountColor}
+                size="sm"
+              />
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-baseline gap-x-2 text-[12px]">
+                  <span className="truncate font-semibold text-foreground">
                     {liveSummary.accountName}
-                    {liveSummary.accountLast4
-                      ? ` ·· ${liveSummary.accountLast4}`
-                      : ""}
-                  </p>
-                  <p className="num text-[12px] text-muted-foreground">
-                    {liveSummary.statementPeriodFrom &&
-                    liveSummary.statementPeriodTo
-                      ? `${liveSummary.statementPeriodFrom} → ${liveSummary.statementPeriodTo}`
-                      : liveSummary.sourceFiles.join(", ")}
-                  </p>
-                </div>
-              </div>
-
-              {/* Live balance numbers */}
-              <div className="flex flex-wrap items-center gap-3 text-[12px] sm:gap-5">
-                <div>
-                  <span className="block text-[11px] text-muted-foreground">
-                    {t("blocks.dbBalance")}
                   </span>
-                  <Money
-                    value={liveSummary.dbBalanceAtPeriodEndMinor / MINOR_UNIT}
-                    currency={currency}
-                    weight="semibold"
-                    className="text-[13px]"
-                  />
-                </div>
-                <div>
-                  <span className="block text-[11px] text-muted-foreground">
-                    {t("review.selectedDelta")}
-                  </span>
-                  <Money
-                    value={liveSummary.selectedDeltaMinor / MINOR_UNIT}
-                    currency={currency}
-                    tone="movement"
-                    kind={
-                      liveSummary.selectedDeltaMinor >= 0 ? "INCOME" : "EXPENSE"
-                    }
-                    weight="semibold"
-                    className="text-[13px]"
-                  />
-                </div>
-                <div>
-                  <span className="block text-[11px] text-muted-foreground">
-                    {t("blocks.projectedBalance")}
-                  </span>
+                  <span className="text-muted-foreground">→</span>
                   <Money
                     value={liveSummary.projectedBalanceMinor / MINOR_UNIT}
                     currency={currency}
@@ -430,35 +402,121 @@ export function StatementReviewSheet({
                       isGap && "text-warning",
                     )}
                   />
-                </div>
-                {liveSummary.statementClosingBalanceMinor != null && (
-                  <div>
-                    <span className="block text-[11px] text-muted-foreground">
-                      {t("blocks.statementClosing")}
+                  {liveSummary.statementClosingBalanceMinor != null && (
+                    <span className="hidden text-[11px] text-muted-foreground sm:inline">
+                      ({t("blocks.statementClosing")}:{" "}
+                      <Money
+                        value={
+                          liveSummary.statementClosingBalanceMinor / MINOR_UNIT
+                        }
+                        currency={currency}
+                      />
+                      )
                     </span>
-                    <Money
-                      value={
-                        liveSummary.statementClosingBalanceMinor / MINOR_UNIT
-                      }
-                      currency={currency}
-                      weight="semibold"
-                      className="text-[13px]"
-                    />
-                  </div>
-                )}
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex shrink-0 items-center gap-1.5">
+              {isMatched && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-positive/15 px-2 py-0.5 text-[11px] font-semibold text-positive">
+                  <CheckCircle2 className="size-3" />
+                  {t("blocks.balanceMatchedBadge")}
+                </span>
+              )}
+              {isGap && liveSummary.discrepancyMinor != null && (
+                <span className="num inline-flex items-center gap-1 rounded-full bg-warning/15 px-2 py-0.5 text-[11px] font-semibold text-warning">
+                  <AlertTriangle className="size-3" />
+                  {liveSummary.discrepancyMinor > 0 ? "+" : ""}
+                  {(liveSummary.discrepancyMinor / MINOR_UNIT).toFixed(2)}
+                </span>
+              )}
+              {!isReadOnly && proposalId && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  disabled={reconcileMutation.isPending}
+                  onClick={() =>
+                    reconcileMutation.mutate({
+                      proposalId,
+                      locale: locale === "en" ? "en" : "es",
+                    })
+                  }
+                  aria-label={t("blocks.refreshBalance")}
+                  title={t("blocks.refreshBalance")}
+                  className="size-8 rounded-lg text-muted-foreground hover:text-foreground"
+                >
+                  <RefreshCw
+                    className={cn(
+                      "size-3.5",
+                      reconcileMutation.isPending && "animate-spin",
+                    )}
+                  />
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {/* Unified smooth scroll area (details + filters + transaction rows scroll together on mobile!) */}
+          <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-3 sm:px-6">
+            {/* Compact balance breakdown */}
+            <div className="grid grid-cols-3 divide-x overflow-hidden rounded-xl border bg-muted/25 text-center">
+              <div className="px-2 py-2">
+                <span className="block text-[11px] text-muted-foreground">
+                  {t("blocks.dbBalance")}
+                </span>
+                <Money
+                  value={liveSummary.dbBalanceAtPeriodEndMinor / MINOR_UNIT}
+                  currency={currency}
+                  weight="semibold"
+                  className="text-[13px]"
+                />
+              </div>
+              <div className="px-2 py-2">
+                <span className="block text-[11px] text-muted-foreground">
+                  {t("review.selectedDelta")}
+                </span>
+                <Money
+                  value={liveSummary.selectedDeltaMinor / MINOR_UNIT}
+                  currency={currency}
+                  tone="movement"
+                  kind={
+                    liveSummary.selectedDeltaMinor >= 0 ? "INCOME" : "EXPENSE"
+                  }
+                  weight="semibold"
+                  className="text-[13px]"
+                />
+              </div>
+              <div className="px-2 py-2">
+                <span className="block text-[11px] text-muted-foreground">
+                  {liveSummary.statementClosingBalanceMinor != null
+                    ? t("blocks.statementClosing")
+                    : t("blocks.projectedBalance")}
+                </span>
+                <Money
+                  value={
+                    (liveSummary.statementClosingBalanceMinor ??
+                      liveSummary.projectedBalanceMinor) / MINOR_UNIT
+                  }
+                  currency={currency}
+                  weight="semibold"
+                  className="text-[13px]"
+                />
               </div>
             </div>
 
             {/* Balance status banner */}
             {isMatched && (
-              <div className="mt-2.5 flex items-center gap-2 rounded-xl bg-positive/10 px-3 py-2 text-[12px] font-medium text-positive">
+              <div className="flex items-center gap-2 rounded-xl bg-positive/10 px-3 py-2 text-[12px] font-medium text-positive">
                 <CheckCircle2 className="size-4 shrink-0" />
                 <span>{t("review.balanceExactMatch")}</span>
               </div>
             )}
 
             {isGap && liveSummary.discrepancyMinor != null && (
-              <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-warning/30 bg-warning/10 px-3 py-2 text-[12px]">
+              <div className="space-y-2 rounded-xl border border-warning/30 bg-warning/10 p-3 text-[12px]">
                 <div className="flex items-start gap-2 text-warning">
                   <AlertTriangle className="mt-0.5 size-4 shrink-0" />
                   <div>
@@ -467,13 +525,13 @@ export function StatementReviewSheet({
                         diff: `${liveSummary.discrepancyMinor > 0 ? "+" : ""}${(liveSummary.discrepancyMinor / MINOR_UNIT).toFixed(2)} ${currency}`,
                       })}
                     </p>
-                    <p className="text-[11px] opacity-90">
+                    <p className="mt-0.5 text-[11px] opacity-90">
                       {t("review.balanceGapHint")}
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  {!isReadOnly && (
+                {!isReadOnly && (
+                  <div className="flex flex-wrap items-center gap-2">
                     <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-card px-2.5 py-1.5 text-[12px] font-medium text-foreground ring-1 ring-border">
                       <Checkbox
                         checked={includeAdjustment}
@@ -481,8 +539,6 @@ export function StatementReviewSheet({
                       />
                       <span>{t("review.addBalanceAdjustment")}</span>
                     </label>
-                  )}
-                  {!isReadOnly && (
                     <Button
                       type="button"
                       variant="outline"
@@ -496,14 +552,14 @@ export function StatementReviewSheet({
                       <Upload className="mr-1.5 size-3.5" />
                       {t("blocks.uploadPrevious")}
                     </Button>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             )}
 
-            {/* Search & filter chips */}
-            <div className="mt-3 flex flex-wrap items-center gap-2">
-              <div className="relative min-w-[200px] flex-1">
+            {/* Search & single-row horizontal filter chips */}
+            <div className="space-y-2">
+              <div className="relative">
                 <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   value={search}
@@ -512,64 +568,85 @@ export function StatementReviewSheet({
                   className="h-9 rounded-xl bg-card pl-9 text-[13px]"
                 />
               </div>
-              <div className="flex flex-wrap gap-1.5">
-                {(
-                  [
-                    ["all", t("review.tabs.all", { count: String(counts.all) })],
-                    ["new", t("review.tabs.new", { count: String(counts.new) })],
-                    ...(counts.duplicates > 0
-                      ? [
-                          [
-                            "duplicates",
-                            t("review.tabs.duplicates", {
-                              count: String(counts.duplicates),
-                            }),
-                          ] as const,
-                        ]
-                      : []),
-                    ...(counts.transfers > 0
-                      ? [
-                          [
-                            "transfers",
-                            t("review.tabs.transfers", {
-                              count: String(counts.transfers),
-                            }),
-                          ] as const,
-                        ]
-                      : []),
-                    ...(counts.uncategorized > 0
-                      ? [
-                          [
-                            "uncategorized",
-                            t("review.tabs.uncategorized", {
-                              count: String(counts.uncategorized),
-                            }),
-                          ] as const,
-                        ]
-                      : []),
-                  ] as const
-                ).map(([key, label]) => (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => setTab(key)}
-                    className={cn(
-                      "h-8 rounded-full border px-3 text-[12px] font-medium transition-colors",
-                      tab === key
-                        ? "border-transparent bg-foreground text-background"
-                        : "bg-card text-foreground hover:bg-accent",
-                    )}
-                  >
-                    {label}
-                  </button>
-                ))}
+              <div className="flex items-center gap-2">
+                <div className="flex min-w-0 flex-1 flex-nowrap gap-1.5 overflow-x-auto pb-0.5">
+                  {(
+                    [
+                      ["all", t("review.tabs.all", { count: String(counts.all) })],
+                      ["new", t("review.tabs.new", { count: String(counts.new) })],
+                      ...(counts.duplicates > 0
+                        ? [
+                            [
+                              "duplicates",
+                              t("review.tabs.duplicates", {
+                                count: String(counts.duplicates),
+                              }),
+                            ] as const,
+                          ]
+                        : []),
+                      ...(counts.transfers > 0
+                        ? [
+                            [
+                              "transfers",
+                              t("review.tabs.transfers", {
+                                count: String(counts.transfers),
+                              }),
+                            ] as const,
+                          ]
+                        : []),
+                      ...(counts.uncategorized > 0
+                        ? [
+                            [
+                              "uncategorized",
+                              t("review.tabs.uncategorized", {
+                                count: String(counts.uncategorized),
+                              }),
+                            ] as const,
+                          ]
+                        : []),
+                    ] as const
+                  ).map(([key, label]) => (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setTab(key)}
+                      className={cn(
+                        "h-8 shrink-0 rounded-full border px-3 text-[12px] font-medium whitespace-nowrap transition-colors",
+                        tab === key
+                          ? "border-transparent bg-foreground text-background"
+                          : "bg-card text-foreground hover:bg-accent",
+                      )}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                {!isReadOnly && (
+                  <div className="hidden shrink-0 items-center gap-2 text-[12px] sm:flex">
+                    <button
+                      type="button"
+                      onClick={selectAllNew}
+                      className="font-medium text-primary-text hover:underline"
+                    >
+                      {t("review.selectNew")}
+                    </button>
+                    <span className="text-muted-foreground">·</span>
+                    <button
+                      type="button"
+                      onClick={deselectAll}
+                      className="font-medium text-muted-foreground hover:text-foreground"
+                    >
+                      {t("review.deselectAll")}
+                    </button>
+                  </div>
+                )}
               </div>
               {!isReadOnly && (
-                <div className="ml-auto flex items-center gap-2 text-[12px]">
+                <div className="flex items-center justify-end gap-2 text-[12px] sm:hidden">
                   <button
                     type="button"
                     onClick={selectAllNew}
-                    className="font-medium text-primary-text hover:underline"
+                    className="font-medium text-primary-text"
                   >
                     {t("review.selectNew")}
                   </button>
@@ -577,17 +654,14 @@ export function StatementReviewSheet({
                   <button
                     type="button"
                     onClick={deselectAll}
-                    className="font-medium text-muted-foreground hover:text-foreground"
+                    className="font-medium text-muted-foreground"
                   >
                     {t("review.deselectAll")}
                   </button>
                 </div>
               )}
             </div>
-          </div>
 
-          {/* Scrollable rows list */}
-          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3 sm:px-6">
             <datalist id="assistant-existing-payees">
               {payeesList.map((p) => (
                 <option key={p.id} value={p.name} />
@@ -897,8 +971,8 @@ export function StatementReviewSheet({
             )}
           </div>
 
-          {/* Sticky footer */}
-          <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t bg-card px-4 py-3 sm:px-6">
+          {/* Sticky footer with mobile safe-area inset */}
+          <div className="flex shrink-0 flex-col gap-2 border-t bg-card px-4 pt-2.5 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-6 sm:py-3">
             <div className="text-[12px] text-muted-foreground">
               <span className="font-semibold text-foreground">
                 {t("review.footerSelected", {
@@ -930,7 +1004,7 @@ export function StatementReviewSheet({
                 {t("review.close")}
               </Button>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex w-full items-center gap-2 sm:w-auto">
                 <Button
                   type="button"
                   variant="outline"
@@ -959,7 +1033,7 @@ export function StatementReviewSheet({
                       includeBalanceAdjustment: includeAdjustment,
                     });
                   }}
-                  className="h-10 rounded-xl px-4 text-[13px] font-semibold"
+                  className="h-10 flex-1 rounded-xl px-4 text-[13px] font-semibold sm:flex-none"
                 >
                   {applyMutation.isPending && (
                     <Loader2 className="mr-1.5 size-4 animate-spin" />

@@ -48,7 +48,10 @@ export function AmountKeypad({
 
   return (
     <div
-      className={cn("grid grid-cols-3 gap-1 select-none", className)}
+      className={cn(
+        "grid grid-cols-3 grid-rows-[repeat(4,minmax(2.75rem,1fr))] gap-1.5 select-none",
+        className,
+      )}
       role="group"
     >
       {KEYS.map((key) => (
@@ -57,7 +60,7 @@ export function AmountKeypad({
           type="button"
           aria-label={key === "back" ? backspaceLabel : key}
           onClick={() => press(key)}
-          className="num flex h-10 items-center justify-center rounded-xl bg-muted/60 text-[18px] font-medium text-foreground transition-colors active:bg-accent"
+          className="num flex h-full min-h-11 items-center justify-center rounded-xl bg-muted/60 text-[20px] font-medium text-foreground transition-colors active:bg-accent"
         >
           {key === "back" ? <Delete className="size-5" aria-hidden /> : key}
         </button>

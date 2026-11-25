@@ -1204,20 +1204,20 @@ function AddTransactionBody({
         </div>
       )}
 
-      {/* Compact mobile keypad + primary Save CTA (anchored to thumb zone on tall mobile drawer) */}
-      <div className="flex flex-col gap-3 max-lg:mt-auto max-lg:pt-2">
+      {/* Mobile keypad (fills leftover vertical space, scrolls at min-height) + Save CTA */}
+      <div className="flex flex-col gap-3 max-lg:flex-1 max-lg:pt-1">
         <AmountKeypad
           value={amountStr}
           onChange={setAmountStr}
           backspaceLabel={t("backspace")}
-          className="lg:hidden"
+          className="max-lg:flex-1 lg:hidden"
         />
 
         <Button
           type="submit"
           size="touch"
           disabled={!canSave || isPending}
-          className="w-full"
+          className="w-full shrink-0"
         >
           {isPending ? t("saving") : saveLabel}
         </Button>

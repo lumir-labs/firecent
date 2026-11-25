@@ -9,6 +9,7 @@ import {
   FileSpreadsheet,
   Link2,
   ListChecks,
+  RefreshCw,
   RotateCcw,
   Sparkles,
   Upload,
@@ -45,8 +46,10 @@ export type AssistantUiBlocksProps = {
   proposalStates: ProposalStateMap;
   selectingProposalId?: string | null;
   undoingProposalId?: string | null;
+  refreshingProposalId?: string | null;
   onSelectAccount: (proposalId: string, accountId: number) => void;
   onOpenProposal: (proposalId: string) => void;
+  onRefreshProposal: (proposalId: string) => void;
   onDismissProposal: (proposalId: string) => void;
   onUndoProposal: (proposalId: string) => void;
   onTriggerUpload: () => void;
@@ -58,8 +61,10 @@ export function AssistantUiBlocks({
   proposalStates,
   selectingProposalId,
   undoingProposalId,
+  refreshingProposalId,
   onSelectAccount,
   onOpenProposal,
+  onRefreshProposal,
   onDismissProposal,
   onUndoProposal,
   onTriggerUpload,
@@ -471,6 +476,24 @@ export function AssistantUiBlocks({
                           {t("blocks.uploadPrevious")}
                         </Button>
                       )}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        disabled={refreshingProposalId === block.proposalId}
+                        onClick={() => onRefreshProposal(block.proposalId)}
+                        aria-label={t("blocks.refreshBalance")}
+                        title={t("blocks.refreshBalance")}
+                        className="size-9 rounded-xl text-muted-foreground hover:text-foreground"
+                      >
+                        <RefreshCw
+                          className={cn(
+                            "size-4",
+                            refreshingProposalId === block.proposalId &&
+                              "animate-spin",
+                          )}
+                        />
+                      </Button>
                       <Button
                         type="button"
                         variant="ghost"

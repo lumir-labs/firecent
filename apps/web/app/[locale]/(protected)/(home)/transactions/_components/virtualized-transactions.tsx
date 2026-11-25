@@ -4,13 +4,19 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useVirtualizer, useWindowVirtualizer } from "@tanstack/react-virtual";
 
+import { ArrowLeftRight } from "lucide-react";
+
 import {
+  AccountDot,
   CategoryIcon,
   DayHeader,
   Money,
   TransactionRow,
+  TransferAccountsStack,
+  TransferTypePill,
   formatMoneyText,
   localizeCategoryName,
+  resolveTransferFlow,
 } from "@/components/finance";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -75,7 +81,7 @@ const MOBILE_DAY_ESTIMATE = 44;
 const MOBILE_TX_ESTIMATE = 68;
 
 const DESKTOP_COLS =
-  "grid grid-cols-[2.5rem_6.5rem_minmax(0,1.45fr)_minmax(0,0.85fr)_minmax(0,0.85fr)_9.5rem] items-center gap-3 px-4";
+  "grid grid-cols-[2.5rem_6.5rem_minmax(0,1.35fr)_minmax(0,0.75fr)_minmax(0,1fr)_9.5rem] items-center gap-3 px-4";
 
 type MobileEntry =
   | { kind: "day"; key: string; date: string; first: boolean }
@@ -150,6 +156,7 @@ function DesktopVirtualizedTable({
 }: VirtualizedTransactionsProps) {
   const locale = useLocale();
   const t = useTranslations("TransactionsV2");
+  const tRow = useTranslations("Finance.row");
 
   const listRef = useRef<HTMLDivElement>(null);
   const [scrollEl, setScrollEl] = useState<HTMLElement | null>(null);
@@ -246,13 +253,32 @@ function DesktopVirtualizedTable({
           {virtualItems.map((v) => {
             const r = rows[v.index];
             if (!r) return null;
+            const isTransfer = r.transfer || r.type === "TRANSFER";
+            const flow = isTransfer
+              ? resolveTransferFlow(r.amount, r.account, r.transferAccount)
+              : null;
             const catName = r.category
               ? localizeCategoryName(r.category, locale)
               : null;
-            const title =
-              r.transfer && r.transferAccount
-                ? `${r.account.name} → ${r.transferAccount.name}`
-                : r.payee || catName || r.note || r.account.name;
+            const transferHeadline = flow
+              ? flow.direction === "out" && flow.to
+                ? tRow("transferToAccount", { account: flow.to.name })
+                : flow.direction === "in" && flow.from
+                  ? tRow("transferFromAccount", { account: flow.from.name })
+                  : flow.direction === "out"
+                    ? tRow("transferOut")
+                    : tRow("transferIn")
+              : null;
+            const title = isTransfer
+              ? r.note || transferHeadline || tRow("transfer")
+              : r.payee || catName || r.note || r.account.name;
+            const subtitle = isTransfer
+              ? r.note
+                ? transferHeadline
+                : null
+              : r.note && r.payee
+                ? r.note
+                : null;
             const isSelected = selectedSet.has(r.id);
 
             return (
@@ -261,10 +287,17 @@ function DesktopVirtualizedTable({
                 data-index={v.index}
                 ref={virtualizer.measureElement}
                 role="row"
+                tabIndex={0}
                 onClick={() => onRowClick(r.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onRowClick(r.id);
+                  }
+                }}
                 className={cn(
                   DESKTOP_COLS,
-                  "absolute top-0 left-0 w-full cursor-pointer border-b border-border/60 py-2.5 transition-colors hover:bg-accent/50",
+                  "absolute top-0 left-0 w-full cursor-pointer border-b border-border/60 py-2.5 transition-colors hover:bg-accent/50 focus-visible:bg-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
                   isSelected && "bg-accent/40",
                 )}
                 style={{
@@ -275,6 +308,7 @@ function DesktopVirtualizedTable({
                   role="cell"
                   className="flex items-center"
                   onClick={(e) => e.stopPropagation()}
+                  onKeyDown={(e) => e.stopPropagation()}
                 >
                   <Checkbox
                     aria-label={title}
@@ -292,18 +326,26 @@ function DesktopVirtualizedTable({
 
                 <div role="cell" className="min-w-0">
                   <div className="flex items-center gap-2.5">
-                    <CategoryIcon
-                      icon={r.category?.icon}
-                      color={r.category?.color}
-                      size="sm"
-                    />
+                    {isTransfer ? (
+                      <CategoryIcon
+                        icon={ArrowLeftRight}
+                        variant="transfer"
+                        size="sm"
+                      />
+                    ) : (
+                      <CategoryIcon
+                        icon={r.category?.icon}
+                        color={r.category?.color}
+                        size="sm"
+                      />
+                    )}
                     <div className="min-w-0">
-                      <p className="truncate text-[14px] font-medium leading-snug">
+                      <p className="truncate text-[14px] font-medium leading-snug text-foreground">
                         {title}
                       </p>
-                      {r.note && r.payee && (
+                      {subtitle && (
                         <p className="truncate text-[12px] text-muted-foreground">
-                          {r.note}
+                          {subtitle}
                         </p>
                       )}
                     </div>
@@ -314,26 +356,21 @@ function DesktopVirtualizedTable({
                   role="cell"
                   className="min-w-0 truncate text-[13px] text-muted-foreground"
                 >
-                  {catName ?? "—"}
+                  {isTransfer ? <TransferTypePill /> : (catName ?? "—")}
                 </div>
 
                 <div
                   role="cell"
-                  className="flex min-w-0 items-center gap-1.5 text-[13px] text-muted-foreground"
+                  className="min-w-0 text-[13px] text-muted-foreground"
                 >
-                  <span
-                    aria-hidden
-                    className={cn(
-                      "size-2 shrink-0 rounded-full",
-                      !r.account.color && "bg-muted-foreground/40",
-                    )}
-                    style={
-                      r.account.color
-                        ? { backgroundColor: r.account.color }
-                        : undefined
-                    }
-                  />
-                  <span className="truncate">{r.account.name}</span>
+                  {isTransfer && flow ? (
+                    <TransferAccountsStack flow={flow} size="compact" />
+                  ) : (
+                    <span className="flex min-w-0 items-center gap-1.5">
+                      <AccountDot color={r.account.color} size="sm" />
+                      <span className="truncate">{r.account.name}</span>
+                    </span>
+                  )}
                 </div>
 
                 <div
@@ -345,12 +382,13 @@ function DesktopVirtualizedTable({
                     currency={r.currency}
                     size="row"
                     tone="movement"
-                    kind={r.transfer ? "TRANSFER" : r.type}
+                    kind={isTransfer ? "TRANSFER" : r.type}
+                    weight={isTransfer ? "medium" : "semibold"}
                   />
                   {r.balance !== null && (
                     <span
                       title={t("balanceAfter")}
-                      className="num mt-0.5 text-[12px] leading-none text-muted-foreground"
+                      className="num mt-0.5 text-[11.5px] leading-tight text-muted-foreground/75"
                     >
                       {formatMoneyText(locale, r.balance, r.currency, {
                         tone: "plain",
@@ -472,13 +510,20 @@ function MobileVirtualizedList({
                 >
                   {(() => {
                     const r = entry.tx;
+                    const isTransfer = r.transfer || r.type === "TRANSFER";
+                    const flow = isTransfer
+                      ? resolveTransferFlow(
+                          r.amount,
+                          r.account,
+                          r.transferAccount,
+                        )
+                      : undefined;
                     const catName = r.category
                       ? localizeCategoryName(r.category, locale)
                       : null;
-                    const title =
-                      r.transfer && r.transferAccount
-                        ? `${r.account.name} → ${r.transferAccount.name}`
-                        : r.payee || catName || r.note || r.account.name;
+                    const title = isTransfer
+                      ? r.note || r.account.name
+                      : r.payee || catName || r.note || r.account.name;
 
                     return (
                       <TransactionRow
@@ -490,12 +535,15 @@ function MobileVirtualizedList({
                                 name: catName,
                                 color: r.category.color,
                               }
-                            : { icon: null, name: r.account.name }
+                            : { icon: null, name: t("detail.uncategorized") }
                         }
                         account={r.account.name}
+                        accountColor={r.account.color}
+                        transfer={flow}
+                        note={isTransfer ? r.note : undefined}
                         amount={r.amount}
                         currency={r.currency}
-                        kind={r.transfer ? "TRANSFER" : r.type}
+                        kind={isTransfer ? "TRANSFER" : r.type}
                         secondary={
                           r.balance !== null
                             ? formatMoneyText(locale, r.balance, r.currency, {

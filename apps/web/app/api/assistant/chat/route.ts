@@ -1,5 +1,9 @@
 import z from "zod";
-import { runAssistantTurn, type StreamEvent } from "@app/api/assistant";
+import {
+  startDetachedAssistantTurn,
+  subscribeToRun,
+  type AssistantStreamEvent,
+} from "@app/api/assistant";
 import { preparedAttachmentSchema } from "@app/api/assistant-types";
 import { getServerSession, resolveSessionOrgId } from "@/lib/auth";
 
@@ -37,7 +41,10 @@ export async function POST(req: Request) {
   const parsed = chatRequestSchema.safeParse(body);
   if (!parsed.success) {
     return Response.json(
-      { error: "Invalid request payload", issues: parsed.error.issues.slice(0, 5) },
+      {
+        error: "Invalid request payload",
+        issues: parsed.error.issues.slice(0, 5),
+      },
       { status: 400 },
     );
   }
@@ -50,58 +57,77 @@ export async function POST(req: Request) {
     );
   }
 
+  // Starts the run DETACHED on the server: closing the phone/tab will NOT kill it!
+  const started = await startDetachedAssistantTurn({
+    orgId,
+    userId: session.user.id,
+    threadId: threadId ?? null,
+    message,
+    attachments: attachments ?? [],
+    locale,
+  });
+
   const encoder = new TextEncoder();
 
   const stream = new ReadableStream<Uint8Array>({
-    async start(controller) {
+    start(controller) {
       let closed = false;
-      const send = (event: StreamEvent) => {
+      let unsubscribe = () => {};
+      let keepAlive: ReturnType<typeof setInterval> | null = null;
+
+      const finishStream = () => {
+        if (closed) return;
+        closed = true;
+        unsubscribe();
+        if (keepAlive) clearInterval(keepAlive);
+        try {
+          controller.close();
+        } catch {
+          // Already closed
+        }
+      };
+
+      const send = (event: AssistantStreamEvent) => {
         if (closed) return;
         try {
           controller.enqueue(
             encoder.encode(`data: ${JSON.stringify(event)}\n\n`),
           );
         } catch {
-          closed = true;
+          finishStream();
+          return;
+        }
+        if (
+          event.type === "done" ||
+          event.type === "error" ||
+          event.type === "already_done"
+        ) {
+          finishStream();
         }
       };
 
-      // Keep-alive comment every 12s while NVIDIA NIM is reasoning/extracting
-      const keepAlive = setInterval(() => {
+      // Immediately notify client of threadId so sidebar & resume URL are synced
+      send({
+        type: "thread",
+        threadId: started.threadId,
+        title: started.threadTitle,
+      });
+
+      keepAlive = setInterval(() => {
         if (closed) return;
         try {
           controller.enqueue(encoder.encode(": ping\n\n"));
         } catch {
-          closed = true;
+          finishStream();
         }
       }, 12_000);
 
-      try {
-        await runAssistantTurn({
-          orgId,
-          userId: session.user.id,
-          threadId: threadId ?? null,
-          message,
-          attachments: attachments ?? [],
-          locale,
-          signal: req.signal,
-          emit: send,
-        });
-      } catch (err) {
-        const msg =
-          err instanceof Error ? err.message : "Assistant request failed";
-        send({ type: "error", message: msg });
-      } finally {
-        clearInterval(keepAlive);
-        if (!closed) {
-          closed = true;
-          try {
-            controller.close();
-          } catch {
-            // Stream already closed by client abort
-          }
-        }
-      }
+      unsubscribe = subscribeToRun(started.run, send);
+
+      // Client disconnecting ONLY unsubscribes this SSE stream; the server job keeps running!
+      req.signal.addEventListener("abort", () => {
+        finishStream();
+      });
     },
   });
 

@@ -24,6 +24,7 @@ import {
   UpcomingRow,
   formatMoneyText,
   localizeCategoryName,
+  resolveTransferFlow,
 } from "@/components/finance";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -47,6 +48,7 @@ function currentMonthStr() {
 export function HomeView({ userName }: { userName: string }) {
   const locale = useLocale();
   const t = useTranslations("HomeV2");
+  const tTx = useTranslations("TransactionsV2");
   const tShell = useTranslations("Shell");
   const { activeSpace, openAddTransaction } = useShell();
   const [detailId, setDetailId] = useState<number | null>(null);
@@ -370,26 +372,39 @@ export function HomeView({ userName }: { userName: string }) {
                     {t("noRecent")}
                   </p>
                 ) : (
-                  data.recent.map((r) => (
-                    <TransactionRow
-                      key={r.id}
-                      title={r.title}
-                      category={
-                        r.category
-                          ? {
-                              icon: r.category.icon,
-                              name: localizeCategoryName(r.category, locale),
-                              color: r.category.color,
-                            }
-                          : { icon: null, name: r.accountName }
-                      }
-                      account={r.accountName}
-                      amount={r.amount}
-                      currency={r.currency}
-                      kind={r.type}
-                      onClick={() => setDetailId(r.id)}
-                    />
-                  ))
+                  data.recent.map((r) => {
+                    const isTransfer = r.transfer || r.type === "TRANSFER";
+                    const flow = isTransfer
+                      ? resolveTransferFlow(
+                          r.amount,
+                          { name: r.accountName, color: r.accountColor },
+                          r.transferAccount,
+                        )
+                      : undefined;
+                    return (
+                      <TransactionRow
+                        key={r.id}
+                        title={r.title}
+                        category={
+                          r.category
+                            ? {
+                                icon: r.category.icon,
+                                name: localizeCategoryName(r.category, locale),
+                                color: r.category.color,
+                              }
+                            : { icon: null, name: tTx("detail.uncategorized") }
+                        }
+                        account={r.accountName}
+                        accountColor={r.accountColor}
+                        transfer={flow}
+                        note={isTransfer ? r.note : undefined}
+                        amount={r.amount}
+                        currency={r.currency}
+                        kind={isTransfer ? "TRANSFER" : r.type}
+                        onClick={() => setDetailId(r.id)}
+                      />
+                    );
+                  })
                 )}
               </Card>
             </section>

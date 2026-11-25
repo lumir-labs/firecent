@@ -1,4 +1,4 @@
-import { Lock } from "lucide-react";
+import { ArrowLeftRight, Lock } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
@@ -10,6 +10,11 @@ import { cn } from "@/lib/utils";
 
 import { CategoryIcon } from "./category-icon";
 import { Money } from "./money";
+import {
+  AccountDot,
+  TransferAccountsStack,
+  type TransferFlow,
+} from "./transfer-flow";
 import type { ColorName, TransactionKind } from "./types";
 
 export type TransactionRowProps = {
@@ -22,6 +27,12 @@ export type TransactionRowProps = {
   };
   /** Account name, or "From a private account" for another member's private transfer. */
   account: string;
+  /** Optional account dot color for non-transfer rows. */
+  accountColor?: string | null;
+  /** Structured origin/destination for transfers (renders dedicated De/A stack). */
+  transfer?: TransferFlow;
+  /** Optional note line (used for transfer notes on mobile rows). */
+  note?: string | null;
   /** Major units, signed (D1). */
   amount: number;
   currency: string;
@@ -49,14 +60,17 @@ export type TransactionRowProps = {
 };
 
 /**
- * N2 — transaction row. Category tile, title, meta (date · category ·
- * [lock] account [avatar]) and the amount, whose sign and color come from
+ * N2 — transaction row. Category/transfer tile, title (or Origin -> Destination
+ * stack for transfers), meta and the amount, whose sign and color come from
  * `Money tone="movement"`.
  */
 export function TransactionRow({
   title,
   category,
   account,
+  accountColor,
+  transfer,
+  note,
   amount,
   currency,
   kind,
@@ -73,48 +87,87 @@ export function TransactionRow({
   className,
 }: TransactionRowProps) {
   const t = useTranslations("Finance.row");
+  const isTransfer = kind === "TRANSFER";
+  const showTransferStack = isTransfer && transfer && (transfer.from || transfer.to);
 
   const body = (
     <>
-      <CategoryIcon icon={category.icon} color={category.color} size="md" />
+      {isTransfer ? (
+        <CategoryIcon icon={ArrowLeftRight} variant="transfer" size="md" />
+      ) : (
+        <CategoryIcon icon={category.icon} color={category.color} size="md" />
+      )}
       <span className="min-w-0 flex-1">
-        <span className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5">
-          <span
-            className={cn(
-              "truncate font-medium",
-              excluded && "text-muted-foreground line-through",
+        {showTransferStack ? (
+          <>
+            <span className={cn(excluded && "opacity-60 line-through")}>
+              <TransferAccountsStack flow={transfer} size="row" />
+            </span>
+            {(date || note || tags || addedBy) && (
+              <span className="mt-1 flex min-w-0 items-center gap-1.5 text-[12px] text-muted-foreground">
+                {date && <span className="shrink-0">{date}</span>}
+                {date && note && <span aria-hidden="true">·</span>}
+                {note && <span className="min-w-0 truncate">{note}</span>}
+                {tags}
+                {addedBy && (
+                  <Avatar
+                    size="xs"
+                    color={addedBy.color ?? "DEFAULT"}
+                    role="img"
+                    aria-label={t("addedBy", { name: addedBy.name })}
+                    title={addedBy.name}
+                    className="ml-0.5 after:hidden"
+                  >
+                    <AvatarFallback aria-hidden>{addedBy.initial}</AvatarFallback>
+                  </Avatar>
+                )}
+              </span>
             )}
-          >
-            {title}
-          </span>
-          {tags}
-        </span>
-        <span className="mt-0.5 flex min-w-0 items-center gap-1.5 text-[12px] text-muted-foreground">
-          {date && (
-            <>
-              <span className="shrink-0">{date}</span>
+          </>
+        ) : (
+          <>
+            <span className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5">
+              <span
+                className={cn(
+                  "truncate font-medium",
+                  excluded && "text-muted-foreground line-through",
+                )}
+              >
+                {title}
+              </span>
+              {tags}
+            </span>
+            <span className="mt-0.5 flex min-w-0 items-center gap-1.5 text-[12px] text-muted-foreground">
+              {date && (
+                <>
+                  <span className="shrink-0">{date}</span>
+                  <span aria-hidden="true">·</span>
+                </>
+              )}
+              <span className="min-w-0 shrink truncate">{category.name}</span>
               <span aria-hidden="true">·</span>
-            </>
-          )}
-          <span className="min-w-0 shrink truncate">{category.name}</span>
-          <span aria-hidden="true">·</span>
-          {isPrivate && (
-            <Lock aria-label={t("privateAccount")} role="img" className="size-3 shrink-0" />
-          )}
-          <span className="min-w-0 truncate">{account}</span>
-          {addedBy && (
-            <Avatar
-              size="xs"
-              color={addedBy.color ?? "DEFAULT"}
-              role="img"
-              aria-label={t("addedBy", { name: addedBy.name })}
-              title={addedBy.name}
-              className="ml-0.5 after:hidden"
-            >
-              <AvatarFallback aria-hidden>{addedBy.initial}</AvatarFallback>
-            </Avatar>
-          )}
-        </span>
+              {isPrivate && (
+                <Lock aria-label={t("privateAccount")} role="img" className="size-3 shrink-0" />
+              )}
+              {accountColor !== undefined && (
+                <AccountDot color={accountColor} size="xs" />
+              )}
+              <span className="min-w-0 truncate">{account}</span>
+              {addedBy && (
+                <Avatar
+                  size="xs"
+                  color={addedBy.color ?? "DEFAULT"}
+                  role="img"
+                  aria-label={t("addedBy", { name: addedBy.name })}
+                  title={addedBy.name}
+                  className="ml-0.5 after:hidden"
+                >
+                  <AvatarFallback aria-hidden>{addedBy.initial}</AvatarFallback>
+                </Avatar>
+              )}
+            </span>
+          </>
+        )}
       </span>
       <span className="shrink-0 text-right">
         <Money
@@ -130,7 +183,7 @@ export function TransactionRow({
         {!converted && secondary && (
           <span
             title={secondaryTitle}
-            className="num block text-[12px] text-muted-foreground"
+            className="num mt-0.5 block text-[11.5px] leading-tight text-muted-foreground/75"
           >
             {secondary}
           </span>

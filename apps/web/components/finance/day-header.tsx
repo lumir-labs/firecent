@@ -61,7 +61,12 @@ export function DayHeader({
     >
       <Heading className="first-letter:uppercase">{text}</Heading>
       {/* Expenses stay muted here; only money in turns green. */}
-      <Money value={net} currency={currency} tone="movement" />
+      <Money
+        value={net}
+        currency={currency}
+        tone="movement"
+        className={net < 0 ? "text-muted-foreground" : undefined}
+      />
     </div>
   );
 }

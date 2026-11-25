@@ -7,7 +7,12 @@ import {
   applyStatementProposalBatch,
   undoStatementProposalBatch,
 } from "../assistant/reconciliation";
-import { resolveProposalAccountDeterministic } from "../assistant/orchestrator";
+import {
+  cancelActiveRunForUser,
+  isThreadRunningForUser,
+  reconcileProposalWithLiveDb,
+  resolveProposalAccountDeterministic,
+} from "../assistant/orchestrator";
 import {
   recomputeReconciliationSummary,
   type AssistantUiBlock,
@@ -133,14 +138,23 @@ export const assistantRouter = router({
         ]);
 
       return {
-        threads: threads.map((t) => ({
-          id: t.id,
-          title: t.title,
-          messageCount: t._count.messages,
-          activeProposal: t.proposals[0] ?? null,
-          updatedAt: t.updatedAt.toISOString(),
-          createdAt: t.createdAt.toISOString(),
-        })),
+        threads: threads.map((t) => {
+          const runState = isThreadRunningForUser({
+            threadId: t.id,
+            orgId,
+            userId,
+          });
+          return {
+            id: t.id,
+            title: t.title,
+            messageCount: t._count.messages,
+            activeProposal: t.proposals[0] ?? null,
+            isRunning: runState.running,
+            runningStartedAt: runState.startedAt,
+            updatedAt: t.updatedAt.toISOString(),
+            createdAt: t.createdAt.toISOString(),
+          };
+        }),
         unmatchedTransferCount,
         pendingProposalCount,
       };
@@ -149,7 +163,12 @@ export const assistantRouter = router({
   /** Loads a thread with its messages and current proposal states (1 parallel batch). */
   getThread: protectedProcedure
     .use(requirePermission(p.dashboard.basic))
-    .input(z.object({ threadId: z.string().min(1) }))
+    .input(
+      z.object({
+        threadId: z.string().min(1),
+        locale: z.enum(["es", "en"]).default("es"),
+      }),
+    )
     .query(async ({ ctx, input }) => {
       const { orgId, userId } = requireOrgAndUser(
         ctx.orgId,
@@ -201,6 +220,30 @@ export const assistantRouter = router({
         throw new TRPCError({ code: "NOT_FOUND", message: "Thread not found" });
       }
 
+      // Auto-sync any PENDING proposal whose account's live DB balance changed
+      // (e.g. user manually added a missing $50 entry outside the assistant).
+      const pendingWithAcc = thread.proposals.filter(
+        (p) => p.status === "PENDING" && p.accountId != null,
+      );
+      const liveBalanceByAcc = new Map<number, number>();
+      if (pendingWithAcc.length > 0) {
+        const accIds = [
+          ...new Set(pendingWithAcc.map((p) => p.accountId as number)),
+        ];
+        const sums = await db.record.groupBy({
+          by: ["accountId"],
+          where: {
+            organizationId: orgId,
+            accountId: { in: accIds },
+            deletedAt: null,
+          },
+          _sum: { amount: true },
+        });
+        for (const s of sums) {
+          liveBalanceByAcc.set(s.accountId, s._sum.amount ?? 0);
+        }
+      }
+
       const proposalStates: Record<
         string,
         {
@@ -215,6 +258,30 @@ export const assistantRouter = router({
 
       for (const prop of thread.proposals) {
         const pData = prop.payload as unknown as ProposalPayload;
+        let summary = pData.summary ?? null;
+
+        if (
+          prop.status === "PENDING" &&
+          prop.accountId != null &&
+          summary &&
+          pData.extracts?.length > 0
+        ) {
+          const liveBal = liveBalanceByAcc.get(prop.accountId) ?? 0;
+          if (liveBal !== summary.currentDbBalanceMinor) {
+            try {
+              const refreshed = await reconcileProposalWithLiveDb({
+                orgId,
+                userId,
+                proposalId: prop.id,
+                locale: input.locale,
+              });
+              summary = refreshed.summary;
+            } catch {
+              // Fall back to saved summary if refresh fails
+            }
+          }
+        }
+
         proposalStates[prop.id] = {
           id: prop.id,
           status: prop.status,
@@ -222,14 +289,22 @@ export const assistantRouter = router({
           appliedAt: prop.appliedAt ? prop.appliedAt.toISOString() : null,
           appliedCount:
             pData.appliedMeta?.appliedCount ?? prop.appliedRecordIds.length,
-          summary: pData.summary ?? null,
+          summary,
         };
       }
+
+      const runState = isThreadRunningForUser({
+        threadId: thread.id,
+        orgId,
+        userId,
+      });
 
       return {
         id: thread.id,
         title: thread.title,
         activeAccountId: thread.activeAccountId,
+        isRunning: runState.running,
+        runningStartedAt: runState.startedAt,
         updatedAt: thread.updatedAt.toISOString(),
         messages: thread.messages.map((m) => ({
           id: m.id,
@@ -328,11 +403,17 @@ export const assistantRouter = router({
 
   /**
    * Loads full editable rows + org reference options for the separate Review Drawer
-   * in ONE parallel batch.
+   * in ONE parallel batch. Automatically re-reconciles PENDING proposals when the
+   * account's live DB balance changed (e.g. user manually added a missing entry).
    */
   getProposal: protectedProcedure
     .use(requirePermission(p.dashboard.basic))
-    .input(z.object({ proposalId: z.string().min(1) }))
+    .input(
+      z.object({
+        proposalId: z.string().min(1),
+        locale: z.enum(["es", "en"]).default("es"),
+      }),
+    )
     .query(async ({ ctx, input }) => {
       const { orgId, userId } = requireOrgAndUser(
         ctx.orgId,
@@ -410,7 +491,38 @@ export const assistantRouter = router({
         });
       }
 
-      const payload = proposal.payload as unknown as ProposalPayload;
+      let payload = proposal.payload as unknown as ProposalPayload;
+
+      // Auto-refresh live DB balance & duplicates if the account changed since proposal creation
+      if (
+        proposal.status === "PENDING" &&
+        proposal.accountId &&
+        payload.extracts?.length > 0 &&
+        payload.summary
+      ) {
+        const liveAgg = await db.record.aggregate({
+          where: {
+            organizationId: orgId,
+            accountId: proposal.accountId,
+            deletedAt: null,
+          },
+          _sum: { amount: true },
+        });
+        const liveBalanceMinor = liveAgg._sum.amount ?? 0;
+        if (liveBalanceMinor !== payload.summary.currentDbBalanceMinor) {
+          const refreshed = await reconcileProposalWithLiveDb({
+            orgId,
+            userId,
+            proposalId: proposal.id,
+            locale: input.locale,
+          });
+          payload = {
+            ...payload,
+            summary: refreshed.summary,
+            rows: refreshed.rows,
+          };
+        }
+      }
 
       return {
         id: proposal.id,
@@ -441,6 +553,53 @@ export const assistantRouter = router({
             })),
         },
       };
+    }),
+
+  /** Explicitly re-reconciles a pending proposal against the live DB (0 LLM tokens!). */
+  reconcileProposal: protectedProcedure
+    .use(requirePermission(p.dashboard.basic))
+    .input(
+      z.object({
+        proposalId: z.string().min(1),
+        locale: z.enum(["es", "en"]).default("es"),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { orgId, userId } = requireOrgAndUser(
+        ctx.orgId,
+        ctx.session?.user.id,
+      );
+      try {
+        return await reconcileProposalWithLiveDb({
+          orgId,
+          userId,
+          proposalId: input.proposalId,
+          locale: input.locale,
+        });
+      } catch (err) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message:
+            err instanceof Error ? err.message : "Failed to refresh proposal",
+        });
+      }
+    }),
+
+  /** Cancels an active detached server-side assistant run (explicit user Stop). */
+  cancelRun: protectedProcedure
+    .use(requirePermission(p.dashboard.basic))
+    .input(z.object({ threadId: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      const { orgId, userId } = requireOrgAndUser(
+        ctx.orgId,
+        ctx.session?.user.id,
+      );
+      const cancelled = cancelActiveRunForUser({
+        threadId: input.threadId,
+        orgId,
+        userId,
+      });
+      return { cancelled };
     }),
 
   /** Saves user edits to a pending proposal draft without applying yet. */

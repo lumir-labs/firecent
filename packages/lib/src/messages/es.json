@@ -993,7 +993,14 @@
     "row": {
       "addedBy": "Agregado por {name}",
       "privateAccount": "Cuenta privada",
-      "excluded": "Excluido"
+      "excluded": "Excluido",
+      "transfer": "Transferencia",
+      "transferFrom": "De",
+      "transferTo": "A",
+      "transferToAccount": "Hacia {account}",
+      "transferFromAccount": "Desde {account}",
+      "transferOut": "Transferencia saliente",
+      "transferIn": "Transferencia entrante"
     },
     "day": {
       "today": "Hoy",
@@ -1186,6 +1193,7 @@
     "detail": {
       "title": "Movimiento",
       "account": "Cuenta",
+      "fromAccount": "Cuenta origen",
       "toAccount": "Cuenta destino",
       "category": "Categoría",
       "uncategorized": "Sin categoría",
@@ -1623,6 +1631,7 @@
     "noThreadsYet": "Aún no tienes conversaciones. Sube un estado de cuenta o haz una pregunta.",
     "messagesCount": "{count} mensajes",
     "pendingTag": "Pendiente",
+    "runningTag": "En curso…",
     "deleteThread": "Eliminar conversación",
     "threadDeleted": "Conversación eliminada",
     "welcomeTitle": "Importa estados de cuenta o pregúntame",
@@ -1696,6 +1705,8 @@
       "transferMatchesCount": "{count} match transf.",
       "unmatchedTransfersCount": "{count} transf. sin contraparte",
       "reviewTransactions": "Revisar transacciones ({count})",
+      "refreshBalance": "Actualizar saldo desde Firecent",
+      "refreshedToast": "Saldo y duplicados actualizados",
       "uploadPrevious": "Subir estado anterior",
       "viewAccount": "Ver cuenta",
       "undoBatch": "Deshacer lote",

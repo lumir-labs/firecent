@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { db, type Prisma } from "@app/db";
 import {
   streamKimiCompletion,
@@ -12,16 +13,38 @@ import {
   type OrgAccountInfo,
 } from "./reconciliation";
 import {
+  cancelActiveRunForUser,
+  getActiveRunForUser,
+  isThreadRunningForUser,
+  pushRunEvent,
+  registerActiveRun,
+  scheduleRunCleanup,
+  subscribeToRun,
+  type ActiveAssistantRun,
+  type AssistantStreamEvent,
+} from "./run-manager";
+import {
   rawStatementExtractSchema,
+  recomputeReconciliationSummary,
   type AssistantTraceStep,
   type AssistantUiBlock,
   type PreparedAttachment,
   type ProposalPayload,
   type RawStatementExtract,
+  type ReconciledRow,
   type ReconciliationSummary,
   type StoredAttachmentMeta,
   type TokenUsageSummary,
 } from "./types";
+
+export {
+  cancelActiveRunForUser,
+  getActiveRunForUser,
+  isThreadRunningForUser,
+  subscribeToRun,
+  type ActiveAssistantRun,
+  type AssistantStreamEvent,
+};
 
 const MINOR_UNIT = 100;
 
@@ -742,6 +765,257 @@ export async function resolveProposalAccountDeterministic(opts: {
 }
 
 /**
+ * Re-reconciles an existing PENDING statement proposal against the LIVE database
+ * (0 LLM tokens!). Updates account balance, re-detects duplicates (e.g. if the
+ * user added a missing $50 transaction manually), re-checks cross-account ±5d
+ * transfers, and preserves any manual category/payee/note/transfer edits.
+ */
+export async function reconcileProposalWithLiveDb(opts: {
+  orgId: string;
+  userId: string;
+  proposalId: string;
+  locale?: "es" | "en";
+}): Promise<{
+  proposalId: string;
+  summary: ReconciliationSummary;
+  rows: ReconciledRow[];
+}> {
+  const proposal = await db.assistantProposal.findFirst({
+    where: {
+      id: opts.proposalId,
+      organizationId: opts.orgId,
+      userId: opts.userId,
+    },
+  });
+
+  if (!proposal) {
+    throw new Error("Proposal not found");
+  }
+  if (proposal.status !== "PENDING" || !proposal.accountId) {
+    throw new Error("Only pending proposals with an account can be refreshed");
+  }
+
+  const payload = proposal.payload as unknown as ProposalPayload;
+  if (!payload.extracts || payload.extracts.length === 0) {
+    throw new Error("Proposal has no staged statement data");
+  }
+
+  const fresh = await reconcileStatementsWithDb({
+    orgId: opts.orgId,
+    accountId: proposal.accountId,
+    extracts: payload.extracts,
+    locale: opts.locale ?? "es",
+  });
+
+  // Preserve manual edits from previously saved rows (matched 1-to-1 by date|amount|description)
+  const prevRows = payload.rows ?? [];
+  const consumedPrev = new Set<number>();
+
+  const mergedRows: ReconciledRow[] = fresh.rows.map((freshRow) => {
+    const prevIdx = prevRows.findIndex(
+      (pr, i) =>
+        !consumedPrev.has(i) &&
+        pr.date === freshRow.date &&
+        pr.amountMinor === freshRow.amountMinor &&
+        pr.description === freshRow.description,
+    );
+    if (prevIdx === -1) return freshRow;
+
+    consumedPrev.add(prevIdx);
+    const prev = prevRows[prevIdx]!;
+
+    // If a transaction just became a duplicate (user added it manually!), auto-unselect it.
+    // Otherwise keep user's selection state.
+    const becameDuplicate = !prev.isDuplicate && freshRow.isDuplicate;
+    const selected = becameDuplicate ? false : prev.selected;
+
+    // If a new cross-account transfer match appeared while prev was UNMATCHED, adopt it.
+    const adoptNewTransferMatch =
+      prev.transferMode === "UNMATCHED" &&
+      freshRow.transferMode === "LINK_EXISTING" &&
+      freshRow.matchedTransferRecordId != null;
+
+    return {
+      ...freshRow,
+      uid: prev.uid,
+      selected,
+      type: prev.type,
+      note: prev.note,
+      payeeId: prev.payeeId,
+      payeeName: prev.payeeName,
+      payeeMatchKind: prev.payeeMatchKind,
+      categoryId: prev.categoryId,
+      categoryName: prev.categoryName,
+      categorySource: prev.categorySource,
+      spendingNature: prev.spendingNature,
+      transferMode: adoptNewTransferMatch
+        ? freshRow.transferMode
+        : prev.transferMode,
+      matchedTransferRecordId: adoptNewTransferMatch
+        ? freshRow.matchedTransferRecordId
+        : prev.matchedTransferRecordId,
+      matchedTransferInfo: adoptNewTransferMatch
+        ? freshRow.matchedTransferInfo
+        : prev.matchedTransferInfo,
+      transferAccountId: adoptNewTransferMatch
+        ? null
+        : prev.transferAccountId,
+    };
+  });
+
+  const recomputedSummary = recomputeReconciliationSummary(
+    fresh.summary,
+    mergedRows,
+  );
+
+  const nextPayload: ProposalPayload = {
+    ...payload,
+    rows: mergedRows,
+    summary: recomputedSummary,
+  };
+
+  await db.assistantProposal.update({
+    where: { id: proposal.id },
+    data: {
+      title: `${recomputedSummary.accountName} (${recomputedSummary.newCount})`,
+      payload: nextPayload as unknown as Prisma.InputJsonValue,
+    },
+  });
+
+  return {
+    proposalId: proposal.id,
+    summary: recomputedSummary,
+    rows: mergedRows,
+  };
+}
+
+/**
+ * Starts an assistant turn DETACHED from the HTTP request lifecycle:
+ * - Immediately creates/resolves the thread and persists the USER message so it
+ *   is visible across all devices (phone -> desktop) right away.
+ * - Runs Kimi + tools in the background on the server; closing the browser or
+ *   locking the phone will NEVER abort the job.
+ * - Any device can attach/resume via `GET /api/assistant/stream?threadId=...`.
+ */
+export async function startDetachedAssistantTurn(opts: {
+  orgId: string;
+  userId: string;
+  threadId?: string | null;
+  message: string;
+  attachments?: PreparedAttachment[];
+  locale?: "es" | "en";
+}): Promise<{
+  run: ActiveAssistantRun;
+  threadId: string;
+  threadTitle: string;
+  isNewThread: boolean;
+}> {
+  const locale = opts.locale ?? "es";
+  const attachments = opts.attachments ?? [];
+
+  let threadId = opts.threadId ?? null;
+  let threadTitle = deriveThreadTitle(opts.message, attachments, locale);
+  let isNewThread = false;
+
+  if (threadId) {
+    const existing = await db.assistantThread.findFirst({
+      where: {
+        id: threadId,
+        organizationId: opts.orgId,
+        userId: opts.userId,
+        deletedAt: null,
+      },
+      select: { id: true, title: true },
+    });
+    if (!existing) {
+      threadId = null;
+    } else {
+      threadTitle = existing.title;
+    }
+  }
+
+  if (!threadId) {
+    const created = await db.assistantThread.create({
+      data: {
+        organizationId: opts.orgId,
+        userId: opts.userId,
+        title: threadTitle,
+      },
+      select: { id: true, title: true },
+    });
+    threadId = created.id;
+    threadTitle = created.title;
+    isNewThread = true;
+  }
+
+  const storedAttachments: StoredAttachmentMeta[] = attachments.map((a) => ({
+    name: a.name,
+    mimeType: a.mimeType,
+    sizeBytes: a.sizeBytes,
+    kind: a.kind,
+    pageCount: a.pageCount,
+    rowCount: a.rowCount,
+  }));
+
+  await db.assistantMessage.create({
+    data: {
+      threadId,
+      role: "USER",
+      content: opts.message.trim(),
+      attachments:
+        storedAttachments.length > 0
+          ? (storedAttachments as unknown as Prisma.InputJsonValue)
+          : undefined,
+    },
+  });
+
+  await db.assistantThread.update({
+    where: { id: threadId },
+    data: { updatedAt: new Date() },
+  });
+
+  const run = registerActiveRun({
+    runId: randomUUID(),
+    threadId,
+    orgId: opts.orgId,
+    userId: opts.userId,
+  });
+
+  // Fire-and-forget detached server execution (only aborted by explicit cancelRun)
+  void (async () => {
+    try {
+      await runAssistantTurn({
+        orgId: opts.orgId,
+        userId: opts.userId,
+        threadId,
+        message: opts.message,
+        attachments,
+        locale,
+        signal: run.abortController.signal,
+        skipUserMessagePersist: true,
+        emit: (evt) => pushRunEvent(run, evt),
+      });
+    } catch (err) {
+      const isAbort =
+        run.abortController.signal.aborted ||
+        (err instanceof Error && err.name === "AbortError");
+      const msg = isAbort
+        ? locale === "es"
+          ? "Consulta detenida."
+          : "Request stopped."
+        : err instanceof Error
+          ? err.message
+          : "Assistant request failed";
+      pushRunEvent(run, { type: "error", message: msg });
+    } finally {
+      scheduleRunCleanup(run);
+    }
+  })();
+
+  return { run, threadId, threadTitle, isNewThread };
+}
+
+/**
  * Main streaming agent loop:
  * 1. Persists thread + user message (storing compact metadata, never multi-MB blobs).
  * 2. Loads compact org snapshot + recent thread history (capped to keep tokens tiny).
@@ -757,6 +1031,7 @@ export async function runAssistantTurn(opts: {
   attachments?: PreparedAttachment[];
   locale?: "es" | "en";
   signal?: AbortSignal;
+  skipUserMessagePersist?: boolean;
   emit: (event: StreamEvent) => void;
 }): Promise<void> {
   const locale = opts.locale ?? "es";
@@ -831,27 +1106,29 @@ export async function runAssistantTurn(opts: {
     opts.emit({ type: "thread", threadId, title: threadTitle });
   }
 
-  // Persist user message (compact attachment metadata only)
-  const storedAttachments: StoredAttachmentMeta[] = attachments.map((a) => ({
-    name: a.name,
-    mimeType: a.mimeType,
-    sizeBytes: a.sizeBytes,
-    kind: a.kind,
-    pageCount: a.pageCount,
-    rowCount: a.rowCount,
-  }));
+  // Persist user message (compact attachment metadata only) unless already persisted by startDetachedAssistantTurn
+  if (!opts.skipUserMessagePersist) {
+    const storedAttachments: StoredAttachmentMeta[] = attachments.map((a) => ({
+      name: a.name,
+      mimeType: a.mimeType,
+      sizeBytes: a.sizeBytes,
+      kind: a.kind,
+      pageCount: a.pageCount,
+      rowCount: a.rowCount,
+    }));
 
-  await db.assistantMessage.create({
-    data: {
-      threadId,
-      role: "USER",
-      content: opts.message.trim(),
-      attachments:
-        storedAttachments.length > 0
-          ? (storedAttachments as unknown as Prisma.InputJsonValue)
-          : undefined,
-    },
-  });
+    await db.assistantMessage.create({
+      data: {
+        threadId,
+        role: "USER",
+        content: opts.message.trim(),
+        attachments:
+          storedAttachments.length > 0
+            ? (storedAttachments as unknown as Prisma.InputJsonValue)
+            : undefined,
+      },
+    });
+  }
 
   // 2. Load org snapshot + recent thread messages + latest pending draft in ONE parallel batch
   const [snapshot, recentMsgs, latestPendingProposal] = await Promise.all([

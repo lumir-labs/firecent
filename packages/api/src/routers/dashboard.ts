@@ -266,10 +266,12 @@ export const dashboardRouter = router({
           recent: [] as {
             id: number;
             type: "EXPENSE" | "INCOME" | "TRANSFER";
+            transfer: boolean;
             amount: number;
             currency: string;
             date: string | null;
             title: string;
+            note: string | null;
             category: {
               name: string;
               nameEn: string | null;
@@ -278,6 +280,8 @@ export const dashboardRouter = router({
               color: string | null;
             } | null;
             accountName: string;
+            accountColor: string | null;
+            transferAccount: { name: string; color: string | null } | null;
           }[],
           insight: null,
         };
@@ -410,8 +414,8 @@ export const dashboardRouter = router({
                 color: true,
               },
             },
-            account: { select: { name: true, currency: true } },
-            transferAccount: { select: { name: true } },
+            account: { select: { name: true, color: true, currency: true } },
+            transferAccount: { select: { name: true, color: true } },
           },
         }),
         db.record.count({ where: { organizationId: orgId, deletedAt: null } }),
@@ -549,6 +553,7 @@ export const dashboardRouter = router({
       const recent = recentRows.map((r) => ({
         id: r.id,
         type: r.type,
+        transfer: r.transfer,
         amount: r.amount / MINOR_UNIT,
         currency: r.account.currency,
         date: r.recordDate ? r.recordDate.toISOString().slice(0, 10) : null,
@@ -557,8 +562,11 @@ export const dashboardRouter = router({
             ? `${r.account.name} → ${r.transferAccount.name}`
             : r.account.name
           : r.payee?.name || r.category?.name || r.note || r.account.name,
+        note: r.note,
         category: r.category,
         accountName: r.account.name,
+        accountColor: r.account.color,
+        transferAccount: r.transferAccount,
       }));
 
       return {

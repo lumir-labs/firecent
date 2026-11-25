@@ -14,8 +14,8 @@ import { HERO_SKELETON } from "./utils";
  *
  * Tones:
  * - `plain`    the value as is: `$1,234.56`, `−$1,846.32`. Ink.
- * - `movement` lists of things that happened: `−$41.24` ink, `+$2,975.00`
- *              positive, transfers `$1,800.00` muted and unsigned.
+ * - `movement` lists of things that happened: `−$41.24` negative (red), `+$2,975.00`
+ *              positive (green), transfers `$1,800.00` muted (gray) and unsigned.
  * - `upcoming` lists of things to pay: expense unsigned ink, income `+` positive.
  */
 
@@ -80,7 +80,7 @@ const MINUS = "−";
 
 type Resolved = {
   sign: "" | "+" | typeof MINUS;
-  color: "inherit" | "positive" | "muted";
+  color: "inherit" | "positive" | "negative" | "muted";
 };
 
 /** Sign and color for a value, tone and kind. Exported for tests and tables. */
@@ -103,7 +103,7 @@ export function resolveMoney(
   }
   // movement
   if (pos) return { sign: "+", color: "positive" };
-  if (neg) return { sign: MINUS, color: "inherit" };
+  if (neg) return { sign: MINUS, color: "negative" };
   return { sign: "", color: "inherit" };
 }
 
@@ -222,9 +222,13 @@ export function Money({
       ? hero
         ? "text-hero-positive"
         : "text-positive"
-      : color === "muted"
-        ? dimText
-        : undefined;
+      : color === "negative"
+        ? hero
+          ? "text-red-400"
+          : "text-destructive"
+        : color === "muted"
+          ? dimText
+          : undefined;
 
   const main = (
     <span

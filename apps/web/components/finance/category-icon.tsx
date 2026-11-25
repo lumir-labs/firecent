@@ -218,13 +218,15 @@ const TILE: Record<CategoryIconSize, string> = {
 
 export type CategoryIconProps = {
   /** Lucide name as stored in `Category.icon`, or a Lucide component. */
-  icon: string | LucideIcon | null | undefined;
+  icon?: string | LucideIcon | null | undefined;
   size?: CategoryIconSize;
   /**
    * Accepts a `ColorName` token OR any hex color (`#ec4899`, `#0284c7`, etc.).
    * Falls back to a neutral `bg-muted` tile when omitted.
    */
   color?: ColorName | string | null;
+  /** Dedicated visual style for internal transfers (sky-blue tile + ArrowLeftRight). */
+  variant?: "default" | "transfer";
   className?: string;
 };
 
@@ -250,20 +252,32 @@ function hexStyle(hex: string): React.CSSProperties | undefined {
   };
 }
 
-/** Icon tile for a category or account. Decorative (`aria-hidden`). */
+const TRANSFER_TILE_CLASS =
+  "border-sky-500/25 bg-sky-500/12 text-sky-700 dark:border-sky-400/25 dark:bg-sky-400/15 dark:text-sky-300";
+
+/** Icon tile for a category, account, or transfer. Decorative (`aria-hidden`). */
 export function CategoryIcon({
   icon,
   size = "md",
   color,
+  variant = "default",
   className,
 }: CategoryIconProps) {
+  const isTransfer = variant === "transfer";
   // createElement: the icon is looked up from a static map, not created here.
   const icon$ = createElement(
-    typeof icon === "string" || icon == null ? resolveCategoryIcon(icon) : icon,
+    isTransfer && icon == null
+      ? ArrowLeftRight
+      : typeof icon === "string" || icon == null
+        ? resolveCategoryIcon(icon)
+        : icon,
   );
   const tokenClass =
-    color && color in COLOR_TILE ? COLOR_TILE[color as ColorName] : undefined;
-  const customStyle = !tokenClass && color ? hexStyle(color) : undefined;
+    !isTransfer && color && color in COLOR_TILE
+      ? COLOR_TILE[color as ColorName]
+      : undefined;
+  const customStyle =
+    !isTransfer && !tokenClass && color ? hexStyle(color) : undefined;
 
   return (
     <span
@@ -272,7 +286,9 @@ export function CategoryIcon({
       style={customStyle}
       className={cn(
         "grid shrink-0 place-items-center rounded-xl border border-transparent",
-        tokenClass ?? (!customStyle && "bg-muted text-foreground"),
+        isTransfer
+          ? TRANSFER_TILE_CLASS
+          : (tokenClass ?? (!customStyle && "bg-muted text-foreground")),
         TILE[size],
         className,
       )}

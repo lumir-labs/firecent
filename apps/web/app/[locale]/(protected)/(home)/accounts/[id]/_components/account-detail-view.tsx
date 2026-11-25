@@ -28,6 +28,7 @@ import {
   formatMoneyText,
   localizeCategoryName,
   resolveAccountFinish,
+  resolveTransferFlow,
 } from "@/components/finance";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -49,6 +50,7 @@ import { AccountFormSheet } from "../../_components/account-form-sheet";
 export function AccountDetailView({ accountId }: { accountId: number }) {
   const locale = useLocale();
   const t = useTranslations("Accounts");
+  const tTx = useTranslations("TransactionsV2");
   const tShell = useTranslations("Shell");
   const router = useRouter();
   const { openAddTransaction } = useShell();
@@ -424,30 +426,40 @@ export function AccountDetailView({ accountId }: { accountId: number }) {
                   />
                   <Card variant="plain" className="divide-y overflow-hidden">
                     {group.items.map((r) => {
-                      const title =
-                        r.transfer && r.transferAccount
-                          ? `${r.account.name} → ${r.transferAccount.name}`
-                          : r.payee ||
-                            r.category?.name ||
-                            r.note ||
-                            r.account.name;
+                      const isTransfer = r.transfer || r.type === "TRANSFER";
+                      const flow = isTransfer
+                        ? resolveTransferFlow(
+                            r.amount,
+                            r.account,
+                            r.transferAccount,
+                          )
+                        : undefined;
+                      const catName = r.category
+                        ? localizeCategoryName(r.category, locale)
+                        : null;
+                      const title = isTransfer
+                        ? r.note || r.account.name
+                        : r.payee || catName || r.note || r.account.name;
                       return (
                         <TransactionRow
                           key={r.id}
                           title={title}
                           category={
-                            r.category
+                            r.category && catName
                               ? {
                                   icon: r.category.icon,
-                                  name: localizeCategoryName(r.category, locale),
+                                  name: catName,
                                   color: r.category.color,
                                 }
-                              : { icon: null, name: r.account.name }
+                              : { icon: null, name: tTx("detail.uncategorized") }
                           }
                           account={r.account.name}
+                          accountColor={r.account.color}
+                          transfer={flow}
+                          note={isTransfer ? r.note : undefined}
                           amount={r.amount}
                           currency={r.currency}
-                          kind={r.transfer ? "TRANSFER" : r.type}
+                          kind={isTransfer ? "TRANSFER" : r.type}
                           onClick={() => setDetailRecordId(r.id)}
                         />
                       );

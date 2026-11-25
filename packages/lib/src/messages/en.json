@@ -993,7 +993,14 @@
     "row": {
       "addedBy": "Added by {name}",
       "privateAccount": "Private account",
-      "excluded": "Excluded"
+      "excluded": "Excluded",
+      "transfer": "Transfer",
+      "transferFrom": "From",
+      "transferTo": "To",
+      "transferToAccount": "To {account}",
+      "transferFromAccount": "From {account}",
+      "transferOut": "Outgoing transfer",
+      "transferIn": "Incoming transfer"
     },
     "day": {
       "today": "Today",
@@ -1186,6 +1193,7 @@
     "detail": {
       "title": "Transaction",
       "account": "Account",
+      "fromAccount": "From account",
       "toAccount": "To account",
       "category": "Category",
       "uncategorized": "Uncategorized",
@@ -1623,6 +1631,7 @@
     "noThreadsYet": "No conversations yet. Upload a bank statement or ask a question.",
     "messagesCount": "{count} messages",
     "pendingTag": "Pending",
+    "runningTag": "Running…",
     "deleteThread": "Delete chat",
     "threadDeleted": "Conversation deleted",
     "welcomeTitle": "Import statements or ask anything",
@@ -1696,6 +1705,8 @@
       "transferMatchesCount": "{count} transfer match",
       "unmatchedTransfersCount": "{count} unmatched transfer",
       "reviewTransactions": "Review transactions ({count})",
+      "refreshBalance": "Refresh balance from Firecent",
+      "refreshedToast": "Balance & duplicates refreshed",
       "uploadPrevious": "Upload earlier statement",
       "viewAccount": "View account",
       "undoBatch": "Undo batch",

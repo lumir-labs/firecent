@@ -1,14 +1,18 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { Copy, Pencil, Trash2 } from "lucide-react";
+import { ArrowLeftRight, ArrowRight, Copy, Pencil, Trash2 } from "lucide-react";
 import { trpc } from "@app/api/client";
 
 import {
+  AccountDot,
+  CategoryIcon,
   FieldRow,
   Money,
   StateBlock,
+  TransferTypePill,
   localizeCategoryName,
+  resolveTransferFlow,
 } from "@/components/finance";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -76,6 +80,11 @@ export function TransactionDetailSheet({
   });
 
   const r = detail.data;
+  const isTransfer = Boolean(r && (r.transfer || r.type === "TRANSFER"));
+  const flow =
+    r && isTransfer
+      ? resolveTransferFlow(r.amount, r.account, r.transferAccount)
+      : null;
   const localizedCat = r?.category
     ? localizeCategoryName(r.category, locale)
     : null;
@@ -124,19 +133,50 @@ export function TransactionDetailSheet({
         </div>
       ) : (
         <div className="flex flex-col gap-5 px-5">
-          <div className="flex flex-col items-center gap-1 pt-2 text-center">
+          <div className="flex flex-col items-center gap-2 pt-2 text-center">
+            {isTransfer ? (
+              <CategoryIcon icon={ArrowLeftRight} variant="transfer" size="lg" />
+            ) : (
+              <CategoryIcon
+                icon={r.category?.icon}
+                color={r.category?.color}
+                size="lg"
+              />
+            )}
             <Money
               value={r.amount}
               currency={r.currency}
               size="sheet"
               tone="movement"
-              kind={r.transfer ? "TRANSFER" : r.type}
+              kind={isTransfer ? "TRANSFER" : r.type}
             />
-            <p className="text-[15px] font-medium text-foreground">
-              {r.transfer && r.transferAccount
-                ? `${r.account.name} → ${r.transferAccount.name}`
-                : r.payee?.name || localizedCat || r.note || r.account.name}
-            </p>
+            {isTransfer && flow ? (
+              <div className="flex flex-wrap items-center justify-center gap-1.5 text-[14px] font-medium text-foreground">
+                {flow.from && (
+                  <span className="inline-flex items-center gap-1.5 text-foreground/80">
+                    <AccountDot color={flow.from.color} size="sm" />
+                    <span>{flow.from.name}</span>
+                  </span>
+                )}
+                {flow.from && flow.to && (
+                  <ArrowRight
+                    className="size-3.5 text-sky-600 dark:text-sky-400"
+                    aria-hidden="true"
+                  />
+                )}
+                {flow.to && (
+                  <span className="inline-flex items-center gap-1.5 font-semibold text-foreground">
+                    <AccountDot color={flow.to.color} size="sm" />
+                    <span>{flow.to.name}</span>
+                  </span>
+                )}
+              </div>
+            ) : (
+              <p className="text-[15px] font-medium text-foreground">
+                {r.payee?.name || localizedCat || r.note || r.account.name}
+              </p>
+            )}
+            {isTransfer && <TransferTypePill />}
             {r.date && (
               <p className="text-[13px] text-muted-foreground">
                 {r.date}
@@ -146,18 +186,47 @@ export function TransactionDetailSheet({
           </div>
 
           <div className="divide-y overflow-hidden rounded-2xl border bg-card">
-            <FieldRow label={t("detail.account")} value={r.account.name} />
-            {r.transfer && r.transferAccount && (
-              <FieldRow
-                label={t("detail.toAccount")}
-                value={r.transferAccount.name}
-              />
-            )}
-            {!r.transfer && (
-              <FieldRow
-                label={t("detail.category")}
-                value={localizedCat ?? t("detail.uncategorized")}
-              />
+            {isTransfer && flow ? (
+              <>
+                {flow.from && (
+                  <FieldRow
+                    label={t("detail.fromAccount")}
+                    value={
+                      <span className="inline-flex items-center gap-1.5">
+                        <AccountDot color={flow.from.color} size="sm" />
+                        <span>{flow.from.name}</span>
+                      </span>
+                    }
+                  />
+                )}
+                {flow.to && (
+                  <FieldRow
+                    label={t("detail.toAccount")}
+                    value={
+                      <span className="inline-flex items-center gap-1.5">
+                        <AccountDot color={flow.to.color} size="sm" />
+                        <span>{flow.to.name}</span>
+                      </span>
+                    }
+                  />
+                )}
+              </>
+            ) : (
+              <>
+                <FieldRow
+                  label={t("detail.account")}
+                  value={
+                    <span className="inline-flex items-center gap-1.5">
+                      <AccountDot color={r.account.color} size="sm" />
+                      <span>{r.account.name}</span>
+                    </span>
+                  }
+                />
+                <FieldRow
+                  label={t("detail.category")}
+                  value={localizedCat ?? t("detail.uncategorized")}
+                />
+              </>
             )}
             {r.payee && (
               <FieldRow label={t("detail.payee")} value={r.payee.name} />

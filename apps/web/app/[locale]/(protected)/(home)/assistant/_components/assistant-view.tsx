@@ -210,11 +210,27 @@ export function AssistantView() {
     el.style.overflowY = el.scrollHeight > maxHeight ? "auto" : "hidden";
   }, [input]);
 
-  const threadsQuery = trpc.assistant.listThreads.useQuery();
+  const threadsQuery = trpc.assistant.listThreads.useQuery(undefined, {
+    refetchInterval: (q) =>
+      q.state.data?.threads.some((th) => th.isRunning) ? 5000 : false,
+  });
   const threadQuery = trpc.assistant.getThread.useQuery(
-    { threadId: activeThreadId ?? "" },
-    { enabled: Boolean(activeThreadId) },
+    { threadId: activeThreadId ?? "", locale },
+    { enabled: Boolean(activeThreadId), staleTime: 0 },
   );
+
+  const reconcileMutation = trpc.assistant.reconcileProposal.useMutation({
+    onSuccess: async () => {
+      await Promise.all([
+        utils.assistant.getThread.invalidate(),
+        utils.assistant.listThreads.invalidate(),
+      ]);
+      toast.success(t("blocks.refreshedToast"));
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const cancelRunMutation = trpc.assistant.cancelRun.useMutation();
 
   const selectAccountMutation = trpc.assistant.selectProposalAccount.useMutation({
     onSuccess: async () => {
@@ -365,6 +381,169 @@ export function AssistantView() {
     }
   };
 
+  const consumeSseResponse = useCallback(
+    async (
+      res: Response,
+      initialThreadId: string | null,
+      initialStartedAt: number,
+    ) => {
+      if (!res.ok || !res.body) {
+        const errJson = await res.json().catch(() => null);
+        throw new Error(
+          (errJson as { error?: string } | null)?.error || `HTTP ${res.status}`,
+        );
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let resolvedThreadId = initialThreadId;
+
+      const handleEventLine = (rawLine: string) => {
+        const line = rawLine.trim();
+        if (!line.startsWith("data:")) return;
+        const jsonStr = line.slice(5).trim();
+        if (!jsonStr) return;
+
+        let evt:
+          | { type: "thread"; threadId: string; title: string }
+          | { type: "status"; phase: string; label: string }
+          | { type: "trace_step"; step: AssistantTraceStep }
+          | { type: "text_delta"; delta: string }
+          | { type: "ui_block"; block: AssistantUiBlock }
+          | { type: "done"; threadId: string; messageId: string }
+          | { type: "already_done"; threadId: string }
+          | { type: "error"; message: string };
+
+        try {
+          evt = JSON.parse(jsonStr);
+        } catch {
+          return;
+        }
+
+        if (evt.type === "thread") {
+          resolvedThreadId = evt.threadId;
+          setActiveThreadId(evt.threadId);
+          void utils.assistant.listThreads.invalidate();
+        } else if (evt.type === "status") {
+          setStreamStatus(evt.label);
+        } else if (evt.type === "trace_step") {
+          const incoming = evt.step;
+          setStreamingAssistant((prev) => {
+            const curSteps = prev?.steps ?? [];
+            const idx = curSteps.findIndex((s) => s.id === incoming.id);
+            const nextSteps =
+              idx >= 0
+                ? curSteps.map((s, i) => (i === idx ? incoming : s))
+                : [...curSteps, incoming];
+            return {
+              content: prev?.content ?? "",
+              uiBlocks: prev?.uiBlocks ?? [],
+              steps: nextSteps,
+              startedAt: prev?.startedAt ?? initialStartedAt,
+            };
+          });
+        } else if (evt.type === "text_delta") {
+          setStreamStatus(null);
+          setStreamingAssistant((prev) => ({
+            content: (prev?.content ?? "") + evt.delta,
+            uiBlocks: prev?.uiBlocks ?? [],
+            steps: prev?.steps ?? [],
+            startedAt: prev?.startedAt ?? initialStartedAt,
+          }));
+        } else if (evt.type === "ui_block") {
+          setStreamingAssistant((prev) => ({
+            content: prev?.content ?? "",
+            uiBlocks: [...(prev?.uiBlocks ?? []), evt.block],
+            steps: prev?.steps ?? [],
+            startedAt: prev?.startedAt ?? initialStartedAt,
+          }));
+        } else if (evt.type === "error") {
+          toast.error(evt.message);
+        } else if (evt.type === "done" || evt.type === "already_done") {
+          resolvedThreadId = evt.threadId;
+        }
+      };
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        let nl = buffer.indexOf("\n");
+        while (nl !== -1) {
+          handleEventLine(buffer.slice(0, nl));
+          buffer = buffer.slice(nl + 1);
+          nl = buffer.indexOf("\n");
+        }
+      }
+      if (buffer.trim()) handleEventLine(buffer);
+
+      if (resolvedThreadId) {
+        setActiveThreadId(resolvedThreadId);
+        await Promise.all([
+          utils.assistant.listThreads.invalidate(),
+          utils.assistant.getThread.invalidate({
+            threadId: resolvedThreadId,
+            locale,
+          }),
+        ]);
+      }
+    },
+    [locale, utils],
+  );
+
+  // Cross-device live resume: if user opens a thread that is currently running
+  // on the server (e.g. started on phone and opened on desktop), attach via SSE!
+  const attachedThreadRef = useRef<string | null>(null);
+  const runningThreadId = threadQuery.data?.isRunning
+    ? threadQuery.data.id
+    : null;
+  const runningStartedAt = threadQuery.data?.runningStartedAt ?? null;
+
+  useEffect(() => {
+    if (!runningThreadId) return;
+    if (streaming || attachedThreadRef.current === runningThreadId) return;
+
+    attachedThreadRef.current = runningThreadId;
+    const controller = new AbortController();
+    abortRef.current = controller;
+    const startTs = runningStartedAt ?? Date.now();
+
+    void (async () => {
+      try {
+        const res = await fetch(
+          `/api/assistant/stream?threadId=${encodeURIComponent(runningThreadId)}`,
+          {
+            method: "GET",
+            credentials: "include",
+            signal: controller.signal,
+          },
+        );
+        setStreaming(true);
+        setStreamStatus(t("status.thinking"));
+        setStreamingAssistant({
+          content: "",
+          uiBlocks: [],
+          steps: [],
+          startedAt: startTs,
+        });
+        await consumeSseResponse(res, runningThreadId, startTs);
+      } catch (err) {
+        if ((err as { name?: string })?.name !== "AbortError") {
+          toast.error(err instanceof Error ? err.message : t("sendError"));
+        }
+      } finally {
+        if (attachedThreadRef.current === runningThreadId) {
+          attachedThreadRef.current = null;
+        }
+        abortRef.current = null;
+        setStreaming(false);
+        setStreamStatus(null);
+        setStreamingAssistant(null);
+      }
+    })();
+  }, [consumeSseResponse, runningStartedAt, runningThreadId, streaming, t]);
+
   const sendMessage = useCallback(
     async (overridePrompt?: string) => {
       if (streaming) return;
@@ -383,6 +562,7 @@ export function AssistantView() {
         }),
       );
 
+      const nowTs = Date.now();
       setInput("");
       if (!overridePrompt) setAttachments([]);
       setStreaming(true);
@@ -392,7 +572,7 @@ export function AssistantView() {
           : t("status.thinking"),
       );
       setOptimisticUserMsg({
-        id: `opt-${Date.now()}`,
+        id: `opt-${nowTs}`,
         role: "USER",
         content: text || t("defaultAnalyzePrompt"),
         attachments: userStoredMeta,
@@ -404,13 +584,11 @@ export function AssistantView() {
         content: "",
         uiBlocks: [],
         steps: [],
-        startedAt: Date.now(),
+        startedAt: nowTs,
       });
 
       const controller = new AbortController();
       abortRef.current = controller;
-
-      let resolvedThreadId = activeThreadId;
 
       try {
         const res = await fetch("/api/assistant/chat", {
@@ -426,107 +604,10 @@ export function AssistantView() {
           }),
         });
 
-        if (!res.ok || !res.body) {
-          const errJson = await res.json().catch(() => null);
-          throw new Error(
-            (errJson as { error?: string } | null)?.error ||
-              `HTTP ${res.status}`,
-          );
-        }
-
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = "";
-
-        const handleEventLine = (rawLine: string) => {
-          const line = rawLine.trim();
-          if (!line.startsWith("data:")) return;
-          const jsonStr = line.slice(5).trim();
-          if (!jsonStr) return;
-
-          let evt:
-            | { type: "thread"; threadId: string; title: string }
-            | { type: "status"; phase: string; label: string }
-            | { type: "trace_step"; step: AssistantTraceStep }
-            | { type: "text_delta"; delta: string }
-            | { type: "ui_block"; block: AssistantUiBlock }
-            | { type: "done"; threadId: string; messageId: string }
-            | { type: "error"; message: string };
-
-          try {
-            evt = JSON.parse(jsonStr);
-          } catch {
-            return;
-          }
-
-          if (evt.type === "thread") {
-            resolvedThreadId = evt.threadId;
-            setActiveThreadId(evt.threadId);
-          } else if (evt.type === "status") {
-            setStreamStatus(evt.label);
-          } else if (evt.type === "trace_step") {
-            const incoming = evt.step;
-            setStreamingAssistant((prev) => {
-              const curSteps = prev?.steps ?? [];
-              const idx = curSteps.findIndex((s) => s.id === incoming.id);
-              const nextSteps =
-                idx >= 0
-                  ? curSteps.map((s, i) => (i === idx ? incoming : s))
-                  : [...curSteps, incoming];
-              return {
-                content: prev?.content ?? "",
-                uiBlocks: prev?.uiBlocks ?? [],
-                steps: nextSteps,
-                startedAt: prev?.startedAt ?? Date.now(),
-              };
-            });
-          } else if (evt.type === "text_delta") {
-            setStreamStatus(null);
-            setStreamingAssistant((prev) => ({
-              content: (prev?.content ?? "") + evt.delta,
-              uiBlocks: prev?.uiBlocks ?? [],
-              steps: prev?.steps ?? [],
-              startedAt: prev?.startedAt ?? Date.now(),
-            }));
-          } else if (evt.type === "ui_block") {
-            setStreamingAssistant((prev) => ({
-              content: prev?.content ?? "",
-              uiBlocks: [...(prev?.uiBlocks ?? []), evt.block],
-              steps: prev?.steps ?? [],
-              startedAt: prev?.startedAt ?? Date.now(),
-            }));
-          } else if (evt.type === "error") {
-            toast.error(evt.message);
-          } else if (evt.type === "done") {
-            resolvedThreadId = evt.threadId;
-          }
-        };
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          buffer += decoder.decode(value, { stream: true });
-          let nl = buffer.indexOf("\n");
-          while (nl !== -1) {
-            handleEventLine(buffer.slice(0, nl));
-            buffer = buffer.slice(nl + 1);
-            nl = buffer.indexOf("\n");
-          }
-        }
-        if (buffer.trim()) handleEventLine(buffer);
-
-        if (resolvedThreadId) {
-          setActiveThreadId(resolvedThreadId);
-          await Promise.all([
-            utils.assistant.listThreads.invalidate(),
-            utils.assistant.getThread.invalidate({ threadId: resolvedThreadId }),
-          ]);
-        }
+        await consumeSseResponse(res, activeThreadId, nowTs);
       } catch (err) {
         if ((err as { name?: string })?.name !== "AbortError") {
-          toast.error(
-            err instanceof Error ? err.message : t("sendError"),
-          );
+          toast.error(err instanceof Error ? err.message : t("sendError"));
         }
       } finally {
         abortRef.current = null;
@@ -536,7 +617,15 @@ export function AssistantView() {
         setStreamingAssistant(null);
       }
     },
-    [activeThreadId, attachments, input, locale, streaming, t, utils],
+    [
+      activeThreadId,
+      attachments,
+      consumeSseResponse,
+      input,
+      locale,
+      streaming,
+      t,
+    ],
   );
 
   const handleSubmit = (e: FormEvent) => {
@@ -552,7 +641,19 @@ export function AssistantView() {
   };
 
   const stopStreaming = () => {
+    if (activeThreadId) {
+      cancelRunMutation.mutate({ threadId: activeThreadId });
+    }
     abortRef.current?.abort();
+  };
+
+  const detachStreamOnly = () => {
+    attachedThreadRef.current = null;
+    abortRef.current?.abort();
+    setStreaming(false);
+    setStreamStatus(null);
+    setOptimisticUserMsg(null);
+    setStreamingAssistant(null);
   };
 
   const triggerFilePicker = () => {
@@ -560,10 +661,9 @@ export function AssistantView() {
   };
 
   const startNewChat = () => {
-    if (streaming) stopStreaming();
+    // Switching to New Chat detaches the UI stream WITHOUT killing the background server run!
+    if (streaming) detachStreamOnly();
     setActiveThreadId(null);
-    setOptimisticUserMsg(null);
-    setStreamingAssistant(null);
     setAttachments([]);
     setPendingPdf(null);
     setHistoryOpen(false);
@@ -600,6 +700,9 @@ export function AssistantView() {
               <button
                 type="button"
                 onClick={() => {
+                  if (streaming && activeThreadId !== th.id) {
+                    detachStreamOnly();
+                  }
                   setActiveThreadId(th.id);
                   setHistoryOpen(false);
                 }}
@@ -608,7 +711,13 @@ export function AssistantView() {
                 <p className="truncate text-[13px] font-medium">{th.title}</p>
                 <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
                   <span>{t("messagesCount", { count: String(th.messageCount) })}</span>
-                  {th.activeProposal && (
+                  {th.isRunning && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-primary/12 px-1.5 py-0.2 text-[10px] font-semibold text-primary-text">
+                      <Loader2 className="size-2.5 animate-spin" />
+                      {t("runningTag")}
+                    </span>
+                  )}
+                  {!th.isRunning && th.activeProposal && (
                     <span className="inline-flex items-center rounded-full bg-assistant px-1.5 py-0.2 text-[10px] font-semibold text-assistant-accent ring-1 ring-assistant-border">
                       {t("pendingTag")}
                     </span>
@@ -952,6 +1061,11 @@ export function AssistantView() {
                                   ? undoMutation.variables?.proposalId
                                   : null
                               }
+                              refreshingProposalId={
+                                reconcileMutation.isPending
+                                  ? reconcileMutation.variables?.proposalId
+                                  : null
+                              }
                               onSelectAccount={(proposalId, accountId) =>
                                 selectAccountMutation.mutate({
                                   proposalId,
@@ -961,6 +1075,9 @@ export function AssistantView() {
                               }
                               onOpenProposal={(proposalId) =>
                                 setReviewProposalId(proposalId)
+                              }
+                              onRefreshProposal={(proposalId) =>
+                                reconcileMutation.mutate({ proposalId, locale })
                               }
                               onDismissProposal={(proposalId) =>
                                 dismissMutation.mutate({ proposalId })
