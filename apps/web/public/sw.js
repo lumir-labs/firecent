@@ -54,17 +54,16 @@ self.addEventListener("push", (event) => {
 
   event.waitUntil(
     Promise.all(
-      entries.map((entry, idx) => {
-        const isSilent = Boolean(entry.silent);
-        return self.registration.showNotification(entry.title || "Firecent", {
+      entries.map((entry, idx) =>
+        self.registration.showNotification(entry.title || "Firecent", {
           body: entry.body || "",
           icon,
           badge,
           tag: entry.tag || payload.tag || `firecent-notification-${idx}`,
-          ...(isSilent ? { silent: true } : { renotify: true }),
+          renotify: true,
           data: { url: entry.url || payload.url || "/" },
-        });
-      }),
+        }),
+      ),
     ),
   );
 });

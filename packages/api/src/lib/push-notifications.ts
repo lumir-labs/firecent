@@ -995,12 +995,11 @@ export function buildPushPayloadFromDigest(
   const shown = digest.items.slice(0, MAX_INDIVIDUAL_NOTIFICATIONS);
   const overflow = digest.items.slice(MAX_INDIVIDUAL_NOTIFICATIONS);
 
-  const notifications: PushNotificationEntry[] = shown.map((item, idx) => ({
+  const notifications: PushNotificationEntry[] = shown.map((item) => ({
     title: item.title,
     body: item.subtitle,
     url: `${localePrefix}${item.href}`,
     tag: `firecent-${item.id}`,
-    silent: idx > 0,
   }));
 
   if (overflow.length > 0) {
@@ -1015,7 +1014,6 @@ export function buildPushPayloadFromDigest(
       body: names,
       url: `${localePrefix}/notifications`,
       tag: "firecent-daily-overflow",
-      silent: true,
     });
   }
 
