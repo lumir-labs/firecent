@@ -6,6 +6,7 @@ import {
   ArrowDownLeft,
   ArrowUpRight,
   Bell,
+  ChevronRight,
   Plus,
 } from "lucide-react";
 import { trpc } from "@app/api/client";
@@ -156,8 +157,9 @@ export function HomeView({ userName }: { userName: string }) {
                 <span className="text-[13px] font-medium text-hero-foreground/70">
                   {t("balanceLabel")}
                 </span>
-                <span className="text-[12px] font-medium text-hero-foreground/60">
+                <span className="inline-flex items-center gap-0.5 text-[14px] font-medium text-hero-accent">
                   {t("viewAccounts")}
+                  <ChevronRight aria-hidden className="size-4" />
                 </span>
               </div>
 
