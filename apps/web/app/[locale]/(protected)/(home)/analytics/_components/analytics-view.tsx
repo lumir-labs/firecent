@@ -109,7 +109,7 @@ export function AnalyticsView() {
         <div className="lg:hidden">{periodControl}</div>
 
         {query.isPending ? (
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {[0, 1, 2, 3].map((i) => (
               <Card key={i} variant="plain" className="flex flex-col gap-3 p-4">
                 <Skeleton className="h-4 w-44" />
@@ -131,7 +131,7 @@ export function AnalyticsView() {
             body={t("emptyBody")}
           />
         ) : (
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {/* Card 1 · Cash flow */}
             <Card variant="plain" className="flex flex-col gap-4 p-5">
               <div>

@@ -138,7 +138,7 @@ export function BudgetView() {
         {query.isPending ? (
           <div className="flex flex-col gap-5">
             <Skeleton className="h-12 w-48" />
-            <div className="grid gap-4 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
               <Skeleton className="h-44 w-full rounded-2xl" />
               <Skeleton className="h-44 w-full rounded-2xl" />
               <Skeleton className="h-44 w-full rounded-2xl" />
@@ -177,8 +177,8 @@ export function BudgetView() {
         ) : (
           <>
             {/* Top row: Hero + Income card */}
-            <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
-              <section className="flex flex-col gap-2 lg:col-span-7">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-start">
+              <section className="flex min-w-0 flex-col gap-2 lg:col-span-7">
                 <span className="text-[13px] text-muted-foreground">
                   {data.plan.leftToSpend < 0
                     ? t("overPlan")
@@ -256,7 +256,7 @@ export function BudgetView() {
             </div>
 
             {/* 3 Buckets: Owe / Need / Want */}
-            <div className="grid gap-5 lg:grid-cols-3 lg:items-start">
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-3 lg:items-start">
               {data.plan.buckets.map((bucket) => (
                 <Card
                   key={bucket.nature}

@@ -19,7 +19,7 @@ import {
 
 import { AI_ASSISTANT_NAME } from "@app/lib";
 import { PwaInstallCard } from "@/components/common/pwa-install-card";
-import { FirecentMark, Money } from "@/components/finance";
+import { BlazeIcon, Money } from "@/components/finance";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -196,7 +196,7 @@ export function HomeEmptyLaunchpad({
           <p className="mb-3 text-[11.5px] font-semibold tracking-wide text-hero-foreground/60 uppercase">
             {t("onboarding.title")}
           </p>
-          <ol className="grid gap-2.5 sm:grid-cols-3">
+          <ol className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
             <li aria-current="step">
               <button
                 type="button"
@@ -271,9 +271,9 @@ export function HomeEmptyLaunchpad({
       </section>
 
       {/* Dual-Superpower Asymmetric Feature Grid */}
-      <div className="grid gap-5 lg:grid-cols-12">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
         {/* Pillar 1: Credit Card Tracking (7 cols) */}
-        <section className="flex flex-col justify-between gap-5 rounded-3xl border bg-card p-5 sm:p-6 lg:col-span-7">
+        <section className="flex min-w-0 flex-col justify-between gap-5 rounded-3xl border bg-card p-5 sm:p-6 lg:col-span-7">
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[12px] font-semibold text-primary-text">
@@ -332,11 +332,11 @@ export function HomeEmptyLaunchpad({
         </section>
 
         {/* Pillar 2: Blaze AI (5 cols) */}
-        <section className="flex flex-col justify-between gap-5 rounded-3xl border border-assistant-border bg-assistant p-5 sm:p-6 lg:col-span-5">
+        <section className="flex min-w-0 flex-col justify-between gap-5 rounded-3xl border border-assistant-border bg-assistant p-5 sm:p-6 lg:col-span-5">
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2.5">
               <span className="grid size-9 shrink-0 place-items-center rounded-xl border border-assistant-border bg-card shadow-2xs">
-                <FirecentMark className="h-5" />
+                <BlazeIcon className="size-5" />
               </span>
               <span className="text-[13px] font-semibold text-assistant-accent">
                 {t("onboarding.aiEyebrow", aiVars)}
@@ -385,7 +385,7 @@ export function HomeEmptyLaunchpad({
                 "w-full justify-center bg-foreground text-background hover:bg-foreground/90",
               )}
             >
-              <FirecentMark className="h-4" />
+              <BlazeIcon className="size-[18px]" />
               <span>{t("onboarding.aiPrimaryCta", aiVars)}</span>
               <ArrowRight className="size-4" aria-hidden />
             </Link>
@@ -471,7 +471,7 @@ export function BlazeHomeSpotlight() {
   return (
     <section className="rounded-2xl border border-assistant-border bg-assistant p-4">
       <div className="flex items-center gap-2 text-[12.5px] font-semibold text-assistant-accent">
-        <FirecentMark className="h-4.5" />
+        <BlazeIcon className="size-[18px]" />
         <span>{t("blazeEyebrow", aiVars)}</span>
       </div>
       <h2 className="mt-2 text-[15.5px] leading-snug font-semibold text-foreground">

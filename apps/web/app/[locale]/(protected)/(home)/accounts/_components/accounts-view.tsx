@@ -154,7 +154,7 @@ export function AccountsView() {
               <Skeleton className="h-12 w-56" />
               <Skeleton className="h-4 w-64" />
             </div>
-            <div className="grid gap-6 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
               {[0, 1, 2].map((i) => (
                 <Card key={i} variant="plain" className="divide-y overflow-hidden">
                   <AccountRowSkeleton />

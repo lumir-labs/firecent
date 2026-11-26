@@ -78,12 +78,12 @@ export function HomeView({ userName }: { userName: string }) {
     return (
       <div className="flex flex-col gap-6 px-5 pt-4 lg:px-0 lg:pt-8">
         <Skeleton className="hidden h-8 w-64 lg:block" />
-        <div className="grid gap-6 lg:grid-cols-12">
-          <div className="flex flex-col gap-6 lg:col-span-7">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+          <div className="flex min-w-0 flex-col gap-6 lg:col-span-7">
             <Skeleton className="h-56 w-full rounded-3xl" />
             <Skeleton className="h-36 w-full rounded-2xl" />
           </div>
-          <div className="flex flex-col gap-6 lg:col-span-5">
+          <div className="flex min-w-0 flex-col gap-6 lg:col-span-5">
             <Skeleton className="h-48 w-full rounded-2xl" />
             <Skeleton className="hidden h-56 w-full rounded-2xl lg:block" />
           </div>
@@ -145,12 +145,12 @@ export function HomeView({ userName }: { userName: string }) {
           onAddAccount={() => setAccountSheetType("CHECKING_ACCOUNT")}
         />
       ) : (
-        <div className="grid gap-6 lg:grid-cols-12 lg:items-start">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-start">
           {/* Left column (lg: 1–7): Balance Hero + Coming up */}
-          <div className="flex flex-col gap-6 lg:col-span-7">
+          <div className="flex min-w-0 flex-col gap-6 lg:col-span-7">
             <Link
               href="/accounts"
-              className="block rounded-3xl bg-hero p-6 text-hero-foreground transition-opacity hover:opacity-95"
+              className="block overflow-hidden rounded-3xl bg-hero p-6 text-hero-foreground transition-opacity hover:opacity-95"
             >
               <div className="flex items-center justify-between gap-2">
                 <span className="text-[13px] font-medium text-hero-foreground/70">
@@ -262,7 +262,7 @@ export function HomeView({ userName }: { userName: string }) {
           </div>
 
           {/* Right column (lg: 8–12): This month (Category-first!) + Recent activity */}
-          <div className="flex flex-col gap-6 lg:col-span-5">
+          <div className="flex min-w-0 flex-col gap-6 lg:col-span-5">
             <section className="flex flex-col gap-3">
               <SectionHeader
                 title={t("thisMonth")}
@@ -287,11 +287,12 @@ export function HomeView({ userName }: { userName: string }) {
 
               {/* Top spending categories this month */}
               <Card variant="plain" className="flex flex-col gap-3 p-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
                   <span className="text-[13px] font-semibold text-foreground">
                     {t("topCategories")}
                   </span>
                   <PaceLegend
+                    className="mt-0"
                     label={t("daysLeft", {
                       days: String(data.monthSummary.daysLeft),
                     })}

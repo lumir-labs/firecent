@@ -197,7 +197,7 @@ export function DebtsView() {
         {query.isPending ? (
           <div className="flex flex-col gap-5">
             <Skeleton className="h-12 w-48" />
-            <div className="grid gap-4 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               <Skeleton className="h-28 w-full rounded-2xl" />
               <Skeleton className="h-28 w-full rounded-2xl" />
             </div>
@@ -364,7 +364,7 @@ export function DebtsView() {
                   )}
                 </button>
                 {showSettled && (
-                  <div className="grid gap-3 lg:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
                     {data.settled.map(renderCard)}
                   </div>
                 )}
