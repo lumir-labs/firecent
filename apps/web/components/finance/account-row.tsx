@@ -88,7 +88,7 @@ export function AccountRow({
     ) : null);
 
   const fallbackIcon =
-    type === "SAVINGS_ACCOUNT" && hasCard
+    (type === "SAVINGS_ACCOUNT" || type === "CHECKING_ACCOUNT") && hasCard
       ? CreditCard
       : ACCOUNT_TYPE_ICON[type];
 

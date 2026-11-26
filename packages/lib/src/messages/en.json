@@ -1269,12 +1269,11 @@
       "type": "Account type",
       "typeHints": {
         "CHECKING_ACCOUNT": "Everyday bank account for salary, bills, and daily spending.",
-        "SAVINGS_ACCOUNT": "For saved money or goals. Turn on debit card if this account includes one.",
+        "SAVINGS_ACCOUNT": "For saved money, goals, or an emergency fund.",
         "CASH": "Physical cash in your wallet or on hand.",
         "CREDIT_CARD": "Credit line with a limit, statement cutoff, and due date."
       },
       "hasCard": "Includes debit card",
-      "hasCardHint": "Shows this savings account as a card instead of a piggy bank.",
       "name": "Account name",
       "namePlaceholder": "e.g. Main checking",
       "namePlaceholders": {
@@ -1285,6 +1284,8 @@
       },
       "currency": "Currency",
       "last4": "Last 4 digits",
+      "last4Card": "Card last 4 digits",
+      "last4Account": "Account last 4 digits",
       "currentBalance": "Current balance",
       "currentDebt": "Current amount owed",
       "creditLimit": "Credit limit",

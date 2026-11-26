@@ -1269,12 +1269,11 @@
       "type": "Tipo de cuenta",
       "typeHints": {
         "CHECKING_ACCOUNT": "Cuenta bancaria para gastos del día a día, planilla o pagos frecuentes.",
-        "SAVINGS_ACCOUNT": "Para dinero apartado o metas. Activa la tarjeta si también la usas con débito.",
+        "SAVINGS_ACCOUNT": "Para dinero apartado, metas o fondo de emergencia.",
         "CASH": "Dinero físico en billetera o en mano.",
         "CREDIT_CARD": "Tarjeta con límite de crédito, fecha de corte y fecha de pago."
       },
       "hasCard": "Tiene tarjeta de débito",
-      "hasCardHint": "Muestra esta cuenta de ahorro como tarjeta en lugar de alcancía.",
       "name": "Nombre de la cuenta",
       "namePlaceholder": "Ej. Cuenta principal",
       "namePlaceholders": {
@@ -1285,6 +1284,8 @@
       },
       "currency": "Moneda",
       "last4": "Últimos 4 dígitos",
+      "last4Card": "Últimos 4 de la tarjeta",
+      "last4Account": "Últimos 4 de la cuenta",
       "currentBalance": "Saldo actual",
       "currentDebt": "Deuda actual",
       "creditLimit": "Límite de crédito",

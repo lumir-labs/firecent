@@ -239,8 +239,7 @@ export function AccountSwatch({
   const Icon = ICONS[type] ?? Wallet;
   const asMiniCard =
     type === "CREDIT_CARD" ||
-    type === "CHECKING_ACCOUNT" ||
-    (type === "SAVINGS_ACCOUNT"
+    (type === "SAVINGS_ACCOUNT" || type === "CHECKING_ACCOUNT"
       ? Boolean(hasCard)
       : type !== "CASH" && finish?.kind === "metallic");
 

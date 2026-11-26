@@ -546,7 +546,11 @@ export const accountsRouter = router({
             type: input.type,
             currency: input.currency.toUpperCase(),
             color: input.color ?? null,
-            hasCard: input.type === "SAVINGS_ACCOUNT" ? input.hasCard : false,
+            hasCard:
+              input.type === "CHECKING_ACCOUNT" ||
+              input.type === "SAVINGS_ACCOUNT"
+                ? input.hasCard
+                : false,
             accountNumber: input.accountNumber ?? null,
             creditLimit:
               isCard && input.creditLimit != null
@@ -661,7 +665,7 @@ export const accountsRouter = router({
           ...(input.name !== undefined ? { name: input.name } : {}),
           ...(input.type !== undefined ? { type: input.type } : {}),
           ...(input.color !== undefined ? { color: input.color } : {}),
-          ...(nextType === "SAVINGS_ACCOUNT"
+          ...(nextType === "CHECKING_ACCOUNT" || nextType === "SAVINGS_ACCOUNT"
             ? input.hasCard !== undefined
               ? { hasCard: input.hasCard }
               : {}

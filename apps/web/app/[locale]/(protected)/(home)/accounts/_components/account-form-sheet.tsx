@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { AlertCircle, Banknote, Check, PiggyBank } from "lucide-react";
+import { AlertCircle, Banknote, Check, Landmark, PiggyBank } from "lucide-react";
 import { trpc } from "@app/api/client";
 
 import {
@@ -311,9 +311,9 @@ export function AccountFormSheet({
   const isPending = createMutation.isPending || updateMutation.isPending;
   const effectiveType = type;
   const isCard = effectiveType === "CREDIT_CARD";
-  const isSavings = effectiveType === "SAVINGS_ACCOUNT";
-  const showAsCard =
-    isCard || effectiveType === "CHECKING_ACCOUNT" || (isSavings && hasCard);
+  const supportsDebitCard =
+    effectiveType === "CHECKING_ACCOUNT" || effectiveType === "SAVINGS_ACCOUNT";
+  const showAsCard = isCard || (supportsDebitCard && hasCard);
   const namePlaceholder = t(
     `form.namePlaceholders.${effectiveType}` as never,
   );
@@ -384,7 +384,7 @@ export function AccountFormSheet({
         name: name.trim(),
         type,
         color: color || null,
-        hasCard: isSavings ? hasCard : false,
+        hasCard: supportsDebitCard ? hasCard : false,
         accountNumber: accountNumber.trim() || null,
         creditLimit:
           isCard && Number.isFinite(parsedLimit) && parsedLimit > 0
@@ -413,7 +413,7 @@ export function AccountFormSheet({
       type,
       currency,
       color: color || null,
-      hasCard: isSavings ? hasCard : false,
+      hasCard: supportsDebitCard ? hasCard : false,
       accountNumber: accountNumber.trim() || null,
       currentBalance: Number.isFinite(parsedBalance) ? parsedBalance : 0,
       creditLimit:
@@ -465,7 +465,7 @@ export function AccountFormSheet({
               style={{ color: resolvedFinish?.mutedInk ?? "rgba(255,255,255,0.72)" }}
             >
               {t(`types.${effectiveType}` as never)}
-              {isSavings && hasCard ? ` · ${t("detail.debitBadge")}` : ""} ·{" "}
+              {supportsDebitCard && hasCard ? ` · ${t("detail.debitBadge")}` : ""} ·{" "}
               {currency}
             </p>
             <p className="mt-0.5 truncate text-[16px] font-semibold">
@@ -505,6 +505,8 @@ export function AccountFormSheet({
               >
                 {effectiveType === "CASH" ? (
                   <Banknote className="size-4" strokeWidth={2} />
+                ) : effectiveType === "CHECKING_ACCOUNT" ? (
+                  <Landmark className="size-4" strokeWidth={2} />
                 ) : (
                   <PiggyBank className="size-4" strokeWidth={2} />
                 )}
@@ -549,14 +551,9 @@ export function AccountFormSheet({
           </p>
         </div>
 
-        {isSavings && (
+        {supportsDebitCard && (
           <div className="flex items-center justify-between rounded-xl border bg-muted/30 px-4 py-3">
-            <div className="pr-3">
-              <p className="text-[14px] font-medium">{t("form.hasCard")}</p>
-              <p className="text-[12px] text-muted-foreground">
-                {t("form.hasCardHint")}
-              </p>
-            </div>
+            <p className="pr-3 text-[14px] font-medium">{t("form.hasCard")}</p>
             <Switch checked={hasCard} onCheckedChange={setHasCard} />
           </div>
         )}
@@ -664,7 +661,11 @@ export function AccountFormSheet({
 
           <div className="flex flex-col gap-1.5">
             <label className="text-[13px] font-medium text-muted-foreground">
-              {t("form.last4")}
+              {showAsCard
+                ? t("form.last4Card")
+                : supportsDebitCard
+                  ? t("form.last4Account")
+                  : t("form.last4")}
             </label>
             <Input
               size="touch"
