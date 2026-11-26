@@ -27,6 +27,7 @@ import { Card } from "@/components/ui/card";
 import { usePathname } from "@/i18n/navigation";
 import { authClient } from "@/lib/auth-client";
 import type { ShellUser } from "./app-sidebar";
+import { SpaceCardSection } from "./space-switcher";
 
 /**
  * Full-width mobile menu sheet toggled by the "More" tab in MobileTabBar.
@@ -160,11 +161,15 @@ export function MobileMoreSheet({
                     </p>
                   </div>
                 </div>
-                <ThemeSwitcher
-                  variant="long"
-                  className="w-full justify-between"
-                />
+                <ThemeSwitcher variant="compact" />
               </Card>
+
+              <SpaceCardSection
+                onSwitched={() => {
+                  pushedHistoryRef.current = false;
+                  onOpenChange(false);
+                }}
+              />
 
               <section className="flex flex-col gap-3">
                 <SectionHeader title={t("more.moneySection")} />

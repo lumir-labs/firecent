@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
 
+import { SectionHeader } from "@/components/finance";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Card } from "@/components/ui/card";
 import {
   DropdownMenuGroup,
   DropdownMenuItem,
@@ -159,6 +161,70 @@ export function SpaceMenuGroup({ onSwitched }: { onSwitched?: () => void }) {
         })}
       </div>
     </DropdownMenuGroup>
+  );
+}
+
+/**
+ * Card-grouped Space picker for the mobile "More" drawer and `/more` screen.
+ * Inline (no nested drawer) so switching Spaces takes a single tap.
+ */
+export function SpaceCardSection({
+  onSwitched,
+}: {
+  onSwitched?: () => void;
+}) {
+  const t = useTranslations("Shell");
+  const { spaces, activeSpace, activeSpaceId, busyId, selectSpace } =
+    useSpaceSwitch(onSwitched);
+
+  if (!activeSpace) return null;
+
+  return (
+    <section className="flex flex-col gap-3">
+      <SectionHeader title={t("spaces")} />
+      <Card
+        variant="plain"
+        className="max-h-60 divide-y overflow-y-auto overscroll-contain"
+      >
+        {spaces.map((space) => {
+          const selected = space.id === activeSpaceId;
+          const loading = busyId === space.id;
+          return (
+            <button
+              key={space.id}
+              type="button"
+              disabled={busyId !== null}
+              aria-current={selected ? "true" : undefined}
+              onClick={() => void selectSpace(space.id)}
+              className={cn(
+                "flex min-h-[52px] w-full items-center gap-3 px-4 py-2.5 text-left transition-colors hover:bg-accent/60 active:bg-accent",
+                selected && "bg-primary/6",
+              )}
+            >
+              <span
+                aria-hidden
+                className={cn(
+                  "grid size-8 shrink-0 place-items-center rounded-xl text-[13px] font-semibold",
+                  selected
+                    ? "bg-primary/15 text-primary-text"
+                    : "bg-muted text-muted-foreground",
+                )}
+              >
+                {initialOf(space.name)}
+              </span>
+              <span className="min-w-0 flex-1 truncate text-[15px] font-medium text-foreground">
+                {space.name}
+              </span>
+              {loading ? (
+                <Loader2 className="size-4 shrink-0 animate-spin text-muted-foreground" />
+              ) : selected ? (
+                <Check className="size-4 shrink-0 text-primary-text" />
+              ) : null}
+            </button>
+          );
+        })}
+      </Card>
+    </section>
   );
 }
 

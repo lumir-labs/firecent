@@ -13,6 +13,7 @@ import {
 
 import { NavRow, PageHeader, SectionHeader } from "@/components/finance";
 import { Card } from "@/components/ui/card";
+import { SpaceCardSection } from "../_components/shell/space-switcher";
 
 export default async function MorePage() {
   const t = await getTranslations("Shell");
@@ -20,6 +21,8 @@ export default async function MorePage() {
   return (
     <div className="flex flex-col gap-6 px-5 pt-2 lg:px-0">
       <PageHeader title={t("nav.more")} className="px-0" />
+
+      <SpaceCardSection />
 
       <section className="flex flex-col gap-3">
         <SectionHeader title={t("more.moneySection")} />
