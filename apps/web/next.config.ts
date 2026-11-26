@@ -98,7 +98,7 @@ const nextConfig: NextConfig = {
               "connect-src 'self' https:",
               "object-src 'none'",
               "base-uri 'self'",
-              "frame-ancestors 'self'",
+              `frame-ancestors 'self' ${umamiOrigin}`,
             ].join("; "),
           },
         ],
