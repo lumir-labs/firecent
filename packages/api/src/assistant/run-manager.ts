@@ -9,6 +9,7 @@ export type AssistantStreamEvent =
   | { type: "status"; phase: string; label: string }
   | { type: "trace_step"; step: AssistantTraceStep }
   | { type: "text_delta"; delta: string }
+  | { type: "text_replace"; content: string }
   | { type: "ui_block"; block: AssistantUiBlock }
   | {
       type: "done";
@@ -92,6 +93,8 @@ export function pushRunEvent(
     else run.steps.push(event.step);
   } else if (event.type === "text_delta") {
     run.content += event.delta;
+  } else if (event.type === "text_replace") {
+    run.content = event.content;
   } else if (event.type === "ui_block") {
     run.uiBlocks.push(event.block);
   } else if (event.type === "done") {
@@ -144,6 +147,26 @@ export function isThreadRunningForUser(opts: {
     return { running: false, startedAt: null };
   }
   return { running: true, startedAt: run.startedAt };
+}
+
+/** Counts how many detached runs a user currently has executing across threads. */
+export function countActiveRunsForUser(opts: {
+  orgId: string;
+  userId: string;
+  excludeThreadId?: string | null;
+}): number {
+  let count = 0;
+  for (const run of activeRuns.values()) {
+    if (
+      run.status === "running" &&
+      run.orgId === opts.orgId &&
+      run.userId === opts.userId &&
+      run.threadId !== opts.excludeThreadId
+    ) {
+      count += 1;
+    }
+  }
+  return count;
 }
 
 /** Explicitly cancels a running background task (only when user clicks Stop). */

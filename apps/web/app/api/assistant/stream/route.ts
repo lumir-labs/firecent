@@ -3,6 +3,7 @@ import {
   subscribeToRun,
   type AssistantStreamEvent,
 } from "@app/api/assistant";
+import { p } from "@app/api/permissions";
 import { getServerSession, resolveSessionOrgId } from "@/lib/auth";
 
 export const runtime = "nodejs";
@@ -17,6 +18,11 @@ export async function GET(req: Request) {
   const session = await getServerSession();
   if (!session?.user) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const perms = (session.user as { permissions?: string[] }).permissions ?? [];
+  if (perms.length > 0 && !perms.includes(p.dashboard.basic)) {
+    return Response.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const orgId = resolveSessionOrgId(session);

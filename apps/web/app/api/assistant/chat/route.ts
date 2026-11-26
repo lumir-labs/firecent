@@ -1,10 +1,12 @@
 import z from "zod";
 import {
+  countActiveRunsForUser,
   startDetachedAssistantTurn,
   subscribeToRun,
   type AssistantStreamEvent,
 } from "@app/api/assistant";
 import { preparedAttachmentSchema } from "@app/api/assistant-types";
+import { p } from "@app/api/permissions";
 import { getServerSession, resolveSessionOrgId } from "@/lib/auth";
 
 export const runtime = "nodejs";
@@ -21,6 +23,11 @@ export async function POST(req: Request) {
   const session = await getServerSession();
   if (!session?.user) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const perms = (session.user as { permissions?: string[] }).permissions ?? [];
+  if (perms.length > 0 && !perms.includes(p.dashboard.basic)) {
+    return Response.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const orgId = resolveSessionOrgId(session);
@@ -54,6 +61,24 @@ export async function POST(req: Request) {
     return Response.json(
       { error: "Message or attachment required" },
       { status: 400 },
+    );
+  }
+
+  if (
+    countActiveRunsForUser({
+      orgId,
+      userId: session.user.id,
+      excludeThreadId: threadId ?? null,
+    }) >= 2
+  ) {
+    return Response.json(
+      {
+        error:
+          locale === "es"
+            ? "Ya tienes 2 consultas en curso. Espera a que termine una antes de iniciar otra."
+            : "You already have 2 active requests running. Wait for one to finish first.",
+      },
+      { status: 429 },
     );
   }
 

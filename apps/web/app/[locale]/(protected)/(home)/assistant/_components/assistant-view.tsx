@@ -432,6 +432,7 @@ export function AssistantView() {
             | { type: "status"; phase: string; label: string }
             | { type: "trace_step"; step: AssistantTraceStep }
             | { type: "text_delta"; delta: string }
+            | { type: "text_replace"; content: string }
             | { type: "ui_block"; block: AssistantUiBlock }
             | { type: "done"; threadId: string; messageId: string }
             | { type: "already_done"; threadId: string }
@@ -470,6 +471,14 @@ export function AssistantView() {
             setStreamStatus(null);
             setStreamingAssistant((prev) => ({
               content: (prev?.content ?? "") + evt.delta,
+              uiBlocks: prev?.uiBlocks ?? [],
+              steps: prev?.steps ?? [],
+              startedAt: prev?.startedAt ?? initialStartedAt,
+            }));
+          } else if (evt.type === "text_replace") {
+            setStreamStatus(null);
+            setStreamingAssistant((prev) => ({
+              content: evt.content,
               uiBlocks: prev?.uiBlocks ?? [],
               steps: prev?.steps ?? [],
               startedAt: prev?.startedAt ?? initialStartedAt,

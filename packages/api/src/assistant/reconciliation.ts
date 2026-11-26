@@ -1445,8 +1445,8 @@ export async function applyStatementProposalBatch(opts: {
           where: { id: created.id },
           data: { transferGroupId: groupId },
         }),
-        tx.record.update({
-          where: { id: orphan.id },
+        tx.record.updateMany({
+          where: { id: orphan.id, organizationId: opts.orgId, deletedAt: null },
           data: {
             transferAccountId: accountId,
             transferGroupId: groupId,
