@@ -173,6 +173,7 @@ model BankAccount {
   type              AccountType        @default(GENERAL)
   currency          String             @default("USD")
   color             String?
+  hasCard           Boolean            @default(false)
   balance           Int                @default(0)
   balanceDisplay    Float              @default(0)
   accountNumber     String?

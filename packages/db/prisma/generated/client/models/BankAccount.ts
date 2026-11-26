@@ -61,6 +61,7 @@ export type BankAccountMinAggregateOutputType = {
   type: $Enums.AccountType | null
   currency: string | null
   color: string | null
+  hasCard: boolean | null
   balance: number | null
   balanceDisplay: number | null
   accountNumber: string | null
@@ -96,6 +97,7 @@ export type BankAccountMaxAggregateOutputType = {
   type: $Enums.AccountType | null
   currency: string | null
   color: string | null
+  hasCard: boolean | null
   balance: number | null
   balanceDisplay: number | null
   accountNumber: string | null
@@ -131,6 +133,7 @@ export type BankAccountCountAggregateOutputType = {
   type: number
   currency: number
   color: number
+  hasCard: number
   balance: number
   balanceDisplay: number
   accountNumber: number
@@ -194,6 +197,7 @@ export type BankAccountMinAggregateInputType = {
   type?: true
   currency?: true
   color?: true
+  hasCard?: true
   balance?: true
   balanceDisplay?: true
   accountNumber?: true
@@ -229,6 +233,7 @@ export type BankAccountMaxAggregateInputType = {
   type?: true
   currency?: true
   color?: true
+  hasCard?: true
   balance?: true
   balanceDisplay?: true
   accountNumber?: true
@@ -264,6 +269,7 @@ export type BankAccountCountAggregateInputType = {
   type?: true
   currency?: true
   color?: true
+  hasCard?: true
   balance?: true
   balanceDisplay?: true
   accountNumber?: true
@@ -386,6 +392,7 @@ export type BankAccountGroupByOutputType = {
   type: $Enums.AccountType
   currency: string
   color: string | null
+  hasCard: boolean
   balance: number
   balanceDisplay: number
   accountNumber: string | null
@@ -444,6 +451,7 @@ export type BankAccountWhereInput = {
   type?: Prisma.EnumAccountTypeFilter<"BankAccount"> | $Enums.AccountType
   currency?: Prisma.StringFilter<"BankAccount"> | string
   color?: Prisma.StringNullableFilter<"BankAccount"> | string | null
+  hasCard?: Prisma.BoolFilter<"BankAccount"> | boolean
   balance?: Prisma.IntFilter<"BankAccount"> | number
   balanceDisplay?: Prisma.FloatFilter<"BankAccount"> | number
   accountNumber?: Prisma.StringNullableFilter<"BankAccount"> | string | null
@@ -485,6 +493,7 @@ export type BankAccountOrderByWithRelationInput = {
   type?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   color?: Prisma.SortOrderInput | Prisma.SortOrder
+  hasCard?: Prisma.SortOrder
   balance?: Prisma.SortOrder
   balanceDisplay?: Prisma.SortOrder
   accountNumber?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -530,6 +539,7 @@ export type BankAccountWhereUniqueInput = Prisma.AtLeast<{
   type?: Prisma.EnumAccountTypeFilter<"BankAccount"> | $Enums.AccountType
   currency?: Prisma.StringFilter<"BankAccount"> | string
   color?: Prisma.StringNullableFilter<"BankAccount"> | string | null
+  hasCard?: Prisma.BoolFilter<"BankAccount"> | boolean
   balance?: Prisma.IntFilter<"BankAccount"> | number
   balanceDisplay?: Prisma.FloatFilter<"BankAccount"> | number
   accountNumber?: Prisma.StringNullableFilter<"BankAccount"> | string | null
@@ -571,6 +581,7 @@ export type BankAccountOrderByWithAggregationInput = {
   type?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   color?: Prisma.SortOrderInput | Prisma.SortOrder
+  hasCard?: Prisma.SortOrder
   balance?: Prisma.SortOrder
   balanceDisplay?: Prisma.SortOrder
   accountNumber?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -614,6 +625,7 @@ export type BankAccountScalarWhereWithAggregatesInput = {
   type?: Prisma.EnumAccountTypeWithAggregatesFilter<"BankAccount"> | $Enums.AccountType
   currency?: Prisma.StringWithAggregatesFilter<"BankAccount"> | string
   color?: Prisma.StringNullableWithAggregatesFilter<"BankAccount"> | string | null
+  hasCard?: Prisma.BoolWithAggregatesFilter<"BankAccount"> | boolean
   balance?: Prisma.IntWithAggregatesFilter<"BankAccount"> | number
   balanceDisplay?: Prisma.FloatWithAggregatesFilter<"BankAccount"> | number
   accountNumber?: Prisma.StringNullableWithAggregatesFilter<"BankAccount"> | string | null
@@ -646,6 +658,7 @@ export type BankAccountCreateInput = {
   type?: $Enums.AccountType
   currency?: string
   color?: string | null
+  hasCard?: boolean
   balance?: number
   balanceDisplay?: number
   accountNumber?: string | null
@@ -687,6 +700,7 @@ export type BankAccountUncheckedCreateInput = {
   type?: $Enums.AccountType
   currency?: string
   color?: string | null
+  hasCard?: boolean
   balance?: number
   balanceDisplay?: number
   accountNumber?: string | null
@@ -723,6 +737,7 @@ export type BankAccountUpdateInput = {
   type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasCard?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
   accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -764,6 +779,7 @@ export type BankAccountUncheckedUpdateInput = {
   type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasCard?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
   accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -803,6 +819,7 @@ export type BankAccountCreateManyInput = {
   type?: $Enums.AccountType
   currency?: string
   color?: string | null
+  hasCard?: boolean
   balance?: number
   balanceDisplay?: number
   accountNumber?: string | null
@@ -835,6 +852,7 @@ export type BankAccountUpdateManyMutationInput = {
   type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasCard?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
   accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -870,6 +888,7 @@ export type BankAccountUncheckedUpdateManyInput = {
   type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasCard?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
   accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -920,6 +939,7 @@ export type BankAccountCountOrderByAggregateInput = {
   type?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   color?: Prisma.SortOrder
+  hasCard?: Prisma.SortOrder
   balance?: Prisma.SortOrder
   balanceDisplay?: Prisma.SortOrder
   accountNumber?: Prisma.SortOrder
@@ -968,6 +988,7 @@ export type BankAccountMaxOrderByAggregateInput = {
   type?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   color?: Prisma.SortOrder
+  hasCard?: Prisma.SortOrder
   balance?: Prisma.SortOrder
   balanceDisplay?: Prisma.SortOrder
   accountNumber?: Prisma.SortOrder
@@ -1003,6 +1024,7 @@ export type BankAccountMinOrderByAggregateInput = {
   type?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   color?: Prisma.SortOrder
+  hasCard?: Prisma.SortOrder
   balance?: Prisma.SortOrder
   balanceDisplay?: Prisma.SortOrder
   accountNumber?: Prisma.SortOrder
@@ -1238,6 +1260,7 @@ export type BankAccountCreateWithoutUserInput = {
   type?: $Enums.AccountType
   currency?: string
   color?: string | null
+  hasCard?: boolean
   balance?: number
   balanceDisplay?: number
   accountNumber?: string | null
@@ -1277,6 +1300,7 @@ export type BankAccountUncheckedCreateWithoutUserInput = {
   type?: $Enums.AccountType
   currency?: string
   color?: string | null
+  hasCard?: boolean
   balance?: number
   balanceDisplay?: number
   accountNumber?: string | null
@@ -1345,6 +1369,7 @@ export type BankAccountScalarWhereInput = {
   type?: Prisma.EnumAccountTypeFilter<"BankAccount"> | $Enums.AccountType
   currency?: Prisma.StringFilter<"BankAccount"> | string
   color?: Prisma.StringNullableFilter<"BankAccount"> | string | null
+  hasCard?: Prisma.BoolFilter<"BankAccount"> | boolean
   balance?: Prisma.IntFilter<"BankAccount"> | number
   balanceDisplay?: Prisma.FloatFilter<"BankAccount"> | number
   accountNumber?: Prisma.StringNullableFilter<"BankAccount"> | string | null
@@ -1377,6 +1402,7 @@ export type BankAccountCreateWithoutInstallmentsInput = {
   type?: $Enums.AccountType
   currency?: string
   color?: string | null
+  hasCard?: boolean
   balance?: number
   balanceDisplay?: number
   accountNumber?: string | null
@@ -1417,6 +1443,7 @@ export type BankAccountUncheckedCreateWithoutInstallmentsInput = {
   type?: $Enums.AccountType
   currency?: string
   color?: string | null
+  hasCard?: boolean
   balance?: number
   balanceDisplay?: number
   accountNumber?: string | null
@@ -1468,6 +1495,7 @@ export type BankAccountUpdateWithoutInstallmentsInput = {
   type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasCard?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
   accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1508,6 +1536,7 @@ export type BankAccountUncheckedUpdateWithoutInstallmentsInput = {
   type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasCard?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
   accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1543,6 +1572,7 @@ export type BankAccountCreateWithoutRecordsInput = {
   type?: $Enums.AccountType
   currency?: string
   color?: string | null
+  hasCard?: boolean
   balance?: number
   balanceDisplay?: number
   accountNumber?: string | null
@@ -1583,6 +1613,7 @@ export type BankAccountUncheckedCreateWithoutRecordsInput = {
   type?: $Enums.AccountType
   currency?: string
   color?: string | null
+  hasCard?: boolean
   balance?: number
   balanceDisplay?: number
   accountNumber?: string | null
@@ -1623,6 +1654,7 @@ export type BankAccountCreateWithoutTransferRecordsInput = {
   type?: $Enums.AccountType
   currency?: string
   color?: string | null
+  hasCard?: boolean
   balance?: number
   balanceDisplay?: number
   accountNumber?: string | null
@@ -1663,6 +1695,7 @@ export type BankAccountUncheckedCreateWithoutTransferRecordsInput = {
   type?: $Enums.AccountType
   currency?: string
   color?: string | null
+  hasCard?: boolean
   balance?: number
   balanceDisplay?: number
   accountNumber?: string | null
@@ -1714,6 +1747,7 @@ export type BankAccountUpdateWithoutRecordsInput = {
   type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasCard?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
   accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1754,6 +1788,7 @@ export type BankAccountUncheckedUpdateWithoutRecordsInput = {
   type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasCard?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
   accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1800,6 +1835,7 @@ export type BankAccountUpdateWithoutTransferRecordsInput = {
   type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasCard?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
   accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1840,6 +1876,7 @@ export type BankAccountUncheckedUpdateWithoutTransferRecordsInput = {
   type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasCard?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
   accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1875,6 +1912,7 @@ export type BankAccountCreateWithoutDebtsFromInput = {
   type?: $Enums.AccountType
   currency?: string
   color?: string | null
+  hasCard?: boolean
   balance?: number
   balanceDisplay?: number
   accountNumber?: string | null
@@ -1915,6 +1953,7 @@ export type BankAccountUncheckedCreateWithoutDebtsFromInput = {
   type?: $Enums.AccountType
   currency?: string
   color?: string | null
+  hasCard?: boolean
   balance?: number
   balanceDisplay?: number
   accountNumber?: string | null
@@ -1966,6 +2005,7 @@ export type BankAccountUpdateWithoutDebtsFromInput = {
   type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasCard?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
   accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2006,6 +2046,7 @@ export type BankAccountUncheckedUpdateWithoutDebtsFromInput = {
   type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasCard?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
   accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2041,6 +2082,7 @@ export type BankAccountCreateWithoutOrganizationInput = {
   type?: $Enums.AccountType
   currency?: string
   color?: string | null
+  hasCard?: boolean
   balance?: number
   balanceDisplay?: number
   accountNumber?: string | null
@@ -2080,6 +2122,7 @@ export type BankAccountUncheckedCreateWithoutOrganizationInput = {
   type?: $Enums.AccountType
   currency?: string
   color?: string | null
+  hasCard?: boolean
   balance?: number
   balanceDisplay?: number
   accountNumber?: string | null
@@ -2144,6 +2187,7 @@ export type BankAccountCreateManyUserInput = {
   type?: $Enums.AccountType
   currency?: string
   color?: string | null
+  hasCard?: boolean
   balance?: number
   balanceDisplay?: number
   accountNumber?: string | null
@@ -2176,6 +2220,7 @@ export type BankAccountUpdateWithoutUserInput = {
   type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasCard?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
   accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2215,6 +2260,7 @@ export type BankAccountUncheckedUpdateWithoutUserInput = {
   type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasCard?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
   accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2253,6 +2299,7 @@ export type BankAccountUncheckedUpdateManyWithoutUserInput = {
   type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasCard?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
   accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2287,6 +2334,7 @@ export type BankAccountCreateManyOrganizationInput = {
   type?: $Enums.AccountType
   currency?: string
   color?: string | null
+  hasCard?: boolean
   balance?: number
   balanceDisplay?: number
   accountNumber?: string | null
@@ -2319,6 +2367,7 @@ export type BankAccountUpdateWithoutOrganizationInput = {
   type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasCard?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
   accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2358,6 +2407,7 @@ export type BankAccountUncheckedUpdateWithoutOrganizationInput = {
   type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasCard?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
   accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2396,6 +2446,7 @@ export type BankAccountUncheckedUpdateManyWithoutOrganizationInput = {
   type?: Prisma.EnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   color?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasCard?: Prisma.BoolFieldUpdateOperationsInput | boolean
   balance?: Prisma.IntFieldUpdateOperationsInput | number
   balanceDisplay?: Prisma.FloatFieldUpdateOperationsInput | number
   accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2489,6 +2540,7 @@ export type BankAccountSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   type?: boolean
   currency?: boolean
   color?: boolean
+  hasCard?: boolean
   balance?: boolean
   balanceDisplay?: boolean
   accountNumber?: boolean
@@ -2531,6 +2583,7 @@ export type BankAccountSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   type?: boolean
   currency?: boolean
   color?: boolean
+  hasCard?: boolean
   balance?: boolean
   balanceDisplay?: boolean
   accountNumber?: boolean
@@ -2568,6 +2621,7 @@ export type BankAccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   type?: boolean
   currency?: boolean
   color?: boolean
+  hasCard?: boolean
   balance?: boolean
   balanceDisplay?: boolean
   accountNumber?: boolean
@@ -2605,6 +2659,7 @@ export type BankAccountSelectScalar = {
   type?: boolean
   currency?: boolean
   color?: boolean
+  hasCard?: boolean
   balance?: boolean
   balanceDisplay?: boolean
   accountNumber?: boolean
@@ -2631,7 +2686,7 @@ export type BankAccountSelectScalar = {
   deletedAt?: boolean
 }
 
-export type BankAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "userId" | "name" | "description" | "type" | "currency" | "color" | "balance" | "balanceDisplay" | "accountNumber" | "position" | "excludeFromStats" | "isActive" | "archived" | "creditLimit" | "paymentDayType" | "paymentDay" | "paymentEveryDays" | "paymentAnchorDate" | "cutoffDayType" | "cutoffDay" | "cutoffEveryDays" | "cutoffAnchorDate" | "displayCreditMode" | "interestRate" | "createdBy" | "updatedBy" | "deletedBy" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["bankAccount"]>
+export type BankAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "organizationId" | "userId" | "name" | "description" | "type" | "currency" | "color" | "hasCard" | "balance" | "balanceDisplay" | "accountNumber" | "position" | "excludeFromStats" | "isActive" | "archived" | "creditLimit" | "paymentDayType" | "paymentDay" | "paymentEveryDays" | "paymentAnchorDate" | "cutoffDayType" | "cutoffDay" | "cutoffEveryDays" | "cutoffAnchorDate" | "displayCreditMode" | "interestRate" | "createdBy" | "updatedBy" | "deletedBy" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["bankAccount"]>
 export type BankAccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   organization?: boolean | Prisma.OrganizationDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2669,6 +2724,7 @@ export type $BankAccountPayload<ExtArgs extends runtime.Types.Extensions.Interna
     type: $Enums.AccountType
     currency: string
     color: string | null
+    hasCard: boolean
     balance: number
     balanceDisplay: number
     accountNumber: string | null
@@ -3130,6 +3186,7 @@ export interface BankAccountFieldRefs {
   readonly type: Prisma.FieldRef<"BankAccount", 'AccountType'>
   readonly currency: Prisma.FieldRef<"BankAccount", 'String'>
   readonly color: Prisma.FieldRef<"BankAccount", 'String'>
+  readonly hasCard: Prisma.FieldRef<"BankAccount", 'Boolean'>
   readonly balance: Prisma.FieldRef<"BankAccount", 'Int'>
   readonly balanceDisplay: Prisma.FieldRef<"BankAccount", 'Float'>
   readonly accountNumber: Prisma.FieldRef<"BankAccount", 'String'>

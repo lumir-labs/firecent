@@ -41,6 +41,7 @@ const createAccountInput = z.object({
   type: z.enum(["CHECKING_ACCOUNT", "SAVINGS_ACCOUNT", "CASH", "CREDIT_CARD"]),
   currency: z.string().trim().min(3).max(3).default("USD"),
   color: z.string().trim().max(32).nullish(),
+  hasCard: z.boolean().default(false),
   accountNumber: z.string().trim().max(16).nullish(),
   /** Initial balance in major units. For CREDIT_CARD, positive = current balance owed. */
   currentBalance: z.number().finite().default(0),
@@ -68,6 +69,7 @@ const updateAccountInput = z.object({
     .enum(["CHECKING_ACCOUNT", "SAVINGS_ACCOUNT", "CASH", "CREDIT_CARD"])
     .optional(),
   color: z.string().trim().max(32).nullish(),
+  hasCard: z.boolean().optional(),
   accountNumber: z.string().trim().max(16).nullish(),
   creditLimit: z.number().positive().nullish(),
   paymentDay: z.number().int().min(1).max(31).nullish(),
@@ -176,6 +178,7 @@ export const accountsRouter = router({
           type: a.type,
           currency: a.currency,
           color: a.color,
+          hasCard: a.hasCard,
           accountNumber: a.accountNumber,
           excludeFromStats: a.excludeFromStats,
           displayCreditMode: a.displayCreditMode ?? "CREDIT_BALANCE",
@@ -471,6 +474,7 @@ export const accountsRouter = router({
         type: account.type,
         currency: account.currency,
         color: account.color,
+        hasCard: account.hasCard,
         accountNumber: account.accountNumber,
         archived: account.archived,
         excludeFromStats: account.excludeFromStats,
@@ -542,6 +546,7 @@ export const accountsRouter = router({
             type: input.type,
             currency: input.currency.toUpperCase(),
             color: input.color ?? null,
+            hasCard: input.type === "SAVINGS_ACCOUNT" ? input.hasCard : false,
             accountNumber: input.accountNumber ?? null,
             creditLimit:
               isCard && input.creditLimit != null
@@ -656,6 +661,11 @@ export const accountsRouter = router({
           ...(input.name !== undefined ? { name: input.name } : {}),
           ...(input.type !== undefined ? { type: input.type } : {}),
           ...(input.color !== undefined ? { color: input.color } : {}),
+          ...(nextType === "SAVINGS_ACCOUNT"
+            ? input.hasCard !== undefined
+              ? { hasCard: input.hasCard }
+              : {}
+            : { hasCard: false }),
           ...(input.accountNumber !== undefined
             ? { accountNumber: input.accountNumber }
             : {}),

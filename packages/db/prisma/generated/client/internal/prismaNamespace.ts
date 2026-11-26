@@ -2806,6 +2806,7 @@ export const BankAccountScalarFieldEnum = {
   type: 'type',
   currency: 'currency',
   color: 'color',
+  hasCard: 'hasCard',
   balance: 'balance',
   balanceDisplay: 'balanceDisplay',
   accountNumber: 'accountNumber',

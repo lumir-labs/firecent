@@ -1008,7 +1008,7 @@
       "GENERAL": "Cuenta",
       "BANK": "Banco",
       "SAVINGS_ACCOUNT": "Ahorro",
-      "CHECKING_ACCOUNT": "Débito",
+      "CHECKING_ACCOUNT": "Corriente",
       "CASH": "Efectivo",
       "CREDIT_CARD": "Tarjeta de crédito"
     },
@@ -1247,17 +1247,17 @@
     "noDebts": "Ninguna",
     "retry": "Intentar de nuevo",
     "emptyTitle": "Aún no tienes cuentas",
-    "emptyBody": "Agrega una cuenta de débito, efectivo o tarjeta de crédito para ver tu balance.",
+    "emptyBody": "Agrega una cuenta corriente, de ahorro, efectivo o tarjeta de crédito para ver tu balance.",
     "groups": {
-      "cash": "Efectivo y débito",
+      "cash": "Efectivo y corriente",
       "savings": "Ahorro",
       "cards": "Tarjetas de crédito"
     },
     "types": {
-      "CHECKING_ACCOUNT": "Débito",
+      "CHECKING_ACCOUNT": "Corriente",
       "SAVINGS_ACCOUNT": "Ahorro",
       "CASH": "Efectivo",
-      "CREDIT_CARD": "Tarjeta",
+      "CREDIT_CARD": "Crédito",
       "BANK": "Banco",
       "GENERAL": "Cuenta"
     },
@@ -1267,8 +1267,22 @@
       "cardFinish": "Acabado y color",
       "customColor": "Color personalizado",
       "type": "Tipo de cuenta",
+      "typeHints": {
+        "CHECKING_ACCOUNT": "Cuenta bancaria para gastos del día a día, planilla o pagos frecuentes.",
+        "SAVINGS_ACCOUNT": "Para dinero apartado o metas. Activa la tarjeta si también la usas con débito.",
+        "CASH": "Dinero físico en billetera o en mano.",
+        "CREDIT_CARD": "Tarjeta con límite de crédito, fecha de corte y fecha de pago."
+      },
+      "hasCard": "Tiene tarjeta de débito",
+      "hasCardHint": "Muestra esta cuenta de ahorro como tarjeta en lugar de alcancía.",
       "name": "Nombre de la cuenta",
-      "namePlaceholder": "Ej. Débito principal",
+      "namePlaceholder": "Ej. Cuenta principal",
+      "namePlaceholders": {
+        "CHECKING_ACCOUNT": "Ej. Cuenta principal",
+        "SAVINGS_ACCOUNT": "Ej. Fondo de emergencia",
+        "CASH": "Ej. Billetera",
+        "CREDIT_CARD": "Ej. Visa Infinite"
+      },
       "currency": "Moneda",
       "last4": "Últimos 4 dígitos",
       "currentBalance": "Saldo actual",

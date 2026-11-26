@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { AlertCircle, Check } from "lucide-react";
+import { AlertCircle, Banknote, Check, PiggyBank } from "lucide-react";
 import { trpc } from "@app/api/client";
 
 import {
@@ -31,6 +31,7 @@ export type EditableAccount = {
   type: string;
   currency: string;
   color: string | null;
+  hasCard?: boolean;
   accountNumber: string | null;
   creditLimit: number | null;
   paymentDayType?: CycleType | null;
@@ -196,6 +197,7 @@ export function AccountFormSheet({
   const [type, setType] = useState<CreatableType>("CHECKING_ACCOUNT");
   const [currency, setCurrency] = useState("USD");
   const [color, setColor] = useState<string>("indigo");
+  const [hasCard, setHasCard] = useState(false);
   const [accountNumber, setAccountNumber] = useState("");
   const [currentBalance, setCurrentBalance] = useState("");
   const [creditLimit, setCreditLimit] = useState("");
@@ -225,6 +227,7 @@ export function AccountFormSheet({
       );
       setCurrency(account.currency);
       setColor(account.color || (account.type === "CREDIT_CARD" ? "obsidian" : "indigo"));
+      setHasCard(Boolean(account.hasCard));
       setAccountNumber(account.accountNumber ?? "");
       setCurrentBalance("");
       setCreditLimit(account.creditLimit != null ? String(account.creditLimit) : "");
@@ -258,6 +261,7 @@ export function AccountFormSheet({
       setType(initialType);
       setCurrency("USD");
       setColor(initialType === "CREDIT_CARD" ? "obsidian" : "indigo");
+      setHasCard(false);
       setAccountNumber("");
       setCurrentBalance("");
       setCreditLimit("");
@@ -307,6 +311,12 @@ export function AccountFormSheet({
   const isPending = createMutation.isPending || updateMutation.isPending;
   const effectiveType = type;
   const isCard = effectiveType === "CREDIT_CARD";
+  const isSavings = effectiveType === "SAVINGS_ACCOUNT";
+  const showAsCard =
+    isCard || effectiveType === "CHECKING_ACCOUNT" || (isSavings && hasCard);
+  const namePlaceholder = t(
+    `form.namePlaceholders.${effectiveType}` as never,
+  );
   const resolvedFinish = resolveAccountFinish(color);
   const isEs = locale.startsWith("es");
 
@@ -374,6 +384,7 @@ export function AccountFormSheet({
         name: name.trim(),
         type,
         color: color || null,
+        hasCard: isSavings ? hasCard : false,
         accountNumber: accountNumber.trim() || null,
         creditLimit:
           isCard && Number.isFinite(parsedLimit) && parsedLimit > 0
@@ -402,6 +413,7 @@ export function AccountFormSheet({
       type,
       currency,
       color: color || null,
+      hasCard: isSavings ? hasCard : false,
       accountNumber: accountNumber.trim() || null,
       currentBalance: Number.isFinite(parsedBalance) ? parsedBalance : 0,
       creditLimit:
@@ -452,29 +464,53 @@ export function AccountFormSheet({
               className="text-[11px] font-medium uppercase tracking-wider"
               style={{ color: resolvedFinish?.mutedInk ?? "rgba(255,255,255,0.72)" }}
             >
-              {t(`types.${effectiveType}` as never)} · {currency}
+              {t(`types.${effectiveType}` as never)}
+              {isSavings && hasCard ? ` · ${t("detail.debitBadge")}` : ""} ·{" "}
+              {currency}
             </p>
             <p className="mt-0.5 truncate text-[16px] font-semibold">
-              {name.trim() || t("form.namePlaceholder")}
+              {name.trim() || namePlaceholder}
             </p>
           </div>
-          {accountNumber.trim() ? (
-            <span
-              className="num shrink-0 text-[13px] font-medium"
-              style={{ color: resolvedFinish?.mutedInk ?? "rgba(255,255,255,0.72)" }}
-            >
-              ···· {accountNumber.trim().slice(-4)}
-            </span>
-          ) : (
-            <span
-              aria-hidden
-              className="h-5 w-7 shrink-0 rounded-md"
-              style={{
-                backgroundColor: resolvedFinish?.ink ?? "#ffffff",
-                opacity: 0.25,
-              }}
-            />
-          )}
+          <div className="flex shrink-0 items-center gap-2.5">
+            {accountNumber.trim() && (
+              <span
+                className="num text-[13px] font-medium"
+                style={{
+                  color: resolvedFinish?.mutedInk ?? "rgba(255,255,255,0.72)",
+                }}
+              >
+                ···· {accountNumber.trim().slice(-4)}
+              </span>
+            )}
+            {showAsCard ? (
+              !accountNumber.trim() && (
+                <span
+                  aria-hidden
+                  className="h-5 w-7 rounded-md"
+                  style={{
+                    backgroundColor: resolvedFinish?.ink ?? "#ffffff",
+                    opacity: 0.25,
+                  }}
+                />
+              )
+            ) : (
+              <span
+                aria-hidden
+                className="grid size-8 place-items-center rounded-xl"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.16)",
+                  color: resolvedFinish?.ink ?? "#ffffff",
+                }}
+              >
+                {effectiveType === "CASH" ? (
+                  <Banknote className="size-4" strokeWidth={2} />
+                ) : (
+                  <PiggyBank className="size-4" strokeWidth={2} />
+                )}
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col gap-1.5">
@@ -508,7 +544,22 @@ export function AccountFormSheet({
               {t("types.CREDIT_CARD")}
             </ToggleGroupItem>
           </ToggleGroup>
+          <p className="text-[12px] leading-snug text-muted-foreground">
+            {t(`form.typeHints.${effectiveType}` as never)}
+          </p>
         </div>
+
+        {isSavings && (
+          <div className="flex items-center justify-between rounded-xl border bg-muted/30 px-4 py-3">
+            <div className="pr-3">
+              <p className="text-[14px] font-medium">{t("form.hasCard")}</p>
+              <p className="text-[12px] text-muted-foreground">
+                {t("form.hasCardHint")}
+              </p>
+            </div>
+            <Switch checked={hasCard} onCheckedChange={setHasCard} />
+          </div>
+        )}
 
         {/* Appearance: Metallic finishes + Bank colors + Custom */}
         <div className="flex flex-col gap-2">
@@ -587,7 +638,7 @@ export function AccountFormSheet({
             autoFocus
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder={t("form.namePlaceholder")}
+            placeholder={namePlaceholder}
           />
         </div>
 

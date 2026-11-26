@@ -49,6 +49,8 @@ export type AccountRowProps = {
   color?: ColorName | null;
   /** Account finish or hex color (`gold`, `silver`, `platinum`, `#0148af`…). */
   finish?: string | null;
+  /** Whether a savings account has an associated debit card (renders card swatch). */
+  hasCard?: boolean;
   href?: string;
   className?: string;
 };
@@ -72,6 +74,7 @@ export function AccountRow({
   converted,
   color,
   finish,
+  hasCard,
   href,
   className,
 }: AccountRowProps) {
@@ -84,12 +87,17 @@ export function AccountRow({
       </>
     ) : null);
 
+  const fallbackIcon =
+    type === "SAVINGS_ACCOUNT" && hasCard
+      ? CreditCard
+      : ACCOUNT_TYPE_ICON[type];
+
   const body = (
     <>
       {finish !== undefined ? (
-        <AccountSwatch type={type} color={finish} size="md" />
+        <AccountSwatch type={type} color={finish} hasCard={hasCard} size="md" />
       ) : (
-        <CategoryIcon icon={ACCOUNT_TYPE_ICON[type]} color={color} size="lg" />
+        <CategoryIcon icon={fallbackIcon} color={color} size="lg" />
       )}
       <span className="min-w-0 flex-1">
         <span className="flex items-baseline justify-between gap-2">

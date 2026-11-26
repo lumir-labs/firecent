@@ -124,9 +124,9 @@ const recordSelect = {
       spendingNature: true,
     },
   },
-  account: { select: { id: true, name: true, color: true, currency: true, type: true } },
+  account: { select: { id: true, name: true, color: true, currency: true, type: true, hasCard: true } },
   transferAccount: {
-    select: { id: true, name: true, color: true, currency: true, type: true },
+    select: { id: true, name: true, color: true, currency: true, type: true, hasCard: true },
   },
   labels: { select: { id: true, name: true, color: true } },
 } as const;
@@ -538,10 +538,10 @@ export const recordsRouter = router({
             id: true,
             amount: true,
             account: {
-              select: { id: true, name: true, color: true, currency: true, type: true },
+              select: { id: true, name: true, color: true, currency: true, type: true, hasCard: true },
             },
             transferAccount: {
-              select: { id: true, name: true, color: true, currency: true, type: true },
+              select: { id: true, name: true, color: true, currency: true, type: true, hasCard: true },
             },
           },
         });
@@ -595,7 +595,7 @@ export const recordsRouter = router({
       const [accounts, categories, payees, labels] = await Promise.all([
         db.bankAccount.findMany({
           where: { organizationId: orgId, deletedAt: null, archived: false },
-          select: { id: true, name: true, color: true, currency: true, type: true },
+          select: { id: true, name: true, color: true, currency: true, type: true, hasCard: true },
           orderBy: [{ position: "asc" }, { id: "asc" }],
         }),
         db.category.findMany({

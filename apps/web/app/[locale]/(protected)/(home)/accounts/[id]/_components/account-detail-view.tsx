@@ -220,9 +220,15 @@ export function AccountDetailView({ accountId }: { accountId: number }) {
         <div className="flex min-w-0 flex-col gap-5 lg:col-span-5">
           {(() => {
             const finish = resolveAccountFinish(acc.color);
-            const isDebitCard = acc.type === "CHECKING_ACCOUNT";
+            const isDebitCard =
+              acc.type === "CHECKING_ACCOUNT" ||
+              (acc.type === "SAVINGS_ACCOUNT" && acc.hasCard);
             const useCardHero =
-              isCard || isDebitCard || finish?.kind === "metallic";
+              isCard ||
+              isDebitCard ||
+              (acc.type !== "SAVINGS_ACCOUNT" &&
+                acc.type !== "CASH" &&
+                finish?.kind === "metallic");
             if (useCardHero) {
               const bg =
                 finish?.cardBackground ??
@@ -232,9 +238,11 @@ export function AccountDetailView({ accountId }: { accountId: number }) {
               const border = finish?.border ?? "rgba(255,255,255,0.14)";
               const cardKindLabel = isCard
                 ? t("detail.creditBadge")
-                : isDebitCard
-                  ? t("detail.debitBadge")
-                  : t(`types.${acc.type}` as never);
+                : acc.type === "SAVINGS_ACCOUNT" && acc.hasCard
+                  ? `${t("types.SAVINGS_ACCOUNT")} · ${t("detail.debitBadge")}`
+                  : isDebitCard
+                    ? t("detail.debitBadge")
+                    : t(`types.${acc.type}` as never);
 
               return (
                 <section

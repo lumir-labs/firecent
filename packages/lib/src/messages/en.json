@@ -1257,18 +1257,32 @@
       "CHECKING_ACCOUNT": "Checking",
       "SAVINGS_ACCOUNT": "Savings",
       "CASH": "Cash",
-      "CREDIT_CARD": "Card",
+      "CREDIT_CARD": "Credit",
       "BANK": "Bank",
       "GENERAL": "Account"
     },
     "form": {
       "addTitle": "Add account",
       "editTitle": "Edit account",
-      "cardFinish": "Card finish & color",
+      "cardFinish": "Appearance & color",
       "customColor": "Custom color",
       "type": "Account type",
+      "typeHints": {
+        "CHECKING_ACCOUNT": "Everyday bank account for salary, bills, and daily spending.",
+        "SAVINGS_ACCOUNT": "For saved money or goals. Turn on debit card if this account includes one.",
+        "CASH": "Physical cash in your wallet or on hand.",
+        "CREDIT_CARD": "Credit line with a limit, statement cutoff, and due date."
+      },
+      "hasCard": "Includes debit card",
+      "hasCardHint": "Shows this savings account as a card instead of a piggy bank.",
       "name": "Account name",
       "namePlaceholder": "e.g. Main checking",
+      "namePlaceholders": {
+        "CHECKING_ACCOUNT": "e.g. Main checking",
+        "SAVINGS_ACCOUNT": "e.g. Emergency fund",
+        "CASH": "e.g. Wallet",
+        "CREDIT_CARD": "e.g. Visa Infinite"
+      },
       "currency": "Currency",
       "last4": "Last 4 digits",
       "currentBalance": "Current balance",

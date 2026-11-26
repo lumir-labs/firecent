@@ -225,11 +225,13 @@ const ICONS = {
 export function AccountSwatch({
   type,
   color,
+  hasCard,
   size = "md",
   className,
 }: {
   type: AccountType;
   color?: string | null;
+  hasCard?: boolean;
   size?: "sm" | "md";
   className?: string;
 }) {
@@ -238,7 +240,9 @@ export function AccountSwatch({
   const asMiniCard =
     type === "CREDIT_CARD" ||
     type === "CHECKING_ACCOUNT" ||
-    finish?.kind === "metallic";
+    (type === "SAVINGS_ACCOUNT"
+      ? Boolean(hasCard)
+      : type !== "CASH" && finish?.kind === "metallic");
 
   if (asMiniCard) {
     const bg =

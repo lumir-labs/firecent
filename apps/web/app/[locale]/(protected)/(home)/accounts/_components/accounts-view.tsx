@@ -111,6 +111,7 @@ export function AccountsView() {
                 balance={displayAmount}
                 currency={acc.currency}
                 finish={acc.color}
+                hasCard={acc.hasCard}
                 secondary={secondary}
                 href={`/accounts/${acc.id}`}
               />

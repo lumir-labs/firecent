@@ -441,6 +441,7 @@ export const assistantRouter = router({
               type: true,
               currency: true,
               color: true,
+              hasCard: true,
               accountNumber: true,
             },
           }),

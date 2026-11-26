@@ -815,7 +815,12 @@ function AddTransactionBody({
                 className="flex min-h-13 items-center justify-between gap-3 px-3.5 py-2.5 text-left transition-colors hover:bg-accent"
               >
                 <div className="flex min-w-0 items-center gap-3">
-                  <AccountSwatch type={acc.type} color={acc.color} size="sm" />
+                  <AccountSwatch
+                    type={acc.type}
+                    color={acc.color}
+                    hasCard={acc.hasCard}
+                    size="sm"
+                  />
                   <div className="min-w-0">
                     <p className="truncate text-[14px] font-medium">
                       {acc.name}
@@ -1013,6 +1018,7 @@ function AddTransactionBody({
                 <AccountSwatch
                   type={activeAccount.type}
                   color={activeAccount.color}
+                  hasCard={activeAccount.hasCard}
                   size="sm"
                 />
               ) : (
@@ -1059,6 +1065,7 @@ function AddTransactionBody({
                 <AccountSwatch
                   type={destAccount.type}
                   color={destAccount.color}
+                  hasCard={destAccount.hasCard}
                   size="sm"
                 />
               ) : (
@@ -1147,6 +1154,7 @@ function AddTransactionBody({
             <AccountSwatch
               type={activeAccount.type}
               color={activeAccount.color}
+              hasCard={activeAccount.hasCard}
               size="sm"
             />
             <span className="truncate">{activeAccount.name}</span>
